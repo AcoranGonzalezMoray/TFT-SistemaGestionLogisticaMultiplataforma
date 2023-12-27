@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "NYSDq33bm/Re7mK2n/gchEn8+p+DsC4HklGQf7xbeVkOqrasyu+Vo+tou43OQgl1kqbszK6jXrkDZAbyay/9JA==",
+  "dgSpecHash": "FKP5kfgeRReYQtILK3LjvA/QQFuWPzoL4LJLSSHrQekcIESJ/HsGQmkjE0u4OevkUaGCq/kcKTt7PpGfZU/oeg==",
   "success": true,
-  "projectFilePath": "C:\\Users\\acora\\source\\repos\\QRStockMate\\QRStockMateSL\\QRStockMate.Infrastructure\\QRStockMate.Infrastructure.csproj",
+  "projectFilePath": "D:\\DEVHOME-DISK\\TFT-SistemaGestionLogisticaMultiplataforma\\QRStockMateSL\\QRStockMate.Infrastructure\\QRStockMate.Infrastructure.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\acora\\.nuget\\packages\\azure.core\\1.25.0\\azure.core.1.25.0.nupkg.sha512",
     "C:\\Users\\acora\\.nuget\\packages\\azure.identity\\1.7.0\\azure.identity.1.7.0.nupkg.sha512",

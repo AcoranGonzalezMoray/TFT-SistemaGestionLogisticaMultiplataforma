@@ -111,7 +111,7 @@ fun TransactionHistoryScreen(navController: NavController) {
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        if(DataRepository.getUser()?.role!=3){
+        if(DataRepository.getUser()?.role!=3 && DataRepository.getUser()?.role!=4){
             OutlinedTextField(
                 value = searchQuery,
                 onValueChange = { searchQuery = it },

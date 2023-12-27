@@ -167,7 +167,7 @@ fun UpdateUserScreen(navController: NavController) {
 
 
     var isMenuExpanded by remember { mutableStateOf(false) }
-    var roles = remember { mutableListOf(0, 1, 2, 3) }
+    var roles = remember { mutableListOf(0, 1, 2, 3, 4) }
 
     LaunchedEffect(Unit){
         if(roles!=null && user!=null)selectedOption= "Role:${ userRoleToString(user.role)}"

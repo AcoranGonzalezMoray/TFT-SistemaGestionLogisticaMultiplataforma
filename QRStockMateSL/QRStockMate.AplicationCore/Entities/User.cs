@@ -24,6 +24,7 @@ namespace QRStockMate.AplicationCore.Entities
         Director,
         Administrator,
         InventoryTechnician,
-        User
-    }
+        User,
+		Carrier
+	}
 }

@@ -18,6 +18,7 @@ fun userRoleToString(roleId: Int): String {
         1 -> "Administrator"
         2 -> "Inventory Technician"
         3 -> "User"
+        4 -> "Carrier"
         else -> "Unknown Role"
     }
 }
