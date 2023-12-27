@@ -21,6 +21,10 @@ namespace QRStockMate.Infrastructure.Data
         public DbSet<Item> Items { get; set; } = null!;
         public DbSet<TransactionHistory> TransactionsHistory { get; set; } = null!;
         public DbSet<Warehouse> Warehouses { get; set; } = null!;
-    }
+
+		public DbSet<Vehicle> Vehicles { get; set; } = null!;
+		public DbSet<TransportRoute> TransportRoutes { get; set; } = null!;
+
+	}
 }
 

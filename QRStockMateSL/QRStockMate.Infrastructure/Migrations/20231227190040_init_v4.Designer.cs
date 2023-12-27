@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using QRStockMate.Infrastructure.Data;
 
@@ -11,9 +12,11 @@ using QRStockMate.Infrastructure.Data;
 namespace QRStockMate.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231227190040_init_v4")]
+    partial class init_v4
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -78,6 +81,9 @@ namespace QRStockMate.Infrastructure.Migrations
                     b.Property<int>("Stock")
                         .HasColumnType("int");
 
+                    b.Property<int?>("TransportRouteId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Url")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -86,9 +92,11 @@ namespace QRStockMate.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("Weight")
-                        .HasColumnType("decimal(7,2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("TransportRouteId");
 
                     b.ToTable("Items");
                 });
@@ -152,15 +160,15 @@ namespace QRStockMate.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Palets")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("StartLocation")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AssignedVehicleId");
+
+                    b.HasIndex("CarrierId");
 
                     b.ToTable("TransportRoutes");
                 });
@@ -221,6 +229,9 @@ namespace QRStockMate.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<decimal>("CurrentLoad")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<string>("LicensePlate")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -230,7 +241,7 @@ namespace QRStockMate.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("MaxLoad")
-                        .HasColumnType("decimal(8,2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Model")
                         .IsRequired()
@@ -278,6 +289,37 @@ namespace QRStockMate.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Warehouses");
+                });
+
+            modelBuilder.Entity("QRStockMate.AplicationCore.Entities.Item", b =>
+                {
+                    b.HasOne("QRStockMate.AplicationCore.Entities.TransportRoute", null)
+                        .WithMany("Palets")
+                        .HasForeignKey("TransportRouteId");
+                });
+
+            modelBuilder.Entity("QRStockMate.AplicationCore.Entities.TransportRoute", b =>
+                {
+                    b.HasOne("QRStockMate.AplicationCore.Entities.Vehicle", "AssignedVehicle")
+                        .WithMany()
+                        .HasForeignKey("AssignedVehicleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("QRStockMate.AplicationCore.Entities.User", "Carrier")
+                        .WithMany()
+                        .HasForeignKey("CarrierId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AssignedVehicle");
+
+                    b.Navigation("Carrier");
+                });
+
+            modelBuilder.Entity("QRStockMate.AplicationCore.Entities.TransportRoute", b =>
+                {
+                    b.Navigation("Palets");
                 });
 #pragma warning restore 612, 618
         }
