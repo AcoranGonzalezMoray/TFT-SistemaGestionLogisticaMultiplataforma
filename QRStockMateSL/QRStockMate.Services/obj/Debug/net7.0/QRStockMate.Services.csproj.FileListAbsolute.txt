@@ -1,0 +1,15 @@
+C:\Users\acora\source\repos\QRStockMate\QRStockMateSL\QRStockMate.Services\bin\Debug\net7.0\QRStockMate.Services.deps.json
+C:\Users\acora\source\repos\QRStockMate\QRStockMateSL\QRStockMate.Services\bin\Debug\net7.0\QRStockMate.Services.dll
+C:\Users\acora\source\repos\QRStockMate\QRStockMateSL\QRStockMate.Services\bin\Debug\net7.0\QRStockMate.Services.pdb
+C:\Users\acora\source\repos\QRStockMate\QRStockMateSL\QRStockMate.Services\bin\Debug\net7.0\QRStockMate.AplicationCore.dll
+C:\Users\acora\source\repos\QRStockMate\QRStockMateSL\QRStockMate.Services\bin\Debug\net7.0\QRStockMate.AplicationCore.pdb
+C:\Users\acora\source\repos\QRStockMate\QRStockMateSL\QRStockMate.Services\obj\Debug\net7.0\QRStockMate.Services.csproj.AssemblyReference.cache
+C:\Users\acora\source\repos\QRStockMate\QRStockMateSL\QRStockMate.Services\obj\Debug\net7.0\QRStockMate.Services.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\acora\source\repos\QRStockMate\QRStockMateSL\QRStockMate.Services\obj\Debug\net7.0\QRStockMate.Services.AssemblyInfoInputs.cache
+C:\Users\acora\source\repos\QRStockMate\QRStockMateSL\QRStockMate.Services\obj\Debug\net7.0\QRStockMate.Services.AssemblyInfo.cs
+C:\Users\acora\source\repos\QRStockMate\QRStockMateSL\QRStockMate.Services\obj\Debug\net7.0\QRStockMate.Services.csproj.CoreCompileInputs.cache
+C:\Users\acora\source\repos\QRStockMate\QRStockMateSL\QRStockMate.Services\obj\Debug\net7.0\QRStockMate.Services.csproj.CopyComplete
+C:\Users\acora\source\repos\QRStockMate\QRStockMateSL\QRStockMate.Services\obj\Debug\net7.0\QRStockMate.Services.dll
+C:\Users\acora\source\repos\QRStockMate\QRStockMateSL\QRStockMate.Services\obj\Debug\net7.0\refint\QRStockMate.Services.dll
+C:\Users\acora\source\repos\QRStockMate\QRStockMateSL\QRStockMate.Services\obj\Debug\net7.0\QRStockMate.Services.pdb
+C:\Users\acora\source\repos\QRStockMate\QRStockMateSL\QRStockMate.Services\obj\Debug\net7.0\ref\QRStockMate.Services.dll
