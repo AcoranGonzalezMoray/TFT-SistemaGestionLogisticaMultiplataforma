@@ -112,8 +112,10 @@ interface ApiService {
         @Body transaction:Transaction
     ): Response<voidResponse>
 
-    @GET("TransactionHistory/")
-    suspend fun getHistory(): Response<List<Transaction>>
+    @GET("TransactionHistory/History/{code}")
+    suspend fun getHistory(
+        @Path("code") code: String
+    ): Response<List<Transaction>>
 
     @POST("Warehouse/AddItem/{Id}")
     suspend fun addItem(

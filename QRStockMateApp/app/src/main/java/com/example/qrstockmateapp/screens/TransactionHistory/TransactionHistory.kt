@@ -94,11 +94,11 @@ fun TransactionHistoryScreen(navController: NavController) {
 
     LaunchedEffect(Unit){
         GlobalScope.launch(Dispatchers.IO) {
-            val response  = RetrofitInstance.api.getHistory()
+            val response  = RetrofitInstance.api.getHistory(DataRepository.getUser()!!.code)
             if(response.isSuccessful){
                 val responseBody = response.body()
                 if(responseBody!=null){
-                    transactionList = responseBody.filter { it.code == DataRepository.getUser()?.code }
+                    transactionList = responseBody
                 }
             }
         }
