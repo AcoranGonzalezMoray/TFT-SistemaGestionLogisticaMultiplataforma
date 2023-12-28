@@ -17,12 +17,16 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 // Se le agrega la seguridad a los controladores para que se le envie el token valido
+
 builder.Services.AddControllers(opt =>
 {
     var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
     opt.Filters.Add(new AuthorizeFilter(policy));
 
 });
+
+
+//builder.Services.AddControllers();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -60,7 +64,15 @@ builder.Services.AddScoped(typeof(ITransactionHistoryRepository), typeof(Transac
 builder.Services.AddScoped(typeof(IWarehouseService), typeof(WarehouseService));
 builder.Services.AddScoped(typeof(IWarehouseRepository), typeof(WarehouseRepository));
 
-    //StorageFirebase
+    //Vehicle
+builder.Services.AddScoped(typeof(IVehicleService), typeof(VehicleService));
+builder.Services.AddScoped(typeof(IVehicleRepository), typeof(VehicleRepository));
+
+    //TransportRoute
+builder.Services.AddScoped(typeof(ITransportRouteService), typeof(TransportRouteService));
+builder.Services.AddScoped(typeof(ITransportRouteRepository), typeof(TransportRouteRepository));
+
+//StorageFirebase
 builder.Services.AddScoped(typeof(IStorageService), typeof(StorageService));
 builder.Services.AddScoped(typeof(IStorageRepository), typeof(StorageRepository));
 

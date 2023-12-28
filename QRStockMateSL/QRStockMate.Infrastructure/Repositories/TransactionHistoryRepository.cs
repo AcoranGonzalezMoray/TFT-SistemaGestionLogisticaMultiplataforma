@@ -1,4 +1,5 @@
-﻿using QRStockMate.AplicationCore.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using QRStockMate.AplicationCore.Entities;
 using QRStockMate.AplicationCore.Interfaces.Repositories;
 using QRStockMate.Infrastructure.Data;
 using System;
@@ -19,9 +20,11 @@ namespace QRStockMate.Infrastructure.Repositories
             _context = context;
         }
 
-        public Task<IEnumerable<TransactionHistory>> GetTransactionHistoryByCode(string code)
+        public async Task<IEnumerable<TransactionHistory>> GetTransactionHistoryByCode(string code)
         {
-            throw new NotImplementedException();
+            var transactionHistory = await _context.TransactionsHistory.Where(th=>th.Code == code).ToListAsync();
+
+            return transactionHistory;
         }
     }
 }

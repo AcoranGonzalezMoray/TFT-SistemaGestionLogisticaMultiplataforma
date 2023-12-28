@@ -113,10 +113,26 @@ namespace QRStockMate.Controller
 
 
 
+		[HttpGet("History/{code}")]
+		public async Task<ActionResult<IEnumerable<TransactionHistoryModel>>> GetHistory(string code)
+		{
+			try
+			{
+				var th = await _transactionHistoryService.GetTransactionHistoryByCode(code);
+
+				if (th is null) return NotFound();//404
+
+				return Ok(_mapper.Map<IEnumerable<TransactionHistory>, IEnumerable<TransactionHistoryModel>>(th)); //200
+			}
+			catch (Exception ex)
+			{
+
+				return BadRequest(ex.Message);//400
+			}
+		}
 
 
 
 
-
-    }
+	}
 }

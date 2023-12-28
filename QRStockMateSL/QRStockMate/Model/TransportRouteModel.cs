@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace QRStockMate.AplicationCore.Entities
+﻿namespace QRStockMate.Model
 {
-	public class TransportRoute
+	public class TransportRouteModel
 	{
 		public int Id { get; set; }
 		public string Code { get; set; }

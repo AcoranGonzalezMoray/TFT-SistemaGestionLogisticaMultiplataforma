@@ -12,15 +12,17 @@ namespace QRStockMate.Controller
     public class CompanyController : ControllerBase
     {
         private readonly ICompanyService _companyService;
-        private readonly IMapper _mapper;
+		private readonly IVehicleService _vehicleService;
+		private readonly IMapper _mapper;
 
-        public CompanyController(ICompanyService companyService, IMapper mapper)
-        {
-            _companyService = companyService;
-            _mapper = mapper;
-        }
+		public CompanyController(ICompanyService companyService, IVehicleService vehicleService, IMapper mapper)
+		{
+			_companyService = companyService;
+			_vehicleService = vehicleService;
+			_mapper = mapper;
+		}
 
-        [HttpGet]
+		[HttpGet]
         public async Task<ActionResult<IEnumerable<CompanyModel>>> Get()
         {
             try
@@ -116,7 +118,26 @@ namespace QRStockMate.Controller
             }
         }
 
-        [HttpPost("Warehouse")]
+		[HttpGet("Vehicles/{code}")]
+		public async Task<ActionResult<IEnumerable<VehicleModel>>> GetVehicles( string code)
+		{
+			try
+			{
+
+				var vehicles = await _vehicleService.GetVehiclesByCode(code);
+
+				if (vehicles is null) return NotFound();//404
+
+				return Ok(_mapper.Map<IEnumerable<Vehicle>, IEnumerable<VehicleModel>>(vehicles)); //200
+			}
+			catch (Exception ex)
+			{
+
+				return BadRequest(ex.Message);//400
+			}
+		}
+
+		[HttpPost("Warehouse")]
         public async Task<ActionResult<IEnumerable<WarehouseModel>>> GetWarehouses([FromBody] Company company)
         {
             try

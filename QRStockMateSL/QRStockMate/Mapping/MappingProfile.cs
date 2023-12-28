@@ -27,6 +27,14 @@ namespace CleanArquitecture.Api.Mapping
             //Warehouse
             CreateMap<Warehouse, WarehouseModel>();
             CreateMap<WarehouseModel, Warehouse>();
-        }
+
+			//Vehicle
+			CreateMap<Vehicle, VehicleModel>();
+			CreateMap<VehicleModel, Vehicle>();
+
+			//TransportRoute
+			CreateMap<TransportRoute, TransportRouteModel>();
+			CreateMap<TransportRouteModel, TransportRoute>();
+		}
     }
 }
