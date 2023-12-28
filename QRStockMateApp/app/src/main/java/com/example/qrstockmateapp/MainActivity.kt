@@ -64,7 +64,7 @@ class MainActivity : ComponentActivity() {
             // Verificar si hay un token y un usuario almacenados
             val savedToken = sharedPreferences.getString(KEY_TOKEN, null)
             val savedUserJson = sharedPreferences.getString(KEY_USER, null)
-            Log.d("savedToken", "${savedToken}, ${savedUserJson}")
+            Log.d("savedToken", "${savedToken}")
             if (!savedToken.isNullOrBlank() && !savedUserJson.isNullOrBlank()) {
                 val savedUser = Gson().fromJson(savedUserJson, User::class.java)
                 navigateToBottomScreen(navController,savedUser,savedToken,::saveTokenAndUser,sharedPreferences)
@@ -145,7 +145,7 @@ class MainActivity : ComponentActivity() {
         ) == PackageManager.PERMISSION_GRANTED
     }
     private fun saveTokenAndUser(token: String, user: User) {
-        Log.d("LLAVE","${user}")
+        Log.d("LLAVE","${token}")
         with(sharedPreferences.edit()) {
             putString(KEY_TOKEN, token)
             putString(KEY_USER, Gson().toJson(user))
@@ -260,9 +260,8 @@ fun Navigation(navController: NavHostController, onSaveTokenAndUser: (String, Us
 }
 
 suspend fun Initializaton(user: User, token:String){
-
     DataRepository.setToken(token)
-
+    RetrofitInstance.updateToken(token)
     val companyResponse = RetrofitInstance.api.getCompanyByUser(user)
     if (companyResponse.isSuccessful) {
         val company = companyResponse.body()
