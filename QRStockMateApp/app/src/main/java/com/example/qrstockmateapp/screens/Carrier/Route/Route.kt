@@ -75,7 +75,10 @@ import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.Polyline
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
+import com.google.maps.android.compose.rememberMarkerState
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 
@@ -90,8 +93,10 @@ fun RouteScreen(navController: NavController) {
     val scope = rememberCoroutineScope()
     val startPoint = LatLng(37.419568, -122.086717)
     val endPoint = LatLng(37.423273, -122.080427)
+    val launchPoint = LatLng(28.09973, -15.41343)
+
     val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(startPoint, 80f)
+        position = CameraPosition.fromLatLngZoom(launchPoint, 90f)
     }
     var bitmapDescriptor by remember { mutableStateOf<BitmapDescriptor?>(null) }
     var bitmapDescriptorNow by remember { mutableStateOf<BitmapDescriptor?>(null) }
@@ -185,6 +190,12 @@ fun RouteScreen(navController: NavController) {
                     currentLocation = latLng
                 }
             }
+        cameraPositionState.animate(
+            update = CameraUpdateFactory.newCameraPosition(
+                CameraPosition(startPoint, 80f, 0f, 0f)
+            ),
+            durationMs = 2000
+        )
     }
     ///////////////////////////////////////////
     LaunchedEffect(context) {
@@ -215,17 +226,26 @@ fun RouteScreen(navController: NavController) {
             BottomSheetContent(scope, scaffoldState,isRouteStarted,
                 onStartRoute = {
                     isRouteStarted = true
-                    // Ajusta los valores de latitud y longitud según tus necesidades
-                    val newCameraPosition = CameraPosition.builder()
-                        .target(LatLng(currentLocation!!.latitude, currentLocation!!.longitude))
-                        .zoom(15f) // Ajusta el nivel de zoom según tus necesidades
-                        .tilt(50f) // Ajusta la inclinación según tus necesidades
-                        .build()
 
-                    cameraPositionState.position = newCameraPosition
-                               },
+                    GlobalScope.launch(Dispatchers.Main) {
+                        cameraPositionState.animate(
+                            update = CameraUpdateFactory.newCameraPosition(
+                                CameraPosition(LatLng(currentLocation!!.latitude, currentLocation!!.longitude), 15f, 50f, 0f)
+                            ),
+                            durationMs = 2000
+                        )
+                    } },
                 onFinishRoute = {
-                    isRouteStarted=false
+                    isRouteStarted = false
+
+                    GlobalScope.launch(Dispatchers.Main) {
+                        cameraPositionState.animate(
+                            update = CameraUpdateFactory.newCameraPosition(
+                                CameraPosition(endPoint, 80f, 0f, 0f)
+                            ),
+                            durationMs = 2000
+                        )
+                    }
                 }
             )
         },
@@ -255,29 +275,12 @@ fun RouteScreen(navController: NavController) {
                     )
                     // Marcador para la ubicación actual
                     currentLocation?.let {
-                        Marker(
-                            state = MarkerState(position = it),
-                            title = "Ubicación Actual",
-                            snippet = "Marker en la Ubicación Actual",
-                            icon = bitmapDescriptorNow
-                        )
+                        PointMarker(it, "Ubicación Actual", "Marker en la Ubicación Actual", bitmapDescriptorNow!!, "ubi", false)
                     }
                 }
-                Marker(
-                    state = MarkerState(position = startPoint),
-                    title = "Start Point",
-                    snippet = "Marker at Start Point",
-                    icon = bitmapDescriptor,
-                    tag = "Inicio"
-                )
 
-                Marker(
-                    state = MarkerState(position = endPoint),
-                    title = "End Point",
-                    snippet = "Marker at End Point",
-                    icon = bitmapDescriptor,
-                    tag = "Fin"
-                )
+                PointMarker(endPoint, "End Point", "Marker at End Point", bitmapDescriptor!!, "Fin", false)
+                PointMarker(startPoint, "Start Point", "Marker at Start Point", bitmapDescriptor!!, "Inicio", true)
             }
 
             Box(
@@ -319,6 +322,21 @@ fun RouteScreen(navController: NavController) {
     }
 
 }
+@Composable
+fun PointMarker(position: LatLng, title: String, snippet: String?, icon:  BitmapDescriptor, tag:String, click:Boolean){
+    val markerState = rememberMarkerState(null, position)
+    Marker(
+        state = markerState,
+        title = title,
+        snippet = snippet,
+        icon = icon,
+        tag = tag
+    )
+
+   if(click)markerState.showInfoWindow()
+
+}
+
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun BottomSheetContent(
