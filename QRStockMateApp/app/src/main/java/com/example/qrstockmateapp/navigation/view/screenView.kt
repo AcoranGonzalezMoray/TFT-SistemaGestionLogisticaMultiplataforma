@@ -27,6 +27,8 @@ import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -65,11 +67,23 @@ import kotlinx.coroutines.withContext
 fun BottomNavigationScreen(navControllerLogin: NavController,sharedPreferences: SharedPreferences) {
     val scaffoldState = rememberScaffoldState(rememberDrawerState(DrawerValue.Closed))
     val scope = rememberCoroutineScope()
+    var drawerGesturesEnabled by remember { mutableStateOf(true) }
 
     val navController = rememberNavController()
+    DisposableEffect(navController) {
+        val listener = NavController.OnDestinationChangedListener { _, destination, _ ->
+            drawerGesturesEnabled = destination.route != "carrier"
+        }
+
+        navController.addOnDestinationChangedListener(listener)
+
+        onDispose {
+            navController.removeOnDestinationChangedListener(listener)
+        }
+    }
     Scaffold(
         scaffoldState = scaffoldState,
-        drawerGesturesEnabled = true,
+        drawerGesturesEnabled = drawerGesturesEnabled ,
 
         drawerContent = {
             Drawer(
