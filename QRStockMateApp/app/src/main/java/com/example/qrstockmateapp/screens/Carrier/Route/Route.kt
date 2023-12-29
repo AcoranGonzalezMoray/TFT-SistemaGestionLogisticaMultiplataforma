@@ -5,9 +5,11 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.location.Location
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,6 +19,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -33,6 +36,8 @@ import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.rememberBottomSheetScaffoldState
 import androidx.compose.material.Button
+import androidx.compose.material.DropdownMenu
+import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -52,7 +57,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
@@ -64,11 +71,16 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
 
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
+import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.PolylineOptions
+
 
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.Marker
@@ -80,6 +92,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.lang.Math.atan2
+import java.lang.Math.cos
+import java.lang.Math.sin
+import java.lang.Math.sqrt
+import kotlin.math.roundToInt
+import kotlin.math.roundToLong
 
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -102,8 +120,42 @@ fun RouteScreen(navController: NavController) {
     var bitmapDescriptorNow by remember { mutableStateOf<BitmapDescriptor?>(null) }
 
     val context = LocalContext.current
+    val availableColors = listOf(
+        Color.Red,
+        Color.Green,
+        Color.Blue,
+        Color.Yellow,
+        Color.Black
+    )
 
+    var selectedColor by remember { mutableStateOf(availableColors.first()) }
+    var isDropdownMenuExpanded by remember { mutableStateOf(false) }
     ////////////////////////////////////////////
+    // Estado para almacenar los puntos de la ruta trazada por el usuario
+    var userRoutePoints by remember { mutableStateOf(listOf<LatLng>()) }
+    var designMode by remember { mutableStateOf(false) }
+
+    // Evento de clic en el mapa para agregar puntos a la ruta
+    val onMapClick: (LatLng) -> Unit = { clickedLatLng ->
+        if(designMode){
+            // Añadir el punto clicado a la lista de puntos de la ruta
+            if (userRoutePoints.isEmpty()) {
+                userRoutePoints = listOf(startPoint, clickedLatLng)
+            } else {
+                // Añadir el punto clicado a la lista de puntos de la ruta
+                userRoutePoints = userRoutePoints + clickedLatLng
+            }
+
+            // Dibujar la línea de la ruta con los puntos existentes
+            GlobalScope.launch(Dispatchers.Main) {
+                cameraPositionState.animate(
+                    update = CameraUpdateFactory.newLatLng(clickedLatLng),
+                    durationMs = 1000
+                )
+            }
+        }
+    }
+
     // Estado para almacenar la ubicación actual
     var currentLocation by remember { mutableStateOf<LatLng?>(null) }
     var isRouteStarted by remember { mutableStateOf(false) }
@@ -178,8 +230,6 @@ fun RouteScreen(navController: NavController) {
         }
     }
 
-
-
     // Obtener la ubicación actual al iniciar el Composable
     LaunchedEffect(Unit) {
         // Obtener la última ubicación conocida
@@ -223,7 +273,7 @@ fun RouteScreen(navController: NavController) {
     BottomSheetScaffold(
         sheetContent = {
             // Contenido del Bottom Sheet
-            BottomSheetContent(scope, scaffoldState,isRouteStarted,
+            BottomSheetContent(scope, scaffoldState,isRouteStarted, haversine(userRoutePoints),
                 onStartRoute = {
                     isRouteStarted = true
 
@@ -234,7 +284,8 @@ fun RouteScreen(navController: NavController) {
                             ),
                             durationMs = 2000
                         )
-                    } },
+                    }
+                               },
                 onFinishRoute = {
                     isRouteStarted = false
 
@@ -262,17 +313,21 @@ fun RouteScreen(navController: NavController) {
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(bottom = 55.dp),
-                cameraPositionState = cameraPositionState
+                cameraPositionState = cameraPositionState,
+                onMapClick = onMapClick
             ) {
-                if (isRouteStarted) {
+                if (userRoutePoints.size >= 2) {
                     Polyline(
-                        points = listOf(startPoint, endPoint),
-                        color = androidx.compose.ui.graphics.Color.Blue,
-                        width = 5f,
+                        points = userRoutePoints,
+                        color = selectedColor,
+                        width = 10f,
                         onClick = {
-                            // Maneja el clic en la línea si es necesario
+                            // Manejar clic en la línea si es necesario
                         }
                     )
+                }
+                if (isRouteStarted) {
+
                     // Marcador para la ubicación actual
                     currentLocation?.let {
                         PointMarker(it, "Ubicación Actual", "Marker en la Ubicación Actual", bitmapDescriptorNow!!, "ubi", false)
@@ -290,38 +345,165 @@ fun RouteScreen(navController: NavController) {
                 contentAlignment = Alignment.Center // Alinea el contenido en el centro
             ) {
                 if (scaffoldState.bottomSheetState.isExpanded) {
-                    Button(
-                        onClick = {
-                            // Acciones cuando el Bottom Sheet está expandido
-                            cameraPositionState.position = CameraPosition.fromLatLngZoom(
-                                LatLng(currentLocation!!.latitude, currentLocation!!.longitude),
-                                80f
-                            )
-                        },
-                        colors = ButtonDefaults.buttonColors(Color.Black),
-                        modifier = Modifier.padding(16.dp)
-                    ) {
-                        Text("Focus on Current Location", color = Color.White)
+                    Row {
+                        Button(
+                            onClick = {
+                                // Acciones cuando el Bottom Sheet está expandido
+                                GlobalScope.launch(Dispatchers.Main) {
+                                    if(isRouteStarted) {
+                                        cameraPositionState.animate(
+                                            update = CameraUpdateFactory.newCameraPosition(
+                                                CameraPosition(
+                                                    LatLng(
+                                                        currentLocation!!.latitude,
+                                                        currentLocation!!.longitude
+                                                    ), 80f, 0f, 0f
+                                                )
+                                            ),
+                                            durationMs = 2000
+                                        )
+                                    }else{
+                                        Toast.makeText(context, "You need to start the route", Toast.LENGTH_SHORT).show()
+                                    }
+                                }
+                            },
+                            colors = ButtonDefaults.buttonColors(Color.Black),
+                            modifier = Modifier.padding(16.dp)
+                        ) {
+                            Text("Focus Location", color = Color.White)
+                        }
+                        Button(
+                            onClick = {
+                                if(isRouteStarted) {
+                                    // Acciones cuando el Bottom Sheet está expandido
+                                    GlobalScope.launch(Dispatchers.Main) {
+                                        cameraPositionState.animate(
+                                            update = CameraUpdateFactory.newCameraPosition(
+                                                CameraPosition(
+                                                    LatLng(
+                                                        currentLocation!!.latitude,
+                                                        currentLocation!!.longitude
+                                                    ), 15f, 50f, 0f
+                                                )
+                                            ),
+                                            durationMs = 2000
+                                        )
+                                    }
+                                }else{
+                                    Toast.makeText(context, "You need to start the route", Toast.LENGTH_SHORT).show()
+                                }
+                            },
+                            colors = ButtonDefaults.buttonColors(Color.Black),
+                            modifier = Modifier.padding(16.dp)
+                        ) {
+                            Text("Street View", color = Color.White)
+                        }
                     }
                 } else {
-                    Button(
-                        onClick = {
-                            // Acciones cuando el Bottom Sheet no está expandido
-                            scope.launch {
-                                scaffoldState.bottomSheetState.expand()
-                            }
-                        },
-                        colors = ButtonDefaults.buttonColors(Color.Black),
-                        modifier = Modifier.padding(16.dp)
-                    ) {
-                        Text("Open Options",color = Color.White)
-                    }
+                   if(designMode){
+                       Row {
+                           Button(
+                               onClick = {
+                                   // Acciones cuando el Bottom Sheet no está expandido
+                                   userRoutePoints =  userRoutePoints.dropLast(1)
+                               },
+                               colors = ButtonDefaults.buttonColors(Color.Black),
+                               modifier = Modifier.padding(8.dp)
+                           ) {
+                               Text("Undo", color = Color.White)
+                           }
+                           Button(
+                               onClick = {
+                                   // Acciones cuando el Bottom Sheet no está expandido
+                                   designMode = false
+                                   if(!userRoutePoints.isEmpty())userRoutePoints = userRoutePoints + endPoint
+                               },
+                               colors = ButtonDefaults.buttonColors(Color.Black),
+                               modifier = Modifier.padding(8.dp)
+                           ) {
+                               Text("Finish", color = Color.White)
+                           }
+                           Button(
+                               onClick = {
+                                   // Acciones cuando el Bottom Sheet no está expandido
+                                         userRoutePoints = emptyList()
+                               },
+                               colors = ButtonDefaults.buttonColors(Color.Black),
+                               modifier = Modifier.padding(8.dp)
+                           ) {
+                               Text("Clear", color = Color.White)
+                           }
+                           // Botón para abrir/cerrar el menú desplegable
+                           Button(
+                               onClick = { isDropdownMenuExpanded = !isDropdownMenuExpanded },
+                               colors = ButtonDefaults.buttonColors(Color.Black ),
+                               modifier = Modifier.padding(8.dp)
+                           ) {
+                               Box(
+                                   modifier = Modifier
+                                       .background(selectedColor)
+                                       .border(2.dp, Color.White)
+                                       .size(20.dp, 20.dp)
+                               )
+                           }
+
+                           // Menú desplegable de colores
+                           DropdownMenu(
+                               expanded = isDropdownMenuExpanded,
+                               modifier = Modifier
+                                   .background(Color.Black)
+                                   .width(50.dp),
+                               onDismissRequest = { isDropdownMenuExpanded = false }
+                           ) {
+                               availableColors.forEach { color ->
+                                   DropdownMenuItem(onClick = {
+                                       selectedColor = color
+                                       isDropdownMenuExpanded = false
+                                   }) {
+                                       Box(
+                                           modifier = Modifier
+                                               .background(color)
+                                               .border(2.dp, Color.White)
+                                               .size(20.dp, 20.dp)
+                                       )
+                                   }
+                               }
+                           }
+                       }
+                   }else{
+                       Row {
+                           Button(
+                               onClick = {
+                                   // Acciones cuando el Bottom Sheet no está expandido
+                                   designMode = true
+                               },
+                               colors = ButtonDefaults.buttonColors(Color.Black),
+                               modifier = Modifier.padding(16.dp)
+                           ) {
+                               Text("Design Route",color = Color.White)
+                           }
+                           Button(
+                               onClick = {
+                                   // Acciones cuando el Bottom Sheet no está expandido
+                                   scope.launch {
+                                       scaffoldState.bottomSheetState.expand()
+                                   }
+                               },
+                               colors = ButtonDefaults.buttonColors(Color.Black),
+                               modifier = Modifier.padding(16.dp)
+                           ) {
+                               Text("Open Options",color = Color.White)
+                           }
+                       }
+                   }
                 }
             }
         }
     }
 
 }
+
+
 @Composable
 fun PointMarker(position: LatLng, title: String, snippet: String?, icon:  BitmapDescriptor, tag:String, click:Boolean){
     val markerState = rememberMarkerState(null, position)
@@ -343,9 +525,12 @@ fun BottomSheetContent(
     scope: CoroutineScope,
     scaffoldState: BottomSheetScaffoldState,
     isRouteStarted: Boolean,
+    distance:Double,
     onStartRoute: () -> Unit,
     onFinishRoute: () -> Unit
 ) {
+    val distanceRounded = (distance * 100.0).roundToLong() / 100.0
+
     // Contenido del Bottom Sheet
     Column(
         modifier = Modifier
@@ -375,7 +560,8 @@ fun BottomSheetContent(
                     tint = Color.White,
                 )
             }
-            Text("Contenido del Bottom Sheet", color = Color.White)
+            Text("Aprox. Distance: ", color = Color.White)
+            Text(text = "${distanceRounded}Km", color = Color.White,fontWeight = FontWeight.Bold, fontSize = 20.sp)
         }
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -426,4 +612,28 @@ fun BottomSheetContent(
             }
         }
     }
+}
+
+
+//La fórmula del haversine es una fórmula trigonométrica que calcula la distancia entre dos puntos en una esfera (como la Tierra).
+fun haversine(points: List<LatLng>): Double {
+    val R = 6371 // Radio de la Tierra en kilómetros
+    var totalDistance = 0.0
+
+    for (i in 0 until points.size - 1) {
+        val lat1 = points[i].latitude
+        val lon1 = points[i].longitude
+        val lat2 = points[i + 1].latitude
+        val lon2 = points[i + 1].longitude
+
+        val dLat = Math.toRadians(lat2 - lat1)
+        val dLon = Math.toRadians(lon2 - lon1)
+
+        val a = sin(dLat / 2) * sin(dLat / 2) + cos(Math.toRadians(lat1)) * cos(Math.toRadians(lat2)) * sin(dLon / 2) * sin(dLon / 2)
+        val c = 2 * atan2(sqrt(a), sqrt(1 - a))
+
+        totalDistance += R * c
+    }
+
+    return totalDistance
 }
