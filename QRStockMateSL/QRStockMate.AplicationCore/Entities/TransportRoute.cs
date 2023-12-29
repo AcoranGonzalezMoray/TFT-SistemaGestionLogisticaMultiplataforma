@@ -17,5 +17,6 @@ namespace QRStockMate.AplicationCore.Entities
 		public string Palets { get; set; } //Empaquetado de gran numero de productos limit : [1;2;4;4;5,2;4;3;] (, palet) (; producto)
 		public int AssignedVehicleId { get; set; } // Vehiculo asignados a la ruta
 		public int CarrierId { get; set; } // Conductor
+		public DateTime Date { get; set; }
 	}
 }

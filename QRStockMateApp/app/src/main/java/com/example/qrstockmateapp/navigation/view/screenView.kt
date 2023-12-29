@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -72,7 +73,7 @@ fun BottomNavigationScreen(navControllerLogin: NavController,sharedPreferences: 
     val navController = rememberNavController()
     DisposableEffect(navController) {
         val listener = NavController.OnDestinationChangedListener { _, destination, _ ->
-            drawerGesturesEnabled = destination.route != "carrier"
+            drawerGesturesEnabled = destination.route != "route"
         }
 
         navController.addOnDestinationChangedListener(listener)
@@ -241,10 +242,10 @@ fun Drawer(
                     imageVector = Icons.Filled.AccountBox,
                     contentDescription = "",
                     tint = Color.White,
-                    modifier = Modifier.height(40.dp)
+                    modifier = Modifier.height(40.dp).size(48.dp),
                 )
                 Spacer(modifier = Modifier.width(7.dp))
-                Text("${DataRepository.getCompany()?.name} \n Code: ${DataRepository.getUser()?.code}", fontSize = 20.sp, fontWeight = FontWeight.Bold, color= Color.White)
+                Text("Company: ${DataRepository.getCompany()?.name} \nCode: ${DataRepository.getUser()?.code}", fontSize = 20.sp, fontWeight = FontWeight.Bold, color= Color.White)
             }
         }
 
@@ -376,7 +377,10 @@ fun Drawer(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 16.dp)
+                        .fillMaxHeight()
+                        .padding(top = 16.dp,start=16.dp, end=16.dp, bottom = 60.dp),
+                    verticalArrangement = Arrangement.Bottom
+
                 ) {
                     Button(
                         onClick = {showDialog = true},
@@ -385,7 +389,7 @@ fun Drawer(
                             .fillMaxWidth()
                             .padding(start = 4.dp) // Agrega espacio a la izquierda del botón
                     ) {
-                        Text(text = "Delete Account")
+                        Text(text = "Delete Account", color= Color.White)
                     }
                 }
             }

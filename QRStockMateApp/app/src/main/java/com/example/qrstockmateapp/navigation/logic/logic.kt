@@ -12,6 +12,7 @@ import com.example.qrstockmateapp.navigation.repository.DataRepository
 import com.example.qrstockmateapp.screens.Auth.ForgotPassword.ForgotPassword
 import com.example.qrstockmateapp.screens.Auth.Login.Login
 import com.example.qrstockmateapp.screens.Carrier.CarrierScreen
+import com.example.qrstockmateapp.screens.Carrier.Route.RouteScreen
 import com.example.qrstockmateapp.screens.Home.AddWarehouse.AddWarehouseScreen
 import com.example.qrstockmateapp.screens.Home.HomeScreen
 import com.example.qrstockmateapp.screens.Home.ManageUser.ManageUserScreen
@@ -43,6 +44,9 @@ fun  Navigation(navController: NavHostController) {
         }
         composable("carrier"){
             CarrierScreen(navController)
+        }
+        composable("route"){
+            RouteScreen(navController)
         }
         composable("search") {
             SearchScreen(navController)
