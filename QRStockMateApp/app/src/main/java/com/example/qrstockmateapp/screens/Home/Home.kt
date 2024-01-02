@@ -32,6 +32,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.DeleteSweep
+import androidx.compose.material.icons.filled.EditNote
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
@@ -384,7 +386,7 @@ fun WarehouseItem(warehouse: Warehouse,navController: NavController, loadWarehou
                                 .padding(end = 4.dp)
                         ) {
                             Icon(
-                                imageVector = Icons.Filled.Create,
+                                imageVector = Icons.Filled.EditNote,
                                 contentDescription = "",
                                 tint = Color.Black
                             )
@@ -400,7 +402,7 @@ fun WarehouseItem(warehouse: Warehouse,navController: NavController, loadWarehou
                                 .padding(start = 4.dp) // Agrega espacio a la izquierda del botón
                         ) {
                             Icon(
-                                imageVector = Icons.Filled.Delete,
+                                imageVector = Icons.Filled.DeleteSweep,
                                 contentDescription = "",
                                 tint = Color.Black
                             )

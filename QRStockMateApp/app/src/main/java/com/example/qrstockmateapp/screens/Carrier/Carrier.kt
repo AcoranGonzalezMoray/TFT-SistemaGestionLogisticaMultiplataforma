@@ -33,6 +33,7 @@ import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.icons.filled.Map
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -181,7 +182,7 @@ fun itemRoute(rutasPorFila: List<TransportRouteModel>, navController: NavControl
                     ) {
                         Text("Open Route", color = Color.White)
                         Spacer(modifier = Modifier.width(8.dp))
-                        Icon(imageVector = Icons.Default.LocationOn, contentDescription = null, tint = Color.White)
+                        Icon(imageVector = Icons.Filled.Map, contentDescription = null, tint = Color.White)
                     }
                 }
             }

@@ -19,8 +19,11 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Icon
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.SwapVert
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -136,6 +139,7 @@ fun OpenWarehouseScreen(navController: NavController){
                 color = Color.White,
                 text = if (sortOrder == SortOrder.ASCENDING) "Sort Ascending" else "Sort Descending"
             )
+            Icon(imageVector = Icons.Filled.SwapVert, contentDescription = "sort", tint=Color.White)
         }
         ItemList(items = sortedItems  , navController = navController)
     }
@@ -229,7 +233,7 @@ fun Item(item: Item,navController: NavController) {
                 androidx.compose.material.Text(text = "Location: ${item.location}")
                 androidx.compose.material.Text(text = "Stock: ${item.stock}", fontWeight = FontWeight.Bold)
                 Button(onClick = {
-                    if(DataRepository.getUser()?.role!=3){
+                    if(DataRepository.getUser()?.role == 1 || DataRepository.getUser()?.role == 2 || DataRepository.getUser()?.role == 0 ){
                         DataRepository.setItem(item)
                         navController.navigate("itemDetails")
                     }else{

@@ -28,6 +28,8 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Create
+import androidx.compose.material.icons.filled.ToggleOff
+import androidx.compose.material.icons.filled.ToggleOn
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
@@ -292,10 +294,12 @@ fun UserListItem(user: User, navController: NavController,loadEmployees: () -> U
                     Button(
                         modifier = Modifier
                             .fillMaxWidth(),
-                        colors = ButtonDefaults.buttonColors(Color.Green),onClick = {
+                        colors = ButtonDefaults.buttonColors(Color(0xFF006400)),onClick = {
                             enableUser()
                         }, ) {
                         Text("Enable", color = Color.White)
+                        Spacer(modifier = Modifier.padding(3.dp))
+                        Icon(imageVector = Icons.Filled.ToggleOn, contentDescription = "Enable", tint = Color.White )
                     }
                 } else {        //Activado
                     Button(
@@ -305,6 +309,8 @@ fun UserListItem(user: User, navController: NavController,loadEmployees: () -> U
                             disableUser()
                         }, ) {
                         Text("Disable", color = Color.White)
+                        Spacer(modifier = Modifier.padding(3.dp))
+                        Icon(imageVector = Icons.Filled.ToggleOff, contentDescription = "Disable", tint = Color.White )
                     }
                 }
             }

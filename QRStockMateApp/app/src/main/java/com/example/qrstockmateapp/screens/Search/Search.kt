@@ -27,6 +27,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Create
+import androidx.compose.material.icons.filled.SwapVert
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.runtime.Composable
@@ -149,6 +150,7 @@ fun SearchScreen(navController: NavController) {
             }
         }) {
             Text(color= Color.White,text = if (sortOrder == SortOrder.ASCENDING) "Sort Ascending" else "Sort Descending")
+            Icon(imageVector = Icons.Filled.SwapVert, contentDescription = "sort", tint = Color.White)
         }
         if(filteredItems.isNotEmpty()){
             ItemList(items = sortedItems, navController = navController)
@@ -250,7 +252,7 @@ fun Item(item: Item,navController: NavController) {
                 Text(text = "Stock: ${item.stock}", fontWeight = FontWeight.Bold)
                 Button(
                     onClick = {
-                       if(DataRepository.getUser()?.role !=3){
+                        if(DataRepository.getUser()?.role == 1 || DataRepository.getUser()?.role == 2 || DataRepository.getUser()?.role == 0 ){
                            DataRepository.setItem(item)
                            navController.navigate("itemDetails")
                        }else{

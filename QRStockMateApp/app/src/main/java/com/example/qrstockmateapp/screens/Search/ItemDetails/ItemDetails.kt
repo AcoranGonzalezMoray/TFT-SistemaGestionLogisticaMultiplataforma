@@ -32,6 +32,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddAPhoto
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -218,7 +219,7 @@ fun ItemDetailsScreen(navController: NavController) {
                     onClick = { pickImageLauncher.launch("image/*") }
                 ) {
                     Icon(
-                        imageVector = Icons.Filled.Refresh,
+                        imageVector = Icons.Filled.AddAPhoto,
                         contentDescription = "",
                         tint = Color.White
                     )

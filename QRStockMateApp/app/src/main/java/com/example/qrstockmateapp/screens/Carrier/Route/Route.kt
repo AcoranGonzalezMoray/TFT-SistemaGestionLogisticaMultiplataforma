@@ -38,6 +38,14 @@ import androidx.compose.material.rememberBottomSheetScaffoldState
 import androidx.compose.material.Button
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
+import androidx.compose.material.icons.filled.DesignServices
+import androidx.compose.material.icons.filled.LayersClear
+import androidx.compose.material.icons.filled.MyLocation
+import androidx.compose.material.icons.filled.Remove
+import androidx.compose.material.icons.filled.Save
+import androidx.compose.material.icons.filled.Streetview
+import androidx.compose.material.icons.filled.Tune
+import androidx.compose.material.icons.filled.Undo
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -370,7 +378,9 @@ fun RouteScreen(navController: NavController) {
                             colors = ButtonDefaults.buttonColors(Color.Black),
                             modifier = Modifier.padding(16.dp)
                         ) {
-                            Text("Focus Location", color = Color.White)
+                            //Text("Focus Location", color = Color.White)
+                            Icon(imageVector = Icons.Filled.MyLocation, contentDescription = "", tint=Color.White)
+
                         }
                         Button(
                             onClick = {
@@ -396,7 +406,8 @@ fun RouteScreen(navController: NavController) {
                             colors = ButtonDefaults.buttonColors(Color.Black),
                             modifier = Modifier.padding(16.dp)
                         ) {
-                            Text("Street View", color = Color.White)
+                            //Text("Street View", color = Color.White)
+                            Icon(imageVector = Icons.Filled.Streetview, contentDescription = "", tint=Color.White)
                         }
                     }
                 } else {
@@ -410,7 +421,9 @@ fun RouteScreen(navController: NavController) {
                                colors = ButtonDefaults.buttonColors(Color.Black),
                                modifier = Modifier.padding(8.dp)
                            ) {
-                               Text("Undo", color = Color.White)
+                               //Text("Undo", color = Color.White)
+                               Icon(imageVector = Icons.Filled.Undo, contentDescription = "", tint=Color.White)
+
                            }
                            Button(
                                onClick = {
@@ -421,7 +434,9 @@ fun RouteScreen(navController: NavController) {
                                colors = ButtonDefaults.buttonColors(Color.Black),
                                modifier = Modifier.padding(8.dp)
                            ) {
-                               Text("Finish", color = Color.White)
+                               //Text("Finish", color = Color.White)
+                               Icon(imageVector = Icons.Filled.Save, contentDescription = "", tint=Color.White)
+
                            }
                            Button(
                                onClick = {
@@ -431,7 +446,9 @@ fun RouteScreen(navController: NavController) {
                                colors = ButtonDefaults.buttonColors(Color.Black),
                                modifier = Modifier.padding(8.dp)
                            ) {
-                               Text("Clear", color = Color.White)
+                               //Text("Clear", color = Color.White)
+                               Icon(imageVector = Icons.Filled.LayersClear, contentDescription = "", tint=Color.White)
+
                            }
                            // Botón para abrir/cerrar el menú desplegable
                            Button(
@@ -480,7 +497,9 @@ fun RouteScreen(navController: NavController) {
                                colors = ButtonDefaults.buttonColors(Color.Black),
                                modifier = Modifier.padding(16.dp)
                            ) {
-                               Text("Design Route",color = Color.White)
+                               //Text("Design Route",color = Color.White)
+                               Icon(imageVector = Icons.Filled.DesignServices, contentDescription = "", tint=Color.White)
+
                            }
                            Button(
                                onClick = {
@@ -492,7 +511,9 @@ fun RouteScreen(navController: NavController) {
                                colors = ButtonDefaults.buttonColors(Color.Black),
                                modifier = Modifier.padding(16.dp)
                            ) {
-                               Text("Open Options",color = Color.White)
+                               //Text("Open Options",color = Color.White)
+                               Icon(imageVector = Icons.Filled.Tune, contentDescription = "", tint=Color.White)
+
                            }
                        }
                    }

@@ -7,12 +7,10 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.qrstockmateapp.api.models.User
-import com.example.qrstockmateapp.navigation.repository.DataRepository
-import com.example.qrstockmateapp.screens.Auth.ForgotPassword.ForgotPassword
-import com.example.qrstockmateapp.screens.Auth.Login.Login
 import com.example.qrstockmateapp.screens.Carrier.CarrierScreen
 import com.example.qrstockmateapp.screens.Carrier.Route.RouteScreen
+import com.example.qrstockmateapp.screens.Carrier.RouteManagement.RouteManagementScreen
+import com.example.qrstockmateapp.screens.Carrier.VehicleManagement.VehicleManagementScreen
 import com.example.qrstockmateapp.screens.Home.AddWarehouse.AddWarehouseScreen
 import com.example.qrstockmateapp.screens.Home.HomeScreen
 import com.example.qrstockmateapp.screens.Home.ManageUser.ManageUserScreen
@@ -45,8 +43,11 @@ fun  Navigation(navController: NavHostController) {
         composable("carrier"){
             CarrierScreen(navController)
         }
-        composable("route"){
-            RouteScreen(navController)
+        composable("routeManagement"){
+            RouteManagementScreen(navController)
+        }
+        composable("vehicleManagement"){
+            VehicleManagementScreen(navController)
         }
         composable("search") {
             SearchScreen(navController)
@@ -57,6 +58,9 @@ fun  Navigation(navController: NavHostController) {
 
 
         //fuera del menu
+        composable("route"){
+            RouteScreen(navController)
+        }
         composable("addWarehouse") {
            AddWarehouseScreen(navController)
         }

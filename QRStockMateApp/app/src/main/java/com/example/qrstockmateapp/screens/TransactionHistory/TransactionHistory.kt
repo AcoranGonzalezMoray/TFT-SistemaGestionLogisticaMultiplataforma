@@ -24,11 +24,14 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Download
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -125,6 +128,7 @@ fun TransactionHistoryScreen(navController: NavController) {
                 downloadTransactionList(context = context, transactionList = transactionList, fileName = "transactions${LocalDateTime.now()}.xlsx")
             }) {
                 Text(text = "Download")
+                Icon(imageVector = Icons.Filled.Download, contentDescription ="download" )
             }
             LazyColumn {
                 items(filteredItems) { transaction ->

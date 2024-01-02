@@ -30,7 +30,9 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddAPhoto
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Update
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -184,6 +186,7 @@ fun ProfileScreen(navController: NavController) {
             1 -> "Administrator"
             2 -> "Inventory Technician"
             3 -> "User"
+            4 -> "Carrier"
             else -> "Unknown Role"
         }
     }
@@ -202,7 +205,7 @@ fun ProfileScreen(navController: NavController) {
                 onClick = { pickImageLauncher.launch("image/*") }
             ) {
                 Icon(
-                    imageVector = Icons.Filled.Refresh,
+                    imageVector = Icons.Filled.AddAPhoto,
                     contentDescription = "",
                     tint = Color.White
                 )

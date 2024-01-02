@@ -24,8 +24,11 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AddBusiness
+import androidx.compose.material.icons.filled.Apartment
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.ManageAccounts
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -239,7 +242,7 @@ fun Drawer(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
-                    imageVector = Icons.Filled.AccountBox,
+                    imageVector = Icons.Filled.Apartment,
                     contentDescription = "",
                     tint = Color.White,
                     modifier = Modifier.height(40.dp).size(48.dp),
@@ -301,7 +304,7 @@ fun Drawer(
                         .padding(start = 10.dp)
                 ) {
                     Icon(
-                        imageVector = Icons.Filled.Add,
+                        imageVector = Icons.Filled.AddBusiness,
                         contentDescription = "",
                         tint = Color.Green
                     )
@@ -329,7 +332,7 @@ fun Drawer(
                         .padding(start = 10.dp)
                 ) {
                     Icon(
-                        imageVector = Icons.Filled.Add,
+                        imageVector = Icons.Filled.ManageAccounts,
                         contentDescription = "",
                         tint = Color.Yellow
                     )
