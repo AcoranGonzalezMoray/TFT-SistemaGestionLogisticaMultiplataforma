@@ -37,6 +37,7 @@ import androidx.compose.material.icons.filled.EditNote
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -246,16 +247,18 @@ fun WarehouseItem(warehouse: Warehouse,navController: NavController, loadWarehou
 
 
     // Muestra los detalles del almacén dentro de un Card
-    Box(
+    androidx.compose.material3.Card(
         modifier = Modifier
             .fillMaxWidth()
-            .shadow(
-                elevation = 10.dp,
-                shape = RoundedCornerShape(8.dp)
-            )
-            .padding(16.dp)
-            .background(Color.White),
-        contentAlignment = Alignment.Center,
+            .padding(16.dp),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 10.dp
+        ),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White,
+        ),
+        shape = RoundedCornerShape(16.dp),
+
     ) {
         if (showDialog) {
             AlertDialog(
@@ -298,13 +301,16 @@ fun WarehouseItem(warehouse: Warehouse,navController: NavController, loadWarehou
         ) {
             val placeholderImage = painterResource(id = R.drawable.warehouse)
             if (warehouse.url.isNullOrBlank()) {
-                Box(
+                androidx.compose.material3.Card(
                     modifier = Modifier
                         .size(120.dp)
-                        .shadow(
-                            elevation = 5.dp,
-                        )
-                        .padding(16.dp)
+                        .padding(16.dp),
+                    elevation = CardDefaults.cardElevation(
+                        defaultElevation = 10.dp
+                    ),
+                    colors = CardDefaults.cardColors(
+                        containerColor = Color.White,
+                    )
                 ){
                     Image(
                         painter = placeholderImage,
@@ -322,13 +328,17 @@ fun WarehouseItem(warehouse: Warehouse,navController: NavController, loadWarehou
                         placeholder(R.drawable.loading)
                     }
                 )
-                Box(
+                androidx.compose.material3.Card(
                     modifier = Modifier
                         .size(120.dp)
-                        .shadow(
-                            elevation = 5.dp,
-                        )
-                        .padding(16.dp)
+                        .padding(16.dp),
+                    elevation = CardDefaults.cardElevation(
+                            defaultElevation = 10.dp
+                    ),
+                    colors = CardDefaults.cardColors(
+                        containerColor = Color.White,
+                    )
+
                 ){
                     Image(
                         painter = painter,

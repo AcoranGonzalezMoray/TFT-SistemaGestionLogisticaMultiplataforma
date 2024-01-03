@@ -38,6 +38,7 @@ import androidx.compose.material.rememberBottomSheetScaffoldState
 import androidx.compose.material.Button
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.DesignServices
 import androidx.compose.material.icons.filled.LayersClear
 import androidx.compose.material.icons.filled.MyLocation
@@ -48,6 +49,7 @@ import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material.icons.filled.Undo
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -354,7 +356,8 @@ fun RouteScreen(navController: NavController) {
             ) {
                 if (scaffoldState.bottomSheetState.isExpanded) {
                     Row {
-                        Button(
+                        FloatingActionButton(
+                            modifier = Modifier.padding(16.dp),
                             onClick = {
                                 // Acciones cuando el Bottom Sheet está expandido
                                 GlobalScope.launch(Dispatchers.Main) {
@@ -375,14 +378,12 @@ fun RouteScreen(navController: NavController) {
                                     }
                                 }
                             },
-                            colors = ButtonDefaults.buttonColors(Color.Black),
-                            modifier = Modifier.padding(16.dp)
-                        ) {
-                            //Text("Focus Location", color = Color.White)
+                            containerColor = Color.Black
+                        ){
                             Icon(imageVector = Icons.Filled.MyLocation, contentDescription = "", tint=Color.White)
-
                         }
-                        Button(
+                        FloatingActionButton(
+                            modifier = Modifier.padding(16.dp),
                             onClick = {
                                 if(isRouteStarted) {
                                     // Acciones cuando el Bottom Sheet está expandido
@@ -403,10 +404,8 @@ fun RouteScreen(navController: NavController) {
                                     Toast.makeText(context, "You need to start the route", Toast.LENGTH_SHORT).show()
                                 }
                             },
-                            colors = ButtonDefaults.buttonColors(Color.Black),
-                            modifier = Modifier.padding(16.dp)
-                        ) {
-                            //Text("Street View", color = Color.White)
+                            containerColor = Color.Black
+                        ){
                             Icon(imageVector = Icons.Filled.Streetview, contentDescription = "", tint=Color.White)
                         }
                     }
@@ -489,32 +488,26 @@ fun RouteScreen(navController: NavController) {
                        }
                    }else{
                        Row {
-                           Button(
-                               onClick = {
-                                   // Acciones cuando el Bottom Sheet no está expandido
-                                   designMode = true
-                               },
-                               colors = ButtonDefaults.buttonColors(Color.Black),
-                               modifier = Modifier.padding(16.dp)
-                           ) {
-                               //Text("Design Route",color = Color.White)
-                               Icon(imageVector = Icons.Filled.DesignServices, contentDescription = "", tint=Color.White)
+                           FloatingActionButton(
+                               modifier = Modifier.padding(16.dp),
+                               onClick = {  designMode = true },
+                               containerColor = Color.Black
 
+                           ) {
+                               Icon(imageVector = Icons.Filled.DesignServices, contentDescription = "", tint=Color.White)
                            }
-                           Button(
-                               onClick = {
-                                   // Acciones cuando el Bottom Sheet no está expandido
+                           FloatingActionButton(
+                               modifier = Modifier.padding(16.dp),
+                               onClick = {   // Acciones cuando el Bottom Sheet no está expandido
                                    scope.launch {
                                        scaffoldState.bottomSheetState.expand()
                                    }
-                               },
-                               colors = ButtonDefaults.buttonColors(Color.Black),
-                               modifier = Modifier.padding(16.dp)
+                                         },
+                               containerColor = Color.Black
                            ) {
-                               //Text("Open Options",color = Color.White)
                                Icon(imageVector = Icons.Filled.Tune, contentDescription = "", tint=Color.White)
-
                            }
+
                        }
                    }
                 }

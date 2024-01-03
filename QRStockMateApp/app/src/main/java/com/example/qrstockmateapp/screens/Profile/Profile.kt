@@ -213,7 +213,7 @@ fun ProfileScreen(navController: NavController) {
         }
         Column(     //Imagen de Perfil de Usuario & Nombre
             modifier = Modifier
-                .fillMaxHeight(0.4f)
+                .fillMaxHeight(0.45f)
                 .fillMaxWidth()
                 .wrapContentSize(Alignment.Center)
                 .padding(7.dp)
@@ -225,8 +225,7 @@ fun ProfileScreen(navController: NavController) {
                     painter = placeholderImage,
                     contentDescription = "Default User Image",
                     modifier = Modifier
-                        .width(230.dp)
-                        .height(230.dp),
+                        .fillMaxSize(),
                     contentScale = ContentScale.Crop
                 )
             } else {
@@ -242,8 +241,7 @@ fun ProfileScreen(navController: NavController) {
                     painter = painter,
                     contentDescription = "User Image",
                     modifier = Modifier
-                        .width(230.dp)
-                        .height(230.dp),
+                        .fillMaxSize(),
                     contentScale = ContentScale.Crop
                 )
             }
@@ -292,7 +290,7 @@ fun ProfileScreen(navController: NavController) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight(0.6f)
+                .fillMaxHeight(0.55f)
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.Center,
         ) {
@@ -301,6 +299,7 @@ fun ProfileScreen(navController: NavController) {
             if (userEmail != null) {
                 TextField(
                     value = userEmail!!,
+                    label = { androidx.compose.material3.Text("Email") },
                     colors = customTextFieldColors,
                     onValueChange = {userEmail = it},
                     modifier = Modifier
@@ -315,6 +314,7 @@ fun ProfileScreen(navController: NavController) {
             if (userPhone != null) {
                 TextField(
                     value = userPhone!!,
+                    label = { androidx.compose.material3.Text("Phone") },
                     colors = customTextFieldColors,
                     onValueChange = {userPhone=it},
                     modifier = Modifier

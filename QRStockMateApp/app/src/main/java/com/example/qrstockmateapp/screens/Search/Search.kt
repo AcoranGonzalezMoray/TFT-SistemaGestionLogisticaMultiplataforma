@@ -30,6 +30,8 @@ import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.SwapVert
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -179,16 +181,18 @@ fun ItemList(items: List<Item>,navController: NavController) {
 @Composable
 fun Item(item: Item,navController: NavController) {
     val context = LocalContext.current
-    Box(
+    Card(
         modifier = Modifier
             .fillMaxWidth()
-            .shadow(
-                elevation = 10.dp,
-                shape = RoundedCornerShape(8.dp)
-            )
-            .padding(16.dp)
+            .padding(8.dp)
             .background(Color.White),
-        contentAlignment = Alignment.Center
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 10.dp
+        ),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White,
+        ),
+        shape = RoundedCornerShape(16.dp)
     ) {
         Row(
             modifier = Modifier
@@ -201,14 +205,18 @@ fun Item(item: Item,navController: NavController) {
             val placeholderImage = painterResource(id = R.drawable.item)
 
             // Utiliza un Card para aplicar una sombra suave a la imagen del usuario
-            Box(
+           Card(
                 modifier = Modifier
                     .size(120.dp)
-                    .shadow(
-                        elevation = 5.dp,
-                    )
-                    .padding(16.dp)
-            ){
+                    .padding(16.dp),
+                elevation = CardDefaults.cardElevation(
+                   defaultElevation = 10.dp
+                ),
+                colors = CardDefaults.cardColors(
+                   containerColor = Color.White,
+                ),
+                shape = RoundedCornerShape(16.dp),
+               ){
                 if (imageUrl.isNullOrBlank()) {
                     // Si la URL es nula o vacía, mostrar la imagen por defecto
                     Image(

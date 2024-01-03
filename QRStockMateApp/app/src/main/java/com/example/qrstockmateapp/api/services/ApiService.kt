@@ -3,7 +3,9 @@ package com.example.qrstockmateapp.api.services
 import com.example.qrstockmateapp.api.models.Company
 import com.example.qrstockmateapp.api.models.Item
 import com.example.qrstockmateapp.api.models.Transaction
+import com.example.qrstockmateapp.api.models.TransportRoute
 import com.example.qrstockmateapp.api.models.User
+import com.example.qrstockmateapp.api.models.Vehicle
 import com.example.qrstockmateapp.api.models.Warehouse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -122,6 +124,46 @@ interface ApiService {
         @Path("Id") Id: Int,
         @Body item: Item
     ):Response<Void>
+
+
+
+
+    @GET("TransportRoute/TransportRoutes/{code}")
+    suspend fun getTransportRoutes(
+        @Path("code") code: String
+    ): Response<List<TransportRoute>>
+
+
+    @PUT("TransportRoutes/InitRoute/{id}")
+    suspend fun initRoute(
+        @Path("id") id: Int
+    ): Response<String>
+
+    @PUT("TransportRoutes/FinishRoute/{id}")
+    suspend fun finishRoute(
+        @Path("id") id: Int
+    ): Response<String>
+
+
+
+    @GET("Company/Vehicles/{code}")
+    suspend fun getVehicles(
+        @Body code: String
+    ): Response<List<Vehicle>>
+
+    @GET("Vehicle/GetLocation/{Id}")
+    suspend fun getLocationVehicle(
+        @Path("Id") Id: Int,
+    ):Response<String>
+
+
+    @PUT("Vehicle/UpdateLocation/{Id}")
+    suspend fun updateLocationVehicle(
+        @Path("Id") Id: Int,
+        @Body location: String
+    ):Response<Void>
+
+
 }
 
 
