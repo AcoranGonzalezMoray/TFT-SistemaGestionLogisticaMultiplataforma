@@ -378,7 +378,7 @@ fun RouteScreen(navController: NavController) {
                                     }
                                 }
                             },
-                            containerColor = Color.Black
+                            containerColor = Color(0xff5a79ba)
                         ){
                             Icon(imageVector = Icons.Filled.MyLocation, contentDescription = "", tint=Color.White)
                         }
@@ -404,7 +404,7 @@ fun RouteScreen(navController: NavController) {
                                     Toast.makeText(context, "You need to start the route", Toast.LENGTH_SHORT).show()
                                 }
                             },
-                            containerColor = Color.Black
+                            containerColor = Color(0xff5a79ba)
                         ){
                             Icon(imageVector = Icons.Filled.Streetview, contentDescription = "", tint=Color.White)
                         }
@@ -417,7 +417,7 @@ fun RouteScreen(navController: NavController) {
                                    // Acciones cuando el Bottom Sheet no está expandido
                                    userRoutePoints =  userRoutePoints.dropLast(1)
                                },
-                               colors = ButtonDefaults.buttonColors(Color.Black),
+                               colors = ButtonDefaults.buttonColors(Color(0xff5a79ba)),
                                modifier = Modifier.padding(8.dp)
                            ) {
                                //Text("Undo", color = Color.White)
@@ -430,7 +430,7 @@ fun RouteScreen(navController: NavController) {
                                    designMode = false
                                    if(!userRoutePoints.isEmpty())userRoutePoints = userRoutePoints + endPoint
                                },
-                               colors = ButtonDefaults.buttonColors(Color.Black),
+                               colors = ButtonDefaults.buttonColors(Color(0xff5a79ba)),
                                modifier = Modifier.padding(8.dp)
                            ) {
                                //Text("Finish", color = Color.White)
@@ -442,7 +442,7 @@ fun RouteScreen(navController: NavController) {
                                    // Acciones cuando el Bottom Sheet no está expandido
                                          userRoutePoints = emptyList()
                                },
-                               colors = ButtonDefaults.buttonColors(Color.Black),
+                               colors = ButtonDefaults.buttonColors(Color(0xff5a79ba)),
                                modifier = Modifier.padding(8.dp)
                            ) {
                                //Text("Clear", color = Color.White)
@@ -452,7 +452,7 @@ fun RouteScreen(navController: NavController) {
                            // Botón para abrir/cerrar el menú desplegable
                            Button(
                                onClick = { isDropdownMenuExpanded = !isDropdownMenuExpanded },
-                               colors = ButtonDefaults.buttonColors(Color.Black ),
+                               colors = ButtonDefaults.buttonColors(Color(0xff5a79ba)),
                                modifier = Modifier.padding(8.dp)
                            ) {
                                Box(
@@ -467,7 +467,7 @@ fun RouteScreen(navController: NavController) {
                            DropdownMenu(
                                expanded = isDropdownMenuExpanded,
                                modifier = Modifier
-                                   .background(Color.Black)
+                                   .background(Color(0xff5a79ba))
                                    .width(50.dp),
                                onDismissRequest = { isDropdownMenuExpanded = false }
                            ) {
@@ -491,7 +491,7 @@ fun RouteScreen(navController: NavController) {
                            FloatingActionButton(
                                modifier = Modifier.padding(16.dp),
                                onClick = {  designMode = true },
-                               containerColor = Color.Black
+                               containerColor =Color(0xff5a79ba)
 
                            ) {
                                Icon(imageVector = Icons.Filled.DesignServices, contentDescription = "", tint=Color.White)
@@ -503,7 +503,7 @@ fun RouteScreen(navController: NavController) {
                                        scaffoldState.bottomSheetState.expand()
                                    }
                                          },
-                               containerColor = Color.Black
+                               containerColor = Color(0xff5a79ba)
                            ) {
                                Icon(imageVector = Icons.Filled.Tune, contentDescription = "", tint=Color.White)
                            }
@@ -551,7 +551,7 @@ fun BottomSheetContent(
             .fillMaxWidth()
             .fillMaxHeight(0.5f)
             .background(
-                color = Color.Black,
+                color = Color.White,
             )
             .padding(20.dp)
     ) {
@@ -571,11 +571,11 @@ fun BottomSheetContent(
                 Icon(
                     imageVector = Icons.Default.KeyboardArrowDown,
                     contentDescription = "send",
-                    tint = Color.White,
+                    tint = Color(0xff5a79ba),
                 )
             }
-            Text("Aprox. Distance: ", color = Color.White)
-            Text(text = "${distanceRounded}Km", color = Color.White,fontWeight = FontWeight.Bold, fontSize = 20.sp)
+            Text("Aprox. Distance: ", color = Color(0xff5a79ba))
+            Text(text = "${distanceRounded}Km", color = Color(0xff5a79ba),fontWeight = FontWeight.Bold, fontSize = 20.sp)
         }
 
         Spacer(modifier = Modifier.height(16.dp))

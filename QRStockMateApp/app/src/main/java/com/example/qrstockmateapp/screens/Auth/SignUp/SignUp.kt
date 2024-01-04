@@ -15,6 +15,7 @@ import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -69,11 +70,11 @@ fun SignUpScreen(navController: NavHostController) {
     val context = LocalContext.current
     
     val customTextFieldColors = TextFieldDefaults.outlinedTextFieldColors(
-        cursorColor = Color.Black,
-        focusedBorderColor = Color.Black,
-        focusedLabelColor = Color.Black,
-        unfocusedBorderColor = Color.Black,
-        backgroundColor = Color.LightGray
+        cursorColor = Color(0xff5a79ba),
+        focusedBorderColor = Color(0xff5a79ba),
+        focusedLabelColor =Color(0xff5a79ba),
+        unfocusedBorderColor = Color(0xff5a79ba),
+        backgroundColor = Color(0xff5a79ba),
     )
     val onSignUp:() -> Unit = {
         GlobalScope.launch(Dispatchers.IO) {
@@ -206,23 +207,36 @@ fun SignUpScreen(navController: NavHostController) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Button(
-                onClick = { navController.navigate("login")},
-                colors = ButtonDefaults.buttonColors(Color.Red),
+            ElevatedButton(
                 modifier = Modifier
                     .weight(1f)
-                    .fillMaxWidth()
-            ) {
-                Text("Cancel", color = Color.White)
+                    .fillMaxWidth(),
+                onClick = {
+                    navController.navigate("login")
+                },
+                colors = ButtonDefaults.elevatedButtonColors(
+                    containerColor = Color.White
+                ),
+                elevation = ButtonDefaults.elevatedButtonElevation(
+                    defaultElevation = 5.dp
+                )
+            ){
+                Text("Cancel", color = Color(0xff5a79ba))
             }
-
-            Button(
-                onClick = {onSignUp()},
-                colors = ButtonDefaults.buttonColors(Color.Black),
+            ElevatedButton(
                 modifier = Modifier
                     .weight(1f)
-                    .fillMaxWidth()
-            ) {
+                    .fillMaxWidth(),
+                onClick = {
+                    onSignUp()
+                },
+                colors = ButtonDefaults.elevatedButtonColors(
+                    containerColor = Color(0xff5a79ba)
+                ),
+                elevation = ButtonDefaults.elevatedButtonElevation(
+                    defaultElevation = 5.dp
+                )
+            ){
                 Text("Join", color = Color.White)
             }
         }

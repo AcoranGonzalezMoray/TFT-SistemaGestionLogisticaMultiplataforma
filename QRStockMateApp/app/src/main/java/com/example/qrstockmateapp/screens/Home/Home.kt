@@ -38,6 +38,7 @@ import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -169,6 +170,7 @@ fun HomeScreen(navController: NavController) {
                 .align(Alignment.TopCenter)
                 .zIndex(1f),
             backgroundColor =  Color.White,
+            contentColor = Color(0xff5a79ba)
         )
         Column(
             modifier = Modifier
@@ -273,23 +275,34 @@ fun WarehouseItem(warehouse: Warehouse,navController: NavController, loadWarehou
                     Text(text ="Are you sure you want to delete?")
                 },
                 confirmButton = {
-                    Button(
+                    ElevatedButton(
                         onClick = {
                             deleteWarehouse()
                             showDialog = false
-                        }
-                    ) {
-                        Text("Confirm")
+                        },
+                        colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                            containerColor = Color(0xff5a79ba)
+                        ),
+                        elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                            defaultElevation = 5.dp
+                        )
+                    ){
+                        Text("Confirm", color = Color.White)
                     }
                 },
                 dismissButton = {
-                    Button(
+                    ElevatedButton(
                         onClick = {
-                            // Handle dismissal action (e.g., cancel)
                             showDialog = false
-                        }
-                    ) {
-                        Text("Cancel")
+                        },
+                        colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                            containerColor = Color.White
+                        ),
+                        elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                            defaultElevation = 5.dp
+                        )
+                    ){
+                        Text("Cancel", color =  Color(0xff5a79ba))
                     }
                 }
             )
@@ -384,51 +397,71 @@ fun WarehouseItem(warehouse: Warehouse,navController: NavController, loadWarehou
 
                 Row {
                     if(DataRepository.getUser()?.role==0 || DataRepository.getUser()?.role==1 ) {
-                        Button(
+                        ElevatedButton(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(1f)
+                                .padding(end = 4.dp),
                             onClick = {
                                 DataRepository.setWarehousePlus(warehouse)
                                 navController.navigate("updateWarehouse")
                             },
-                            colors = ButtonDefaults.buttonColors(Color.Yellow),
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .weight(1f)
-                                .padding(end = 4.dp)
-                        ) {
+                            colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                                containerColor = Color(0xff5a79ba)
+                            ),
+                            elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                                defaultElevation = 5.dp
+                            )
+                        ){
                             Icon(
                                 imageVector = Icons.Filled.EditNote,
                                 contentDescription = "",
-                                tint = Color.Black
+                                tint = Color.White
                             )
                         }
+
                     }
                     if(DataRepository.getUser()?.role==0) {
-                        Button(
-                            onClick = {showDialog = true},
-                            colors = ButtonDefaults.buttonColors(Color.Red),
+                        ElevatedButton(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .weight(1f) // Este botón también ocupa la mitad del espacio
-                                .padding(start = 4.dp) // Agrega espacio a la izquierda del botón
-                        ) {
+                                .weight(1f)
+                                .padding(end = 4.dp),
+                            onClick = {
+                                showDialog = true
+                            },
+                            colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                                containerColor = Color(0xff5a79ba)
+                            ),
+                            elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                                defaultElevation = 5.dp
+                            )
+                        ){
                             Icon(
                                 imageVector = Icons.Filled.DeleteSweep,
                                 contentDescription = "",
-                                tint = Color.Black
+                                tint = Color.White
                             )
                         }
+
+
                     }
                 }
-
-                Button(
+                ElevatedButton(
+                    modifier = Modifier
+                        .fillMaxWidth(),
                     onClick = {
                         DataRepository.setWarehousePlus(warehouse)
                         navController.navigate("openWarehouse")
-                              },
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(Color.Black),
-                ) {
+                    },
+                    colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                        containerColor = Color(0xff5a79ba)
+                    ),
+                    elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                        defaultElevation = 5.dp
+                    )
+                )
+                {
                     Text(text = "Open", color = Color.White)
                 }
 

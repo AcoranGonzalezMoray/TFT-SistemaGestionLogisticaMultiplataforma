@@ -201,8 +201,12 @@ fun itemRoute(rutasPorFila: List<TransportRoute>, navController: NavController) 
                             }
                         },
                         colors =  androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
-                            containerColor = Color.Black
+                            containerColor = Color(0xff5a79ba)
+                        ),
+                        elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                            defaultElevation = 5.dp
                         )
+
 
                     ) {
                         Text("Open", color = Color.White)

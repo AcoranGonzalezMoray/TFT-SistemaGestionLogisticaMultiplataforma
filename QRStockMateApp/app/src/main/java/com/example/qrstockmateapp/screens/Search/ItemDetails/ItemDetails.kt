@@ -34,6 +34,7 @@ import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddAPhoto
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -53,6 +54,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.example.qrstockmateapp.R
@@ -209,15 +211,24 @@ fun ItemDetailsScreen(navController: NavController) {
         }
         Box(
             modifier = Modifier
+                .zIndex(20f)
                 .fillMaxWidth()
         ) {
             Box(modifier = Modifier.fillMaxWidth().padding(5.dp)) {
-                Button(
+                ElevatedButton(
                     modifier = Modifier
-                        .padding(top = 8.dp)
+                        .padding(top = 8.dp, end = 10.dp)
                         .align(alignment = Alignment.CenterStart),
-                    onClick = { pickImageLauncher.launch("image/*") }
-                ) {
+                    onClick = {
+                        pickImageLauncher.launch("image/*")
+                    },
+                    colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                        containerColor = Color(0xff5a79ba)
+                    ),
+                    elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                        defaultElevation = 5.dp
+                    )
+                ){
                     Icon(
                         imageVector = Icons.Filled.AddAPhoto,
                         contentDescription = "",
@@ -308,21 +319,31 @@ fun ItemDetailsScreen(navController: NavController) {
 
                 ) {
                     Column {
-                        Button(
+                        ElevatedButton(
                             onClick = {
                                 count++
                             },
-                            colors = ButtonDefaults.buttonColors(Color.Cyan)
-                        ) {
-                            androidx.compose.material.Text("+")
+                            colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                                containerColor = Color(0xff5a79ba)
+                            ),
+                            elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                                defaultElevation = 5.dp
+                            )
+                        ){
+                            androidx.compose.material.Text("+", color= Color.White)
                         }
-                        Button(
+                        ElevatedButton(
                             onClick = {
                                 count--
                             },
-                            colors = ButtonDefaults.buttonColors(Color.Cyan)
-                        ) {
-                            androidx.compose.material.Text("-")
+                            colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                                containerColor =  Color(0xff5a79ba)
+                            ),
+                            elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                                defaultElevation = 5.dp
+                            )
+                        ){
+                            androidx.compose.material.Text("-", color= Color.White)
                         }
                     }
                     TextField(
@@ -337,14 +358,24 @@ fun ItemDetailsScreen(navController: NavController) {
 
                     )
 
-                    Spacer(modifier = Modifier.width(20.dp))
-                    Button(onClick = {
-                                     navController.popBackStack()
-                    }, colors = ButtonDefaults.buttonColors(Color.Red)) {
-                        Text(text = "Cancel", color=Color.White)
+                    Spacer(modifier = Modifier.width(10.dp))
+                    ElevatedButton(
+                        onClick = {
+                            navController.popBackStack()
+                        },
+                        colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                            containerColor = Color.White
+                        ),
+                        elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                            defaultElevation = 5.dp
+                        )
+                    ){
+                        Text(text = "Cancel", color=Color(0xff5a79ba))
                     }
                     Spacer(modifier = Modifier.width(5.dp))
-                    Button(
+                    ElevatedButton(
+                        modifier = Modifier
+                            .padding(top = 8.dp),
                         onClick = {
 
                             var newStock = item?.stock?.plus(countState.value)
@@ -361,8 +392,14 @@ fun ItemDetailsScreen(navController: NavController) {
                                     Toast.makeText(context, "There cannot be a negative stock", Toast.LENGTH_SHORT).show()
                                 }
                             }
-                        }, colors = ButtonDefaults.buttonColors(Color.Black)
-                    ) {
+                        },
+                        colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                            containerColor = Color(0xff5a79ba)
+                        ),
+                        elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                            defaultElevation = 5.dp
+                        )
+                    ){
                         androidx.compose.material.Text("Update", color = Color.White)
                     }
                 }

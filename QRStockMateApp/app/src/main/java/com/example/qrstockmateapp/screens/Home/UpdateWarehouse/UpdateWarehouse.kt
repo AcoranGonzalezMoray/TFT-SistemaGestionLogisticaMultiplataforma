@@ -32,6 +32,7 @@ import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -260,12 +261,20 @@ fun UpdateWarehouseScreen(navController: NavController) {
                     )
                 }
                 Box(modifier = Modifier.fillMaxWidth()) {
-                    Button(
+                    ElevatedButton(
                         modifier = Modifier
                             .padding(top = 8.dp)
                             .align(alignment = Alignment.CenterStart),
-                        onClick = { pickImageLauncher.launch("image/*") }
-                    ) {
+                        onClick = {
+                            pickImageLauncher.launch("image/*")
+                        },
+                        colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                            containerColor = Color(0xff5a79ba)
+                        ),
+                        elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                            defaultElevation = 5.dp
+                        )
+                    ){
                         Icon(
                             imageVector = Icons.Filled.Refresh,
                             contentDescription = "",
@@ -346,16 +355,27 @@ fun UpdateWarehouseScreen(navController: NavController) {
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ){
-                        Button(colors = ButtonDefaults.buttonColors(Color.Red),
-                            onClick = { navController.navigate("home")},
+                        ElevatedButton(
                             modifier = Modifier
                                 .weight(1f)
-                                .fillMaxWidth()) {
-                            Text(text = "Cancel",color = Color.White)
+                                .fillMaxWidth(),
+                            onClick = {
+                                navController.navigate("home")
+                            },
+                            colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                                containerColor = Color.White
+                            ),
+                            elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                                defaultElevation = 5.dp
+                            )
+                        ){
+                            Text(text = "Cancel", color = Color(0xff5a79ba))
                         }
-                        Button(colors = ButtonDefaults.buttonColors(Color.Black),modifier = Modifier
-                            .weight(1f)
-                            .fillMaxWidth(),
+
+                        ElevatedButton(
+                            modifier = Modifier
+                                .weight(1f)
+                                .fillMaxWidth(),
                             onClick = {
                                 warehouse.name =name
                                 warehouse.location = location
@@ -363,7 +383,14 @@ fun UpdateWarehouseScreen(navController: NavController) {
                                 warehouse.idAdministrator = administratorId
 
                                 updateWarehouse()
-                            } ) {
+                            },
+                            colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                                containerColor = Color(0xff5a79ba)
+                            ),
+                            elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                                defaultElevation = 5.dp
+                            )
+                        ){
                             Text(text = "Update", color = Color.White)
                         }
                     }

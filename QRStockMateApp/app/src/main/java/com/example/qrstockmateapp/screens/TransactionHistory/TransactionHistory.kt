@@ -32,6 +32,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Download
+import androidx.compose.material3.ElevatedButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -124,12 +125,22 @@ fun TransactionHistoryScreen(navController: NavController) {
                     .fillMaxWidth()
                     .padding(bottom = 12.dp)
             )
-            Button(modifier = Modifier.align(Alignment.CenterHorizontally),onClick = {
-                downloadTransactionList(context = context, transactionList = transactionList, fileName = "transactions${LocalDateTime.now()}.xlsx")
-            }) {
-                Text(text = "Download")
-                Icon(imageVector = Icons.Filled.Download, contentDescription ="download" )
+            ElevatedButton(
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+                onClick = {
+                    downloadTransactionList(context = context, transactionList = transactionList, fileName = "transactions${LocalDateTime.now()}.xlsx")
+                },
+                colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                    containerColor = Color(0xff5a79ba)
+                ),
+                elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                    defaultElevation = 5.dp
+                )
+            ){
+                Text(text = "Download", color = Color.White)
+                Icon(imageVector = Icons.Filled.Download, contentDescription ="download", tint = Color.White )
             }
+
             LazyColumn {
                 items(filteredItems) { transaction ->
                     TransactionListItem(transaction = transaction)

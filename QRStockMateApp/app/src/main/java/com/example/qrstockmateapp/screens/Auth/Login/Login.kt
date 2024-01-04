@@ -22,6 +22,7 @@ import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,6 +33,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -69,10 +71,10 @@ fun Login(navController: NavHostController, onLoginSuccess: (Boolean, User, Stri
     val context = LocalContext.current
 
     val customTextFieldColors = TextFieldDefaults.outlinedTextFieldColors(
-        cursorColor = Color.Black,
-        focusedBorderColor = Color.Black,
-        focusedLabelColor = Color.Black,
-        unfocusedBorderColor = Color.Black,
+        cursorColor =  Color(0xff5a79ba),
+        focusedBorderColor =  Color(0xff5a79ba),
+        focusedLabelColor = Color(0xff5a79ba),
+        unfocusedBorderColor =  Color(0xff5a79ba),
         backgroundColor = Color.LightGray
     )
 
@@ -124,15 +126,15 @@ fun Login(navController: NavHostController, onLoginSuccess: (Boolean, User, Stri
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.Gray)
+                .background(Color.White)
         ) {
             // Muestra el círculo de carga
             CircularProgressIndicator(
                 modifier = Modifier
                     .size(50.dp)
                     .align(Alignment.Center),
-                color = Color.Black,
-                backgroundColor = Color.White
+                color = Color.LightGray,
+                backgroundColor = Color(0xff5a79ba)
             )
         }
     }else{
@@ -146,6 +148,7 @@ fun Login(navController: NavHostController, onLoginSuccess: (Boolean, User, Stri
             Image(
                 painter = painterResource(R.drawable.icon),
                 contentDescription = "Descripción de la imagen",
+                colorFilter = ColorFilter.tint(Color(0xff5a79ba)),
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(300.dp)
@@ -181,12 +184,21 @@ fun Login(navController: NavHostController, onLoginSuccess: (Boolean, User, Stri
             Spacer(modifier = Modifier.height(20.dp))
 
             // Botón para iniciar sesión
-            Button(onClick = onLoginClicked,
-                colors = ButtonDefaults.buttonColors(Color.Black),
-                modifier = Modifier.fillMaxWidth()) {
-                Text("Login")
-            }
 
+            ElevatedButton(
+                modifier = Modifier.fillMaxWidth(),
+                onClick = {
+                    onLoginClicked()
+                },
+                colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                    containerColor = Color(0xff5a79ba)
+                ),
+                elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                    defaultElevation = 5.dp
+                )
+            ){
+                Text("Login", color=Color.White)
+            }
             Row {
                 Text(
                     text = "Forgot password",

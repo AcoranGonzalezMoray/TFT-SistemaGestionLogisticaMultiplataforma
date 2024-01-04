@@ -26,6 +26,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.SwapVert
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -128,7 +129,10 @@ fun OpenWarehouseScreen(navController: NavController){
                 .fillMaxWidth()
                 .padding(bottom = 16.dp)
         )
-        Button( colors = ButtonDefaults.buttonColors(Color.Black),
+
+
+        ElevatedButton(
+            modifier = Modifier,
             onClick = {
                 // Cambiar el orden de la lista al hacer clic en el botón
                 sortOrder = if (sortOrder == SortOrder.ASCENDING) SortOrder.DESCENDING else SortOrder.ASCENDING
@@ -136,13 +140,22 @@ fun OpenWarehouseScreen(navController: NavController){
                 if (sortOrder == SortOrder.DESCENDING) {
                     filteredItems = filteredItems.reversed()
                 }
-            }) {
+            },
+            colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                containerColor = Color(0xff5a79ba)
+            ),
+            elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                defaultElevation = 5.dp
+            )
+        ){
             androidx.compose.material.Text(
                 color = Color.White,
                 text = if (sortOrder == SortOrder.ASCENDING) "Sort Ascending" else "Sort Descending"
             )
             Icon(imageVector = Icons.Filled.SwapVert, contentDescription = "sort", tint=Color.White)
         }
+
+
         ItemList(items = sortedItems  , navController = navController)
     }
 
@@ -240,16 +253,28 @@ fun Item(item: Item,navController: NavController) {
                 )
                 androidx.compose.material.Text(text = "Location: ${item.location}")
                 androidx.compose.material.Text(text = "Stock: ${item.stock}", fontWeight = FontWeight.Bold)
-                Button(onClick = {
-                    if(DataRepository.getUser()?.role == 1 || DataRepository.getUser()?.role == 2 || DataRepository.getUser()?.role == 0 ){
-                        DataRepository.setItem(item)
-                        navController.navigate("itemDetails")
-                    }else{
-                        Toast.makeText(context, "permission denied", Toast.LENGTH_SHORT).show()
-                    }
-                },colors = ButtonDefaults.buttonColors(Color.Black)) {
+
+                ElevatedButton(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    onClick = {
+                        if(DataRepository.getUser()?.role == 1 || DataRepository.getUser()?.role == 2 || DataRepository.getUser()?.role == 0 ){
+                            DataRepository.setItem(item)
+                            navController.navigate("itemDetails")
+                        }else{
+                            Toast.makeText(context, "permission denied", Toast.LENGTH_SHORT).show()
+                        }
+                    },
+                    colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                        containerColor = Color(0xff5a79ba)
+                    ),
+                    elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                        defaultElevation = 5.dp
+                    )
+                ){
                     Text(text = "Open", color = Color.White)
                 }
+
             }
         }
     }

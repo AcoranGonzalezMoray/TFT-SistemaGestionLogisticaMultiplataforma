@@ -33,6 +33,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddAPhoto
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Update
+import androidx.compose.material3.ElevatedButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -198,12 +199,21 @@ fun ProfileScreen(navController: NavController) {
         Box(modifier = Modifier
             .fillMaxWidth()
             .padding(5.dp)) {
-            Button(
+
+            ElevatedButton(
                 modifier = Modifier
                     .padding(top = 8.dp)
                     .align(alignment = Alignment.CenterStart),
-                onClick = { pickImageLauncher.launch("image/*") }
-            ) {
+                onClick = {
+                    pickImageLauncher.launch("image/*")
+                },
+                colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                    containerColor = Color(0xff5a79ba)
+                ),
+                elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                    defaultElevation = 5.dp
+                )
+            ){
                 Icon(
                     imageVector = Icons.Filled.AddAPhoto,
                     contentDescription = "",
@@ -330,11 +340,17 @@ fun ProfileScreen(navController: NavController) {
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
         ) {
-            Button(onClick = {
-                updateInfo()
-            },
-                colors = ButtonDefaults.buttonColors(Color.Black),
-            ) {
+            ElevatedButton(
+                onClick = {
+                    updateInfo()
+                },
+                colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                    containerColor = Color(0xff5a79ba)
+                ),
+                elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                    defaultElevation = 5.dp
+                )
+            ){
                 Text(text = "Update", color=Color.White)
             }
         }

@@ -22,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ElevatedButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -206,23 +207,37 @@ fun AddWarehouseScreen(navController: NavController) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Button(
-                onClick = { navController.navigate(route = "home") },
-                colors = ButtonDefaults.buttonColors(Color.Red),
+            ElevatedButton(
                 modifier = Modifier
                     .weight(1f)
-                    .fillMaxWidth()
-            ) {
-                Text("Cancel", color = Color.White)
+                    .fillMaxWidth(),
+                onClick = {
+                    navController.navigate(route = "home")
+                },
+                colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                    containerColor = Color.White
+                ),
+                elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                    defaultElevation = 5.dp
+                )
+            ){
+                Text("Cancel", color = Color(0xff5a79ba))
             }
 
-            Button(
-                onClick = { addWarehouse()},
-                colors = ButtonDefaults.buttonColors(Color.Black),
+            ElevatedButton(
                 modifier = Modifier
                     .weight(1f)
-                    .fillMaxWidth()
-            ) {
+                    .fillMaxWidth(),
+                onClick = {
+                    addWarehouse()
+                },
+                colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                    containerColor = Color(0xff5a79ba)
+                ),
+                elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                    defaultElevation = 5.dp
+                )
+            ){
                 Text("Add", color = Color.White)
             }
         }

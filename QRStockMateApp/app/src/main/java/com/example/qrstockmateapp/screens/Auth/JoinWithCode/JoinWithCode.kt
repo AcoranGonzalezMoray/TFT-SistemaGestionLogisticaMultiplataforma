@@ -41,6 +41,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarData
 import androidx.compose.ui.platform.LocalContext
@@ -78,10 +79,10 @@ fun JoinWithCodeScreen(navController: NavHostController) {
         keyboardType = KeyboardType.Email
     )
     val customTextFieldColors = TextFieldDefaults.outlinedTextFieldColors(
-        cursorColor = Color.Black,
-        focusedBorderColor = Color.Black,
-        focusedLabelColor = Color.Black,
-        unfocusedBorderColor = Color.Black,
+        cursorColor =  Color(0xff5a79ba),
+        focusedBorderColor =  Color(0xff5a79ba),
+        focusedLabelColor =  Color(0xff5a79ba),
+        unfocusedBorderColor = Color(0xff5a79ba),
         backgroundColor = Color.LightGray
     )
     val onJoin:() -> Unit = {
@@ -231,23 +232,36 @@ fun JoinWithCodeScreen(navController: NavHostController) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Button(
-                onClick = { navController.navigate("login")},
-                colors = ButtonDefaults.buttonColors(Color.Red),
+            ElevatedButton(
                 modifier = Modifier
                     .weight(1f)
-                    .fillMaxWidth()
-            ) {
-                Text("Cancel", color = Color.White)
+                    .fillMaxWidth(),
+                onClick = {
+                    navController.navigate("login")
+                },
+                colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                    containerColor = Color.White
+                ),
+                elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                    defaultElevation = 5.dp
+                )
+            ){
+                Text("Cancel", color = Color(0xff5a79ba))
             }
-
-            Button(
-                onClick = {onJoin()},
-                colors = ButtonDefaults.buttonColors(Color.Black),
+            ElevatedButton(
                 modifier = Modifier
                     .weight(1f)
-                    .fillMaxWidth()
-            ) {
+                    .fillMaxWidth(),
+                onClick = {
+                    onJoin()
+                },
+                colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                    containerColor = Color(0xff5a79ba)
+                ),
+                elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                    defaultElevation = 5.dp
+                )
+            ){
                 Text("Join", color = Color.White)
             }
         }

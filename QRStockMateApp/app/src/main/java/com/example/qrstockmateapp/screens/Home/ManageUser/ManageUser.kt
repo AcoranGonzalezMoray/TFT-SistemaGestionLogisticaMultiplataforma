@@ -35,6 +35,7 @@ import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -283,13 +284,20 @@ fun UserListItem(user: User, navController: NavController,loadEmployees: () -> U
                 Text(text = "Email: ${user.email}")
                 Text(text = "Phone: ${user.phone}")
                 Text(text = "Role: ${userRoleToString(user.role)}")
-                Button(
+                ElevatedButton(
                     modifier = Modifier
                         .fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(Color.Yellow),onClick = {
+                    onClick = {
                         DataRepository.setUserPlus(user)
                         navController.navigate("updateUser")
-                    }, ) {
+                    },
+                    colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                        containerColor =  Color(0xff5a79ba)
+                    ),
+                    elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                        defaultElevation = 5.dp
+                    )
+                ){
                     Icon(
                         imageVector = Icons.Filled.Create,
                         contentDescription = "",
@@ -297,26 +305,40 @@ fun UserListItem(user: User, navController: NavController,loadEmployees: () -> U
                     )
                 }
                 if (disabled) {      //Desactivado
-                    Button(
+                    ElevatedButton(
                         modifier = Modifier
                             .fillMaxWidth(),
-                        colors = ButtonDefaults.buttonColors(Color(0xFF006400)),onClick = {
+                        onClick = {
                             enableUser()
-                        }, ) {
+                        },
+                        colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                            containerColor =  Color(0xff5a79ba)
+                        ),
+                        elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                            defaultElevation = 5.dp
+                        )
+                    ){
                         Text("Enable", color = Color.White)
                         Spacer(modifier = Modifier.padding(3.dp))
-                        Icon(imageVector = Icons.Filled.ToggleOn, contentDescription = "Enable", tint = Color.White )
+                        Icon(imageVector = Icons.Filled.ToggleOn, contentDescription = "Enable", tint = Color.Green )
                     }
-                } else {        //Activado
-                    Button(
+                } else { //Activado
+                    ElevatedButton(
                         modifier = Modifier
                             .fillMaxWidth(),
-                        colors = ButtonDefaults.buttonColors(Color.Red),onClick = {
+                        onClick = {
                             disableUser()
-                        }, ) {
+                        },
+                        colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                            containerColor = Color(0xff5a79ba)
+                        ),
+                        elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                            defaultElevation = 5.dp
+                        )
+                    ){
                         Text("Disable", color = Color.White)
                         Spacer(modifier = Modifier.padding(3.dp))
-                        Icon(imageVector = Icons.Filled.ToggleOff, contentDescription = "Disable", tint = Color.White )
+                        Icon(imageVector = Icons.Filled.ToggleOff, contentDescription = "Disable", tint = Color.Red )
                     }
                 }
             }

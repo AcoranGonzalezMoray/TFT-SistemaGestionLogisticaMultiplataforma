@@ -30,6 +30,7 @@ import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.ManageAccounts
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.ElevatedButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -103,7 +104,7 @@ fun BottomNavigationScreen(navControllerLogin: NavController,sharedPreferences: 
         },
         topBar = {
             TopAppBar(
-                backgroundColor = Color.Black,
+                backgroundColor = Color.White,
                 title = {
                     // Colocar la imagen en el centro
                     Box(
@@ -113,7 +114,7 @@ fun BottomNavigationScreen(navControllerLogin: NavController,sharedPreferences: 
                         Image(
                             painter = painterResource(id = R.drawable.icon_white),
                             contentDescription = "",
-                            colorFilter = ColorFilter.tint(Color.White) // Invertir colores de la imagen
+                            colorFilter = ColorFilter.tint(Color(0xff5a79ba)) // Invertir colores de la imagen
                         )
                     }
                 },
@@ -127,7 +128,7 @@ fun BottomNavigationScreen(navControllerLogin: NavController,sharedPreferences: 
                         Icon(
                             imageVector = Icons.Default.Menu,
                             contentDescription = "",
-                            tint = Color.White
+                            tint = Color(0xff5a79ba)
                         )
                     }
                 }
@@ -192,7 +193,7 @@ fun Drawer(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Black)
+            .background(Color.White)
     ) {
         Surface(
             modifier = Modifier
@@ -212,24 +213,35 @@ fun Drawer(
                         Text(text ="Are you sure you want to delete this account?")
                     },
                     confirmButton = {
-                        Button(
+                        ElevatedButton(
                             onClick = {
                                 sharedPreferences.edit().clear().apply()
                                 deleteAccount()
                                 showDialog = false
-                            }, colors = ButtonDefaults.buttonColors(Color.Black)
-                        ) {
+                            },
+                            colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                                containerColor = Color(0xff5a79ba)
+                            ),
+                            elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                                defaultElevation = 5.dp
+                            )
+                        ){
                             Text("Confirm", color = Color.White)
                         }
                     },
                     dismissButton = {
-                        Button(
+                        ElevatedButton(
                             onClick = {
-                                // Handle dismissal action (e.g., cancel)
                                 showDialog = false
-                            }, colors = ButtonDefaults.buttonColors(Color.Red)
-                        ) {
-                            Text("Cancel",  color = Color.White)
+                            },
+                            colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                                containerColor = Color.White
+                            ),
+                            elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                                defaultElevation = 5.dp
+                            )
+                        ){
+                            Text("Cancel", color =  Color(0xff5a79ba))
                         }
                     }
                 )
@@ -237,18 +249,18 @@ fun Drawer(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color.Black) ,
+                    .background(Color.White) ,
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
                     imageVector = Icons.Filled.Apartment,
                     contentDescription = "",
-                    tint = Color.White,
+                    tint =  Color(0xff5a79ba),
                     modifier = Modifier.height(40.dp).size(48.dp),
                 )
                 Spacer(modifier = Modifier.width(7.dp))
-                Text("Company: ${DataRepository.getCompany()?.name} \nCode: ${DataRepository.getUser()?.code}", fontSize = 20.sp, fontWeight = FontWeight.Bold, color= Color.White)
+                Text("Company: ${DataRepository.getCompany()?.name} \nCode: ${DataRepository.getUser()?.code}", fontSize = 20.sp, fontWeight = FontWeight.Bold, color=  Color(0xff5a79ba))
             }
         }
 
@@ -273,12 +285,12 @@ fun Drawer(
 
                     .padding(start = 10.dp)
             ) {
-                Icon(imageVector = item.icon, contentDescription = "", tint = Color.White)
+                Icon(imageVector = item.icon, contentDescription = "", tint = Color(0xff5a79ba))
                 Spacer(modifier = Modifier.width(7.dp))
                 Text(
                     text = item.title,
                     fontSize = 18.sp,
-                    color = Color.White
+                    color =  Color(0xff5a79ba)
                 )
             }
 
@@ -306,13 +318,13 @@ fun Drawer(
                     Icon(
                         imageVector = Icons.Filled.AddBusiness,
                         contentDescription = "",
-                        tint = Color.Green
+                        tint =  Color(0xff5a79ba)
                     )
                     Spacer(modifier = Modifier.width(7.dp))
                     Text(
                         text = "Add New Warehouse",
                         fontSize = 18.sp,
-                        color = Color.Green
+                        color = Color(0xff5a79ba)
                     )
 
                 }
@@ -334,13 +346,13 @@ fun Drawer(
                     Icon(
                         imageVector = Icons.Filled.ManageAccounts,
                         contentDescription = "",
-                        tint = Color.Yellow
+                        tint =  Color(0xff5a79ba)
                     )
                     Spacer(modifier = Modifier.width(7.dp))
                     Text(
                         text = "Manage User",
                         fontSize = 18.sp,
-                        color = Color.Yellow
+                        color =  Color(0xff5a79ba)
                     )
 
                 }

@@ -114,7 +114,7 @@ fun RouteManagementScreen(navController: NavController) {
                     defaultElevation = 15.dp
                 ),
                 colors = CardDefaults.cardColors(
-                    containerColor = Color.White,
+                    containerColor =Color(0xff5a79ba),
                 ),
                 onClick = {isDatePickerVisible = true}
             ) {
@@ -124,16 +124,16 @@ fun RouteManagementScreen(navController: NavController) {
                         verticalAlignment = Alignment.CenterVertically, // Alineación vertical
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Icon(imageVector = Icons.Filled.ArrowBackIosNew, contentDescription ="" )
+                        Icon(imageVector = Icons.Filled.ArrowBackIosNew, contentDescription ="", tint=Color.White)
                         Text(
                             "ALL",
                             modifier = Modifier
                                 .wrapContentSize(Alignment.Center),
-                            color = Color.Black,
+                            color = Color.White,
                             fontWeight = FontWeight.Bold,
                             fontSize = 20.sp // Ajusta el tamaño de la fuente según tus necesidades
                         )
-                        Icon(imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos, contentDescription ="" )
+                        Icon(imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos, contentDescription ="",tint=Color.White)
                     }
                }else{
                    Row(
@@ -141,16 +141,16 @@ fun RouteManagementScreen(navController: NavController) {
                        verticalAlignment = Alignment.CenterVertically, // Alineación vertical
                        horizontalArrangement = Arrangement.SpaceBetween
                    ) {
-                       Icon(imageVector = Icons.Filled.ArrowBackIosNew, contentDescription ="" )
+                       Icon(imageVector = Icons.Filled.ArrowBackIosNew, contentDescription ="" ,tint=Color.White)
                        Text(
                            "$day-$month-$year",
                            modifier = Modifier
                                .wrapContentSize(Alignment.Center),
-                           color = Color.Black,
+                           color = Color.White,
                            fontWeight = FontWeight.Bold,
                            fontSize = 20.sp // Ajusta el tamaño de la fuente según tus necesidades
                        )
-                       Icon(imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos, contentDescription ="" )
+                       Icon(imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos, contentDescription ="" ,tint=Color.White)
                    }
                }
             }
@@ -242,7 +242,7 @@ fun DatePickerSample(onDateSelected: (Triple<Int, Int, Int>) -> Unit, onClose: (
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(end = 18.dp, start = 18.dp, bottom = 18.dp, top = 8.dp),
+            .padding(end = 9.dp, start = 9.dp, bottom = 18.dp, top = 8.dp),
         elevation = CardDefaults.cardElevation(
             defaultElevation = 10.dp
         ),
@@ -272,7 +272,12 @@ fun DatePickerSample(onDateSelected: (Triple<Int, Int, Int>) -> Unit, onClose: (
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
 
-            DatePicker(datePickerState = datePickerState, modifier = Modifier.weight(1f))
+            DatePicker(datePickerState = datePickerState, modifier = Modifier.weight(1f),
+                colors = DatePickerDefaults.colors(
+                    selectedDayContainerColor = Color(0xff5a79ba),
+                    disabledSelectedDayContainerColor = Color(0xff5a79ba)
+                )
+            )
         }
 
         // Obtener los componentes de la fecha después de la selección
