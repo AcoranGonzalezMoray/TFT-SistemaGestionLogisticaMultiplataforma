@@ -74,7 +74,7 @@ fun SignUpScreen(navController: NavHostController) {
         focusedBorderColor = Color(0xff5a79ba),
         focusedLabelColor =Color(0xff5a79ba),
         unfocusedBorderColor = Color(0xff5a79ba),
-        backgroundColor = Color(0xff5a79ba),
+        backgroundColor = Color.LightGray
     )
     val onSignUp:() -> Unit = {
         GlobalScope.launch(Dispatchers.IO) {

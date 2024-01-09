@@ -1,24 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "D:\\DEVHOME-DISK\\TFT-SistemaGestionLogisticaMultiplataforma\\QRStockMateSL\\QRStockMate.Infrastructure\\QRStockMate.Infrastructure.csproj": {}
+    "C:\\Users\\acora\\Documents\\DEVHOME\\TFT-SistemaGestionLogisticaMultiplataforma\\QRStockMateSL\\QRStockMate.Infrastructure\\QRStockMate.Infrastructure.csproj": {}
   },
   "projects": {
-    "D:\\DEVHOME-DISK\\TFT-SistemaGestionLogisticaMultiplataforma\\QRStockMateSL\\QRStockMate.AplicationCore\\QRStockMate.AplicationCore.csproj": {
+    "C:\\Users\\acora\\Documents\\DEVHOME\\TFT-SistemaGestionLogisticaMultiplataforma\\QRStockMateSL\\QRStockMate.AplicationCore\\QRStockMate.AplicationCore.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\DEVHOME-DISK\\TFT-SistemaGestionLogisticaMultiplataforma\\QRStockMateSL\\QRStockMate.AplicationCore\\QRStockMate.AplicationCore.csproj",
+        "projectUniqueName": "C:\\Users\\acora\\Documents\\DEVHOME\\TFT-SistemaGestionLogisticaMultiplataforma\\QRStockMateSL\\QRStockMate.AplicationCore\\QRStockMate.AplicationCore.csproj",
         "projectName": "QRStockMate.AplicationCore",
-        "projectPath": "D:\\DEVHOME-DISK\\TFT-SistemaGestionLogisticaMultiplataforma\\QRStockMateSL\\QRStockMate.AplicationCore\\QRStockMate.AplicationCore.csproj",
+        "projectPath": "C:\\Users\\acora\\Documents\\DEVHOME\\TFT-SistemaGestionLogisticaMultiplataforma\\QRStockMateSL\\QRStockMate.AplicationCore\\QRStockMate.AplicationCore.csproj",
         "packagesPath": "C:\\Users\\acora\\.nuget\\packages\\",
-        "outputPath": "D:\\DEVHOME-DISK\\TFT-SistemaGestionLogisticaMultiplataforma\\QRStockMateSL\\QRStockMate.AplicationCore\\obj\\",
+        "outputPath": "C:\\Users\\acora\\Documents\\DEVHOME\\TFT-SistemaGestionLogisticaMultiplataforma\\QRStockMateSL\\QRStockMate.AplicationCore\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
           "C:\\Users\\acora\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -59,25 +55,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.403\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.101\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "D:\\DEVHOME-DISK\\TFT-SistemaGestionLogisticaMultiplataforma\\QRStockMateSL\\QRStockMate.Infrastructure\\QRStockMate.Infrastructure.csproj": {
+    "C:\\Users\\acora\\Documents\\DEVHOME\\TFT-SistemaGestionLogisticaMultiplataforma\\QRStockMateSL\\QRStockMate.Infrastructure\\QRStockMate.Infrastructure.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\DEVHOME-DISK\\TFT-SistemaGestionLogisticaMultiplataforma\\QRStockMateSL\\QRStockMate.Infrastructure\\QRStockMate.Infrastructure.csproj",
+        "projectUniqueName": "C:\\Users\\acora\\Documents\\DEVHOME\\TFT-SistemaGestionLogisticaMultiplataforma\\QRStockMateSL\\QRStockMate.Infrastructure\\QRStockMate.Infrastructure.csproj",
         "projectName": "QRStockMate.Infrastructure",
-        "projectPath": "D:\\DEVHOME-DISK\\TFT-SistemaGestionLogisticaMultiplataforma\\QRStockMateSL\\QRStockMate.Infrastructure\\QRStockMate.Infrastructure.csproj",
+        "projectPath": "C:\\Users\\acora\\Documents\\DEVHOME\\TFT-SistemaGestionLogisticaMultiplataforma\\QRStockMateSL\\QRStockMate.Infrastructure\\QRStockMate.Infrastructure.csproj",
         "packagesPath": "C:\\Users\\acora\\.nuget\\packages\\",
-        "outputPath": "D:\\DEVHOME-DISK\\TFT-SistemaGestionLogisticaMultiplataforma\\QRStockMateSL\\QRStockMate.Infrastructure\\obj\\",
+        "outputPath": "C:\\Users\\acora\\Documents\\DEVHOME\\TFT-SistemaGestionLogisticaMultiplataforma\\QRStockMateSL\\QRStockMate.Infrastructure\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
           "C:\\Users\\acora\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -91,8 +83,8 @@
           "net7.0": {
             "targetAlias": "net7.0",
             "projectReferences": {
-              "D:\\DEVHOME-DISK\\TFT-SistemaGestionLogisticaMultiplataforma\\QRStockMateSL\\QRStockMate.AplicationCore\\QRStockMate.AplicationCore.csproj": {
-                "projectPath": "D:\\DEVHOME-DISK\\TFT-SistemaGestionLogisticaMultiplataforma\\QRStockMateSL\\QRStockMate.AplicationCore\\QRStockMate.AplicationCore.csproj"
+              "C:\\Users\\acora\\Documents\\DEVHOME\\TFT-SistemaGestionLogisticaMultiplataforma\\QRStockMateSL\\QRStockMate.AplicationCore\\QRStockMate.AplicationCore.csproj": {
+                "projectPath": "C:\\Users\\acora\\Documents\\DEVHOME\\TFT-SistemaGestionLogisticaMultiplataforma\\QRStockMateSL\\QRStockMate.AplicationCore\\QRStockMate.AplicationCore.csproj"
               }
             }
           }
@@ -146,7 +138,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.403\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.101\\RuntimeIdentifierGraph.json"
         }
       }
     }
