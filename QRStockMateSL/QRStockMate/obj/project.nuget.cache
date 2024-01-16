@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "7HQDgK4c1kliam2r3chaYz6hWFfm6w07T25OM82Quu93BgB4wpDdxxu0YmTh8J6GGKtLrI7+dX9fF3LGvx7kgg==",
+  "dgSpecHash": "H8FJGZ3A67Vxad86Tly9N5BJdaqUxGC0DKuRb2HBxlyzaxuGKABZkL8TrAXOyURM9PxVFA/EDDdXdy9F8aW8Hg==",
   "success": true,
-  "projectFilePath": "C:\\Users\\acora\\Documents\\DEVHOME\\TFT-SistemaGestionLogisticaMultiplataforma\\QRStockMateSL\\QRStockMate\\QRStockMate.csproj",
+  "projectFilePath": "D:\\DEVHOME-DISK\\TFT-SistemaGestionLogisticaMultiplataforma\\QRStockMateSL\\QRStockMate\\QRStockMate.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\acora\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
     "C:\\Users\\acora\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.1\\automapper.extensions.microsoft.dependencyinjection.12.0.1.nupkg.sha512",

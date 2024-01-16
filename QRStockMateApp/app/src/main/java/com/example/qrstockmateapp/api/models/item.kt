@@ -7,6 +7,6 @@ data class Item (
     var warehouseId:Int,
     var location:String,
     var stock:Int,
-    val url:String
-
+    val url:String,
+    val weightPerUnit: Double
 )

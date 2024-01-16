@@ -8,5 +8,7 @@ data class Warehouse(
     var organization:String,
     var idAdministrator:Int,
     val idItems:String,
-    var url:String
+    var url:String,
+    val latitude: Double,
+    val longitude: Double
 )

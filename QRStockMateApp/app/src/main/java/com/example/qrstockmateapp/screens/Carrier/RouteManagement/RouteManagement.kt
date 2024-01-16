@@ -2,9 +2,11 @@ package com.example.qrstockmateapp.screens.Carrier.RouteManagement
 
 import android.annotation.SuppressLint
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -19,21 +22,28 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Badge
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.DeleteSweep
+import androidx.compose.material.icons.filled.EditNote
+import androidx.compose.material.icons.filled.Map
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerColors
 import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerState
+import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
@@ -53,8 +63,10 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.qrstockmateapp.R
 import com.example.qrstockmateapp.api.models.TransportRoute
+import com.example.qrstockmateapp.api.models.statusRoleToString
 import com.example.qrstockmateapp.api.services.RetrofitInstance
 import com.example.qrstockmateapp.navigation.repository.DataRepository
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -85,10 +97,14 @@ fun RouteManagementScreen(navController: NavController) {
         GlobalScope.launch(Dispatchers.IO) {
 
             val response= RetrofitInstance.api.getTransportRoutes(DataRepository.getUser()!!.code)
-            if (response.isSuccessful) {
+            val responseVehicle = RetrofitInstance.api.getVehicles(DataRepository.getUser()!!.code)
+
+            if (response.isSuccessful && responseVehicle.isSuccessful) {
                 val transporRoutesResponse = response.body()
-                if(transporRoutesResponse!=null){
+                val vehiclesResponse = responseVehicle.body()
+                if(transporRoutesResponse!=null && vehiclesResponse !=null ){
                    transportRoutes = transporRoutesResponse
+                    DataRepository.setVehicles(vehiclesResponse)
                     Log.d("route", "$transportRoutes")
                 }
             } else{
@@ -102,7 +118,6 @@ fun RouteManagementScreen(navController: NavController) {
         }
     }
     Column {
-
         // Hacer algo con la fecha seleccionada en el componente padre
         selectedDate?.let { (day, month, year) ->
             Card(
@@ -177,8 +192,10 @@ fun RouteManagementScreen(navController: NavController) {
     }
 }
 
+@OptIn(DelicateCoroutinesApi::class)
 @Composable
 fun TransportRouteItem(route: TransportRoute, navController: NavController) {
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -194,10 +211,55 @@ fun TransportRouteItem(route: TransportRoute, navController: NavController) {
         ),
         shape = RoundedCornerShape(16.dp),
     ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth(),
+        ){
+            if (route.status == 0) {
+                Badge(
+                    modifier = Modifier
+                        .height(20.dp)
+                        .width(80.dp)
+                        .align(Alignment.TopEnd)
+                        .offset(x = (-4).dp, y = (5).dp),
+                    contentColor = Color.White,
+                    backgroundColor = Color.DarkGray
+                ) {
+                    Text(statusRoleToString(route.status), style = MaterialTheme.typography.labelSmall, color = Color.White)
+                }
+            }
+            if(route.status == 1){
+                Badge(
+                    modifier = Modifier
+                        .height(20.dp)
+                        .width(80.dp)
+                        .align(Alignment.TopEnd)
+                        .offset(x = (-4).dp, y = (5).dp),
+                    contentColor = Color.White,
+                    backgroundColor = Color(0xFF006400)
+                ) {
+                    Text(statusRoleToString(route.status), style = MaterialTheme.typography.labelSmall, color = Color.White)
+                }
+
+            }
+            if (route.status == 2) {
+                Badge(
+                    modifier = Modifier
+                        .height(20.dp)
+                        .width(80.dp)
+                        .align(Alignment.TopEnd)
+                        .offset(x = (-4).dp, y = (5).dp),
+                    contentColor = Color.White,
+                    backgroundColor = Color.Red
+                ) {
+                    Text(statusRoleToString(route.status), style = MaterialTheme.typography.labelSmall, color = Color.White)
+                }
+            }
+        }
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(16.dp, top = 0.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             // Icono a la izquierda
@@ -220,12 +282,81 @@ fun TransportRouteItem(route: TransportRoute, navController: NavController) {
                     fontSize = 18.sp, // Ajusta el tamaño de la fuente según tus necesidades
                 )
                 Spacer(modifier = Modifier.height(4.dp))
-                Text(text = "Inicio: ${route.startLocation}", fontSize = 16.sp)
+                Text(text = "Start Location: ${DataRepository.getWarehouses()!!.find { warehouse -> warehouse.id == route.startLocation.toInt()}?.name}", fontSize = 16.sp)
                 Spacer(modifier = Modifier.height(4.dp))
-                Text(text = "Fin: ${route.endLocation}", fontSize = 16.sp)
+                Text(text = "End Location: ${DataRepository.getWarehouses()!!.find { warehouse -> warehouse.id == route.endLocation.toInt()}?.name}", fontSize = 16.sp)
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(text = "Carrier: ${DataRepository.getEmployees()?.filter { employee -> employee.id == 33 }
                     ?.get(0)?.name}", fontSize = 16.sp)
+
+                Row(
+                ){
+                    ElevatedButton(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f)
+                            .padding(5.dp)
+                            .height(40.dp),
+                        onClick = {
+                            DataRepository.setRoutePlus(route)
+                            navController.navigate("updateRoute")
+                        },
+                        colors =  ButtonDefaults.elevatedButtonColors(
+                            containerColor = Color(0xff5a79ba)
+                        ),
+                        elevation = ButtonDefaults.elevatedButtonElevation(
+                            defaultElevation = 5.dp
+                        )
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.EditNote,
+                            contentDescription = "",
+                            tint = Color.White
+                        )
+                    }
+                    ElevatedButton(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f)
+                            .padding(5.dp)
+                            .height(40.dp),
+                        onClick = {
+
+                        },
+                        colors = ButtonDefaults.elevatedButtonColors(
+                            containerColor = Color(0xff5a79ba)
+                        ),
+                        elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                            defaultElevation = 5.dp
+                        )
+                    ){
+                        androidx.compose.material.Icon(
+                            imageVector = Icons.Filled.DeleteSweep,
+                            contentDescription = "",
+                            tint = Color.White
+                        )
+                    }
+                }
+                ElevatedButton(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(5.dp)
+                        .height(40.dp),
+                    onClick = {
+
+                    },
+                    colors =  ButtonDefaults.elevatedButtonColors(
+                        containerColor = Color(0xff5a79ba)
+                    ),
+                    elevation = ButtonDefaults.elevatedButtonElevation(
+                        defaultElevation = 5.dp
+                    )
+
+
+                ) {
+                    Text("Open", color = Color.White)
+                }
+
             }
         }
     }

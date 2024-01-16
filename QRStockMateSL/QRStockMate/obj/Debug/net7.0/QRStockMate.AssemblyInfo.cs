@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("QRStockMate")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6c1439be8bf58802ad007acecdf7dc26c3d9f39b")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
 [assembly: System.Reflection.AssemblyProductAttribute("QRStockMate")]
 [assembly: System.Reflection.AssemblyTitleAttribute("QRStockMate")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

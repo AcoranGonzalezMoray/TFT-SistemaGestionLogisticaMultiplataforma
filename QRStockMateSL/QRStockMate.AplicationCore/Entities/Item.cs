@@ -22,6 +22,6 @@ namespace QRStockMate.AplicationCore.Entities
         public string Url { get; set; }
 
 		[Column(TypeName = "decimal(7,2)")]
-		public decimal Weight { get; set; }
-    }
+		public decimal WeightPerUnit { get; set; }
+	}
 }

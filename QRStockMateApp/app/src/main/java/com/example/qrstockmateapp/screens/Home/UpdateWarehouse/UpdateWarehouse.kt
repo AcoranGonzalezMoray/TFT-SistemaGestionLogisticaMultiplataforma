@@ -69,7 +69,7 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun UpdateWarehouseScreen(navController: NavController) {
     var warehouse = remember { DataRepository.getWarehousePlus() }
-    var selectedOption by remember { mutableStateOf("Selected an existing administrator to associate with the warehouse") }
+    var selectedOption by remember { mutableStateOf("Select an existing administrator to associate with the warehouse") }
     var isloading by remember { mutableStateOf<Boolean>(false) }
 
     val context = LocalContext.current

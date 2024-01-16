@@ -133,6 +133,11 @@ interface ApiService {
         @Path("code") code: String
     ): Response<List<TransportRoute>>
 
+    @PUT("TransportRoute/TransportRoutes/{code}")
+    suspend fun putTransportRoutes(
+        @Body transportRoute: TransportRoute
+    ): Response<TransportRoute>
+
 
     @PUT("TransportRoutes/InitRoute/{id}")
     suspend fun initRoute(
@@ -148,7 +153,7 @@ interface ApiService {
 
     @GET("Company/Vehicles/{code}")
     suspend fun getVehicles(
-        @Body code: String
+        @Path("code") code: String
     ): Response<List<Vehicle>>
 
     @GET("Vehicle/GetLocation/{Id}")

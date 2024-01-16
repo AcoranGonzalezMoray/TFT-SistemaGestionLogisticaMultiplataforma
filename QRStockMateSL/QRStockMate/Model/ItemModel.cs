@@ -13,5 +13,8 @@
         public int Stock { get; set; }
 
         public string Url { get; set; }
-    }
+
+        public decimal WeightPerUnit { get; set; }
+
+	}
 }

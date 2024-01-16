@@ -155,8 +155,11 @@ fun ManageUserScreen(navController: NavController) {
                 items(filteredEmployees) { employee ->
                     UserListItem(user = employee, navController,loadEmployees)
                 }
+                item {
+                    Spacer(modifier = Modifier.fillMaxWidth().height(48.dp))
+                }
             }
-            Spacer(modifier = Modifier.height(20.dp))
+
         }
     }
 

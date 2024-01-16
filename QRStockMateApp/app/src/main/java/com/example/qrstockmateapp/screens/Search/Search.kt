@@ -186,8 +186,11 @@ fun ItemList(items: List<Item>,navController: NavController) {
             Item(item = item, navController = navController)
             Spacer(modifier = Modifier.height(8.dp)) // Agrega un espacio entre elementos de la lista
         }
+        item{
+            Spacer(modifier = Modifier.fillMaxWidth().height(48.dp))
+        }
+
     }
-    Spacer(modifier = Modifier.height(60.dp))
 }
 
 @Composable

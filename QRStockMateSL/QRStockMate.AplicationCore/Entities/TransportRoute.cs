@@ -18,5 +18,13 @@ namespace QRStockMate.AplicationCore.Entities
 		public int AssignedVehicleId { get; set; } // Vehiculo asignados a la ruta
 		public int CarrierId { get; set; } // Conductor
 		public DateTime Date { get; set; }
+		public RoleStatus Status { get; set; }
+	}
+
+	public enum RoleStatus
+	{
+		Pending,
+		OnRoute,
+		Finalized
 	}
 }

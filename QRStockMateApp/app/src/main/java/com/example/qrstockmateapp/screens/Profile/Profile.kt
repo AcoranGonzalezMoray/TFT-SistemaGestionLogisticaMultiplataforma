@@ -195,7 +195,9 @@ fun ProfileScreen(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-        ) {
+            .verticalScroll(rememberScrollState()),
+        )
+    {
         Box(modifier = Modifier
             .fillMaxWidth()
             .padding(5.dp)) {
@@ -300,8 +302,7 @@ fun ProfileScreen(navController: NavController) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight(0.55f)
-                .verticalScroll(rememberScrollState()),
+                .fillMaxHeight(0.55f),
             verticalArrangement = Arrangement.Center,
         ) {
 
@@ -354,6 +355,7 @@ fun ProfileScreen(navController: NavController) {
                 Text(text = "Update", color=Color.White)
             }
         }
+        Spacer(modifier = Modifier.fillMaxWidth().height(60.dp))
     }
 
 

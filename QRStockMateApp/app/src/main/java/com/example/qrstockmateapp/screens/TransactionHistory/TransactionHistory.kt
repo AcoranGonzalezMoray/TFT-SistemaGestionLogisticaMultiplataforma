@@ -145,6 +145,9 @@ fun TransactionHistoryScreen(navController: NavController) {
                 items(filteredItems) { transaction ->
                     TransactionListItem(transaction = transaction)
                 }
+                item {
+                    Spacer(modifier = Modifier.fillMaxWidth().height(48.dp))
+                }
             }
         }else{
             Text(

@@ -2,7 +2,9 @@ package com.example.qrstockmateapp.navigation.repository
 
 import com.example.qrstockmateapp.api.models.Company
 import com.example.qrstockmateapp.api.models.Item
+import com.example.qrstockmateapp.api.models.TransportRoute
 import com.example.qrstockmateapp.api.models.User
+import com.example.qrstockmateapp.api.models.Vehicle
 import com.example.qrstockmateapp.api.models.Warehouse
 
 object DataRepository {
@@ -11,11 +13,28 @@ object DataRepository {
     private var company: Company? =null
     private var warehouses: List<Warehouse>? = null
     private var employees: List<User>? = null
+    private var vehicles: List<Vehicle>? = null
     private var token: String = ""
-    //Pasar warehouse de una pantalla a otra
+    //Pasar elemento de una pantalla a otra
     private var warehousePlus: Warehouse? = null
     private var userPlus: User? = null
+    private var routePlus: TransportRoute? = null
 
+    fun setVehicles(newVehicles: List<Vehicle>) {
+        vehicles = newVehicles
+    }
+
+    fun getVehicles(): List<Vehicle>?{
+        return vehicles
+    }
+
+    fun setRoutePlus(newRoute: TransportRoute){
+        routePlus = newRoute
+    }
+
+    fun getRoutePlus():TransportRoute?{
+        return routePlus
+    }
 
     fun setUserPlus(newUser: User){
         userPlus = newUser

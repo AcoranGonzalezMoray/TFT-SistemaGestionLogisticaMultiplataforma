@@ -64,16 +64,15 @@ import org.apache.poi.hpsf.Date
 fun CarrierScreen(navController: NavController) {
     // Supongamos que tienes una lista de objetos TransportRouteModel
     val listaRutas = listOf(
-        TransportRoute(1, "Ruta1", "Inicio1", "Fin1", Date().toString(), "", "1;2;4;4;5,2;4;3;", 1, 1,Date().toString()),
-        TransportRoute(2, "Ruta2", "Inicio2", "Fin2", Date().toString(), "1", "3;2;4;4;5,2;4;3;", 2, 2,Date().toString()),
-        TransportRoute(3, "Ruta3", "Inicio3", "Fin3", Date().toString(), "1", "2;2;4;4;5,2;4;3;", 3, 3,Date().toString()),
-        TransportRoute(4, "Ruta4", "Inicio4", "Fin4", Date().toString(), "1", "4;2;4;4;5,2;4;3;", 4, 4,Date().toString()),
-        TransportRoute(5, "Ruta3", "Inicio3", "Fin3", Date().toString(), "", "2;2;4;4;5,2;4;3;", 3, 3,Date().toString()),
-        TransportRoute(6, "Ruta4", "Inicio4", "Fin4", Date().toString(), "1", "4;2;4;4;5,2;4;3;", 4, 4,Date().toString()),
-        TransportRoute(7, "Ruta3", "Inicio3", "Fin3", Date().toString(), "", "2;2;4;4;5,2;4;3;", 3, 3,Date().toString()),
-        TransportRoute(3, "Ruta3", "Inicio3", "Fin3", Date().toString(), "1", "2;2;4;4;5,2;4;3;", 3, 3,Date().toString()),
-        TransportRoute(4, "Ruta4", "Inicio4", "Fin4", Date().toString(), "", "4;2;4;4;5,2;4;3;", 4, 4,Date().toString()),
-    )
+        TransportRoute(1, "Ruta1", "Inicio1", "Fin1", Date().toString(), "", "1;2;4;4;5,2;4;3;", 1, 1,Date().toString(), 0),
+        TransportRoute(2, "Ruta2", "Inicio2", "Fin2", Date().toString(), "1", "3;2;4;4;5,2;4;3;", 2, 2,Date().toString(), 0),
+        TransportRoute(3, "Ruta3", "Inicio3", "Fin3", Date().toString(), "1", "2;2;4;4;5,2;4;3;", 3, 3,Date().toString(), 0),
+        TransportRoute(4, "Ruta4", "Inicio4", "Fin4", Date().toString(), "1", "4;2;4;4;5,2;4;3;", 4, 4,Date().toString(), 0),
+        TransportRoute(5, "Ruta3", "Inicio3", "Fin3", Date().toString(), "", "2;2;4;4;5,2;4;3;", 3, 3,Date().toString(), 0),
+        TransportRoute(6, "Ruta4", "Inicio4", "Fin4", Date().toString(), "1", "4;2;4;4;5,2;4;3;", 4, 4,Date().toString(), 0),
+        TransportRoute(7, "Ruta3", "Inicio3", "Fin3", Date().toString(), "", "2;2;4;4;5,2;4;3;", 3, 3,Date().toString(), 0),
+        TransportRoute(3, "Ruta3", "Inicio3", "Fin3", Date().toString(), "1", "2;2;4;4;5,2;4;3;", 3, 3,Date().toString(), 0),
+        TransportRoute(4, "Ruta4", "Inicio4", "Fin4", Date().toString(), "", "4;2;4;4;5,2;4;3;", 4, 4,Date().toString(), 0))
 
     Column(
         modifier = Modifier
@@ -121,6 +120,8 @@ fun itemRoute(rutasPorFila: List<TransportRoute>, navController: NavController) 
                     if (ruta.arrivalTime.toString()!="") {
                         Badge(
                             modifier = Modifier
+                                .height(20.dp)
+                                .width(80.dp)
                                 .align(Alignment.TopEnd)
                                 .offset(x = (-4).dp, y = (5).dp),
                             contentColor = Color.White,
@@ -131,6 +132,8 @@ fun itemRoute(rutasPorFila: List<TransportRoute>, navController: NavController) 
                     }else{
                         Badge(
                             modifier = Modifier
+                                .height(20.dp)
+                                .width(80.dp)
                                 .align(Alignment.TopEnd)
                                 .offset(x = (-4).dp, y = (5).dp),
                             contentColor = Color.White,

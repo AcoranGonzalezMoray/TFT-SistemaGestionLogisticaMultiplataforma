@@ -57,7 +57,7 @@ fun AddWarehouseScreen(navController: NavController) {
 
     var organization by remember { mutableStateOf("") }
 
-    var selectedOption by remember { mutableStateOf("Selected an existing administrator to associate with the warehouse") }
+    var selectedOption by remember { mutableStateOf("Select an existing administrator to associate with the warehouse") }
     var isMenuExpanded by remember { mutableStateOf(false) }
 
     var employees by remember { mutableStateOf(emptyList<User>()) } // inicializar con una lista vacía
@@ -76,7 +76,7 @@ fun AddWarehouseScreen(navController: NavController) {
                 val company = DataRepository.getCompany()
                 if(company!=null){
                     Log.d("selected","${selectedOption.split(";")[1].toInt()}")
-                    val warehouse = Warehouse(0,name,location, organization,selectedOption.split(";")[1].toInt(),"","")
+                    val warehouse = Warehouse(0,name,location, organization,selectedOption.split(";")[1].toInt(),"","", 0.0, 0.0)
                     val response = RetrofitInstance.api.createWarehouse(company.id,warehouse)
                     if(response.isSuccessful){
                         val user = DataRepository.getUser()
