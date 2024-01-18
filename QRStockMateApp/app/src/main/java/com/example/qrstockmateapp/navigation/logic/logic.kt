@@ -9,6 +9,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.qrstockmateapp.screens.Carrier.CarrierScreen
 import com.example.qrstockmateapp.screens.Carrier.Route.RouteScreen
+import com.example.qrstockmateapp.screens.Carrier.RouteManagement.AddRoute.AddRouteScreen
 import com.example.qrstockmateapp.screens.Carrier.RouteManagement.RouteManagementScreen
 import com.example.qrstockmateapp.screens.Carrier.RouteManagement.UpdateRoute.UpdateRouteScreen
 import com.example.qrstockmateapp.screens.Carrier.VehicleManagement.VehicleManagementScreen
@@ -58,7 +59,11 @@ fun  Navigation(navController: NavHostController) {
         }
 
 
+
         //fuera del menu
+        composable("addRoute"){
+            AddRouteScreen(navController)
+        }
         composable("route"){
             RouteScreen(navController)
         }

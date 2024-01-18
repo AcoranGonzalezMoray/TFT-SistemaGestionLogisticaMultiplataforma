@@ -15,10 +15,24 @@ object DataRepository {
     private var employees: List<User>? = null
     private var vehicles: List<Vehicle>? = null
     private var token: String = ""
+
     //Pasar elemento de una pantalla a otra
     private var warehousePlus: Warehouse? = null
     private var userPlus: User? = null
     private var routePlus: TransportRoute? = null
+
+    //Guardado temporal de variables
+    private  var totalWeight: Double? = 0.0
+
+
+    fun setTotalWeight(newTotal: Double) {
+        totalWeight = newTotal
+    }
+
+    fun getTotalWeight(): Double?{
+        return totalWeight
+    }
+
 
     fun setVehicles(newVehicles: List<Vehicle>) {
         vehicles = newVehicles

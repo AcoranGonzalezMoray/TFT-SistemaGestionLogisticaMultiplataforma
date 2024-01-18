@@ -1,4 +1,5 @@
-package com.example.qrstockmateapp.screens.Carrier.RouteManagement.UpdateRoute
+package com.example.qrstockmateapp.screens.Carrier.RouteManagement.AddRoute
+
 
 import android.util.Log
 import android.widget.Toast
@@ -62,6 +63,7 @@ import androidx.navigation.NavController
 import com.example.qrstockmateapp.R
 import com.example.qrstockmateapp.api.models.Item
 import com.example.qrstockmateapp.api.models.Transaction
+import com.example.qrstockmateapp.api.models.TransportRoute
 import com.example.qrstockmateapp.api.models.User
 import com.example.qrstockmateapp.api.models.Vehicle
 import com.example.qrstockmateapp.api.models.Warehouse
@@ -126,9 +128,22 @@ private fun parsePalets(paletsString: String):  Pair<List<Map<Int, String>>, Dou
 
 @OptIn(DelicateCoroutinesApi::class)
 @Composable
-fun UpdateRouteScreen(navController: NavController){
+fun AddRouteScreen(navController: NavController){
     var showDialog by remember { mutableStateOf(false) }
-    var route = remember { DataRepository.getRoutePlus() }
+    var route = remember { mutableStateOf(TransportRoute(
+        id = 0,
+        code = DataRepository.getUser()!!.code,
+        startLocation = "",
+        endLocation = "",
+        departureTime = "2024-01-18T21:43:44.484Z",
+        arrivalTime = "2024-01-18T21:43:44.484Z",
+        palets = "",
+        assignedVehicleId = 0,
+        carrierId = 0,
+        date = "2024-01-18T21:43:44.484Z",
+        status = 0
+    ))}
+
     var dates = (0 until 30).map { LocalDate.now().plusDays(it.toLong()) }
     var listaItems by remember { mutableStateOf( mutableListOf<Item>()) };
 
@@ -164,6 +179,8 @@ fun UpdateRouteScreen(navController: NavController){
 
 
     val loadItems : ()->Unit = {
+
+
         GlobalScope.launch(Dispatchers.IO) {
             isloading = true
             for(warehouse in DataRepository.getWarehouses()!!) {
@@ -185,8 +202,8 @@ fun UpdateRouteScreen(navController: NavController){
                     }
                 }
             }
-            if(route!!.palets.contains('=') ){
-                val (mapList, total) = parsePalets(route!!.palets)
+            if(route.value!!.palets.contains('=') ){
+                val (mapList, total) = parsePalets(route.value!!.palets)
 
                 mapEuroPalet = mapList
                 totalWeight = total
@@ -204,58 +221,58 @@ fun UpdateRouteScreen(navController: NavController){
                 }
 
             }
-            delay(1000)
+            delay(1100)
             isloading = false
         }
+
     }
 
     LaunchedEffect(Unit){
         loadItems()
 
         // [{46=46:2:201.3;, 49=49:1:1.0;}]
-        if(route!=null){
-            val em = employees.find { user: User ->  user.id == route!!.carrierId}
+        if(route.value!!.carrierId!=0){
+            val em = employees.find { user: User ->  user.id == route.value!!.carrierId}
             selectedOptionCarrier = "Name: ${em?.name};  Role: ${userRoleToString(em!!.role)}"
 
-            selectedOptionDate = "Date: ${route!!.date.split("T")[0]}"
+            selectedOptionDate = "Date: ${route.value!!.date.split("T")[0]}"
         }
-        if(vehicles!=null && route!=null){
-            val ve = vehicles.find { vehicle: Vehicle ->  vehicle.id == route!!.assignedVehicleId}
-            selectedOptionVehicle = "License Plate: ${ve?.licensePlate}; Year: ${ve?.year}; MaxLoad: ${ve?.maxLoad}"
+        if(vehicles!=null && route.value!!.assignedVehicleId!=0){
+            val ve = vehicles.find { vehicle: Vehicle ->  vehicle.id == route.value!!.assignedVehicleId}
+            selectedOptionVehicle = "License Plate: ${ve?.licensePlate}; Year: ${ve?.year}; MaxLoad: ${ve?.maxLoad}" // ${selectedOptionVehicle.split(';')[2].split(':')[1]} Kg): ")
         }
-        if(warehouses!=null && route!=null){
-            val waStart = warehouses.find { warehouse: Warehouse->  warehouse.id == route!!.startLocation.toInt()}
+        if(warehouses!=null && route.value!!.startLocation!=""){
+            val waStart = warehouses.find { warehouse: Warehouse->  warehouse.id == route.value!!.startLocation.toInt()}
             selectedOptionStartLocation= "Warehouse:  ${waStart!!.name}; Latitude: ${waStart.latitude}; Longitude: ${waStart.longitude} "
 
-            val waEnd = warehouses.find { warehouse: Warehouse->  warehouse.id == route!!.endLocation.toInt()}
+            val waEnd = warehouses.find { warehouse: Warehouse->  warehouse.id == route.value!!.endLocation.toInt()}
             selectedOptionEndLocation= "Warehouse:  ${waEnd!!.name}; Latitude: ${waEnd!!.latitude}; Longitude: ${waEnd!!.longitude} "
         }
 
     }
 
 
-    val updateRoute : ()->Unit = {
+    val addRoute : ()->Unit = {
         itemsFormat = mapEuroPalet.toString()
-        route!!.palets = itemsFormat
-
+        route.value!!.palets = itemsFormat
         GlobalScope.launch(Dispatchers.IO) {
-            isloading = true
             val user = DataRepository.getUser()!!
-            val response= RetrofitInstance.api.putTransportRoutes(transportRoute = route!!)
+            Log.d("FUNCIONORUTA", route.value!!.toString())
+            val response= RetrofitInstance.api.addTransportRoutes(transportRoute = route.value!!)
             if (response.isSuccessful) {
                 val transporRoutesResponse = response.body()
-                if(transporRoutesResponse==null){
-                    Log.d("FUNCIONORUTA", route.toString())
+                if(transporRoutesResponse!=null){
+
                     val zonedDateTime = ZonedDateTime.now()
                     val formattedDate = zonedDateTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
                     val addTransaccion = RetrofitInstance.api.addHistory(
-                        Transaction(0,user.id.toString(),user.code, "The data of the ${route?.id} route has been modified",
+                        Transaction(0,user.id.toString(),user.code, "a route has been added",
                             formattedDate , 2)
                     )
                     if(addTransaccion.isSuccessful){
                         Log.d("Transaccion", "OK")
                         withContext(Dispatchers.Main){
-                            Toast.makeText(context, "Route has been updated", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "Route has been added", Toast.LENGTH_SHORT).show()
                             navController.navigate("routeManagement")
                         }
                     }else{
@@ -275,10 +292,7 @@ fun UpdateRouteScreen(navController: NavController){
                     Log.e("excepcionROUTEB", "Error al obtener el cuerpo del error: $e")
                 }
             }
-            delay(2100)
-            isloading = false
         }
-
     }
 
 
@@ -356,7 +370,7 @@ fun UpdateRouteScreen(navController: NavController){
                             employees?.forEach { employee ->
                                 DropdownMenuItem(onClick = {
                                     selectedOptionCarrier= "Name: ${employee.name}; Role: Carrier"
-                                    route!!.carrierId = employee.id
+                                    route.value!!.carrierId = employee.id
                                     isMenuExpandedCarrier = false
                                 }) {
                                     Text( "Name: ${employee.name}  Role: Carrier")
@@ -389,7 +403,7 @@ fun UpdateRouteScreen(navController: NavController){
                             dates?.forEach { date->
                                 DropdownMenuItem(onClick = {
                                     selectedOptionDate = "Date: ${date}"
-                                    route!!.date = date.toString()
+                                    route.value!!.date = date.toString()
                                     isMenuExpandedDate= false
                                 }) {
                                     Text( "Date: ${date}" )
@@ -423,7 +437,7 @@ fun UpdateRouteScreen(navController: NavController){
                             vehicles?.forEach { ve ->
                                 DropdownMenuItem(onClick = {
                                     selectedOptionVehicle= "License Plate: ${ve.licensePlate};Year: ${ve.year}; Max Load: ${ve.maxLoad}"
-                                    route!!.assignedVehicleId = ve.id
+                                    route.value!!.assignedVehicleId = ve.id
                                     isMenuExpandedVehicle = false
                                 }) {
                                     Text( "License Plate: ${ve.licensePlate}  Max Load: ${ve.maxLoad} Year: ${ve.year}" )
@@ -534,7 +548,7 @@ fun UpdateRouteScreen(navController: NavController){
                             warehouses?.forEach { waStart->
                                 DropdownMenuItem(onClick = {
                                     selectedOptionStartLocation = "Warehouse:  ${waStart!!.name}; Latitude: ${waStart.latitude}; Longitude: ${waStart.longitude}"
-                                    route!!.startLocation = waStart.id.toString()
+                                    route.value!!.startLocation = waStart.id.toString()
                                     isMenuExpandedStartLocation= false
                                 }) {
                                     Text( "Warehouse:  ${waStart!!.name} Latitude: ${waStart.latitude} Longitude: ${waStart.longitude}" )
@@ -567,7 +581,7 @@ fun UpdateRouteScreen(navController: NavController){
                             warehouses?.forEach { waEnd->
                                 DropdownMenuItem(onClick = {
                                     selectedOptionEndLocation = "Warehouse:  ${waEnd!!.name}; Latitude: ${waEnd.latitude}; Longitude: ${waEnd.longitude}"
-                                    route!!.endLocation = waEnd.id.toString()
+                                    route.value!!.endLocation = waEnd.id.toString()
                                     isMenuExpandedEndLocation= false
                                 }) {
                                     Text( "Warehouse:  ${waEnd!!.name} Latitude: ${waEnd.latitude} Longitude: ${waEnd.longitude}" )
@@ -605,7 +619,7 @@ fun UpdateRouteScreen(navController: NavController){
                                 .fillMaxWidth(),
                             onClick = {
                                 //warehouse.name =name
-                                updateRoute()
+                                addRoute()
                             },
                             colors = ButtonDefaults.elevatedButtonColors(
                                 containerColor = Color(0xff5a79ba)
@@ -614,7 +628,7 @@ fun UpdateRouteScreen(navController: NavController){
                                 defaultElevation = 5.dp
                             )
                         ){
-                            Text(text = "Update", color = Color.White)
+                            Text(text = "Add", color = Color.White)
                         }
                     }
                     Spacer(modifier = Modifier
@@ -675,7 +689,7 @@ fun ShowListDialog(listaItems: List<Item>, onDismiss: () -> Unit, onSuccessfully
                     Text(text = "Total weight: ${roundedTotalWeight}/1500 Kg")
                     ElevatedButton(
                         onClick = {
-                                onSuccessfully()
+                            onSuccessfully()
                         },
                         colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
                             containerColor = Color(0xff5a79ba)
@@ -756,64 +770,64 @@ fun itemTemplate(item: Item, onCountStateChanged: (Double) -> Unit){
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceAround
     ) {
-            ElevatedButton(
-                onClick = {
-                    if (countState.value>0){
-                        count--
+        ElevatedButton(
+            onClick = {
+                if (countState.value>0){
+                    count--
 
-                        myMap[item.id] = "${item.id}:${count}:${count * item.weightPerUnit};"
+                    myMap[item.id] = "${item.id}:${count}:${count * item.weightPerUnit};"
 
-                        onCountStateChanged(count * item.weightPerUnit)
+                    onCountStateChanged(count * item.weightPerUnit)
 
-                    }
-                },
-                colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
-                    containerColor = Color(0xff5a79ba)
-                ),
-                elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
-                    defaultElevation = 5.dp
-                )
-            ) {
-                androidx.compose.material.Text("-", color = Color.White)
-            }
-            TextField(
-                value = countState.value.toString(),
-                onValueChange = { newValue ->
-                    val value = newValue.toIntOrNull() ?: 0
-                    if(value>=0 && value<=item.stock){
-                        count = value
-
-                        myMap[item.id] = "${item.id}:${count}:${count * item.weightPerUnit};"
-
-                        onCountStateChanged(count * item.weightPerUnit)
-                    }
-                },
-                modifier = Modifier
-                    .padding(8.dp)
-                    .width(60.dp)
-                    .height(45.dp)
-
+                }
+            },
+            colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                containerColor = Color(0xff5a79ba)
+            ),
+            elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                defaultElevation = 5.dp
             )
-            ElevatedButton(
-                onClick = {
-                    if (countState.value<item.stock){
-                        count++
+        ) {
+            androidx.compose.material.Text("-", color = Color.White)
+        }
+        TextField(
+            value = countState.value.toString(),
+            onValueChange = { newValue ->
+                val value = newValue.toIntOrNull() ?: 0
+                if(value>=0 && value<=item.stock){
+                    count = value
 
-                        myMap[item.id] = "${item.id}:${count}:${count * item.weightPerUnit};"
+                    myMap[item.id] = "${item.id}:${count}:${count * item.weightPerUnit};"
 
-                        onCountStateChanged(count * item.weightPerUnit)
+                    onCountStateChanged(count * item.weightPerUnit)
+                }
+            },
+            modifier = Modifier
+                .padding(8.dp)
+                .width(60.dp)
+                .height(45.dp)
 
-                    }
-                },
-                colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
-                    containerColor = Color(0xff5a79ba)
-                ),
-                elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
-                    defaultElevation = 5.dp
-                )
-            ) {
-                androidx.compose.material.Text("+", color = Color.White)
-            }
+        )
+        ElevatedButton(
+            onClick = {
+                if (countState.value<item.stock){
+                    count++
+
+                    myMap[item.id] = "${item.id}:${count}:${count * item.weightPerUnit};"
+
+                    onCountStateChanged(count * item.weightPerUnit)
+
+                }
+            },
+            colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                containerColor = Color(0xff5a79ba)
+            ),
+            elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                defaultElevation = 5.dp
+            )
+        ) {
+            androidx.compose.material.Text("+", color = Color.White)
+        }
 
 
     }

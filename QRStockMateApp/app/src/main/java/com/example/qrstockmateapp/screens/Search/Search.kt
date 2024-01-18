@@ -71,6 +71,12 @@ enum class SortOrder {
     ASCENDING,
     DESCENDING
 }
+enum class StateFilter {
+    NULL,
+    PENDING,
+    ON_ROUTE,
+    FINALIZED
+}
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SearchScreen(navController: NavController) {

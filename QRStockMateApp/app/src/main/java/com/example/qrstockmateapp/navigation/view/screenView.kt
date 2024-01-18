@@ -7,6 +7,7 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,19 +18,26 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddBusiness
+import androidx.compose.material.icons.filled.AddLocationAlt
 import androidx.compose.material.icons.filled.Apartment
+import androidx.compose.material.icons.filled.DirectionsCar
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.ManageAccounts
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Message
+import androidx.compose.material.icons.filled.Warehouse
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -41,6 +49,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
@@ -51,6 +60,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.edit
 import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.qrstockmateapp.R
 import com.example.qrstockmateapp.api.models.User
@@ -86,10 +96,44 @@ fun BottomNavigationScreen(navControllerLogin: NavController,sharedPreferences: 
             navController.removeOnDestinationChangedListener(listener)
         }
     }
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+
     Scaffold(
         scaffoldState = scaffoldState,
         drawerGesturesEnabled = drawerGesturesEnabled ,
-
+        floatingActionButton = {
+            if(DataRepository.getUser()?.role == 1 && currentRoute == "routeManagement"){
+                androidx.compose.material3.FloatingActionButton(onClick = {navController.navigate("addRoute") }, containerColor = Color.White, modifier = Modifier
+                    .shadow(4.dp, shape = RoundedCornerShape(18.dp))
+                    .border(0.5.dp, Color(0xff5a79ba), shape = RoundedCornerShape(18.dp)),
+                ) {
+                    Icon(imageVector = Icons.Default.AddLocationAlt, contentDescription = "Crear nota", tint = Color(0xff5a79ba), modifier = Modifier.size(30.dp))
+                }
+            }
+            if(DataRepository.getUser()?.role == 0 && currentRoute == "home"  ){
+                androidx.compose.material3.FloatingActionButton(onClick = { navController.navigate("addWarehouse")}, containerColor = Color.White, modifier = Modifier
+                    .shadow(4.dp, shape = RoundedCornerShape(18.dp))
+                    .border(0.5.dp, Color(0xff5a79ba), shape = RoundedCornerShape(18.dp)),
+                )  {
+                    Row {
+                        Icon(imageVector = Icons.Default.Add, contentDescription = "Crear nota", tint = Color(0xff5a79ba), modifier = Modifier.size(15.dp))
+                        Icon(imageVector = Icons.Default.Warehouse, contentDescription = "Crear nota", tint = Color(0xff5a79ba), modifier = Modifier.size(30.dp))
+                    }
+                }
+            }
+            if(DataRepository.getUser()?.role == 0 && currentRoute == "vehicleManagement"){
+                androidx.compose.material3.FloatingActionButton(onClick = { }, containerColor = Color.White, modifier = Modifier
+                    .shadow(4.dp, shape = RoundedCornerShape(18.dp))
+                    .border(0.5.dp, Color(0xff5a79ba), shape = RoundedCornerShape(18.dp)),
+                )  {
+                    Row {
+                        Icon(imageVector = Icons.Default.Add, contentDescription = "Crear nota", tint = Color(0xff5a79ba), modifier = Modifier.size(15.dp))
+                        Icon(imageVector = Icons.Default.DirectionsCar, contentDescription = "Crear nota", tint = Color(0xff5a79ba), modifier = Modifier.size(30.dp))
+                    }              }
+            }
+        },
+        floatingActionButtonPosition = FabPosition.End,
         drawerContent = {
             Drawer(
 
@@ -106,16 +150,48 @@ fun BottomNavigationScreen(navControllerLogin: NavController,sharedPreferences: 
             TopAppBar(
                 backgroundColor = Color.White,
                 title = {
-                    // Colocar la imagen en el centro
-                    Box(
-                        modifier = Modifier.fillMaxSize().padding(10.dp).padding(end = 66.dp),
-                        contentAlignment = Alignment.Center
+                    // Colocar la imagen en el centro y el icono a la derecha
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(10.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.icon_white),
-                            contentDescription = "",
-                            colorFilter = ColorFilter.tint(Color(0xff5a79ba)) // Invertir colores de la imagen
-                        )
+                        Box(
+                            modifier = Modifier
+                                .weight(1f)
+                                .fillMaxSize()
+                                .padding(end = 25.dp)
+                                .fillMaxHeight()
+                                .wrapContentSize(Alignment.Center),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            // Imagen en el centro
+                            Image(
+                                painter = painterResource(id = R.drawable.icon_white),
+                                contentDescription = "",
+                                colorFilter = ColorFilter.tint(Color(0xff5a79ba))
+                            )
+                        }
+
+                        // Icono a la derecha
+                        Box(
+                            modifier = Modifier
+                                .padding(end = 16.dp)
+                                .fillMaxHeight()
+                                .wrapContentSize(Alignment.Center),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            androidx.compose.material3.Icon(
+                                imageVector = Icons.Filled.Message,
+                                contentDescription = null,
+                                tint = Color(0xff5a79ba)
+                            )
+                            Badge(
+                                content = { Text(text = "5", color = Color.White) },
+                                modifier = Modifier.offset(x = 12.dp, y = -8.dp)
+                            )
+                        }
                     }
                 },
                 navigationIcon = {
@@ -257,7 +333,9 @@ fun Drawer(
                     imageVector = Icons.Filled.Apartment,
                     contentDescription = "",
                     tint =  Color(0xff5a79ba),
-                    modifier = Modifier.height(40.dp).size(48.dp),
+                    modifier = Modifier
+                        .height(40.dp)
+                        .size(48.dp),
                 )
                 Spacer(modifier = Modifier.width(7.dp))
                 Text("Company: ${DataRepository.getCompany()?.name} \nCode: ${DataRepository.getUser()?.code}", fontSize = 20.sp, fontWeight = FontWeight.Bold, color=  Color(0xff5a79ba))
@@ -393,7 +471,7 @@ fun Drawer(
                     modifier = Modifier
                         .fillMaxWidth()
                         .fillMaxHeight()
-                        .padding(top = 16.dp,start=16.dp, end=16.dp, bottom = 60.dp),
+                        .padding(top = 16.dp, start = 16.dp, end = 16.dp, bottom = 60.dp),
                     verticalArrangement = Arrangement.Bottom
 
                 ) {

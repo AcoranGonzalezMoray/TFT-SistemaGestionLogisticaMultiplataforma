@@ -133,6 +133,7 @@ fun ManageUserScreen(navController: NavController) {
                 .align(Alignment.TopCenter)
                 .zIndex(1f),
             backgroundColor =  Color.White,
+            contentColor = Color(0xff5a79ba)
         )
         Column(
             modifier = Modifier

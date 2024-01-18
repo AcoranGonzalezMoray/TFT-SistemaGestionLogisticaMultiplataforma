@@ -133,8 +133,17 @@ interface ApiService {
         @Path("code") code: String
     ): Response<List<TransportRoute>>
 
-    @PUT("TransportRoute/TransportRoutes/{code}")
+    @PUT("TransportRoute/")
     suspend fun putTransportRoutes(
+        @Body transportRoute: TransportRoute
+    ): Response<Void>
+
+    @HTTP(method = "DELETE", path = "TransportRoute/", hasBody = true)
+    suspend fun deleteTransportRoutes(
+        @Body transportRoute: TransportRoute
+    ): Response<Void>
+    @POST("TransportRoute/")
+    suspend fun addTransportRoutes(
         @Body transportRoute: TransportRoute
     ): Response<TransportRoute>
 
