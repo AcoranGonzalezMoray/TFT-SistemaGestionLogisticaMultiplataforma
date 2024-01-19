@@ -16,11 +16,17 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.CircularProgressIndicator
@@ -30,29 +36,48 @@ import androidx.compose.material.Icon
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AddAPhoto
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Inventory
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.example.qrstockmateapp.R
+import com.example.qrstockmateapp.api.models.Item
 import com.example.qrstockmateapp.api.models.Transaction
 import com.example.qrstockmateapp.api.models.User
 import com.example.qrstockmateapp.api.services.RetrofitInstance
 import com.example.qrstockmateapp.navigation.repository.DataRepository
+import com.example.qrstockmateapp.screens.Carrier.Route.PointMarker
+import com.example.qrstockmateapp.screens.Carrier.RouteManagement.UpdateRoute.ShowListDialog
+import com.example.qrstockmateapp.screens.Carrier.RouteManagement.UpdateRoute.itemTemplate
+import com.example.qrstockmateapp.screens.Carrier.RouteManagement.UpdateRoute.myMap
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.Marker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -71,8 +96,11 @@ fun UpdateWarehouseScreen(navController: NavController) {
     var warehouse = remember { DataRepository.getWarehousePlus() }
     var selectedOption by remember { mutableStateOf("Select an existing administrator to associate with the warehouse") }
     var isloading by remember { mutableStateOf<Boolean>(false) }
+    var showDialog by remember { mutableStateOf(false) }
+    var pinLocation by remember { mutableStateOf<LatLng?>(null) }
 
     val context = LocalContext.current
+
 
     val updateImage:(File)->Unit={file ->
         GlobalScope.launch(Dispatchers.IO){
@@ -159,6 +187,8 @@ fun UpdateWarehouseScreen(navController: NavController) {
     var employees = remember { DataRepository.getEmployees()?.filter { it.role == 1 } ?: emptyList() }
 
     LaunchedEffect(Unit){
+        pinLocation = LatLng(warehouse!!.latitude, warehouse!!.longitude)
+
         if(employees!=null && warehouse!=null)selectedOption= "Name: ${employees.find { user: User ->  user.id == warehouse.idAdministrator}?.name}  Role: Administrator Code: ${employees.find { user: User ->  user.id == warehouse.idAdministrator}?.code};${employees.find { user: User ->  user.id == warehouse.idAdministrator}?.id}"
     }
 
@@ -176,6 +206,10 @@ fun UpdateWarehouseScreen(navController: NavController) {
             try {
                 if(warehouse!=null){
                     Log.d("excepcionWarehouseCambio","${warehouse}")
+                    if(pinLocation!=null){
+                        warehouse.longitude = pinLocation!!.longitude
+                        warehouse.latitude = pinLocation!!.latitude
+                    }
                     val response =  RetrofitInstance.api.updateWarehouse(warehouse)
 
                     if (response.isSuccessful) {
@@ -200,6 +234,8 @@ fun UpdateWarehouseScreen(navController: NavController) {
                             }
                         }
                         withContext(Dispatchers.Main){
+                            Toast.makeText(context, "Warehouse successfully updated", Toast.LENGTH_SHORT).show()
+
                             navController.navigate("home")
                         }
                     }else{
@@ -230,11 +266,22 @@ fun UpdateWarehouseScreen(navController: NavController) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .verticalScroll(rememberScrollState())
                 .padding(16.dp)
         ) {
+            if (showDialog) {
+                ShowDialog(
+                    onDismiss = { showDialog = false},
+                    onSuccessfully = {
+                        showDialog = false
+
+                        pinLocation = it
+                    }
+                )
+            }
             Box(
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .height(300.dp)
             ) {
                 if(warehouse!=null && !warehouse.url.isNullOrBlank()){
                     val painter = rememberImagePainter(
@@ -248,16 +295,14 @@ fun UpdateWarehouseScreen(navController: NavController) {
                         painter = painter,
                         contentDescription = null,
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .fillMaxHeight(0.5f)
+                            .fillMaxSize()
                     )
                 }else{
                     Image(
                         painter = painterResource(id = R.drawable.warehouse), // Reemplaza con tu lógica para cargar la imagen
                         contentDescription = null,
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .fillMaxHeight(0.5f) // La imagen ocupa la mitad de la pantalla
+                            .fillMaxSize()
                     )
                 }
                 Box(modifier = Modifier.fillMaxWidth()) {
@@ -322,7 +367,44 @@ fun UpdateWarehouseScreen(navController: NavController) {
                             .fillMaxWidth()
                             .padding(4.dp)
                     )
-                    Box(modifier = Modifier.fillMaxWidth().padding(4.dp)) {
+                    Spacer(modifier = Modifier.height(10.dp))
+                    ElevatedButton(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        onClick = {
+                            showDialog = true
+                        },
+                        colors =  androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                            containerColor = Color(0xff5a79ba)
+                        ),
+                        elevation =  androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                            defaultElevation = 5.dp
+                        )
+                    ){
+                        Icon(imageVector = Icons.Filled.Add, contentDescription = null, tint = Color.White )
+                    }
+                    Spacer(modifier = Modifier.height(10.dp))
+                    if(pinLocation!=null){
+                        ElevatedButton(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            onClick = {
+
+                            },
+                            colors =  androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                                containerColor = Color.White
+                            ),
+                            elevation =  androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                                defaultElevation = 5.dp
+                            )
+                        ){
+                            Text("${pinLocation}", color = Color(0xff5a79ba))
+                        }
+                        Spacer(modifier = Modifier.height(10.dp))
+                    }
+                    Box(modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(4.dp)) {
                         Text(
                             text = selectedOption,
                             modifier = Modifier
@@ -396,7 +478,94 @@ fun UpdateWarehouseScreen(navController: NavController) {
                     }
                 }
             }
+            Spacer(modifier = Modifier
+                .fillMaxWidth()
+                .height(60.dp))
 
         }
+
     }
+
+
 }
+@Composable
+fun ShowDialog(onDismiss: () -> Unit, onSuccessfully: (LatLng) -> Unit) {
+    var pinLocation by remember { mutableStateOf<LatLng?>(null) }
+
+    Dialog(
+        onDismissRequest = {
+            pinLocation?.let { onSuccessfully(it) }
+            onDismiss()
+        },
+        properties = DialogProperties(
+            dismissOnClickOutside = true,
+            dismissOnBackPress = true
+        ),
+        content = {
+            Column(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically, // Alineación vertical
+                    horizontalArrangement = Arrangement.SpaceAround
+                ){
+                    ElevatedButton(
+                        modifier = Modifier
+                            .padding(top = 8.dp)
+                        ,
+                        onClick = {
+                            onDismiss.invoke()
+                        },
+                        colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                            containerColor = Color.White
+                        ),
+                        elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                            defaultElevation = 5.dp
+                        )
+                    ){
+                        Text(text ="Cancel", color = Color(0xff5a79ba))
+                    }
+                    ElevatedButton(
+                        modifier = Modifier
+                            .padding(top = 8.dp)
+                        ,
+                        onClick = {
+                            onSuccessfully.invoke(pinLocation!!)
+                        },
+                        colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                            containerColor = Color(0xff5a79ba)
+                        ),
+                        elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                            defaultElevation = 5.dp
+                        )
+                    ){
+                        Text(text ="Continue", color = Color.White)
+                    }
+                }
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                ) {
+                    GoogleMap(
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        onMapClick = { clickedLatLng ->
+                            // Al hacer clic en el mapa, actualiza la ubicación del pin
+                            pinLocation = null
+                            pinLocation = clickedLatLng
+                            Log.d("CLICK", clickedLatLng.toString())
+                        }
+                    ) {
+                        pinLocation?.let { location ->
+                            PointMarker(location, "Pin Location", "Description", BitmapDescriptorFactory.defaultMarker(), "tag", false)
+                        }
+                    }
+                }
+            }
+        }
+    )
+}
+
+

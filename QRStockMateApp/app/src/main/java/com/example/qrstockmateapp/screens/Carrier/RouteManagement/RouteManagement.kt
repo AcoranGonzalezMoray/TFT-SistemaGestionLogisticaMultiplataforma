@@ -71,6 +71,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
 import com.example.qrstockmateapp.R
+import com.example.qrstockmateapp.api.models.Transaction
 import com.example.qrstockmateapp.api.models.TransportRoute
 import com.example.qrstockmateapp.api.models.statusRoleToString
 import com.example.qrstockmateapp.api.services.RetrofitInstance
@@ -85,6 +86,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.apache.poi.hpsf.Date
 import java.text.SimpleDateFormat
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import java.util.Locale
 
@@ -356,12 +359,29 @@ fun TransportRouteItem(route: TransportRoute, navController: NavController) {
 
     val deleteRoute : ()->Unit = {
         GlobalScope.launch(Dispatchers.IO) {
+            val user = DataRepository.getUser()!!
 
             val response= RetrofitInstance.api.deleteTransportRoutes(route)
 
             if (response.isSuccessful) {
-                withContext(Dispatchers.Main){
-                    Toast.makeText(context, "Route has been deleted", Toast.LENGTH_SHORT).show()
+                val zonedDateTime = ZonedDateTime.now()
+                val formattedDate = zonedDateTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+                val addTransaccion = RetrofitInstance.api.addHistory(
+                    Transaction(0,user.id.toString(),user.code, "The ${route?.id} route has been deleted",
+                        formattedDate , 3)
+                )
+                if(addTransaccion.isSuccessful){
+                    Log.d("Transaccion", "OK")
+                    withContext(Dispatchers.Main){
+                        Toast.makeText(context, "Route has been deleted", Toast.LENGTH_SHORT).show()
+                    }
+                }else{
+                    try {
+                        val errorBody = addTransaccion.errorBody()?.string()
+                        Log.d("Transaccion", errorBody ?: "Error body is null")
+                    } catch (e: Exception) {
+                        Log.e("Transaccion", "Error al obtener el cuerpo del error: $e")
+                    }
                 }
             } else{
                 try {

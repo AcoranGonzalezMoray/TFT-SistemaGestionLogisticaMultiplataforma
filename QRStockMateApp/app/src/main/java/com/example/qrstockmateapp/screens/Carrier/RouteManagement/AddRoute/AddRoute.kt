@@ -267,7 +267,7 @@ fun AddRouteScreen(navController: NavController){
                     val formattedDate = zonedDateTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
                     val addTransaccion = RetrofitInstance.api.addHistory(
                         Transaction(0,user.id.toString(),user.code, "a route has been added",
-                            formattedDate , 2)
+                            formattedDate , 0)
                     )
                     if(addTransaccion.isSuccessful){
                         Log.d("Transaccion", "OK")

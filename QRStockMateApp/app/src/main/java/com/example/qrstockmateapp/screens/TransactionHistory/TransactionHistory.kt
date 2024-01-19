@@ -12,6 +12,8 @@ import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
+
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -32,6 +34,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Download
+import androidx.compose.material.icons.filled.SwapVert
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -57,6 +60,7 @@ import com.example.qrstockmateapp.api.models.Warehouse
 import com.example.qrstockmateapp.api.models.operationToString
 import com.example.qrstockmateapp.api.services.RetrofitInstance
 import com.example.qrstockmateapp.navigation.repository.DataRepository
+import com.example.qrstockmateapp.screens.Search.SortOrder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -65,14 +69,22 @@ import org.apache.poi.ss.usermodel.Row
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import java.io.File
 import java.io.FileOutputStream
+import java.text.SimpleDateFormat
+import java.time.Instant
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeFormatterBuilder
+import java.time.format.DateTimeParseException
+import java.time.temporal.ChronoField
+import java.util.Locale
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun TransactionHistoryScreen(navController: NavController) {
     var transactionList by remember { mutableStateOf(emptyList<Transaction>()) }
     var searchQuery by remember { mutableStateOf("") };
+    var sortOrder by remember { mutableStateOf(SortOrder.ASCENDING) } // Puedes definir un enum SortOrder con ASCENDING y DESCENDING
+    var filteredItems by remember { mutableStateOf<List<Transaction>>(emptyList()) }
 
     val customTextFieldColors = TextFieldDefaults.outlinedTextFieldColors(
         cursorColor = Color.Black,
@@ -82,7 +94,7 @@ fun TransactionHistoryScreen(navController: NavController) {
         backgroundColor = Color.LightGray
     )
 
-    var filteredItems = if (searchQuery.isEmpty()) {
+    filteredItems = if (searchQuery.isEmpty()) {
         transactionList
     } else {
         transactionList.filter { item->
@@ -125,20 +137,51 @@ fun TransactionHistoryScreen(navController: NavController) {
                     .fillMaxWidth()
                     .padding(bottom = 12.dp)
             )
-            ElevatedButton(
-                modifier = Modifier.align(Alignment.CenterHorizontally),
-                onClick = {
-                    downloadTransactionList(context = context, transactionList = transactionList, fileName = "transactions${LocalDateTime.now()}.xlsx")
-                },
-                colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
-                    containerColor = Color(0xff5a79ba)
-                ),
-                elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
-                    defaultElevation = 5.dp
-                )
-            ){
-                Text(text = "Download", color = Color.White)
-                Icon(imageVector = Icons.Filled.Download, contentDescription ="download", tint = Color.White )
+            Row(modifier = Modifier.fillMaxWidth()) {
+                ElevatedButton(
+                    modifier = Modifier.weight(0.5f).padding(5.dp),
+                    onClick = {
+                        sortOrder = if (sortOrder == SortOrder.ASCENDING) SortOrder.DESCENDING else SortOrder.ASCENDING
+                        filteredItems = when (sortOrder) {
+                            SortOrder.ASCENDING -> {
+                                filteredItems.sortedBy { it.id }
+                            }
+                            SortOrder.DESCENDING -> {
+                                filteredItems.sortedByDescending { it.id }
+                            }
+                        }
+                        Log.d("ORDEN", filteredItems.toString())
+
+
+                    },
+                    colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                        containerColor = Color(0xff5a79ba)
+                    ),
+                    elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                        defaultElevation = 5.dp
+                    )
+                ){
+                    Text(
+                        color = Color.White,
+                        text = if (sortOrder == SortOrder.ASCENDING) "Sort Ascending" else "Sort Descending"
+                    )
+                    Icon(imageVector = Icons.Filled.SwapVert, contentDescription = "sort", tint=Color.White)
+                }
+                ElevatedButton(
+                    modifier = Modifier.weight(0.5f).padding(5.dp),
+                    onClick = {
+                        downloadTransactionList(context = context, transactionList = transactionList, fileName = "transactions${LocalDateTime.now()}.xlsx")
+                    },
+                    colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                        containerColor = Color(0xff5a79ba)
+                    ),
+                    elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                        defaultElevation = 5.dp
+                    )
+                ){
+                    Text(text = "Download", color = Color.White)
+                    Icon(imageVector = Icons.Filled.Download, contentDescription ="download", tint = Color.White )
+                }
             }
 
             LazyColumn {
@@ -146,7 +189,9 @@ fun TransactionHistoryScreen(navController: NavController) {
                     TransactionListItem(transaction = transaction)
                 }
                 item {
-                    Spacer(modifier = Modifier.fillMaxWidth().height(48.dp))
+                    Spacer(modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp))
                 }
             }
         }else{
@@ -160,6 +205,7 @@ fun TransactionHistoryScreen(navController: NavController) {
         }
     }
 }
+
 
 @Composable
 fun TransactionListItem(transaction: Transaction) {

@@ -202,6 +202,9 @@ fun WarehouseList(warehouses: List<Warehouse>,navController: NavController,loadW
             WarehouseItem(warehouse,navController, loadWarehouse)
             Spacer(modifier = Modifier.height(8.dp)) // Agrega un espacio entre elementos de la lista
         }
+        item { 
+            Spacer(modifier = Modifier.padding(bottom = 40.dp))
+        }
     }
 }
 
