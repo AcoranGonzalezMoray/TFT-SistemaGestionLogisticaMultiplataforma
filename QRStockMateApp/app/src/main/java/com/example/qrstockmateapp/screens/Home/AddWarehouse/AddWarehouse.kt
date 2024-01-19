@@ -63,10 +63,10 @@ fun AddWarehouseScreen(navController: NavController) {
     var employees by remember { mutableStateOf(emptyList<User>()) } // inicializar con una lista vacía
 
     val customTextFieldColors = TextFieldDefaults.outlinedTextFieldColors(
-        cursorColor = Color.Black,
-        focusedBorderColor = Color.Black,
-        focusedLabelColor = Color.Black,
-        unfocusedBorderColor = Color.Black,
+        cursorColor =  Color(0xff5a79ba),
+        focusedBorderColor =  Color(0xff5a79ba),
+        focusedLabelColor = Color(0xff5a79ba),
+        unfocusedBorderColor =  Color(0xff5a79ba),
         backgroundColor = Color.LightGray
     )
 

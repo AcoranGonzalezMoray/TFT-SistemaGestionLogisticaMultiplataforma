@@ -163,10 +163,10 @@ fun UpdateWarehouseScreen(navController: NavController) {
     }
 
     val customTextFieldColors = TextFieldDefaults.outlinedTextFieldColors(
-        cursorColor = Color.Black,
-        focusedBorderColor = Color.Black,
-        focusedLabelColor = Color.Black,
-        unfocusedBorderColor = Color.Black,
+        cursorColor =  Color(0xff5a79ba),
+        focusedBorderColor =  Color(0xff5a79ba),
+        focusedLabelColor = Color(0xff5a79ba),
+        unfocusedBorderColor =  Color(0xff5a79ba),
         backgroundColor = Color.LightGray
     )
 
@@ -322,7 +322,7 @@ fun UpdateWarehouseScreen(navController: NavController) {
                             .fillMaxWidth()
                             .padding(4.dp)
                     )
-                    Box(modifier = Modifier.fillMaxWidth()) {
+                    Box(modifier = Modifier.fillMaxWidth().padding(4.dp)) {
                         Text(
                             text = selectedOption,
                             modifier = Modifier

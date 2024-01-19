@@ -47,8 +47,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
@@ -273,12 +276,36 @@ fun Item(item: Item,navController: NavController) {
                     .weight(1f)
                     .align(Alignment.CenterVertically)
             ) {
+                // Nombre (en negrita)
                 Text(
-                    text = "Name: ${item.name}",
-                    fontWeight = FontWeight.Bold
+                    buildAnnotatedString {
+                        withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                            append("Name:")
+                        }
+                        append(" ${item.name}")
+                    }
                 )
-                Text(text = "Warehouse: ${DataRepository.getWarehouses()?.find{ it.id == item.warehouseId}?.name}")
-                Text(text = "Stock: ${item.stock}", fontWeight = FontWeight.Bold)
+
+                // Almacén
+                Text(
+                    buildAnnotatedString {
+                        withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                            append("Warehouse:")
+                        }
+                        append(" ${DataRepository.getWarehouses()?.find { it.id == item.warehouseId }?.name}")
+                    }
+                )
+
+                // Stock (en negrita)
+                Text(
+                    buildAnnotatedString {
+                        withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                            append("Stock:")
+                        }
+                        append(" ${item.stock}")
+                    }
+                )
+
                 ElevatedButton(
                     modifier = Modifier
                         .fillMaxWidth(),

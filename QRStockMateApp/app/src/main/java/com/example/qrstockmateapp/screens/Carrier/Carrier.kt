@@ -1,6 +1,7 @@
 package com.example.qrstockmateapp.screens.Carrier
 
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -19,6 +20,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -34,13 +36,26 @@ import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
+import androidx.compose.material.icons.filled.ArrowBackIosNew
+import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.filled.Map
+import androidx.compose.material.icons.filled.SwapVert
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -49,57 +64,310 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
 import com.example.qrstockmateapp.R
 import com.example.qrstockmateapp.api.models.TransportRoute
+import com.example.qrstockmateapp.api.models.statusRoleToString
+import com.example.qrstockmateapp.api.services.RetrofitInstance
+import com.example.qrstockmateapp.navigation.repository.DataRepository
+import com.example.qrstockmateapp.screens.Carrier.RouteManagement.DatePickerSample
+import com.example.qrstockmateapp.screens.Search.SortOrder
+import com.example.qrstockmateapp.screens.Search.StateFilter
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import okhttp3.internal.wait
 import org.apache.poi.hpsf.Date
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun CarrierScreen(navController: NavController) {
     // Supongamos que tienes una lista de objetos TransportRouteModel
-    val listaRutas = listOf(
-        TransportRoute(1, "Ruta1", "Inicio1", "Fin1", Date().toString(), "", "1;2;4;4;5,2;4;3;", 1, 1,Date().toString(), 0),
-        TransportRoute(2, "Ruta2", "Inicio2", "Fin2", Date().toString(), "1", "3;2;4;4;5,2;4;3;", 2, 2,Date().toString(), 0),
-        TransportRoute(3, "Ruta3", "Inicio3", "Fin3", Date().toString(), "1", "2;2;4;4;5,2;4;3;", 3, 3,Date().toString(), 0),
-        TransportRoute(4, "Ruta4", "Inicio4", "Fin4", Date().toString(), "1", "4;2;4;4;5,2;4;3;", 4, 4,Date().toString(), 0),
-        TransportRoute(5, "Ruta3", "Inicio3", "Fin3", Date().toString(), "", "2;2;4;4;5,2;4;3;", 3, 3,Date().toString(), 0),
-        TransportRoute(6, "Ruta4", "Inicio4", "Fin4", Date().toString(), "1", "4;2;4;4;5,2;4;3;", 4, 4,Date().toString(), 0),
-        TransportRoute(7, "Ruta3", "Inicio3", "Fin3", Date().toString(), "", "2;2;4;4;5,2;4;3;", 3, 3,Date().toString(), 0),
-        TransportRoute(3, "Ruta3", "Inicio3", "Fin3", Date().toString(), "1", "2;2;4;4;5,2;4;3;", 3, 3,Date().toString(), 0),
-        TransportRoute(4, "Ruta4", "Inicio4", "Fin4", Date().toString(), "", "4;2;4;4;5,2;4;3;", 4, 4,Date().toString(), 0))
+    var transportRoutes by remember { mutableStateOf(emptyList<TransportRoute>()) }
+    var isloading by remember { mutableStateOf(false) }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxWidth()
-        ) {
-            items(listaRutas.chunked(2)) { rutasPorFila ->
-                itemRoute(rutasPorFila, navController)
+    var isDatePickerVisible by remember { mutableStateOf(false) }
+    var selectedDate by remember { mutableStateOf<Triple<Int, Int, Int>?>(Triple(0,0,0)) }
+    var sortOrder by remember { mutableStateOf(SortOrder.ASCENDING) } // Puedes definir un enum SortOrder con ASCENDING y DESCENDING
+    var stateFilter by remember { mutableStateOf(StateFilter.NULL) }
+
+    var filteredItems by remember { mutableStateOf<List<TransportRoute>>(emptyList()) }
+
+    fun filterOption(status: Int):List<TransportRoute>{
+
+        if(status == 5){
+            var tmp = if (selectedDate == Triple(0, 0, 0)) {
+                transportRoutes
+            } else {
+                transportRoutes.filter { item ->
+                    val (year, month, day) = selectedDate!!
+                    val (itemYear, itemMonth, itemDay) = item.date.split("T")[0].split("-").map { it.toInt() }
+                    day == itemDay && month == itemMonth && year == itemYear
+                }
             }
+            return tmp
+        }else {
+            var tmp = if (selectedDate == Triple(0, 0, 0)) {
+                transportRoutes.filter { it.status == status }
+            } else {
+                transportRoutes.filter { item ->
+                    val (year, month, day) = selectedDate!!
+                    val (itemYear, itemMonth, itemDay) = item.date.split("T")[0].split("-").map { it.toInt() }
+                    day == itemDay && month == itemMonth && year == itemYear
+                }.filter { it.status == status }
+            }
+            return tmp
         }
     }
+
+    filteredItems = filterOption(5)
+
+    val loadRoutes : ()->Unit = {
+        GlobalScope.launch(Dispatchers.IO) {
+            isloading = true
+            val response= RetrofitInstance.api.getTransportRoutes(DataRepository.getUser()!!.code)
+            val responseVehicle = RetrofitInstance.api.getVehicles(DataRepository.getUser()!!.code)
+
+            if (response.isSuccessful && responseVehicle.isSuccessful) {
+                val transporRoutesResponse = response.body()
+                val vehiclesResponse = responseVehicle.body()
+                if(transporRoutesResponse!=null && vehiclesResponse !=null ){
+                    transportRoutes = transporRoutesResponse.filter { transportRoute: TransportRoute -> transportRoute.carrierId == DataRepository.getUser()!!.id }
+                    DataRepository.setVehicles(vehiclesResponse)
+                    Log.d("route", "$transportRoutes")
+                }
+            } else{
+                try {
+                    val errorBody = response.errorBody()?.string()
+                    Log.d("excepcionROUTE", errorBody ?: "Error body is null")
+                } catch (e: Exception) {
+                    Log.e("excepcionROUTEB", "Error al obtener el cuerpo del error: $e")
+                }
+            }
+            delay(1100)
+            isloading = false
+        }
+    }
+
+    val pullRefreshState = rememberPullRefreshState(
+        refreshing = isloading,
+        onRefresh = loadRoutes
+    )
+
+    LaunchedEffect(Unit){
+        loadRoutes()
+    }
+    Box(
+        modifier = Modifier
+            .pullRefresh(pullRefreshState)
+    ){
+        PullRefreshIndicator(
+            refreshing = isloading,
+            state = pullRefreshState,
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .zIndex(1f),
+            backgroundColor =  Color.White,
+            contentColor = Color(0xff5a79ba)
+        )
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp)
+        ) {
+            Column {
+                // Hacer algo con la fecha seleccionada en el componente padre
+                selectedDate?.let { (day, month, year) ->
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(90.dp)
+                            .padding(16.dp),
+                        elevation = CardDefaults.cardElevation(
+                            defaultElevation = 15.dp
+                        ),
+                        colors = CardDefaults.cardColors(
+                            containerColor =Color(0xff5a79ba),
+                        ),
+                        onClick = {isDatePickerVisible = true}
+                    ) {
+                        if(day==0&&month==0&&year==0){
+                            Row(
+                                modifier = Modifier.fillMaxSize(),
+                                verticalAlignment = Alignment.CenterVertically, // Alineación vertical
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Icon(imageVector = Icons.Filled.ArrowBackIosNew, contentDescription ="", tint=Color.White)
+                                Text(
+                                    "ALL",
+                                    modifier = Modifier
+                                        .wrapContentSize(Alignment.Center),
+                                    color = Color.White,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 20.sp // Ajusta el tamaño de la fuente según tus necesidades
+                                )
+                                Icon(imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos, contentDescription ="",tint=Color.White)
+                            }
+                        }else{
+                            Row(
+                                modifier = Modifier.fillMaxSize(),
+                                verticalAlignment = Alignment.CenterVertically, // Alineación vertical
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Icon(imageVector = Icons.Filled.ArrowBackIosNew, contentDescription ="" ,tint=Color.White)
+                                Text(
+                                    "$day-$month-$year",
+                                    modifier = Modifier
+                                        .wrapContentSize(Alignment.Center),
+                                    color = Color.White,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 20.sp // Ajusta el tamaño de la fuente según tus necesidades
+                                )
+                                Icon(imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos, contentDescription ="" ,tint=Color.White)
+                            }
+                        }
+                    }
+
+                }
+                if (isDatePickerVisible) {
+                    DatePickerSample(
+                        onDateSelected = { date ->
+                            selectedDate = date
+                        },
+                        onClose = {
+                            isDatePickerVisible = false
+                        },
+                        onReset = {
+                            selectedDate = Triple(0,0,0)
+                            sortOrder = SortOrder.ASCENDING
+                            stateFilter = StateFilter.NULL
+                        }
+                    )
+                }
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp, end = 16.dp)
+                ){
+                    ElevatedButton(
+                        modifier = Modifier.weight(0.5f),
+                        onClick = {
+                            sortOrder = if (sortOrder == SortOrder.ASCENDING) SortOrder.DESCENDING else SortOrder.ASCENDING
+                            filteredItems = when (sortOrder) {
+                                SortOrder.ASCENDING -> {
+                                    filteredItems.sortedBy { item ->
+                                        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                                        dateFormat.parse(item.date)
+                                    }
+                                }
+                                SortOrder.DESCENDING -> {
+                                    filteredItems.sortedByDescending { item ->
+                                        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                                        dateFormat.parse(item.date)
+                                    }
+                                }
+                            }
+                        },
+                        colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                            containerColor = Color(0xff5a79ba)
+                        ),
+                        elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                            defaultElevation = 5.dp
+                        )
+                    ){
+                        androidx.compose.material.Text(
+                            color = Color.White,
+                            text = if (sortOrder == SortOrder.ASCENDING) "Sort Ascending" else "Sort Descending"
+                        )
+                        androidx.compose.material.Icon(
+                            imageVector = Icons.Filled.SwapVert,
+                            contentDescription = "sort",
+                            tint = Color.White
+                        )
+                    }
+                    Spacer(modifier = Modifier.padding(16.dp))
+                    ElevatedButton(
+                        modifier = Modifier.weight(0.5f),
+                        onClick = {
+                            stateFilter = when (stateFilter) {
+                                StateFilter.NULL -> StateFilter.PENDING
+                                StateFilter.PENDING -> StateFilter.ON_ROUTE
+                                StateFilter.ON_ROUTE -> StateFilter.FINALIZED
+                                StateFilter.FINALIZED -> StateFilter.NULL
+                            }
+                            Log.d("FILTER", filteredItems.toString())
+                            filteredItems = when (stateFilter) {
+                                StateFilter.PENDING -> filterOption(0)
+                                StateFilter.ON_ROUTE -> filterOption(1)
+                                StateFilter.FINALIZED -> filterOption(2)
+                                StateFilter.NULL -> filterOption(5)
+                            }
+                        },
+                        colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                            containerColor = Color(0xff5a79ba)
+                        ),
+                        elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                            defaultElevation = 5.dp
+                        )
+                    ){
+                        androidx.compose.material.Text(
+                            color = Color.White,
+                            text = when (stateFilter) {
+                                StateFilter.PENDING -> "State: Pending"
+                                StateFilter.ON_ROUTE -> "State: On Route"
+                                StateFilter.FINALIZED -> "State: Finalized"
+                                else -> "All"
+                            }
+                        )
+                        androidx.compose.material.Icon(
+                            imageVector = Icons.Filled.FilterList,
+                            contentDescription = "sort",
+                            tint = Color.White
+                        )
+                    }
+                }
+            }
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                items(filteredItems.chunked(2)) { routesPorFila ->
+                    itemRoute(routesPorFila, navController)
+                }
+                item{
+                    Spacer(modifier = Modifier
+                        .fillMaxWidth()
+                        .height(65.dp))
+                }
+            }
+        }
+
+    }
+
 }
 @Composable
-fun itemRoute(rutasPorFila: List<TransportRoute>, navController: NavController) {
+fun itemRoute(routesPorFila: List<TransportRoute>, navController: NavController) {
     val context = LocalContext.current
-    // Para cada par de rutas en la lista, crea una fila
+    // Para cada par de routes en la lista, crea una fila
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(4.dp)
     ) {
-        rutasPorFila.forEachIndexed { index, ruta ->
-            // Para cada ruta en la fila, crea una Box estilizada
+        routesPorFila.forEachIndexed { index, route ->
+            // Para cada route en la fila, crea una Box estilizada
             Card(
                 modifier = Modifier
                     .weight(1f) // Cada Box ocupa la mitad del ancho de la fila
@@ -117,7 +385,7 @@ fun itemRoute(rutasPorFila: List<TransportRoute>, navController: NavController) 
                     modifier = Modifier
                         .fillMaxWidth(),
                 ){
-                    if (ruta.arrivalTime.toString()!="") {
+                    if (route.status == 0) {
                         Badge(
                             modifier = Modifier
                                 .height(20.dp)
@@ -125,11 +393,12 @@ fun itemRoute(rutasPorFila: List<TransportRoute>, navController: NavController) 
                                 .align(Alignment.TopEnd)
                                 .offset(x = (-4).dp, y = (5).dp),
                             contentColor = Color.White,
-                            backgroundColor = Color.Red
+                            backgroundColor = Color.DarkGray
                         ) {
-                            Text("Finished", style = MaterialTheme.typography.labelSmall, color = Color.White)
+                            Text(statusRoleToString(route.status), style = MaterialTheme.typography.labelSmall, color = Color.White)
                         }
-                    }else{
+                    }
+                    if(route.status == 1){
                         Badge(
                             modifier = Modifier
                                 .height(20.dp)
@@ -139,12 +408,25 @@ fun itemRoute(rutasPorFila: List<TransportRoute>, navController: NavController) 
                             contentColor = Color.White,
                             backgroundColor = Color(0xFF006400)
                         ) {
-                            Text("Available", style = MaterialTheme.typography.labelSmall, color = Color.White)
+                            Text(statusRoleToString(route.status), style = MaterialTheme.typography.labelSmall, color = Color.White)
                         }
 
                     }
+                    if (route.status == 2) {
+                        Badge(
+                            modifier = Modifier
+                                .height(20.dp)
+                                .width(80.dp)
+                                .align(Alignment.TopEnd)
+                                .offset(x = (-4).dp, y = (5).dp),
+                            contentColor = Color.White,
+                            backgroundColor = Color.Red
+                        ) {
+                            Text(statusRoleToString(route.status), style = MaterialTheme.typography.labelSmall, color = Color.White)
+                        }
+                    }
                 }
-                // Contenido de la Box para cada ruta
+                // Contenido de la Box para cada route
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -174,22 +456,39 @@ fun itemRoute(rutasPorFila: List<TransportRoute>, navController: NavController) 
                     Spacer(modifier = Modifier.height(8.dp))
                     // Textos
                     Text(
-                        text = "ID: ${ruta.id}",
-                        color = MaterialTheme.colorScheme.onBackground,
-                        fontWeight = FontWeight.Bold
+                        buildAnnotatedString {
+                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                                append("Start Location:")
+                            }
+                            append(" ${DataRepository.getWarehouses()?.find { warehouse -> warehouse.id == route.startLocation.toInt() }?.name}")
+                        },
+                        fontSize = 12.sp
                     )
+                    Spacer(modifier = Modifier.height(4.dp))
+
                     Text(
-                        text = "Código: ${ruta.code}",
-                        color = MaterialTheme.colorScheme.onBackground
+                        buildAnnotatedString {
+                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                                append("End Location:")
+                            }
+                            append(" ${DataRepository.getWarehouses()?.find { warehouse -> warehouse.id == route.endLocation.toInt() }?.name}")
+                        },
+                        fontSize = 12.sp
                     )
+
+                    Spacer(modifier = Modifier.height(4.dp))
+
                     Text(
-                        text = "Inicio: ${ruta.startLocation}",
-                        color = MaterialTheme.colorScheme.onBackground
+                        buildAnnotatedString {
+                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                                append("Date:")
+                            }
+                            append(" ${route.date.split('T')[0]}")
+                        },
+                        fontSize = 12.sp
                     )
-                    Text(
-                        text = "Fin: ${ruta.endLocation}",
-                        color = MaterialTheme.colorScheme.onBackground
-                    )
+
+
                     Spacer(modifier = Modifier.height(8.dp))
                     ElevatedButton(
                         modifier = Modifier
@@ -197,7 +496,8 @@ fun itemRoute(rutasPorFila: List<TransportRoute>, navController: NavController) 
                             .padding(5.dp)
                             .height(40.dp),
                         onClick = {
-                            if(ruta.arrivalTime.toString()==""){
+                            if(route.status!=2){
+                                DataRepository.setRoutePlus(route)
                                 navController.navigate("route")
                             }else{
                                 Toast.makeText(context, "Route Finished!", Toast.LENGTH_SHORT).show()
@@ -220,7 +520,7 @@ fun itemRoute(rutasPorFila: List<TransportRoute>, navController: NavController) 
             }
 
             // Añadir una Box vacía si es el último elemento único en la fila
-            if (index == rutasPorFila.size - 1 && rutasPorFila.size % 2 == 1) {
+            if (index == routesPorFila.size - 1 && routesPorFila.size % 2 == 1) {
                 Box(
                     modifier = Modifier
                         .weight(1f)

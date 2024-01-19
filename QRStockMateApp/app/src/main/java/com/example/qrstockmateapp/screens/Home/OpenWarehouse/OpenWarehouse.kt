@@ -42,7 +42,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -250,12 +253,35 @@ fun Item(item: Item,navController: NavController) {
                     .weight(1f)
                     .align(Alignment.CenterVertically)
             ) {
-                androidx.compose.material.Text(
-                    text = "Name: ${item.name}",
-                    fontWeight = FontWeight.Bold
+                // Nombre (en negrita)
+                Text(
+                    buildAnnotatedString {
+                        withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                            append("Name:")
+                        }
+                        append(" ${item.name}")
+                    }
                 )
-                androidx.compose.material.Text(text = "Location: ${item.location}")
-                androidx.compose.material.Text(text = "Stock: ${item.stock}", fontWeight = FontWeight.Bold)
+
+                // Ubicación
+                Text(
+                    buildAnnotatedString {
+                        withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                            append("Location:")
+                        }
+                        append(" ${item.location}")
+                    }
+                )
+                // Stock (en negrita)
+                Text(
+                    buildAnnotatedString {
+                        withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                            append("Stock:")
+                        }
+                        append(" ${item.stock}")
+                    }
+                )
+
 
                 ElevatedButton(
                     modifier = Modifier

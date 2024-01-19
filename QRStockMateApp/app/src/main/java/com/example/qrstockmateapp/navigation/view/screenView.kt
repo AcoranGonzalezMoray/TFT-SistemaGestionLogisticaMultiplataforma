@@ -215,12 +215,12 @@ fun BottomNavigationScreen(navControllerLogin: NavController,sharedPreferences: 
         },
 
         bottomBar = {
-            BottomBar(
-                screens = ScreenModel().screensInHomeFromBottomNav,
-                navController = navController,
-
+            if(currentRoute != "route"){
+                BottomBar(
+                    screens = ScreenModel().screensInHomeFromBottomNav,
+                    navController = navController
                 )
-
+            }
         },
     ) {
         Navigation(navController = navController)

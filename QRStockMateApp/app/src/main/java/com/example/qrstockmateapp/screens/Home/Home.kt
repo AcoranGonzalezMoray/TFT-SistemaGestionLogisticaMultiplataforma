@@ -53,8 +53,11 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
@@ -376,24 +379,40 @@ fun WarehouseItem(warehouse: Warehouse,navController: NavController, loadWarehou
 
                 // Ubicación del almacén
                 Text(
-                    text = "Location: ${warehouse.location}",
+                    buildAnnotatedString {
+                        withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                            append("Location:")
+                        }
+                        append(" ${warehouse.location}")
+                    },
                     fontSize = 14.sp,
                     modifier = Modifier.padding(bottom = 4.dp)
                 )
 
                 // Organización del almacén
                 Text(
-                    text = "Organization: ${warehouse.organization}",
+                    buildAnnotatedString {
+                        withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                            append("Organization:")
+                        }
+                        append(" ${warehouse.organization}")
+                    },
                     fontSize = 14.sp,
                     modifier = Modifier.padding(bottom = 4.dp)
                 )
 
-                //Administrador
+                // Administrador
                 Text(
-                    text = "Administrator: ${DataRepository.getEmployees()?.find { user -> user.id == warehouse.idAdministrator}?.name}",
+                    buildAnnotatedString {
+                        withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                            append("Administrator:")
+                        }
+                        append(" ${DataRepository.getEmployees()?.find { user -> user.id == warehouse.idAdministrator}?.name}")
+                    },
                     fontSize = 14.sp,
                     modifier = Modifier.padding(bottom = 4.dp)
                 )
+
 
                 Row {
                     if(DataRepository.getUser()?.role==0 || DataRepository.getUser()?.role==1 ) {
