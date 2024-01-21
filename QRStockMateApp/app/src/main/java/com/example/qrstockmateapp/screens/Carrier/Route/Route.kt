@@ -89,6 +89,7 @@ import coil.compose.rememberImagePainter
 import com.example.qrstockmateapp.R
 import com.example.qrstockmateapp.api.models.TransportRoute
 import com.example.qrstockmateapp.api.models.Warehouse
+import com.example.qrstockmateapp.api.services.RetrofitInstance
 import com.example.qrstockmateapp.navigation.repository.DataRepository
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -108,10 +109,13 @@ import com.google.maps.android.compose.Polyline
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.google.maps.android.compose.rememberMarkerState
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.lang.Math.atan2
 import java.lang.Math.cos
 import java.lang.Math.sin
@@ -119,7 +123,7 @@ import java.lang.Math.sqrt
 import kotlin.math.roundToLong
 
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, DelicateCoroutinesApi::class)
 @Composable
 fun RouteScreen(navController: NavController,) {
     val scaffoldState = rememberBottomSheetScaffoldState(
@@ -162,7 +166,11 @@ fun RouteScreen(navController: NavController,) {
     Log.d("SERA?", start!!.latitude.toString())
     val startPoint =  LatLng(start!!.latitude, start.longitude)
     val endPoint = LatLng(end!!.latitude, end.longitude)
-    val launchPoint = LatLng(28.09973, -15.41343)
+    val launchPoint = LatLng(81.444125, 163.066796)
+
+    //val launchPoint = LatLng(start.latitude, start.longitude)
+    //81.444125, 163.066796
+
 
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(launchPoint, 90f)
@@ -208,6 +216,9 @@ fun RouteScreen(navController: NavController,) {
 
     // Estado para almacenar la ubicación actual
     var currentLocation by remember { mutableStateOf<LatLng?>(null) }
+    var change by remember { mutableStateOf<Boolean>(false) }
+
+
     var isRouteStarted by remember { mutableStateOf(false) }
 
     // Configuración de seguimiento de ubicación
@@ -239,6 +250,8 @@ fun RouteScreen(navController: NavController,) {
                 if (isGranted) {
                     // Permiso concedido, reiniciar el Composable
                     locationPermissionGranted = true
+                }else{
+                    Toast.makeText(context, "Need Location", Toast.LENGTH_SHORT).show()
                 }
             }
 
@@ -246,11 +259,84 @@ fun RouteScreen(navController: NavController,) {
             launcher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
         }
 
-        // Puedes mostrar un mensaje indicando que el permiso es necesario aquí
-        return Text(text = "Need Location")
+
+    }
+
+    val updateLocation: (latLng: LatLng) -> Unit = { latLng ->
+
+        GlobalScope.launch(Dispatchers.IO) {
+            change = false
+            try {
+                // Realizar la solicitud de actualización de ubicación
+                val locationResponse = RetrofitInstance.api.updateLocationVehicle(route!!.assignedVehicleId, "${latLng.latitude};${latLng.longitude}")
+                if(locationResponse.isSuccessful){
+                    Log.d("LocationUpdates", "Ubicación actualizada con éxito: $latLng")
+                }
+
+                change = true
+            } catch (e: Exception) {
+                // Manejar errores aquí
+                Log.e("LocationUpdates", "Error al actualizar la ubicación: $e")
+            }
+            change = true
+        }
+    }
+
+    val saveRoute: () -> Unit = {
+        GlobalScope.launch(Dispatchers.IO) {
+            try {
+                route!!.route = userRoutePoints.toString()
+                // Realizar la solicitud de actualización de ubicación
+                val locationResponse = RetrofitInstance.api.putTransportRoutes(route)
+                if(locationResponse.isSuccessful){
+                    Log.d("InitRoute", "Ubicación actualizada")
+                }
+                change = true
+            } catch (e: Exception) {
+                // Manejar errores aquí
+                Log.e("InitRoute", "Error al actualizar la ubicación: $e")
+            }
+        }
+    }
+
+    val startRoute: () -> Unit = {
+
+        GlobalScope.launch(Dispatchers.IO) {
+            try {
+                // Realizar la solicitud de actualización de ubicación
+                val locationResponse = RetrofitInstance.api.initRoute(route!!.id)
+                if(locationResponse.isSuccessful){
+                    Log.d("InitRoute", "Ubicación actualizada")
+                }
+                change = true
+            } catch (e: Exception) {
+                // Manejar errores aquí
+                Log.e("InitRoute", "Error al actualizar la ubicación: $e")
+            }
+        }
     }
 
 
+    val finishRoute: () -> Unit = {
+
+        GlobalScope.launch(Dispatchers.IO) {
+            try {
+                // Realizar la solicitud de actualización de ubicación
+                val locationResponse = RetrofitInstance.api.finishRoute(route!!.id)
+                if(locationResponse.isSuccessful){
+                    Log.d("InitRoute", "Ubicación actualizada")
+                    withContext(Dispatchers.Main){
+                        Toast.makeText(context, "Finalized route", Toast.LENGTH_SHORT).show()
+                        navController.popBackStack()
+                    }
+
+                }
+            } catch (e: Exception) {
+                // Manejar errores aquí
+                Log.e("InitRoute", "Error al actualizar la ubicación: $e")
+            }
+        }
+    }
 
     val locationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult?) {
@@ -258,8 +344,11 @@ fun RouteScreen(navController: NavController,) {
                 val latLng = LatLng(it.latitude, it.longitude)
                 currentLocation = latLng
 
-                // Agregar un mensaje de registro para verificar las actualizaciones de ubicación
-                Log.d("LocationUpdates", "Nueva ubicación recibida: $latLng")
+                if(isRouteStarted){
+                    // Agregar un mensaje de registro para verificar las actualizaciones de ubicación
+                    Log.d("LocationUpdates", "Nueva ubicación recibida: $latLng")
+                    updateLocation(latLng)
+                }
             }
         }
     }
@@ -275,16 +364,6 @@ fun RouteScreen(navController: NavController,) {
             fusedLocationClient.removeLocationUpdates(locationCallback)
             Log.d("LocationUpdates", "Eliminadas actualizaciones de ubicación")
         }
-    }
-
-    // Obtener la ubicación actual al iniciar el Composable
-    LaunchedEffect(Unit) {
-        cameraPositionState.animate(
-            update = CameraUpdateFactory.newCameraPosition(
-                CameraPosition(startPoint, 80f, 0f, 0f)
-            ),
-            durationMs = 2000
-        )
     }
 
 
@@ -321,8 +400,26 @@ fun RouteScreen(navController: NavController,) {
             bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(scaledDrawable)
             bitmapDescriptorNow = BitmapDescriptorFactory.fromBitmap(scaledDrawableNow)
         }
-    }
 
+        Log.d("CameraAnimation", "Animación de cámara iniciada")
+        cameraPositionState.animate(
+            update = CameraUpdateFactory.newCameraPosition(
+                CameraPosition(startPoint, 80f, 0f, 0f)
+            ),
+            durationMs = 2000
+        )
+        Log.d("CameraAnimation", "Animación de cámara completada")
+
+    }
+    if(route!!.route!=""){
+        Log.d("QUE COJONES FUNCIONA", "FUNCIONA")
+        userRoutePoints =
+            com.example.qrstockmateapp.screens.Carrier.Route.RouteMinus.convertStringToLatLngList(
+                route!!.route
+            )
+    }else{
+        Log.d("QUE COJONES", "COJONES")
+    }
 
 
 
@@ -341,18 +438,20 @@ fun RouteScreen(navController: NavController,) {
                             durationMs = 2000
                         )
                     }
+                    startRoute()
                                },
                 onFinishRoute = {
                     isRouteStarted = false
 
-                    GlobalScope.launch(Dispatchers.Main) {
-                        cameraPositionState.animate(
-                            update = CameraUpdateFactory.newCameraPosition(
-                                CameraPosition(endPoint, 80f, 0f, 0f)
-                            ),
-                            durationMs = 2000
-                        )
-                    }
+                    //GlobalScope.launch(Dispatchers.Main) {
+                        //cameraPositionState.animate(
+                            //update = CameraUpdateFactory.newCameraPosition(
+                                //CameraPosition(endPoint, 80f, 0f, 0f)
+                            //),
+                            //durationMs = 2000
+                       // )
+                    //}
+                    finishRoute()
                 }, route, start, end
             )
         },
@@ -383,10 +482,11 @@ fun RouteScreen(navController: NavController,) {
                     )
                 }
                 if (isRouteStarted) {
-
                     // Marcador para la ubicación actual
                     currentLocation?.let {
-                        PointMarker(it, "Ubicación Actual", "Marker en la Ubicación Actual", bitmapDescriptorNow!!, "ubi", false)
+                        if(change){
+                            PointMarker(it, "Ubicación Actual", "Marker en la Ubicación Actual", bitmapDescriptorNow!!, "ubi", false)
+                        }
                     }
                 }
 
@@ -489,6 +589,7 @@ fun RouteScreen(navController: NavController,) {
                                    // Acciones cuando el Bottom Sheet no está expandido
                                    designMode = false
                                    if(!userRoutePoints.isEmpty())userRoutePoints = userRoutePoints + endPoint
+                                   saveRoute()
                                },
                                colors = ButtonDefaults.buttonColors(Color.White),
                                modifier = Modifier.padding(8.dp)
@@ -609,6 +710,8 @@ fun RouteScreen(navController: NavController,) {
 }
 
 
+
+
 @Composable
 fun PointMarker(position: LatLng, title: String, snippet: String?, icon:  BitmapDescriptor, tag:String, click:Boolean){
     val markerState = rememberMarkerState(null, position)
@@ -653,7 +756,11 @@ fun BottomSheetContent(
             )
             .padding(20.dp)
     ) {
-        Row {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ){
             androidx.compose.material.Text(
                 buildAnnotatedString {
                     withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
@@ -661,6 +768,15 @@ fun BottomSheetContent(
                     }
                 },
                 fontSize = 9.sp,
+            )
+            androidx.compose.material.Text(
+                buildAnnotatedString {
+                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                        append("${(distanceRounded/80) * 60} Min")
+                    }
+                },
+                fontSize = 9.sp,
+                color = Color(0xff5a79ba)
             )
         }
         Row(modifier = Modifier.fillMaxWidth(),  verticalAlignment = Alignment.CenterVertically) {

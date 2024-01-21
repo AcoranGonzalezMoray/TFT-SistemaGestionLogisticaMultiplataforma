@@ -19,6 +19,7 @@ namespace QRStockMate.AplicationCore.Entities
 		public int CarrierId { get; set; } // Conductor
 		public DateTime Date { get; set; }
 		public RoleStatus Status { get; set; }
+		public string Route { get; set; }
 	}
 
 	public enum RoleStatus

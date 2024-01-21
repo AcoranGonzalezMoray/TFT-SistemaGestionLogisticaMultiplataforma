@@ -121,13 +121,13 @@ namespace QRStockMate.Controller
 		}
 
 		[HttpGet("GetLocation/{Id}")]
-		public async Task<ActionResult<string>> GetLocation(int Id)
+		public async Task<ActionResult<VehicleModel>> GetLocation(int Id)
 		{
 			try
 			{
 				var Vehicle = await _vehicleService.GetById(Id);
 				if (Vehicle is null) return NotFound();//404
-				return Ok(Vehicle.Location);
+				return Ok(Vehicle);
 			}
 			catch (Exception ex)
 			{

@@ -24,7 +24,7 @@ namespace QRStockMate.Infrastructure.Repositories
 			var route = await this.GetById(id);
 
 			route.ArrivalTime = DateTime.Now;
-
+			route.Status = RoleStatus.Finalized;
 			await this.Update(route);
 
 			return route.ArrivalTime;
@@ -41,6 +41,7 @@ namespace QRStockMate.Infrastructure.Repositories
 			var route = await this.GetById(id);
 
 			route.DepartureTime = DateTime.Now;
+			route.Status = RoleStatus.OnRoute;
 
 			await this.Update(route);
 

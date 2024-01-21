@@ -141,7 +141,8 @@ fun AddRouteScreen(navController: NavController){
         assignedVehicleId = 0,
         carrierId = 0,
         date = "2024-01-18T21:43:44.484Z",
-        status = 0
+        status = 0,
+        route  = ""
     ))}
 
     var dates = (0 until 30).map { LocalDate.now().plusDays(it.toLong()) }

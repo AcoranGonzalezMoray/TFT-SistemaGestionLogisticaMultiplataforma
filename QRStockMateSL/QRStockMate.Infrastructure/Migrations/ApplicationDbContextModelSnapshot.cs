@@ -159,6 +159,10 @@ namespace QRStockMate.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Route")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("StartLocation")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");

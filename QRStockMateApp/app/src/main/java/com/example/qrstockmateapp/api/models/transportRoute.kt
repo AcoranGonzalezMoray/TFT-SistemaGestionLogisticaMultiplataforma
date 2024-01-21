@@ -11,7 +11,8 @@ data class TransportRoute(
     var assignedVehicleId: Int, // Vehiculo asignados a la ruta
     var carrierId: Int, // Conductor
     var date: String,
-    val status: Int
+    val status: Int,
+    var route: String
 )
 
 fun statusRoleToString(roleId: Int): String {

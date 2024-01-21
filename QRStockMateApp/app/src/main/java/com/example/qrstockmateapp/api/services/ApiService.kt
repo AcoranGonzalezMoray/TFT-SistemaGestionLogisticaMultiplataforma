@@ -148,12 +148,12 @@ interface ApiService {
     ): Response<TransportRoute>
 
 
-    @PUT("TransportRoutes/InitRoute/{id}")
+    @PUT("TransportRoute/InitRoute/{id}")
     suspend fun initRoute(
         @Path("id") id: Int
     ): Response<String>
 
-    @PUT("TransportRoutes/FinishRoute/{id}")
+    @PUT("TransportRoute/FinishRoute/{id}")
     suspend fun finishRoute(
         @Path("id") id: Int
     ): Response<String>
@@ -168,7 +168,7 @@ interface ApiService {
     @GET("Vehicle/GetLocation/{Id}")
     suspend fun getLocationVehicle(
         @Path("Id") Id: Int,
-    ):Response<String>
+    ):Response<Vehicle>
 
 
     @PUT("Vehicle/UpdateLocation/{Id}")

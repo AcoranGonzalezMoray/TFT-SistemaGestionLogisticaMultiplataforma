@@ -87,7 +87,7 @@ fun BottomNavigationScreen(navControllerLogin: NavController,sharedPreferences: 
     val navController = rememberNavController()
     DisposableEffect(navController) {
         val listener = NavController.OnDestinationChangedListener { _, destination, _ ->
-            drawerGesturesEnabled = destination.route != "route"
+            drawerGesturesEnabled = destination.route != "route" &&  destination.route != "routeMinus"
         }
 
         navController.addOnDestinationChangedListener(listener)
@@ -215,7 +215,7 @@ fun BottomNavigationScreen(navControllerLogin: NavController,sharedPreferences: 
         },
 
         bottomBar = {
-            if(currentRoute != "route"){
+            if(currentRoute != "route" && currentRoute != "routeMinus"){
                 BottomBar(
                     screens = ScreenModel().screensInHomeFromBottomNav,
                     navController = navController

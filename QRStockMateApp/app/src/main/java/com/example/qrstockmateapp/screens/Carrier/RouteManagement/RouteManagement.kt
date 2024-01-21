@@ -541,8 +541,12 @@ fun TransportRouteItem(route: TransportRoute, navController: NavController) {
                             .padding(5.dp)
                             .height(40.dp),
                         onClick = {
-                            DataRepository.setRoutePlus(route)
-                            navController.navigate("updateRoute")
+                            if(route.status==0){
+                                DataRepository.setRoutePlus(route)
+                                navController.navigate("updateRoute")
+                            }else{
+                                Toast.makeText(context, "Route in progress or completed", Toast.LENGTH_SHORT).show()
+                            }
                         },
                         colors =  ButtonDefaults.elevatedButtonColors(
                             containerColor = Color(0xff5a79ba)
@@ -564,7 +568,11 @@ fun TransportRouteItem(route: TransportRoute, navController: NavController) {
                             .padding(5.dp)
                             .height(40.dp),
                         onClick = {
-                            showDialog = true
+                              if(route.status!=1){
+                                  showDialog = true
+                              }else{
+                                  Toast.makeText(context, "Route in progress", Toast.LENGTH_SHORT).show()
+                              }
                         },
                         colors = ButtonDefaults.elevatedButtonColors(
                             containerColor = Color(0xff5a79ba)
@@ -586,7 +594,13 @@ fun TransportRouteItem(route: TransportRoute, navController: NavController) {
                         .padding(5.dp)
                         .height(40.dp),
                     onClick = {
-
+                        Log.d("status", route.status.toString())
+                        if(route.status == 1){
+                            DataRepository.setRoutePlus(route)
+                            navController.navigate("routeMinus")
+                        }else{
+                            Toast.makeText(context, "The route has not started", Toast.LENGTH_SHORT).show()
+                        }
                     },
                     colors =  ButtonDefaults.elevatedButtonColors(
                         containerColor = Color(0xff5a79ba)
