@@ -133,6 +133,11 @@ interface ApiService {
         @Path("code") code: String
     ): Response<List<TransportRoute>>
 
+    @GET("TransportRoute/TransportRouteById/{id}")
+    suspend fun getTransportRoute(
+        @Path("id") id: Int
+    ): Response<TransportRoute>
+
     @PUT("TransportRoute/")
     suspend fun putTransportRoutes(
         @Body transportRoute: TransportRoute

@@ -115,6 +115,24 @@ namespace QRStockMate.Controller
 			}
 		}
 
+		[HttpGet("TransportRouteById/{id}")]
+		public async Task<ActionResult<IEnumerable<TransportRouteModel>>> GetTransportRouteById(int id)
+		{
+			try
+			{
+				var TransportRoutes = await _TransportRouteService.GetById(id);
+
+				if (TransportRoutes is null) return NotFound();//404
+
+				return Ok(_mapper.Map<TransportRoute, TransportRouteModel>(TransportRoutes)); //200
+			}
+			catch (Exception ex)
+			{
+
+				return BadRequest(ex.Message);//400
+			}
+		}
+
 		[HttpPut("InitRoute/{id}")]
 		public async Task<ActionResult<DateTime>> InitRoute(int id)
 		{

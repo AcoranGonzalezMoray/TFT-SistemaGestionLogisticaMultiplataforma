@@ -166,25 +166,29 @@ fun UpdateRouteScreen(navController: NavController){
     val loadItems : ()->Unit = {
         GlobalScope.launch(Dispatchers.IO) {
             isloading = true
-            for(warehouse in DataRepository.getWarehouses()!!) {
-                if (warehouse != null) {
-                    try {
-                        val itemResponse = RetrofitInstance.api.getItems(warehouse.id);
-                        if (itemResponse.isSuccessful) {
-                            val item = itemResponse.body()
-                            if (item != null){
-                                listaItems.addAll(item.toMutableList())
-                            };
+            var warehouse = DataRepository.getWarehouses()!!.filter { warehouse -> warehouse.id == route!!.startLocation.toInt() }.firstOrNull()
+            listaItems = mutableListOf()
+            mapEuroPalet = mutableListOf()
+            totalWeight = 0.0
+            myMap.clear()
+            if (warehouse != null) {
+                try {
+                    val itemResponse = RetrofitInstance.api.getItems(warehouse.id);
+                    if (itemResponse.isSuccessful) {
+                        val item = itemResponse.body()
+                        if (item != null){
+                            listaItems.addAll(item.toMutableList())
+                        };
 
-                        } else {
-                            Log.d("ItemsNotSuccessful", "NO")
-                        }
-
-                    } catch (e: Exception) {
-                        Log.d("ExceptionItems", "${e.message}")
+                    } else {
+                        Log.d("ItemsNotSuccessful", "NO")
                     }
+
+                } catch (e: Exception) {
+                    Log.d("ExceptionItems", "${e.message}")
                 }
             }
+
             if(route!!.palets.contains('=') ){
                 val (mapList, total) = parsePalets(route!!.palets)
 
@@ -535,6 +539,7 @@ fun UpdateRouteScreen(navController: NavController){
                                 DropdownMenuItem(onClick = {
                                     selectedOptionStartLocation = "Warehouse:  ${waStart!!.name}; Latitude: ${waStart.latitude}; Longitude: ${waStart.longitude}"
                                     route!!.startLocation = waStart.id.toString()
+                                    loadItems()
                                     isMenuExpandedStartLocation= false
                                 }) {
                                     Text( "Warehouse:  ${waStart!!.name} Latitude: ${waStart.latitude} Longitude: ${waStart.longitude}" )

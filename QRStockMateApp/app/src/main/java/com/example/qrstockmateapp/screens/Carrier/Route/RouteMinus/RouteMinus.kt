@@ -177,14 +177,23 @@ fun RouteMinusScreen(navController: NavController,) {
             while (IN) {
                 try {
                     val response = RetrofitInstance.api.getLocationVehicle(vehicleId)
-                    if (response.isSuccessful) {
+                    val responseRoute = RetrofitInstance.api.getTransportRoute(route.id)
+                    if (response.isSuccessful && responseRoute.isSuccessful) {
                         val res = response.body()?.location
+                        val status = responseRoute.body()?.status
                         Log.d("Cargando", "${res}")
                         if (res != null) {
                             val locationParts = res.split(";")
                             if (locationParts.size == 2) {
+                                if(status == 2){
+                                    withContext(Dispatchers.Main){
+                                        navController.popBackStack()
+                                        Toast.makeText(context, "Route Finished!", Toast.LENGTH_SHORT).show()
+                                    }
+                                }
                                 change = false
                                 currentLocation = LatLng(locationParts[0].toDouble(), locationParts[1].toDouble())
+
                                 change = true
                             } else {
                                 Log.e("Error", "Respuesta del servidor en un formato inesperado: $res")
@@ -281,7 +290,7 @@ fun RouteMinusScreen(navController: NavController,) {
                 }
 
                 PointMarker(endPoint, "End Point", end.name, bitmapDescriptor!!, "Fin", false)
-                PointMarker(startPoint, "Start Point", start.name, bitmapDescriptor!!, "Inicio", true)
+                PointMarker(startPoint, "Start Point", start.name, bitmapDescriptor!!, "Inicio", false)
             }
 
             Box(
