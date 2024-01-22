@@ -113,6 +113,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
@@ -133,6 +134,7 @@ fun RouteMinusScreen(navController: NavController,) {
             initialValue = BottomSheetValue.Collapsed
         )
     )
+    val coroutineScope = rememberCoroutineScope()
 
     val context = LocalContext.current
     var mapWeight by remember { mutableStateOf(135.dp) }
@@ -173,9 +175,12 @@ fun RouteMinusScreen(navController: NavController,) {
 
 
     val updateLocation: (id: Int) -> Unit = { vehicleId ->
-        GlobalScope.launch(Dispatchers.IO) {
+        coroutineScope.launch(Dispatchers.IO) {
             while (IN) {
                 try {
+                    delay(500)
+                    change = false
+
                     val response = RetrofitInstance.api.getLocationVehicle(vehicleId)
                     val responseRoute = RetrofitInstance.api.getTransportRoute(route.id)
                     if (response.isSuccessful && responseRoute.isSuccessful) {
@@ -191,9 +196,8 @@ fun RouteMinusScreen(navController: NavController,) {
                                         Toast.makeText(context, "Route Finished!", Toast.LENGTH_SHORT).show()
                                     }
                                 }
-                                change = false
-                                currentLocation = LatLng(locationParts[0].toDouble(), locationParts[1].toDouble())
 
+                                currentLocation = LatLng(locationParts[0].toDouble(), locationParts[1].toDouble())
                                 change = true
                             } else {
                                 Log.e("Error", "Respuesta del servidor en un formato inesperado: $res")
@@ -211,7 +215,9 @@ fun RouteMinusScreen(navController: NavController,) {
 
     ///////////////////////////////////////////
     LaunchedEffect(context) {
-        updateLocation(initLocation.id)
+        coroutineScope.launch {
+            updateLocation(initLocation.id)
+        }
 
         val drawable = ContextCompat.getDrawable(context, R.drawable.warehouse)
         val drawableNow = ContextCompat.getDrawable(context, R.drawable.carrier)
@@ -245,6 +251,11 @@ fun RouteMinusScreen(navController: NavController,) {
 
     }
 
+    DisposableEffect(Unit) {
+        onDispose {
+            coroutineScope.cancel()
+        }
+    }
 
 
 

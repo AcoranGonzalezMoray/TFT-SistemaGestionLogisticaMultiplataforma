@@ -112,6 +112,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
@@ -133,7 +134,7 @@ fun RouteScreen(navController: NavController,) {
     )
 
     val context = LocalContext.current
-    var mapWeight by remember { mutableStateOf(350.dp) }
+    var mapWeight by remember { mutableStateOf(380.dp) }
 
     LaunchedEffect(scaffoldState.bottomSheetState) {
         snapshotFlow { scaffoldState.bottomSheetState.currentValue }
@@ -145,7 +146,7 @@ fun RouteScreen(navController: NavController,) {
                         println("BottomSheet colapsado")
                     }
                     BottomSheetValue.Expanded -> {
-                        mapWeight = 350.dp
+                        mapWeight = 380.dp
                         println("BottomSheet expandido")
                     }
                     else -> {
@@ -185,6 +186,7 @@ fun RouteScreen(navController: NavController,) {
         Color.Yellow,
         Color.Black
     )
+    val coroutineScope = rememberCoroutineScope()
 
     var selectedColor by remember { mutableStateOf(availableColors.first()) }
     var isDropdownMenuExpanded by remember { mutableStateOf(false) }
@@ -264,7 +266,7 @@ fun RouteScreen(navController: NavController,) {
 
     val updateLocation: (latLng: LatLng) -> Unit = { latLng ->
 
-        GlobalScope.launch(Dispatchers.IO) {
+        coroutineScope.launch(Dispatchers.IO) {
             change = false
             try {
                 // Realizar la solicitud de actualización de ubicación
@@ -347,7 +349,10 @@ fun RouteScreen(navController: NavController,) {
                 if(isRouteStarted){
                     // Agregar un mensaje de registro para verificar las actualizaciones de ubicación
                     Log.d("LocationUpdates", "Nueva ubicación recibida: $latLng")
-                    updateLocation(latLng)
+                    coroutineScope.launch {
+                        updateLocation(latLng)
+                    }
+
                 }
             }
         }
@@ -421,7 +426,11 @@ fun RouteScreen(navController: NavController,) {
         Log.d("QUE COJONES", "COJONES")
     }
 
-
+    DisposableEffect(Unit) {
+        onDispose {
+            coroutineScope.cancel()
+        }
+    }
 
     BottomSheetScaffold(
         sheetContent = {

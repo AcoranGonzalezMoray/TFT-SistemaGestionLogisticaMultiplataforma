@@ -32,6 +32,7 @@ import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -79,10 +80,10 @@ fun AddItemScreen(navController: NavController) {
     var countState = rememberUpdatedState(count)
     val context = LocalContext.current
     val customTextFieldColors = TextFieldDefaults.outlinedTextFieldColors(
-        cursorColor = Color.Black,
-        focusedBorderColor = Color.Black,
-        focusedLabelColor = Color.Black,
-        unfocusedBorderColor = Color.Black,
+        cursorColor =  Color(0xff5a79ba),
+        focusedBorderColor =  Color(0xff5a79ba),
+        focusedLabelColor = Color(0xff5a79ba),
+        unfocusedBorderColor =  Color(0xff5a79ba),
         backgroundColor = Color.LightGray
     )
 
@@ -93,7 +94,7 @@ fun AddItemScreen(navController: NavController) {
 
     var location by remember { mutableStateOf(item?.location.toString()) }
     var name by remember { mutableStateOf(item?.name.toString()) }
-
+    var weight by remember { mutableStateOf(item?.weightPerUnit.toString()) }
     LaunchedEffect(Unit) {
         val companyResponse = RetrofitInstance.api.getCompanyByUser(DataRepository.getUser()!!)
         if (companyResponse.isSuccessful) {
@@ -230,7 +231,17 @@ fun AddItemScreen(navController: NavController) {
                     .fillMaxWidth()
                     .padding(4.dp)
             )
-            Box(modifier = Modifier.fillMaxWidth()) {
+
+            TextField(
+                value = weight,
+                label = { Text("Weight Per Unit : ") },
+                onValueChange = { weight = it+" Kg" },
+                colors= customTextFieldColors,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(4.dp)
+            )
+            Box(modifier = Modifier.fillMaxWidth().padding(4.dp)) {
                 Text(
                     text = selectedOption,
                     modifier = Modifier
@@ -246,7 +257,7 @@ fun AddItemScreen(navController: NavController) {
                 DropdownMenu(
                     expanded = isMenuExpanded,
                     onDismissRequest = { isMenuExpanded = false },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth().padding(4.dp)
                 ) {
                     warehouses.forEach { warehouse ->
                         DropdownMenuItem(onClick = {
@@ -286,21 +297,31 @@ fun AddItemScreen(navController: NavController) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Column {
-                        Button(
+                        ElevatedButton(
                             onClick = {
                                 count++
                             },
-                            colors = ButtonDefaults.buttonColors(Color.Cyan)
-                        ) {
-                            androidx.compose.material.Text("+")
+                            colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                                containerColor = Color(0xff5a79ba)
+                            ),
+                            elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                                defaultElevation = 5.dp
+                            )
+                        ){
+                            androidx.compose.material.Text("+", color= Color.White)
                         }
-                        Button(
+                        ElevatedButton(
                             onClick = {
                                 count--
                             },
-                            colors = ButtonDefaults.buttonColors(Color.Cyan)
-                        ) {
-                            androidx.compose.material.Text("-")
+                            colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                                containerColor =  Color(0xff5a79ba)
+                            ),
+                            elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                                defaultElevation = 5.dp
+                            )
+                        ){
+                            androidx.compose.material.Text("-", color= Color.White)
                         }
                     }
                     TextField(
@@ -315,15 +336,24 @@ fun AddItemScreen(navController: NavController) {
 
                     )
                     Spacer(modifier = Modifier.width(20.dp))
-                    Button(onClick = {
-                        navController.popBackStack()
-                    }, colors = ButtonDefaults.buttonColors(Color.Red)) {
-                        Text(text = "Cancel", color=Color.White)
+                    ElevatedButton(
+                        onClick = {
+                            navController.popBackStack()
+                        },
+                        colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                            containerColor = Color.White
+                        ),
+                        elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                            defaultElevation = 5.dp
+                        )
+                    ){
+                        Text(text = "Cancel", color=Color(0xff5a79ba))
                     }
                     Spacer(modifier = Modifier.width(5.dp))
-                    Button(
+                    ElevatedButton(
+                        modifier = Modifier
+                            .padding(top = 8.dp),
                         onClick = {
-
                             var newStock = item?.stock?.plus(countState.value)
                             Log.d("New Stock", "${newStock}")
                             var newItem = item
@@ -334,6 +364,7 @@ fun AddItemScreen(navController: NavController) {
                                         newItem.warehouseId = selectedOption.split(':')[2].toInt()
                                         newItem.location =  location
                                         newItem.name = name
+                                        newItem.weightPerUnit = weight.toDouble()
                                         addItem(newItem)
                                         availableCount = newStock
                                         count = 0
@@ -345,8 +376,14 @@ fun AddItemScreen(navController: NavController) {
                                 }
 
                             }
-                        },colors = ButtonDefaults.buttonColors(Color.Black)
-                    ) {
+                        },
+                        colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                            containerColor = Color(0xff5a79ba)
+                        ),
+                        elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                            defaultElevation = 5.dp
+                        )
+                    ){
                         androidx.compose.material.Text("Add", color = Color.White)
                     }
                 }

@@ -184,7 +184,13 @@ fun AddRouteScreen(navController: NavController){
 
         GlobalScope.launch(Dispatchers.IO) {
             isloading = true
-            for(warehouse in DataRepository.getWarehouses()!!) {
+            listaItems = mutableListOf()
+            mapEuroPalet = mutableListOf()
+            totalWeight = 0.0
+            myMap.clear()
+            if (route.value!!.startLocation!=""){
+                var warehouse = DataRepository.getWarehouses()!!.filter { warehouse -> warehouse.id == route.value!!.startLocation.toInt() }.firstOrNull()
+
                 if (warehouse != null) {
                     try {
                         val itemResponse = RetrofitInstance.api.getItems(warehouse.id);
@@ -202,26 +208,10 @@ fun AddRouteScreen(navController: NavController){
                         Log.d("ExceptionItems", "${e.message}")
                     }
                 }
+            }else{
+                Toast.makeText(context, "Select a start warehouse", Toast.LENGTH_SHORT).show()
             }
-            if(route.value!!.palets.contains('=') ){
-                val (mapList, total) = parsePalets(route.value!!.palets)
 
-                mapEuroPalet = mapList
-                totalWeight = total
-
-                for(map in mapEuroPalet){
-                    Log.d("MAP", map.toString())
-                    map.forEach { (key, value) ->
-                        val itemIndex = listaItems.indexOfFirst { it.id == key }
-                        val count = value.split(":")[1].toInt()
-                        Log.d("MAP", count.toString())
-                        if (itemIndex != -1) listaItems[itemIndex] = listaItems[itemIndex].copy(stock = listaItems[itemIndex].stock - count)
-
-                    }
-                    Log.d("MAP", listaItems.toString())
-                }
-
-            }
             delay(1100)
             isloading = false
         }
@@ -229,7 +219,6 @@ fun AddRouteScreen(navController: NavController){
     }
 
     LaunchedEffect(Unit){
-        loadItems()
 
         // [{46=46:2:201.3;, 49=49:1:1.0;}]
         if(route.value!!.carrierId!=0){
@@ -550,6 +539,7 @@ fun AddRouteScreen(navController: NavController){
                                 DropdownMenuItem(onClick = {
                                     selectedOptionStartLocation = "Warehouse:  ${waStart!!.name}; Latitude: ${waStart.latitude}; Longitude: ${waStart.longitude}"
                                     route.value!!.startLocation = waStart.id.toString()
+                                    loadItems()
                                     isMenuExpandedStartLocation= false
                                 }) {
                                     Text( "Warehouse:  ${waStart!!.name} Latitude: ${waStart.latitude} Longitude: ${waStart.longitude}" )

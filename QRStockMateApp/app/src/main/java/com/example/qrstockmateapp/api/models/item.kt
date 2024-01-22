@@ -8,5 +8,5 @@ data class Item (
     var location:String,
     var stock:Int,
     val url:String,
-    val weightPerUnit: Double
+    var weightPerUnit: Double
 )

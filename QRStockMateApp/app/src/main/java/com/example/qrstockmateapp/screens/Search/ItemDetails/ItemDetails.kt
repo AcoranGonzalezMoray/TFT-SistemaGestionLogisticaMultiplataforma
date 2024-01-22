@@ -23,6 +23,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.DropdownMenu
@@ -196,6 +198,7 @@ fun ItemDetailsScreen(navController: NavController) {
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
+            .verticalScroll(rememberScrollState())
     ) {
         Box(
             modifier = Modifier
@@ -212,9 +215,11 @@ fun ItemDetailsScreen(navController: NavController) {
         Box(
             modifier = Modifier
                 .zIndex(20f)
-                .fillMaxWidth()
+                .height(300.dp)
         ) {
-            Box(modifier = Modifier.fillMaxWidth().padding(5.dp)) {
+            Box(modifier = Modifier
+                .fillMaxWidth()
+                .padding(5.dp)) {
                 ElevatedButton(
                     modifier = Modifier
                         .padding(top = 8.dp, end = 10.dp)
@@ -248,16 +253,14 @@ fun ItemDetailsScreen(navController: NavController) {
                     painter = painter,
                     contentDescription = null,
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight(0.5f)
+                        .fillMaxSize()
                 )
             }else{
                 Image(
                     painter = painterResource(id = R.drawable.item), // Reemplaza con tu lógica para cargar la imagen
                     contentDescription = null,
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight(0.5f) // La imagen ocupa la mitad de la pantalla
+                        .fillMaxSize()
                 )
             }
         }
@@ -269,7 +272,7 @@ fun ItemDetailsScreen(navController: NavController) {
         ) {
             var location by remember { mutableStateOf(item?.location.toString()) }
             var warehouse by remember { mutableStateOf(item?.warehouseId) }
-
+            var weight by remember { mutableStateOf(item?.weightPerUnit) }
             Text(text = buildAnnotatedString {
                 withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
                     append("Location: ")
@@ -285,6 +288,16 @@ fun ItemDetailsScreen(navController: NavController) {
                     append("Warehouse: ")
                 }
                 append(DataRepository.getWarehouses()?.find { it.id == warehouse }?.name)
+            },
+                fontSize = 15.sp,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(16.dp)
+            )
+            Text(text = buildAnnotatedString {
+                withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                    append("Weight per unit: ")
+                }
+                append(weight.toString()+"  Kg")
             },
                 fontSize = 15.sp,
                 textAlign = TextAlign.Center,

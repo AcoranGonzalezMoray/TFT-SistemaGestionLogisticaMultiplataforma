@@ -130,6 +130,7 @@ fun addItem(qrCodeValue: String) {
         var stock = parts[4].toInt()
         var imageUrl = ""
         if (parts[5] != "null") imageUrl = parts[5]
-        DataRepository.setItem(Item(productId, name, warehouseId, location, stock, imageUrl, 0.0))
+        var weightPerUnit = parts[6].toDouble()
+        DataRepository.setItem(Item(productId, name, warehouseId, location, stock, imageUrl, weightPerUnit))
     }
 }
