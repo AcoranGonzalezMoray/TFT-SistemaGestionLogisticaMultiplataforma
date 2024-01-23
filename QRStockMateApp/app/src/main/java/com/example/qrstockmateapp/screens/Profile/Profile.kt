@@ -8,6 +8,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,6 +23,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
@@ -104,8 +106,8 @@ fun ProfileScreen(navController: NavController) {
         cursorColor =  Color(0xff5a79ba),
         focusedBorderColor =  Color(0xff5a79ba),
         focusedLabelColor = Color(0xff5a79ba),
-        unfocusedBorderColor =  Color(0xff5a79ba),
-        backgroundColor = Color.LightGray
+        backgroundColor = Color(0xfff5f6f7),
+        unfocusedBorderColor =  Color.White,
     )
 
     val updateImage:(File)->Unit={ file ->
@@ -315,7 +317,12 @@ fun ProfileScreen(navController: NavController) {
                     onValueChange = {userEmail = it},
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 10.dp),
+                        .padding(horizontal = 10.dp).border(
+                            width = 0.5.dp,
+                            color =  Color(0xff5a79ba),
+                            shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
+
+                        ),
                     readOnly = false
                 )
             }
@@ -330,7 +337,12 @@ fun ProfileScreen(navController: NavController) {
                     onValueChange = {userPhone=it},
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 10.dp),
+                        .padding(horizontal = 10.dp).border(
+                            width = 0.5.dp,
+                            color =  Color(0xff5a79ba),
+                            shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
+
+                        ),
                     readOnly = false
                 )
             }

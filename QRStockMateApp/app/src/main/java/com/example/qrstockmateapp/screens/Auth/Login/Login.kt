@@ -4,6 +4,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,6 +17,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.TextField
@@ -44,6 +46,7 @@ import com.example.qrstockmateapp.R
 import com.example.qrstockmateapp.api.models.User
 import com.example.qrstockmateapp.api.services.ApiService
 import com.example.qrstockmateapp.api.services.RetrofitInstance
+import com.example.qrstockmateapp.screens.Auth.JoinWithCode.isValidEmail
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -57,7 +60,10 @@ fun Login(navController: NavHostController, onLoginSuccess: (Boolean, User, Stri
     var isloading by remember {
         mutableStateOf<Boolean>(false)
     }
-    val isError = email.isBlank() || password.isBlank()
+    var start by remember {
+        mutableStateOf(false)
+    }
+    val isError = (email.isBlank() || password.isBlank()) && start
     val errorMessage = if (isError) {
         val emptyField = listOf(
             "Email" to email,
@@ -71,11 +77,11 @@ fun Login(navController: NavHostController, onLoginSuccess: (Boolean, User, Stri
     val context = LocalContext.current
 
     val customTextFieldColors = TextFieldDefaults.outlinedTextFieldColors(
+        backgroundColor = Color(0xfff5f6f7),
         cursorColor =  Color(0xff5a79ba),
         focusedBorderColor =  Color(0xff5a79ba),
         focusedLabelColor = Color(0xff5a79ba),
-        unfocusedBorderColor =  Color(0xff5a79ba),
-        backgroundColor = Color.LightGray
+        unfocusedBorderColor =  Color.White
     )
 
     val onLoginClicked: () -> Unit = {
@@ -120,7 +126,9 @@ fun Login(navController: NavHostController, onLoginSuccess: (Boolean, User, Stri
         }
     }
 
-
+    val keyboardOptionsEmail = KeyboardOptions(
+        keyboardType = KeyboardType.Email
+    )
 
     if (isloading){
         Box(
@@ -165,20 +173,39 @@ fun Login(navController: NavHostController, onLoginSuccess: (Boolean, User, Stri
             TextField(
                 value = email,
                 isError = isError,
-                onValueChange = { email = it },
+                onValueChange = { email = it;if(!start)start = true },
                 label = { Text("Email") },
-                modifier = Modifier.fillMaxWidth(),
+                keyboardOptions = keyboardOptionsEmail,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(
+                        width = 0.5.dp,
+                        color = Color(0xff5a79ba),
+                        shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
+
+                    ),
                 colors = customTextFieldColors
+            )
+            if(!isValidEmail(email) && start) androidx.compose.material.Text(
+                "put a valid email",
+                color = Color.Red
             )
             Spacer(modifier = Modifier.height(10.dp))
             TextField(
                 value = password,
                 isError = isError,
-                onValueChange = { password = it },
+                onValueChange = { password = it;if(!start)start = true },
                 label = { Text("Password") },
                 visualTransformation = PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(
+                        width = 0.5.dp,
+                        color = Color(0xff5a79ba),
+                        shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
+
+                    ),
                 colors = customTextFieldColors
             )
             Spacer(modifier = Modifier.height(20.dp))

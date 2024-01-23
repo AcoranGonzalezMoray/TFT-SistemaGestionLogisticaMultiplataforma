@@ -87,11 +87,11 @@ fun TransactionHistoryScreen(navController: NavController) {
     var filteredItems by remember { mutableStateOf<List<Transaction>>(emptyList()) }
 
     val customTextFieldColors = TextFieldDefaults.outlinedTextFieldColors(
-        cursorColor = Color.Black,
-        focusedBorderColor = Color.Black,
-        focusedLabelColor = Color.Black,
-        unfocusedBorderColor = Color.Black,
-        backgroundColor = Color.LightGray
+        cursorColor =  Color(0xff5a79ba),
+        focusedBorderColor =  Color(0xff5a79ba),
+        focusedLabelColor = Color(0xff5a79ba),
+        backgroundColor = Color(0xfff5f6f7),
+        unfocusedBorderColor =  Color(0xff5a79ba)
     )
 
     filteredItems = if (searchQuery.isEmpty()) {

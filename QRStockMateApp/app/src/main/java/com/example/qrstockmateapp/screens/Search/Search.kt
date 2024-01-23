@@ -4,6 +4,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -128,11 +129,11 @@ fun SearchScreen(navController: NavController) {
     }
 
     val customTextFieldColors = TextFieldDefaults.outlinedTextFieldColors(
-        cursorColor = Color.Black,
-        focusedBorderColor = Color.Black,
-        focusedLabelColor = Color.Black,
-        unfocusedBorderColor = Color.Black,
-        backgroundColor = Color.LightGray
+        cursorColor =  Color(0xff5a79ba),
+        focusedBorderColor =  Color(0xff5a79ba),
+        focusedLabelColor = Color(0xff5a79ba),
+        backgroundColor = Color(0xfff5f6f7),
+        unfocusedBorderColor =  Color(0xff5a79ba)
     )
 
     val sortedItems = sortItems(filteredItems, sortOrder)
@@ -150,7 +151,9 @@ fun SearchScreen(navController: NavController) {
             colors = customTextFieldColors,
             modifier = Modifier
                 .fillMaxWidth()
+                .background(color = Color.White)
                 .padding(bottom = 12.dp)
+
         )
         ElevatedButton(
             modifier = Modifier,

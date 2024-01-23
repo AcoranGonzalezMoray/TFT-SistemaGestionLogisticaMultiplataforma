@@ -5,6 +5,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -23,14 +24,19 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.DeleteSweep
 import androidx.compose.material.icons.filled.Inventory
@@ -40,7 +46,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
+import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -310,142 +316,425 @@ fun AddRouteScreen(navController: NavController){
             )
         }
     }else{
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp)
-                .verticalScroll(rememberScrollState())
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.maps), // Reemplaza con tu lógica para cargar la imagen
-                    contentDescription = null,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight(0.25f) // La imagen ocupa la mitad de la pantalla
-                )
-            }
-
+        Column {
+            TopAppBar(
+                navigationIcon = {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        androidx.compose.material3.Icon(Icons.Default.ArrowBack, contentDescription = "Back to Login", tint = Color(0xff5a79ba))
+                    }
+                },
+                backgroundColor = Color.White,
+                title = { androidx.compose.material.Text(text = "Add Route", color = Color(0xff5a79ba)) }
+            )
             Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 16.dp)
+                    .fillMaxSize()
+                    .padding(16.dp)
+                    .verticalScroll(rememberScrollState())
             ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.maps), // Reemplaza con tu lógica para cargar la imagen
+                        contentDescription = null,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .fillMaxHeight(0.25f) // La imagen ocupa la mitad de la pantalla
+                    )
+                }
 
-                route?.let {
-                    //Carrier
-                    Text(text = "Carrier: ")
-                    Box(modifier = Modifier.fillMaxWidth()) {
-                        Text(
-                            text = selectedOptionCarrier,
-                            modifier = Modifier
-                                .background(Color.LightGray)
-                                .clickable(
-                                    interactionSource = remember { MutableInteractionSource() },
-                                    indication = null
-                                ) {
-                                    isMenuExpandedCarrier = true
-                                }
-                                .padding(16.dp)
-                        )
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp)
+                ) {
 
-                        DropdownMenu(
-                            expanded = isMenuExpandedCarrier,
-                            onDismissRequest = { isMenuExpandedCarrier = false },
-                            modifier = Modifier.fillMaxWidth()
+                    route?.let {
+                        //Carrier
+                        Text(text = "Carrier: ")
+                        Box(modifier = Modifier
+                            .fillMaxWidth()
+                            .background(Color(0xfff5f6f7))
+                            .border(
+                                width = 0.5.dp,
+                                color = Color(0xff5a79ba),
+                                shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
+
+                            )
                         ) {
-                            employees?.forEach { employee ->
-                                DropdownMenuItem(onClick = {
-                                    selectedOptionCarrier= "Name: ${employee.name}; Role: Carrier"
-                                    route.value!!.carrierId = employee.id
-                                    isMenuExpandedCarrier = false
-                                }) {
-                                    Text( "Name: ${employee.name}  Role: Carrier")
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = selectedOptionCarrier,
+                                    modifier = Modifier
+                                        .weight(9f)
+                                        .background(Color(0xfff5f6f7))
+                                        .clickable(
+                                            interactionSource = remember { MutableInteractionSource() },
+                                            indication = null
+                                        ) {
+                                            isMenuExpandedCarrier = true
+                                        }
+                                        .padding(16.dp)
+                                )
+
+                                DropdownMenu(
+                                    expanded = isMenuExpandedCarrier,
+                                    onDismissRequest = { isMenuExpandedCarrier = false },
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    employees?.forEach { employee ->
+                                        DropdownMenuItem(onClick = {
+                                            selectedOptionCarrier= "Name: ${employee.name}; Role: Carrier"
+                                            route.value!!.carrierId = employee.id
+                                            isMenuExpandedCarrier = false
+                                        }, modifier = Modifier
+                                            .padding(5.dp)
+                                            .border(
+                                                width = 0.5.dp,
+                                                color = Color(0xff5a79ba),
+                                                shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
+
+                                            )) {
+                                            Text( "Name: ${employee.name}  Role: Carrier")
+                                        }
+                                    }
                                 }
+                                Icon(modifier = Modifier.weight(1f), imageVector = Icons.Filled.ArrowDropDown, contentDescription = null, tint =Color(0xff5a79ba))
+
+                            }
+
+                        }
+                        Spacer(modifier = Modifier.padding(5.dp))
+                        //Date
+                        Text(text = "Date: ")
+                        Box(modifier = Modifier
+                            .fillMaxWidth()
+                            .background(Color(0xfff5f6f7))
+                            .border(
+                                width = 0.5.dp,
+                                color = Color(0xff5a79ba),
+                                shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
+
+                            )) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = selectedOptionDate,
+                                    modifier = Modifier
+                                        .weight(9f)
+                                        .background(Color(0xfff5f6f7))
+                                        .clickable(
+                                            interactionSource = remember { MutableInteractionSource() },
+                                            indication = null
+                                        ) {
+                                            isMenuExpandedDate = true
+                                        }
+                                        .padding(16.dp)
+                                )
+
+                                DropdownMenu(
+                                    expanded = isMenuExpandedDate,
+                                    onDismissRequest = { isMenuExpandedDate = false },
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    dates?.forEach { date->
+                                        DropdownMenuItem(onClick = {
+                                            selectedOptionDate = "Date: ${date}"
+                                            route.value!!.date = date.toString()
+                                            isMenuExpandedDate= false
+                                        }, modifier = Modifier
+                                            .padding(5.dp)
+                                            .border(
+                                                width = 0.5.dp,
+                                                color = Color(0xff5a79ba),
+                                                shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
+
+                                            )) {
+                                            Text( "Date: ${date}" )
+                                        }
+                                    }
+                                }
+                                Icon(modifier = Modifier.weight(1f), imageVector = Icons.Filled.ArrowDropDown, contentDescription = null, tint =Color(0xff5a79ba))
+
                             }
                         }
-                    }
-                    Spacer(modifier = Modifier.padding(5.dp))
-                    //Date
-                    Text(text = "Date: ")
-                    Box(modifier = Modifier.fillMaxWidth()) {
-                        Text(
-                            text = selectedOptionDate,
-                            modifier = Modifier
-                                .background(Color.LightGray)
-                                .clickable(
-                                    interactionSource = remember { MutableInteractionSource() },
-                                    indication = null
-                                ) {
-                                    isMenuExpandedDate = true
-                                }
-                                .padding(16.dp)
-                        )
 
-                        DropdownMenu(
-                            expanded = isMenuExpandedDate,
-                            onDismissRequest = { isMenuExpandedDate = false },
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            dates?.forEach { date->
-                                DropdownMenuItem(onClick = {
-                                    selectedOptionDate = "Date: ${date}"
-                                    route.value!!.date = date.toString()
-                                    isMenuExpandedDate= false
-                                }) {
-                                    Text( "Date: ${date}" )
+                        Spacer(modifier = Modifier.padding(5.dp))
+                        //Vehicle
+                        Text(text = "Vehicle: ")
+                        Box(modifier = Modifier
+                            .fillMaxWidth()
+                            .background(Color(0xfff5f6f7))
+                            .border(
+                                width = 0.5.dp,
+                                color = Color(0xff5a79ba),
+                                shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
+
+                            )) {
+                           Row(
+                               verticalAlignment = Alignment.CenterVertically
+                           ){
+                               Text(
+                                   text = selectedOptionVehicle,
+                                   modifier = Modifier
+                                         .weight(9f)
+                                        .background(Color(0xfff5f6f7))
+                                       .clickable(
+                                           interactionSource = remember { MutableInteractionSource() },
+                                           indication = null
+                                       ) {
+                                           isMenuExpandedVehicle = true
+                                       }
+                                       .padding(16.dp)
+                               )
+
+                               DropdownMenu(
+                                   expanded = isMenuExpandedVehicle,
+                                   onDismissRequest = { isMenuExpandedVehicle = false },
+                                   modifier = Modifier.fillMaxWidth()
+                               ) {
+                                   vehicles?.forEach { ve ->
+                                       DropdownMenuItem(onClick = {
+                                           selectedOptionVehicle= "License Plate: ${ve.licensePlate};Year: ${ve.year}; Max Load: ${ve.maxLoad}"
+                                           route.value!!.assignedVehicleId = ve.id
+                                           isMenuExpandedVehicle = false
+                                       }, modifier = Modifier
+                                           .padding(5.dp)
+                                           .border(
+                                               width = 0.5.dp,
+                                               color = Color(0xff5a79ba),
+                                               shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
+
+                                           )) {
+                                           Text( "License Plate: ${ve.licensePlate}  Max Load: ${ve.maxLoad} Year: ${ve.year}" )
+                                       }
+                                   }
+                               }
+                               Icon(modifier = Modifier.weight(1f), imageVector = Icons.Filled.ArrowDropDown, contentDescription = null, tint =Color(0xff5a79ba))
+
+                           }
+                        }
+                        Spacer(modifier = Modifier.padding(5.dp))
+
+                        if(selectedOptionVehicle[0]!='S'){
+                            //Palets
+                            Text(text = "Shipload (${"%.2f".format(totalWeight).toDouble()} / ${selectedOptionVehicle.split(';')[2].split(':')[1]} Kg): ")
+                            Box(modifier = Modifier.fillMaxWidth()) {
+                                ElevatedButton(
+                                    modifier = Modifier
+                                        .fillMaxWidth(),
+                                    onClick = {
+                                        showDialog = true
+                                    },
+                                    colors = ButtonDefaults.elevatedButtonColors(
+                                        containerColor = Color(0xff5a79ba)
+                                    ),
+                                    elevation = ButtonDefaults.elevatedButtonElevation(
+                                        defaultElevation = 5.dp
+                                    )
+                                ){
+                                    Icon(imageVector = Icons.Filled.Add, contentDescription = null, tint = Color.White )
+                                }
+
+                                // Diálogo con la lista de elementos
+                                if (showDialog) {
+                                    ShowListDialog(listaItems,
+                                        onDismiss = { showDialog = false; myMap.clear() },
+                                        onSuccessfully = {
+                                            showDialog = false;
+                                            //=======================
+                                            myMap.forEach { (key, value) ->
+                                                totalWeight += "%.2f".format(value.split(":")[2].replace(";", "").toDouble()).toDouble()
+                                                val itemIndex = listaItems.indexOfFirst { it.id == key }
+                                                val count = value.split(":")[1].toInt()
+                                                if (itemIndex != -1) listaItems[itemIndex] = listaItems[itemIndex].copy(stock = listaItems[itemIndex].stock - count)
+
+                                            }
+                                            //=======================
+                                            mapEuroPalet += myMap.filterValues { value ->
+                                                !(value is String && value.contains(":0;"))
+                                            }
+
+                                            Log.d("EroPalte", mapEuroPalet.toString())
+                                            myMap.clear()
+
+                                        })
                                 }
                             }
+
                         }
-                    }
+                        Column {
+                            mapEuroPalet.forEachIndexed { index, map ->
+                                PaletTemplate(map = map, onDelete = { weight ->
+                                    totalWeight -= "%.2f".format(weight).toDouble()
 
-                    Spacer(modifier = Modifier.padding(5.dp))
-                    //Vehicle
-                    Text(text = "Vehicle: ")
-                    Box(modifier = Modifier.fillMaxWidth()) {
-                        Text(
-                            text = selectedOptionVehicle,
-                            modifier = Modifier
-                                .background(Color.LightGray)
-                                .clickable(
-                                    interactionSource = remember { MutableInteractionSource() },
-                                    indication = null
+                                    map.forEach{(key, value)->
+                                        val itemIndex = listaItems.indexOfFirst { it.id == key}
+                                        val count = value.split(":")[1].toInt()
+                                        if (itemIndex != -1) listaItems[itemIndex] = listaItems[itemIndex].copy(stock = listaItems[itemIndex].stock + count)
+                                    }
+
+                                    // Encuentra el índice del mapa en la lista
+                                    val mapIndex = mapEuroPalet.indexOf(map)
+
+                                    // Asegúrate de que el mapa esté realmente presente en la lista antes de intentar eliminarlo
+                                    if (mapIndex != -1) {
+                                        mapEuroPalet = mapEuroPalet.toMutableList().apply {
+                                            removeAt(mapIndex)
+                                        }
+                                        Log.d("EroPalte", mapEuroPalet.toString())
+                                    }
+
+
+
+                                    Log.d("EroPalte", mapEuroPalet.toString())
+                                })
+                            }
+
+                        }
+                        Spacer(modifier = Modifier.padding(bottom = 10.dp))
+                        //StartLocatiopn
+                        Text(text = "Start Location: ")
+                        Box(modifier = Modifier
+                            .fillMaxWidth()
+                            .background(Color(0xfff5f6f7))
+                            .border(
+                                width = 0.5.dp,
+                                color = Color(0xff5a79ba),
+                                shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
+
+                            )) {
+                            Row(verticalAlignment = Alignment.CenterVertically){
+                                Text(
+                                    text = selectedOptionStartLocation,
+                                    modifier = Modifier
+                                          .weight(9f)
+                                        .background(Color(0xfff5f6f7))
+                                        .clickable(
+                                            interactionSource = remember { MutableInteractionSource() },
+                                            indication = null
+                                        ) {
+                                            isMenuExpandedStartLocation = true
+                                        }
+                                        .padding(16.dp)
+                                )
+
+                                DropdownMenu(
+                                    expanded = isMenuExpandedStartLocation,
+                                    onDismissRequest = { isMenuExpandedStartLocation = false },
+                                    modifier = Modifier.fillMaxWidth()
                                 ) {
-                                    isMenuExpandedVehicle = true
-                                }
-                                .padding(16.dp)
-                        )
+                                    warehouses?.forEach { waStart->
+                                        DropdownMenuItem(onClick = {
+                                            selectedOptionStartLocation = "Warehouse:  ${waStart!!.name}; Latitude: ${waStart.latitude}; Longitude: ${waStart.longitude}"
+                                            route.value!!.startLocation = waStart.id.toString()
+                                            loadItems()
+                                            isMenuExpandedStartLocation= false
+                                        }, modifier = Modifier
+                                            .padding(5.dp)
+                                            .border(
+                                                width = 0.5.dp,
+                                                color = Color(0xff5a79ba),
+                                                shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
 
-                        DropdownMenu(
-                            expanded = isMenuExpandedVehicle,
-                            onDismissRequest = { isMenuExpandedVehicle = false },
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            vehicles?.forEach { ve ->
-                                DropdownMenuItem(onClick = {
-                                    selectedOptionVehicle= "License Plate: ${ve.licensePlate};Year: ${ve.year}; Max Load: ${ve.maxLoad}"
-                                    route.value!!.assignedVehicleId = ve.id
-                                    isMenuExpandedVehicle = false
-                                }) {
-                                    Text( "License Plate: ${ve.licensePlate}  Max Load: ${ve.maxLoad} Year: ${ve.year}" )
+                                            )) {
+                                            Text( "Warehouse:  ${waStart!!.name} Latitude: ${waStart.latitude} Longitude: ${waStart.longitude}" )
+                                        }
+                                    }
                                 }
+                                Icon(modifier = Modifier.weight(1f), imageVector = Icons.Filled.ArrowDropDown, contentDescription = null, tint =Color(0xff5a79ba))
+
                             }
                         }
-                    }
-                    Spacer(modifier = Modifier.padding(5.dp))
+                        Spacer(modifier = Modifier.padding(5.dp))
+                        //EndLocatiopn
+                        Text(text = "End Location: ")
+                        Box(modifier = Modifier
+                            .fillMaxWidth()
+                            .background(Color(0xfff5f6f7))
+                            .border(
+                                width = 0.5.dp,
+                                color = Color(0xff5a79ba),
+                                shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
 
-                    if(selectedOptionVehicle[0]!='S'){
-                        //Palets
-                        Text(text = "Shipload (${"%.2f".format(totalWeight).toDouble()} / ${selectedOptionVehicle.split(';')[2].split(':')[1]} Kg): ")
-                        Box(modifier = Modifier.fillMaxWidth()) {
+                            )) {
+                           Row(verticalAlignment = Alignment.CenterVertically) {
+                               Text(
+                                   text = selectedOptionEndLocation,
+                                   modifier = Modifier
+                                       .weight(9f)
+                                       .background(Color(0xfff5f6f7))
+                                       .clickable(
+                                           interactionSource = remember { MutableInteractionSource() },
+                                           indication = null
+                                       ) {
+                                           isMenuExpandedEndLocation = true
+                                       }
+                                       .padding(16.dp)
+                               )
+
+                               DropdownMenu(
+                                   expanded = isMenuExpandedEndLocation,
+                                   onDismissRequest = { isMenuExpandedEndLocation = false },
+                                   modifier = Modifier.fillMaxWidth()
+                               ) {
+                                   warehouses?.forEach { waEnd->
+                                       DropdownMenuItem(onClick = {
+                                           selectedOptionEndLocation = "Warehouse:  ${waEnd!!.name}; Latitude: ${waEnd.latitude}; Longitude: ${waEnd.longitude}"
+                                           route.value!!.endLocation = waEnd.id.toString()
+                                           isMenuExpandedEndLocation= false
+                                       }, modifier = Modifier
+                                           .padding(5.dp)
+                                           .border(
+                                               width = 0.5.dp,
+                                               color = Color(0xff5a79ba),
+                                               shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
+
+                                           )) {
+                                           Text( "Warehouse:  ${waEnd!!.name} Latitude: ${waEnd.latitude} Longitude: ${waEnd.longitude}" )
+                                       }
+                                   }
+                               }
+                               Icon(modifier = Modifier.weight(1f), imageVector = Icons.Filled.ArrowDropDown, contentDescription = null, tint =Color(0xff5a79ba))
+
+                           }
+                        }
+
+                        Spacer(modifier = Modifier
+                            .fillMaxWidth()
+                            .height(5.dp))
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ){
                             ElevatedButton(
                                 modifier = Modifier
+                                    .weight(1f)
                                     .fillMaxWidth(),
                                 onClick = {
-                                    showDialog = true
+                                    navController.navigate("routeManagement")
+                                },
+                                colors = ButtonDefaults.elevatedButtonColors(
+                                    containerColor = Color.White
+                                ),
+                                elevation = ButtonDefaults.elevatedButtonElevation(
+                                    defaultElevation = 5.dp
+                                )
+                            ){
+                                Text(text = "Cancel", color = Color(0xff5a79ba))
+                            }
+
+                            ElevatedButton(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .fillMaxWidth(),
+                                onClick = {
+                                    //warehouse.name =name
+                                    addRoute()
                                 },
                                 colors = ButtonDefaults.elevatedButtonColors(
                                     containerColor = Color(0xff5a79ba)
@@ -454,180 +743,16 @@ fun AddRouteScreen(navController: NavController){
                                     defaultElevation = 5.dp
                                 )
                             ){
-                                Icon(imageVector = Icons.Filled.Add, contentDescription = null, tint = Color.White )
-                            }
-
-                            // Diálogo con la lista de elementos
-                            if (showDialog) {
-                                ShowListDialog(listaItems,
-                                    onDismiss = { showDialog = false; myMap.clear() },
-                                    onSuccessfully = {
-                                        showDialog = false;
-                                        //=======================
-                                        myMap.forEach { (key, value) ->
-                                            totalWeight += "%.2f".format(value.split(":")[2].replace(";", "").toDouble()).toDouble()
-                                            val itemIndex = listaItems.indexOfFirst { it.id == key }
-                                            val count = value.split(":")[1].toInt()
-                                            if (itemIndex != -1) listaItems[itemIndex] = listaItems[itemIndex].copy(stock = listaItems[itemIndex].stock - count)
-
-                                        }
-                                        //=======================
-                                        mapEuroPalet += myMap.filterValues { value ->
-                                            !(value is String && value.contains(":0;"))
-                                        }
-
-                                        Log.d("EroPalte", mapEuroPalet.toString())
-                                        myMap.clear()
-
-                                    })
+                                Text(text = "Add", color = Color.White)
                             }
                         }
-
+                        Spacer(modifier = Modifier
+                            .fillMaxWidth()
+                            .height(48.dp))
                     }
-                    Column {
-                        mapEuroPalet.forEachIndexed { index, map ->
-                            PaletTemplate(map = map, onDelete = { weight ->
-                                totalWeight -= "%.2f".format(weight).toDouble()
-
-                                map.forEach{(key, value)->
-                                    val itemIndex = listaItems.indexOfFirst { it.id == key}
-                                    val count = value.split(":")[1].toInt()
-                                    if (itemIndex != -1) listaItems[itemIndex] = listaItems[itemIndex].copy(stock = listaItems[itemIndex].stock + count)
-                                }
-
-                                // Encuentra el índice del mapa en la lista
-                                val mapIndex = mapEuroPalet.indexOf(map)
-
-                                // Asegúrate de que el mapa esté realmente presente en la lista antes de intentar eliminarlo
-                                if (mapIndex != -1) {
-                                    mapEuroPalet = mapEuroPalet.toMutableList().apply {
-                                        removeAt(mapIndex)
-                                    }
-                                    Log.d("EroPalte", mapEuroPalet.toString())
-                                }
-
-
-
-                                Log.d("EroPalte", mapEuroPalet.toString())
-                            })
-                        }
-
-                    }
-                    Spacer(modifier = Modifier.padding(bottom = 10.dp))
-                    //StartLocatiopn
-                    Text(text = "Start Location: ")
-                    Box(modifier = Modifier.fillMaxWidth()) {
-                        Text(
-                            text = selectedOptionStartLocation,
-                            modifier = Modifier
-                                .background(Color.LightGray)
-                                .clickable(
-                                    interactionSource = remember { MutableInteractionSource() },
-                                    indication = null
-                                ) {
-                                    isMenuExpandedStartLocation = true
-                                }
-                                .padding(16.dp)
-                        )
-
-                        DropdownMenu(
-                            expanded = isMenuExpandedStartLocation,
-                            onDismissRequest = { isMenuExpandedStartLocation = false },
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            warehouses?.forEach { waStart->
-                                DropdownMenuItem(onClick = {
-                                    selectedOptionStartLocation = "Warehouse:  ${waStart!!.name}; Latitude: ${waStart.latitude}; Longitude: ${waStart.longitude}"
-                                    route.value!!.startLocation = waStart.id.toString()
-                                    loadItems()
-                                    isMenuExpandedStartLocation= false
-                                }) {
-                                    Text( "Warehouse:  ${waStart!!.name} Latitude: ${waStart.latitude} Longitude: ${waStart.longitude}" )
-                                }
-                            }
-                        }
-                    }
-                    Spacer(modifier = Modifier.padding(5.dp))
-                    //EndLocatiopn
-                    Text(text = "End Location: ")
-                    Box(modifier = Modifier.fillMaxWidth()) {
-                        Text(
-                            text = selectedOptionEndLocation,
-                            modifier = Modifier
-                                .background(Color.LightGray)
-                                .clickable(
-                                    interactionSource = remember { MutableInteractionSource() },
-                                    indication = null
-                                ) {
-                                    isMenuExpandedEndLocation = true
-                                }
-                                .padding(16.dp)
-                        )
-
-                        DropdownMenu(
-                            expanded = isMenuExpandedEndLocation,
-                            onDismissRequest = { isMenuExpandedEndLocation = false },
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            warehouses?.forEach { waEnd->
-                                DropdownMenuItem(onClick = {
-                                    selectedOptionEndLocation = "Warehouse:  ${waEnd!!.name}; Latitude: ${waEnd.latitude}; Longitude: ${waEnd.longitude}"
-                                    route.value!!.endLocation = waEnd.id.toString()
-                                    isMenuExpandedEndLocation= false
-                                }) {
-                                    Text( "Warehouse:  ${waEnd!!.name} Latitude: ${waEnd.latitude} Longitude: ${waEnd.longitude}" )
-                                }
-                            }
-                        }
-                    }
-
-                    Spacer(modifier = Modifier
-                        .fillMaxWidth()
-                        .height(5.dp))
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ){
-                        ElevatedButton(
-                            modifier = Modifier
-                                .weight(1f)
-                                .fillMaxWidth(),
-                            onClick = {
-                                navController.navigate("routeManagement")
-                            },
-                            colors = ButtonDefaults.elevatedButtonColors(
-                                containerColor = Color.White
-                            ),
-                            elevation = ButtonDefaults.elevatedButtonElevation(
-                                defaultElevation = 5.dp
-                            )
-                        ){
-                            Text(text = "Cancel", color = Color(0xff5a79ba))
-                        }
-
-                        ElevatedButton(
-                            modifier = Modifier
-                                .weight(1f)
-                                .fillMaxWidth(),
-                            onClick = {
-                                //warehouse.name =name
-                                addRoute()
-                            },
-                            colors = ButtonDefaults.elevatedButtonColors(
-                                containerColor = Color(0xff5a79ba)
-                            ),
-                            elevation = ButtonDefaults.elevatedButtonElevation(
-                                defaultElevation = 5.dp
-                            )
-                        ){
-                            Text(text = "Add", color = Color.White)
-                        }
-                    }
-                    Spacer(modifier = Modifier
-                        .fillMaxWidth()
-                        .height(48.dp))
                 }
-            }
 
+            }
         }
 
     }
@@ -654,7 +779,7 @@ fun ShowListDialog(listaItems: List<Item>, onDismiss: () -> Unit, onSuccessfully
             // Puedes personalizar y agregar tu propia lógica aquí
             Column(
                 modifier = Modifier
-                    .background(MaterialTheme.colorScheme.background)
+                    .background(Color.White)
                     .fillMaxWidth()
                     .padding(6.dp)
             ) {
@@ -720,13 +845,19 @@ fun ShowListDialog(listaItems: List<Item>, onDismiss: () -> Unit, onSuccessfully
 fun itemTemplate(item: Item, onCountStateChanged: (Double) -> Unit){
     var count by rememberSaveable { mutableStateOf(0) }
     val countState = rememberUpdatedState(count)
-
+    val customTextFieldColors = TextFieldDefaults.outlinedTextFieldColors(
+        cursorColor =  Color(0xff5a79ba),
+        focusedBorderColor =  Color(0xff5a79ba),
+        focusedLabelColor = Color(0xff5a79ba),
+        backgroundColor = Color(0xfff5f6f7),
+        unfocusedBorderColor =  Color.White
+    )
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
-            .background(MaterialTheme.colorScheme.background)
+            .background(Color.White)
     ) {
         // Imagen del producto a la izquierda (puedes personalizar esto según tus necesidades)
         Image(
@@ -782,6 +913,7 @@ fun itemTemplate(item: Item, onCountStateChanged: (Double) -> Unit){
             androidx.compose.material.Text("-", color = Color.White)
         }
         TextField(
+            colors = customTextFieldColors,
             value = countState.value.toString(),
             onValueChange = { newValue ->
                 val value = newValue.toIntOrNull() ?: 0
@@ -797,6 +929,12 @@ fun itemTemplate(item: Item, onCountStateChanged: (Double) -> Unit){
                 .padding(8.dp)
                 .width(60.dp)
                 .height(45.dp)
+                .border(
+                    width = 0.5.dp,
+                    color =  Color(0xff5a79ba),
+                    shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
+
+                )
 
         )
         ElevatedButton(

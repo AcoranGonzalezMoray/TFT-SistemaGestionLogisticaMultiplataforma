@@ -9,6 +9,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -24,6 +25,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
@@ -87,11 +89,11 @@ fun ItemDetailsScreen(navController: NavController) {
     val countState = rememberUpdatedState(count)
     val context = LocalContext.current
     val customTextFieldColors = TextFieldDefaults.outlinedTextFieldColors(
-        cursorColor = Color.Black,
-        focusedBorderColor = Color.Black,
-        focusedLabelColor = Color.Black,
-        unfocusedBorderColor = Color.Black,
-        backgroundColor = Color.LightGray
+        cursorColor =  Color(0xff5a79ba),
+        focusedBorderColor =  Color(0xff5a79ba),
+        focusedLabelColor = Color(0xff5a79ba),
+        backgroundColor = Color(0xfff5f6f7),
+        unfocusedBorderColor =  Color.White
     )
 
     val updateImage:(File)->Unit={ file ->
@@ -361,13 +363,19 @@ fun ItemDetailsScreen(navController: NavController) {
                     }
                     TextField(
                         value = countState.value.toString(),
+                        colors = customTextFieldColors,
                         onValueChange = { newValue ->
                             count = newValue.toIntOrNull() ?: 0
                         },
                         modifier = Modifier
                             .padding(16.dp)
                             .width(60.dp)
-                            .height(55.dp)
+                            .height(55.dp).border(
+                                width = 0.5.dp,
+                                color =  Color(0xff5a79ba),
+                                shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
+
+                            )
 
                     )
 

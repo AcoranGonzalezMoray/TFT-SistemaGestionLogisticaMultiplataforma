@@ -10,6 +10,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -26,6 +27,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
@@ -33,11 +35,15 @@ import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddAPhoto
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Inventory
@@ -196,8 +202,8 @@ fun UpdateWarehouseScreen(navController: NavController) {
         cursorColor =  Color(0xff5a79ba),
         focusedBorderColor =  Color(0xff5a79ba),
         focusedLabelColor = Color(0xff5a79ba),
-        unfocusedBorderColor =  Color(0xff5a79ba),
-        backgroundColor = Color.LightGray
+        backgroundColor = Color(0xfff5f6f7),
+        unfocusedBorderColor =  Color.White,
     )
 
 
@@ -263,226 +269,277 @@ fun UpdateWarehouseScreen(navController: NavController) {
             )
         }
     }else{
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(16.dp)
-        ) {
-            if (showDialog) {
-                ShowDialog(
-                    onDismiss = { showDialog = false},
-                    onSuccessfully = {
-                        showDialog = false
+       Column {
+           TopAppBar(
+               navigationIcon = {
+                   IconButton(onClick = { navController.popBackStack() }) {
+                       androidx.compose.material3.Icon(Icons.Default.ArrowBack, contentDescription = "Back to Login", tint = Color(0xff5a79ba))
+                   }
+               },
+               backgroundColor = Color.White,
+               title = { androidx.compose.material.Text(text = "Update Warehouse", color = Color(0xff5a79ba)) }
+           )
+           Column(
+               modifier = Modifier
+                   .fillMaxSize()
+                   .verticalScroll(rememberScrollState())
+                   .padding(16.dp)
+           ) {
+               if (showDialog) {
+                   ShowDialog(
+                       onDismiss = { showDialog = false},
+                       onSuccessfully = {
+                           showDialog = false
 
-                        pinLocation = it
-                    }
-                )
-            }
-            Box(
-                modifier = Modifier
-                    .height(300.dp)
-            ) {
-                if(warehouse!=null && !warehouse.url.isNullOrBlank()){
-                    val painter = rememberImagePainter(
-                        data = warehouse.url,
-                        builder = {
-                            crossfade(true)
-                            placeholder(R.drawable.loading)
-                        }
-                    )
-                    Image(
-                        painter = painter,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .fillMaxSize()
-                    )
-                }else{
-                    Image(
-                        painter = painterResource(id = R.drawable.warehouse), // Reemplaza con tu lógica para cargar la imagen
-                        contentDescription = null,
-                        modifier = Modifier
-                            .fillMaxSize()
-                    )
-                }
-                Box(modifier = Modifier.fillMaxWidth()) {
-                    ElevatedButton(
-                        modifier = Modifier
-                            .padding(top = 8.dp)
-                            .align(alignment = Alignment.CenterStart),
-                        onClick = {
-                            pickImageLauncher.launch("image/*")
-                        },
-                        colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
-                            containerColor = Color(0xff5a79ba)
-                        ),
-                        elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
-                            defaultElevation = 5.dp
-                        )
-                    ){
-                        Icon(
-                            imageVector = Icons.Filled.Refresh,
-                            contentDescription = "",
-                            tint = Color.White
-                        )
-                    }
-                }
-            }
+                           pinLocation = it
+                       }
+                   )
+               }
+               Box(
+                   modifier = Modifier
+                       .height(300.dp)
+               ) {
+                   if(warehouse!=null && !warehouse.url.isNullOrBlank()){
+                       val painter = rememberImagePainter(
+                           data = warehouse.url,
+                           builder = {
+                               crossfade(true)
+                               placeholder(R.drawable.loading)
+                           }
+                       )
+                       Image(
+                           painter = painter,
+                           contentDescription = null,
+                           modifier = Modifier
+                               .fillMaxSize()
+                       )
+                   }else{
+                       Image(
+                           painter = painterResource(id = R.drawable.warehouse), // Reemplaza con tu lógica para cargar la imagen
+                           contentDescription = null,
+                           modifier = Modifier
+                               .fillMaxSize()
+                       )
+                   }
+                   Box(modifier = Modifier.fillMaxWidth()) {
+                       ElevatedButton(
+                           modifier = Modifier
+                               .padding(top = 8.dp)
+                               .align(alignment = Alignment.CenterStart),
+                           onClick = {
+                               pickImageLauncher.launch("image/*")
+                           },
+                           colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                               containerColor = Color(0xff5a79ba)
+                           ),
+                           elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                               defaultElevation = 5.dp
+                           )
+                       ){
+                           Icon(
+                               imageVector = Icons.Filled.Refresh,
+                               contentDescription = "",
+                               tint = Color.White
+                           )
+                       }
+                   }
+               }
 
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 16.dp)
-            ) {
-                warehouse?.let {
-                    var name by remember { mutableStateOf(it.name) }
-                    var location by remember { mutableStateOf(it.location) }
-                    var organization by remember { mutableStateOf(it.organization) }
-                    var administratorId by remember { mutableStateOf(it.idAdministrator) }
+               Column(
+                   modifier = Modifier
+                       .fillMaxWidth()
+                       .padding(top = 16.dp)
+               ) {
+                   warehouse?.let {
+                       var name by remember { mutableStateOf(it.name) }
+                       var location by remember { mutableStateOf(it.location) }
+                       var organization by remember { mutableStateOf(it.organization) }
+                       var administratorId by remember { mutableStateOf(it.idAdministrator) }
 
-                    TextField(
-                        value = name,
-                        label = { Text("Name") },
-                        onValueChange = { name = it },
-                        colors= customTextFieldColors,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(4.dp)
-                    )
-                    TextField(
-                        value = location,
-                        label = { Text("Location") },
-                        onValueChange = { location = it },
-                        colors= customTextFieldColors,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(4.dp)
-                    )
-                    TextField(
-                        value = organization,
-                        label = { Text("Organization") },
-                        onValueChange = { organization = it },
-                        colors= customTextFieldColors,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(4.dp)
-                    )
-                    Spacer(modifier = Modifier.height(10.dp))
-                    ElevatedButton(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        onClick = {
-                            showDialog = true
-                        },
-                        colors =  androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
-                            containerColor = Color(0xff5a79ba)
-                        ),
-                        elevation =  androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
-                            defaultElevation = 5.dp
-                        )
-                    ){
-                        Icon(imageVector = Icons.Filled.Add, contentDescription = null, tint = Color.White )
-                    }
-                    Spacer(modifier = Modifier.height(10.dp))
-                    if(pinLocation!=null){
-                        ElevatedButton(
-                            modifier = Modifier
-                                .fillMaxWidth(),
-                            onClick = {
+                       TextField(
+                           value = name,
+                           label = { Text("Name") },
+                           onValueChange = { name = it },
+                           colors= customTextFieldColors,
+                           modifier = Modifier
+                               .fillMaxWidth()
+                               .padding(4.dp)
+                               .border(
+                                   width = 0.5.dp,
+                                   color = Color(0xff5a79ba),
+                                   shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
 
-                            },
-                            colors =  androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
-                                containerColor = Color.White
-                            ),
-                            elevation =  androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
-                                defaultElevation = 5.dp
-                            )
-                        ){
-                            Text("${pinLocation}", color = Color(0xff5a79ba))
-                        }
-                        Spacer(modifier = Modifier.height(10.dp))
-                    }
-                    Box(modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(4.dp)) {
-                        Text(
-                            text = selectedOption,
-                            modifier = Modifier
-                                .background(Color.LightGray)
-                                .clickable(
-                                    interactionSource = remember { MutableInteractionSource() },
-                                    indication = null
+                               )
+                       )
+                       TextField(
+                           value = location,
+                           label = { Text("Location") },
+                           onValueChange = { location = it },
+                           colors= customTextFieldColors,
+                           modifier = Modifier
+                               .fillMaxWidth()
+                               .padding(4.dp)
+                               .border(
+                                   width = 0.5.dp,
+                                   color = Color(0xff5a79ba),
+                                   shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
+
+                               )
+                       )
+                       TextField(
+                           value = organization,
+                           label = { Text("Organization") },
+                           onValueChange = { organization = it },
+                           colors= customTextFieldColors,
+                           modifier = Modifier
+                               .fillMaxWidth()
+                               .padding(4.dp)
+                               .border(
+                                   width = 0.5.dp,
+                                   color = Color(0xff5a79ba),
+                                   shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
+
+                               )
+                       )
+                       Spacer(modifier = Modifier.height(10.dp))
+                       ElevatedButton(
+                           modifier = Modifier
+                               .fillMaxWidth(),
+                           onClick = {
+                               showDialog = true
+                           },
+                           colors =  androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                               containerColor = Color(0xff5a79ba)
+                           ),
+                           elevation =  androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                               defaultElevation = 5.dp
+                           )
+                       ){
+                           Icon(imageVector = Icons.Filled.Add, contentDescription = null, tint = Color.White )
+                       }
+                       Spacer(modifier = Modifier.height(10.dp))
+                       if(pinLocation!=null){
+                           ElevatedButton(
+                               modifier = Modifier
+                                   .fillMaxWidth(),
+                               onClick = {
+
+                               },
+                               colors =  androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                                   containerColor = Color.White
+                               ),
+                               elevation =  androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                                   defaultElevation = 5.dp
+                               )
+                           ){
+                               Text("${pinLocation}", color = Color(0xff5a79ba))
+                           }
+                           Spacer(modifier = Modifier.height(10.dp))
+                       }
+                       Box(modifier = Modifier
+                           .fillMaxWidth()
+                           .padding(4.dp)
+                           .background(Color(0xfff5f6f7))
+                           .border(
+                               width = 0.5.dp,
+                               color = Color(0xff5a79ba),
+                               shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
+
+                           )
+                       ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = selectedOption,
+                                    modifier = Modifier
+                                        .background(Color(0xfff5f6f7))
+                                        .clickable(
+                                            interactionSource = remember { MutableInteractionSource() },
+                                            indication = null
+                                        ) {
+                                            isMenuExpanded = true
+                                        }
+                                        .padding(16.dp)
+                                )
+
+                                DropdownMenu(
+                                    expanded = isMenuExpanded,
+                                    onDismissRequest = { isMenuExpanded = false },
+                                    modifier = Modifier.fillMaxWidth()
                                 ) {
-                                    isMenuExpanded = true
-                                }
-                                .padding(16.dp)
-                        )
+                                    employees?.forEach { employee ->
+                                        DropdownMenuItem(onClick = {
+                                            selectedOption= "Name: ${employee.name}  Role: Administrator Code: ${employee.code};${employee.id}"
+                                            administratorId = employee.id
+                                            isMenuExpanded = false
+                                        },
+                                            modifier = Modifier
+                                                .padding(5.dp)
+                                                .border(
+                                                    width = 0.5.dp,
+                                                    color = Color(0xff5a79ba),
+                                                    shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
 
-                        DropdownMenu(
-                            expanded = isMenuExpanded,
-                            onDismissRequest = { isMenuExpanded = false },
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            employees?.forEach { employee ->
-                                DropdownMenuItem(onClick = {
-                                    selectedOption= "Name: ${employee.name}  Role: Administrator Code: ${employee.code};${employee.id}"
-                                    administratorId = employee.id
-                                    isMenuExpanded = false
-                                }) {
-                                    Text("Name: ${employee.name}  Role: Administrator Code: ${employee.code}" )
+                                                )
+                                        ) {
+                                            Text("Name: ${employee.name}  Role: Administrator Code: ${employee.code}" )
+                                        }
+                                    }
                                 }
+                                Icon(imageVector = Icons.Filled.ArrowDropDown, contentDescription = null, tint =Color(0xff5a79ba))
                             }
-                        }
-                    }
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ){
-                        ElevatedButton(
-                            modifier = Modifier
-                                .weight(1f)
-                                .fillMaxWidth(),
-                            onClick = {
-                                navController.navigate("home")
-                            },
-                            colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
-                                containerColor = Color.White
-                            ),
-                            elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
-                                defaultElevation = 5.dp
-                            )
-                        ){
-                            Text(text = "Cancel", color = Color(0xff5a79ba))
-                        }
+                       }
+                       Row(
+                           horizontalArrangement = Arrangement.spacedBy(8.dp)
+                       ){
+                           ElevatedButton(
+                               modifier = Modifier
+                                   .weight(1f)
+                                   .fillMaxWidth(),
+                               onClick = {
+                                   navController.navigate("home")
+                               },
+                               colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                                   containerColor = Color.White
+                               ),
+                               elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                                   defaultElevation = 5.dp
+                               )
+                           ){
+                               Text(text = "Cancel", color = Color(0xff5a79ba))
+                           }
 
-                        ElevatedButton(
-                            modifier = Modifier
-                                .weight(1f)
-                                .fillMaxWidth(),
-                            onClick = {
-                                warehouse.name =name
-                                warehouse.location = location
-                                warehouse.organization = organization
-                                warehouse.idAdministrator = administratorId
+                           ElevatedButton(
+                               modifier = Modifier
+                                   .weight(1f)
+                                   .fillMaxWidth(),
+                               onClick = {
+                                   warehouse.name =name
+                                   warehouse.location = location
+                                   warehouse.organization = organization
+                                   warehouse.idAdministrator = administratorId
 
-                                updateWarehouse()
-                            },
-                            colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
-                                containerColor = Color(0xff5a79ba)
-                            ),
-                            elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
-                                defaultElevation = 5.dp
-                            )
-                        ){
-                            Text(text = "Update", color = Color.White)
-                        }
-                    }
-                }
-            }
-            Spacer(modifier = Modifier
-                .fillMaxWidth()
-                .height(60.dp))
+                                   updateWarehouse()
+                               },
+                               colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                                   containerColor = Color(0xff5a79ba)
+                               ),
+                               elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                                   defaultElevation = 5.dp
+                               )
+                           ){
+                               Text(text = "Update", color = Color.White)
+                           }
+                       }
+                   }
+               }
+               Spacer(modifier = Modifier
+                   .fillMaxWidth()
+                   .height(60.dp))
 
-        }
+           }
+       }
 
     }
 

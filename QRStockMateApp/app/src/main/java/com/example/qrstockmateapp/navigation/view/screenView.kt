@@ -147,75 +147,82 @@ fun BottomNavigationScreen(navControllerLogin: NavController,sharedPreferences: 
             )
         },
         topBar = {
-            TopAppBar(
-                backgroundColor = Color.White,
-                title = {
-                    // Colocar la imagen en el centro y el icono a la derecha
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(10.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .weight(1f)
-                                .fillMaxSize()
-                                .padding(end = 25.dp)
-                                .fillMaxHeight()
-                                .wrapContentSize(Alignment.Center),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            // Imagen en el centro
-                            Image(
-                                painter = painterResource(id = R.drawable.icon_white),
-                                contentDescription = "",
-                                colorFilter = ColorFilter.tint(Color(0xff5a79ba))
-                            )
-                        }
+            val excludedRoutes = setOf("route", "routeMinus", "addWarehouse", "updateWarehouse", "updateUser", "addRoute", "updateRoute")
 
-                        // Icono a la derecha
-                        Box(
+            if (currentRoute !in excludedRoutes) {
+                TopAppBar(
+                    backgroundColor = Color.White,
+                    title = {
+                        // Colocar la imagen en el centro y el icono a la derecha
+                        Row(
                             modifier = Modifier
-                                .padding(end = 16.dp)
-                                .fillMaxHeight()
-                                .wrapContentSize(Alignment.Center),
-                            contentAlignment = Alignment.Center
+                                .fillMaxWidth()
+                                .padding(10.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            androidx.compose.material3.Icon(
-                                imageVector = Icons.Filled.Message,
-                                contentDescription = null,
+                            Box(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .fillMaxSize()
+                                    .padding(end = 25.dp)
+                                    .fillMaxHeight()
+                                    .wrapContentSize(Alignment.Center),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                // Imagen en el centro
+                                Image(
+                                    painter = painterResource(id = R.drawable.icon_white),
+                                    contentDescription = "",
+                                    colorFilter = ColorFilter.tint(Color(0xff5a79ba))
+                                )
+                            }
+
+                            // Icono a la derecha
+                            Box(
+                                modifier = Modifier
+                                    .padding(end = 16.dp)
+                                    .fillMaxHeight()
+                                    .wrapContentSize(Alignment.Center),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                androidx.compose.material3.Icon(
+                                    imageVector = Icons.Filled.Message,
+                                    contentDescription = null,
+                                    tint = Color(0xff5a79ba)
+                                )
+                                Badge(
+                                    content = { Text(text = "5", color = Color.White) },
+                                    modifier = Modifier.offset(x = 12.dp, y = -8.dp)
+                                )
+                            }
+                        }
+                    },
+                    navigationIcon = {
+                        // Ícono de menú para abrir el cajón de navegación
+                        IconButton(onClick = {
+                            scope.launch {
+                                scaffoldState.drawerState.open()
+                            }
+                        }) {
+                            Icon(
+                                imageVector = Icons.Default.Menu,
+                                contentDescription = "",
                                 tint = Color(0xff5a79ba)
                             )
-                            Badge(
-                                content = { Text(text = "5", color = Color.White) },
-                                modifier = Modifier.offset(x = 12.dp, y = -8.dp)
-                            )
                         }
                     }
-                },
-                navigationIcon = {
-                    // Ícono de menú para abrir el cajón de navegación
-                    IconButton(onClick = {
-                        scope.launch {
-                            scaffoldState.drawerState.open()
-                        }
-                    }) {
-                        Icon(
-                            imageVector = Icons.Default.Menu,
-                            contentDescription = "",
-                            tint = Color(0xff5a79ba)
-                        )
-                    }
-                }
-            )
+                )
+            }
+
 
 
 
         },
 
         bottomBar = {
-            if(currentRoute != "route" && currentRoute != "routeMinus"){
+            val excludedRoutes = setOf("route", "routeMinus", "addWarehouse", "updateWarehouse", "updateUser", "addRoute", "updateRoute")
+
+            if (currentRoute !in excludedRoutes) {
                 BottomBar(
                     screens = ScreenModel().screensInHomeFromBottomNav,
                     navController = navController

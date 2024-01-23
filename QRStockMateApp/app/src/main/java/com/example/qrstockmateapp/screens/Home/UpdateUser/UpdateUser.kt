@@ -9,26 +9,33 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.ElevatedButton
@@ -178,8 +185,8 @@ fun UpdateUserScreen(navController: NavController) {
         cursorColor =  Color(0xff5a79ba),
         focusedBorderColor =  Color(0xff5a79ba),
         focusedLabelColor = Color(0xff5a79ba),
-        unfocusedBorderColor =  Color(0xff5a79ba),
-        backgroundColor = Color.LightGray
+        backgroundColor = Color(0xfff5f6f7),
+        unfocusedBorderColor =  Color.White,
     )
 
 
@@ -248,159 +255,56 @@ fun UpdateUserScreen(navController: NavController) {
             )
         }
     }else{
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp)
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                if(user!=null && !user.url.isNullOrBlank()){
-                    val painter = rememberImagePainter(
-                        data = user.url,
-                        builder = {
-                            crossfade(true)
-                            placeholder(R.drawable.loading)
-                        }
-                    )
-                    Image(
-                        painter = painter,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .fillMaxHeight(0.5f)
-                    )
-                }else{
-                    Image(
-                        painter = painterResource(id = R.drawable.user), // Reemplaza con tu lógica para cargar la imagen
-                        contentDescription = null,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .fillMaxHeight(0.5f) // La imagen ocupa la mitad de la pantalla
-                    )
-                }
-                Box(modifier = Modifier.fillMaxWidth()) {
-                    ElevatedButton(
-                        modifier = Modifier
-                            .padding(top = 8.dp)
-                            .align(alignment = Alignment.CenterStart),
-                        onClick = {
-                            pickImageLauncher.launch("image/*")
-                        },
-                        colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
-                            containerColor = Color(0xff5a79ba)
-                        ),
-                        elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
-                            defaultElevation = 5.dp
-                        )
-                    ){
-                        Icon(
-                            imageVector = Icons.Filled.Refresh,
-                            contentDescription = "",
-                            tint = Color.White
-                        )
+        Column {
+            TopAppBar(
+                navigationIcon = {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        androidx.compose.material3.Icon(Icons.Default.ArrowBack, contentDescription = "Back to Login", tint = Color(0xff5a79ba))
                     }
-                }
-            }
-
+                },
+                backgroundColor = Color.White,
+                title = { androidx.compose.material.Text(text = "Update User", color = Color(0xff5a79ba)) }
+            )
             Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 16.dp)
+                    .fillMaxSize()
+                    .padding(16.dp)
             ) {
-                user?.let {
-                    var name by remember { mutableStateOf(it.name) }
-                    var email by remember { mutableStateOf(it.email) }
-                    var phone by remember { mutableStateOf(it.phone) }
-
-
-                    TextField(
-                        value = name,
-                        label = { Text("Name") },
-                        onValueChange = { name = it },
-                        colors= customTextFieldColors,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(4.dp)
-                    )
-                    TextField(
-                        value = email,
-                        label = { Text("Email") },
-                        onValueChange = {email = it },
-                        colors= customTextFieldColors,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(4.dp)
-                    )
-                    TextField(
-                        value = phone,
-                        label = { Text("Phone") },
-                        onValueChange = { phone = it },
-                        colors= customTextFieldColors,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(4.dp)
-                    )
-                    Box(modifier = Modifier.fillMaxWidth().padding(4.dp)) {
-                        Text(
-                            text = selectedOption,
-                            modifier = Modifier
-                                .background(Color.LightGray)
-                                .clickable(
-                                    interactionSource = remember { MutableInteractionSource() },
-                                    indication = null
-                                ) {
-                                    isMenuExpanded = true
-                                }
-                                .padding(16.dp)
-                        )
-
-                        DropdownMenu(
-                            expanded = isMenuExpanded,
-                            onDismissRequest = { isMenuExpanded = false },
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            roles?.forEach { rol ->
-                                DropdownMenuItem(onClick = {
-                                    selectedOption= "Role:${ userRoleToString(rol)}"
-                                    user.role= rol
-                                    isMenuExpanded = false
-                                }) {
-                                    Text("Role:${ userRoleToString(rol)}" )
-                                }
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    if(user!=null && !user.url.isNullOrBlank()){
+                        val painter = rememberImagePainter(
+                            data = user.url,
+                            builder = {
+                                crossfade(true)
+                                placeholder(R.drawable.loading)
                             }
-                        }
+                        )
+                        Image(
+                            painter = painter,
+                            contentDescription = null,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .fillMaxHeight(0.5f)
+                        )
+                    }else{
+                        Image(
+                            painter = painterResource(id = R.drawable.user), // Reemplaza con tu lógica para cargar la imagen
+                            contentDescription = null,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .fillMaxHeight(0.5f) // La imagen ocupa la mitad de la pantalla
+                        )
                     }
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ){
+                    Box(modifier = Modifier.fillMaxWidth()) {
                         ElevatedButton(
                             modifier = Modifier
-                                .weight(1f)
-                                .fillMaxWidth(),
+                                .padding(top = 8.dp)
+                                .align(alignment = Alignment.CenterStart),
                             onClick = {
-                                navController.navigate("manageUser")
-                            },
-                            colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
-                                containerColor = Color.White
-                            ),
-                            elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
-                                defaultElevation = 5.dp
-                            )
-                        ){
-                            Text(text = "Cancel",color = Color(0xff5a79ba))
-                        }
-                        ElevatedButton(
-                            modifier = Modifier
-                                .weight(1f)
-                                .fillMaxWidth(),
-                            onClick = {
-                                user.name =name
-                                user.email = email
-                                user.phone = phone
-                                updateUser()
+                                pickImageLauncher.launch("image/*")
                             },
                             colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
                                 containerColor = Color(0xff5a79ba)
@@ -409,12 +313,172 @@ fun UpdateUserScreen(navController: NavController) {
                                 defaultElevation = 5.dp
                             )
                         ){
-                            Text(text = "Update", color = Color.White)
+                            Icon(
+                                imageVector = Icons.Filled.Refresh,
+                                contentDescription = "",
+                                tint = Color.White
+                            )
                         }
                     }
                 }
-            }
 
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp)
+                ) {
+                    user?.let {
+                        var name by remember { mutableStateOf(it.name) }
+                        var email by remember { mutableStateOf(it.email) }
+                        var phone by remember { mutableStateOf(it.phone) }
+
+
+                        TextField(
+                            value = name,
+                            label = { Text("Name") },
+                            onValueChange = { name = it },
+                            colors= customTextFieldColors,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(4.dp)
+                                .border(
+                                    width = 0.5.dp,
+                                    color = Color(0xff5a79ba),
+                                    shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
+
+                                )
+                        )
+                        TextField(
+                            value = email,
+                            label = { Text("Email") },
+                            onValueChange = {email = it },
+                            colors= customTextFieldColors,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(4.dp)
+                                .border(
+                                    width = 0.5.dp,
+                                    color = Color(0xff5a79ba),
+                                    shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
+
+                                )
+                        )
+                        TextField(
+                            value = phone,
+                            label = { Text("Phone") },
+                            onValueChange = { phone = it },
+                            colors= customTextFieldColors,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(4.dp)
+                                .border(
+                                    width = 0.5.dp,
+                                    color = Color(0xff5a79ba),
+                                    shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
+
+                                )
+                        )
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(4.dp)
+                                .background(Color(0xfff5f6f7))
+                                .border(
+                                    width = 0.5.dp,
+                                    color = Color(0xff5a79ba),
+                                    shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
+
+                                )
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = selectedOption,
+                                    modifier = Modifier
+                                        .weight(9f)
+                                        .background(Color(0xfff5f6f7))
+                                        .clickable(
+                                            interactionSource = remember { MutableInteractionSource() },
+                                            indication = null
+                                        ) {
+                                            isMenuExpanded = true
+                                        }
+                                        .padding(16.dp)
+                                )
+
+                                DropdownMenu(
+                                    expanded = isMenuExpanded,
+                                    onDismissRequest = { isMenuExpanded = false },
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    roles?.forEach { rol ->
+                                        DropdownMenuItem(onClick = {
+                                            selectedOption= "Role:${ userRoleToString(rol)}"
+                                            user.role= rol
+                                            isMenuExpanded = false
+                                        },
+                                            modifier = Modifier
+                                                .padding(5.dp)
+                                                .border(
+                                                    width = 0.5.dp,
+                                                    color = Color(0xff5a79ba),
+                                                    shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
+
+                                                )
+                                        ) {
+                                            Text("Role:${ userRoleToString(rol)}" )
+                                        }
+                                    }
+                                }
+                                Icon(modifier = Modifier.weight(1f), imageVector = Icons.Filled.ArrowDropDown, contentDescription = null, tint =Color(0xff5a79ba))
+                            }
+
+                        }
+
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ){
+                            ElevatedButton(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .fillMaxWidth(),
+                                onClick = {
+                                    navController.navigate("manageUser")
+                                },
+                                colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                                    containerColor = Color.White
+                                ),
+                                elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                                    defaultElevation = 5.dp
+                                )
+                            ){
+                                Text(text = "Cancel",color = Color(0xff5a79ba))
+                            }
+                            ElevatedButton(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .fillMaxWidth(),
+                                onClick = {
+                                    user.name =name
+                                    user.email = email
+                                    user.phone = phone
+                                    updateUser()
+                                },
+                                colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                                    containerColor = Color(0xff5a79ba)
+                                ),
+                                elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                                    defaultElevation = 5.dp
+                                )
+                            ){
+                                Text(text = "Update", color = Color.White)
+                            }
+                        }
+                    }
+                }
+
+            }
         }
     }
 }

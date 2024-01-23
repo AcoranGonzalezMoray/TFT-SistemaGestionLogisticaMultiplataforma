@@ -2,20 +2,28 @@ package com.example.qrstockmateapp.screens.Auth.SignUp
 
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -51,9 +59,11 @@ fun SignUpScreen(navController: NavHostController) {
     var confirmPassword by remember { mutableStateOf("") }
     var passwordMatches by remember { mutableStateOf(true) }
     var phone by remember { mutableStateOf("") }
+    var start by remember {
+        mutableStateOf(false)
+    }
 
-
-    val isError = name.isBlank() || email.isBlank() || password.isBlank() || confirmPassword.isBlank() || phone.isBlank() || companyName.isBlank()
+    val isError = (name.isBlank() || email.isBlank() || password.isBlank() || confirmPassword.isBlank() || phone.isBlank() || companyName.isBlank()) && start
     val errorMessage = if (isError) {
         val emptyField = listOf(
             "Name" to name,
@@ -73,8 +83,8 @@ fun SignUpScreen(navController: NavHostController) {
         cursorColor = Color(0xff5a79ba),
         focusedBorderColor = Color(0xff5a79ba),
         focusedLabelColor =Color(0xff5a79ba),
-        unfocusedBorderColor = Color(0xff5a79ba),
-        backgroundColor = Color.LightGray
+        backgroundColor = Color(0xfff5f6f7),
+        unfocusedBorderColor =  Color.White,
     )
     val onSignUp:() -> Unit = {
         GlobalScope.launch(Dispatchers.IO) {
@@ -114,131 +124,167 @@ fun SignUpScreen(navController: NavHostController) {
     val keyboardOptions = KeyboardOptions(
         keyboardType = KeyboardType.Email
     )
-    Column(
-        modifier = Modifier.padding(16.dp) ,
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally // Alineación central horizontal
-    ) {
-        Text(
-            text = "Sign Up",
-            fontSize = 20.sp,
-            modifier = Modifier.padding(bottom = 20.dp)
-        )
-        if (isError) {
-            Text(
-                text = errorMessage ?: "",
-                color = MaterialTheme.colorScheme.error,
-                style = MaterialTheme.typography.labelSmall,
-                modifier = Modifier.padding(start = 16.dp)
-            )
-        }
-        Spacer(modifier = Modifier.height(20.dp))
+   Column{
+       TopAppBar(
+           navigationIcon = {
+               IconButton(onClick = { navController.navigate("login") }) {
+                   Icon(Icons.Default.ArrowBack, contentDescription = "Back to Login", tint = Color(0xff5a79ba))
+               }
+           },
+           backgroundColor = Color.White,
+           title = { Text(text = "Sign Up", color = Color(0xff5a79ba)) }
+       )
+       Column(
+           modifier = Modifier.padding(16.dp).fillMaxSize() ,
+           verticalArrangement = Arrangement.Center,
+           horizontalAlignment = Alignment.CenterHorizontally // Alineación central horizontal
+       ) {
+           if (isError) {
+               Text(
+                   text = errorMessage ?: "",
+                   color = MaterialTheme.colorScheme.error,
+                   style = MaterialTheme.typography.labelSmall,
+                   modifier = Modifier.padding(start = 16.dp)
+               )
+           }
+           Spacer(modifier = Modifier.height(20.dp))
 
-        TextField(
-            value = name,
-            isError = isError,
-            onValueChange = { name = it },
-            label = { Text("Name") },
-            modifier = Modifier.fillMaxWidth(),
-            colors = customTextFieldColors
-        )
-        Spacer(modifier = Modifier.height(16.dp))
+           TextField(
+               value = name,
+               isError = isError,
+               onValueChange = { name = it;if(!start)start = true },
+               label = { Text("Name") },
+               modifier = Modifier.fillMaxWidth().border(
+                   width = 0.5.dp,
+                   color =  Color(0xff5a79ba),
+                   shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
 
-        TextField(
-            value = email,
-            isError = isError,
-            onValueChange = { email = it },
-            label = { Text("Email") },
-            keyboardOptions = keyboardOptions,
-            modifier = Modifier.fillMaxWidth(),
-            colors = customTextFieldColors
-        )
-        if(!isValidEmail(email))Text("put a valid email", color = Color.Red)
-        Spacer(modifier = Modifier.height(16.dp))
+               ),
+               colors = customTextFieldColors
+           )
+           Spacer(modifier = Modifier.height(16.dp))
 
-        TextField(
-            value = password,
-            isError = isError,
-            visualTransformation = PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            onValueChange = { password = it },
-            label = { Text("Password") },
-            modifier = Modifier.fillMaxWidth(),
-            colors = customTextFieldColors
-        )
-        Spacer(modifier = Modifier.height(16.dp))
+           TextField(
+               value = email,
+               isError = isError,
+               onValueChange = { email = it;if(!start)start = true },
+               label = { Text("Email") },
+               keyboardOptions = keyboardOptions,
+               modifier = Modifier.fillMaxWidth().border(
+                   width = 0.5.dp,
+                   color =  Color(0xff5a79ba),
+                   shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
 
-        TextField(
-            value = confirmPassword,
-            isError = isError,
-            visualTransformation = PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            onValueChange = {
-                confirmPassword = it
-                passwordMatches = password == it
-            },
-            label = { Text("Confirm Password") },
-            modifier = Modifier.fillMaxWidth(),
-            colors = customTextFieldColors
-        )
-        if (!passwordMatches) {
-            Text("Passwords do not match", color = Color.Red)
-        }
-        Spacer(modifier = Modifier.height(16.dp))
+               ),
+               colors = customTextFieldColors
+           )
+           if(!isValidEmail(email) && start)Text("put a valid email", color = Color.Red)
+           Spacer(modifier = Modifier.height(16.dp))
 
-        TextField(
-            value = phone,
-            isError = isError,
-            onValueChange = { phone = it },
-            label = { Text("Phone") },
-            modifier = Modifier.fillMaxWidth(),
-            colors = customTextFieldColors
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        TextField(
-            value = companyName ,
-            isError = isError,
-            onValueChange = {companyName  = it },
-            label = { Text("Company Name") },
-            modifier = Modifier.fillMaxWidth(),
-            colors = customTextFieldColors
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            ElevatedButton(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth(),
-                onClick = {
-                    navController.navigate("login")
-                },
-                colors = ButtonDefaults.elevatedButtonColors(
-                    containerColor = Color.White
-                ),
-                elevation = ButtonDefaults.elevatedButtonElevation(
-                    defaultElevation = 5.dp
-                )
-            ){
-                Text("Cancel", color = Color(0xff5a79ba))
-            }
-            ElevatedButton(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth(),
-                onClick = {
-                    onSignUp()
-                },
-                colors = ButtonDefaults.elevatedButtonColors(
-                    containerColor = Color(0xff5a79ba)
-                ),
-                elevation = ButtonDefaults.elevatedButtonElevation(
-                    defaultElevation = 5.dp
-                )
-            ){
-                Text("Join", color = Color.White)
-            }
-        }
-    }
+           TextField(
+               value = password,
+               isError = isError,
+               visualTransformation = PasswordVisualTransformation(),
+               keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+               onValueChange = { password = it;if(!start)start = true },
+               label = { Text("Password") },
+               modifier = Modifier.fillMaxWidth().border(
+                   width = 0.5.dp,
+                   color =  Color(0xff5a79ba),
+                   shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
+
+               ),
+               colors = customTextFieldColors
+           )
+           Spacer(modifier = Modifier.height(16.dp))
+
+           TextField(
+               value = confirmPassword,
+               isError = isError,
+               visualTransformation = PasswordVisualTransformation(),
+               keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+               onValueChange = {
+                   confirmPassword = it
+                   passwordMatches = password == it
+               },
+               label = { Text("Confirm Password") },
+               modifier = Modifier.fillMaxWidth().border(
+                   width = 0.5.dp,
+                   color =  Color(0xff5a79ba),
+                   shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
+
+               ),
+               colors = customTextFieldColors
+           )
+           if (!passwordMatches) {
+               Text("Passwords do not match", color = Color.Red)
+           }
+           Spacer(modifier = Modifier.height(16.dp))
+
+           TextField(
+               value = phone,
+               isError = isError,
+               onValueChange = { phone = it;if(!start)start = true },
+               label = { Text("Phone") },
+               modifier = Modifier.fillMaxWidth().border(
+                   width = 0.5.dp,
+                   color =  Color(0xff5a79ba),
+                   shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
+
+               ),
+               colors = customTextFieldColors
+           )
+           Spacer(modifier = Modifier.height(16.dp))
+           TextField(
+               value = companyName ,
+               isError = isError,
+               onValueChange = {companyName  = it;if(!start)start = true },
+               label = { Text("Company Name") },
+               modifier = Modifier.fillMaxWidth().border(
+                   width = 0.5.dp,
+                   color =  Color(0xff5a79ba),
+                   shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
+
+               ),
+               colors = customTextFieldColors
+           )
+           Spacer(modifier = Modifier.height(16.dp))
+           Row(
+               horizontalArrangement = Arrangement.spacedBy(8.dp)
+           ) {
+               ElevatedButton(
+                   modifier = Modifier
+                       .weight(1f)
+                       .fillMaxWidth(),
+                   onClick = {
+                       navController.navigate("login")
+                   },
+                   colors = ButtonDefaults.elevatedButtonColors(
+                       containerColor = Color.White
+                   ),
+                   elevation = ButtonDefaults.elevatedButtonElevation(
+                       defaultElevation = 5.dp
+                   )
+               ){
+                   Text("Cancel", color = Color(0xff5a79ba))
+               }
+               ElevatedButton(
+                   modifier = Modifier
+                       .weight(1f)
+                       .fillMaxWidth(),
+                   onClick = {
+                       onSignUp()
+                   },
+                   colors = ButtonDefaults.elevatedButtonColors(
+                       containerColor = Color(0xff5a79ba)
+                   ),
+                   elevation = ButtonDefaults.elevatedButtonElevation(
+                       defaultElevation = 5.dp
+                   )
+               ){
+                   Text("Join", color = Color.White)
+               }
+           }
+       }
+   }
 }

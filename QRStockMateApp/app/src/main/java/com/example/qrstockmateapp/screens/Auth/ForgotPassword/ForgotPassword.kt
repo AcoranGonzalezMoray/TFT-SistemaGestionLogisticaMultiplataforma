@@ -1,5 +1,6 @@
 package com.example.qrstockmateapp.screens.Auth.ForgotPassword
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -9,8 +10,9 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.DropdownMenu
+import androidx.compose.material3.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -25,6 +27,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material.TextField
+import androidx.compose.material3.ElevatedButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -54,12 +57,13 @@ fun ForgotPassword(
     var expanded by remember { mutableStateOf(false) }
 
     val customTextFieldColors = TextFieldDefaults.outlinedTextFieldColors(
-        cursorColor = Color.Black,
-        focusedBorderColor = Color.Black,
-        focusedLabelColor = Color.Black,
-        unfocusedBorderColor = Color.Black,
-        backgroundColor = Color.LightGray
-    )
+        cursorColor =  Color(0xff5a79ba),
+        focusedBorderColor =  Color(0xff5a79ba),
+        focusedLabelColor = Color(0xff5a79ba),
+        backgroundColor = Color(0xfff5f6f7),
+        unfocusedBorderColor =  Color.White,
+        )
+
 
     // Función para manejar la selección del usuario
     val onOptionSelected: (String) -> Unit = { option ->
@@ -71,11 +75,11 @@ fun ForgotPassword(
         TopAppBar(
             navigationIcon = {
                 IconButton(onClick = { navController.navigate("login") }) {
-                    Icon(Icons.Default.ArrowBack, contentDescription = "Back to Login", tint = Color.White)
+                    Icon(Icons.Default.ArrowBack, contentDescription = "Back to Login", tint = Color(0xff5a79ba))
                 }
             },
-            backgroundColor = Color.Black,
-            title = { Text(text = "Forgot Password", color = Color.White) }
+            backgroundColor = Color.White,
+            title = { Text(text = "Forgot Password", color = Color(0xff5a79ba)) }
         )
         Column(
             modifier = Modifier
@@ -85,17 +89,18 @@ fun ForgotPassword(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            Text(
-                text = "Forgot Password",
-                modifier = Modifier.padding(bottom = 16.dp)
-            )
 
             TextField(
                 value = email,
                 onValueChange = { email = it },
                 label = { Text("Email") },
                 keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email),
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().border(
+                    width = 0.5.dp,
+                    color =  Color(0xff5a79ba),
+                    shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
+
+                ),
                 colors = customTextFieldColors
             )
 
@@ -130,14 +135,21 @@ fun ForgotPassword(
                 }
             }
 
-            Button(
-                onClick = { onResetPasswordClicked(selectedOption) },
-                colors = ButtonDefaults.buttonColors(Color.Black),
+
+            ElevatedButton(
                 modifier = Modifier
-                    .padding(top = 16.dp)
-                    .fillMaxWidth()
-            ) {
-                Text("Reset Password")
+                    .fillMaxWidth(),
+                onClick = {
+                    navController.navigate("login")
+                },
+                colors = ButtonDefaults.elevatedButtonColors(
+                    containerColor = Color.White
+                ),
+                elevation = ButtonDefaults.elevatedButtonElevation(
+                    defaultElevation = 5.dp
+                )
+            ){
+                androidx.compose.material.Text("Reset Password", color = Color(0xff5a79ba))
             }
         }
     }

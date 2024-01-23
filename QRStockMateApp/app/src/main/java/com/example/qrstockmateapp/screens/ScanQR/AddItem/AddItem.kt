@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -21,6 +22,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
@@ -31,6 +33,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Text
@@ -83,8 +86,8 @@ fun AddItemScreen(navController: NavController) {
         cursorColor =  Color(0xff5a79ba),
         focusedBorderColor =  Color(0xff5a79ba),
         focusedLabelColor = Color(0xff5a79ba),
-        unfocusedBorderColor =  Color(0xff5a79ba),
-        backgroundColor = Color.LightGray
+        backgroundColor = Color(0xfff5f6f7),
+        unfocusedBorderColor =  Color.White
     )
 
     var selectedOption by remember { mutableStateOf("Select a warehouse to add your product") }
@@ -220,6 +223,12 @@ fun AddItemScreen(navController: NavController) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(4.dp)
+                    .border(
+                        width = 0.5.dp,
+                        color = Color(0xff5a79ba),
+                        shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
+
+                    )
             )
 
             TextField(
@@ -230,6 +239,12 @@ fun AddItemScreen(navController: NavController) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(4.dp)
+                    .border(
+                        width = 0.5.dp,
+                        color = Color(0xff5a79ba),
+                        shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
+
+                    )
             )
 
             TextField(
@@ -240,33 +255,64 @@ fun AddItemScreen(navController: NavController) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(4.dp)
+                    .border(
+                        width = 0.5.dp,
+                        color = Color(0xff5a79ba),
+                        shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
+
+                    )
             )
-            Box(modifier = Modifier.fillMaxWidth().padding(4.dp)) {
-                Text(
-                    text = selectedOption,
-                    modifier = Modifier
-                        .background(Color.LightGray)
-                        .clickable(
-                            interactionSource = remember { MutableInteractionSource() },
-                            indication = null
-                        ) {
-                            isMenuExpanded = true
-                        }
-                        .padding(16.dp)
+            Box(modifier = Modifier
+                .fillMaxWidth()
+                .padding(4.dp)
+
+                .background(Color(0xfff5f6f7))
+                .border(
+                    width = 0.5.dp,
+                    color = Color(0xff5a79ba),
+                    shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
+
                 )
-                DropdownMenu(
-                    expanded = isMenuExpanded,
-                    onDismissRequest = { isMenuExpanded = false },
-                    modifier = Modifier.fillMaxWidth().padding(4.dp)
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    warehouses.forEach { warehouse ->
-                        DropdownMenuItem(onClick = {
-                            selectedOption = "Name : ${warehouse.name} with Id :${warehouse.id}"
-                            isMenuExpanded = false
-                        }) {
-                            Text("Name : ${warehouse.name} with Id : ${warehouse.id}")
+                    Text(
+                        text = selectedOption,
+                        modifier = Modifier
+                            .weight(9f)
+                            .background(Color(0xfff5f6f7))
+                            .clickable(
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = null
+                            ) {
+                                isMenuExpanded = true
+                            }
+                            .padding(16.dp)
+                    )
+                    DropdownMenu(
+                        expanded = isMenuExpanded,
+                        onDismissRequest = { isMenuExpanded = false },
+                        modifier = Modifier.fillMaxWidth().padding(4.dp)
+                    ) {
+                        warehouses.forEach { warehouse ->
+                            DropdownMenuItem(onClick = {
+                                selectedOption = "Name : ${warehouse.name} with Id :${warehouse.id}"
+                                isMenuExpanded = false
+                            }, modifier = Modifier
+                                .padding(5.dp)
+                                .border(
+                                    width = 0.5.dp,
+                                    color = Color(0xff5a79ba),
+                                    shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
+
+                                )) {
+                                Text("Name : ${warehouse.name} with Id : ${warehouse.id}")
+                            }
                         }
                     }
+                    Icon(modifier = Modifier.weight(1f), imageVector = Icons.Filled.ArrowDropDown, contentDescription = null, tint =Color(0xff5a79ba))
+
                 }
             }
         }
@@ -326,6 +372,7 @@ fun AddItemScreen(navController: NavController) {
                     }
                     TextField(
                         value = countState.value.toString(),
+                        colors = customTextFieldColors,
                         onValueChange = { newValue ->
                             count = newValue.toIntOrNull() ?: 0
                         },
@@ -333,6 +380,12 @@ fun AddItemScreen(navController: NavController) {
                             .padding(16.dp)
                             .width(60.dp)
                             .height(55.dp)
+                            .border(
+                                width = 0.5.dp,
+                                color = Color(0xff5a79ba),
+                                shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
+
+                            )
 
                     )
                     Spacer(modifier = Modifier.width(20.dp))

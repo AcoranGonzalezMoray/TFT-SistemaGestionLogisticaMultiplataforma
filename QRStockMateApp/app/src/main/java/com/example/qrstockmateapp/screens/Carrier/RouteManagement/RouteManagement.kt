@@ -338,7 +338,9 @@ fun RouteManagementScreen(navController: NavController) {
             }
             LazyColumn {
                 items(filteredItems) { route ->
-                    TransportRouteItem(route = route, navController = navController)
+                    TransportRouteItem(route = route, navController = navController, onDeleted = {
+                        loadRoutes()
+                    })
                 }
                 item{
                     Spacer(modifier = Modifier
@@ -353,7 +355,7 @@ fun RouteManagementScreen(navController: NavController) {
 
 @OptIn(DelicateCoroutinesApi::class)
 @Composable
-fun TransportRouteItem(route: TransportRoute, navController: NavController) {
+fun TransportRouteItem(route: TransportRoute, navController: NavController, onDeleted: ()->Unit) {
     val context = LocalContext.current
     var showDialog by remember { mutableStateOf(false) }
 
@@ -425,6 +427,7 @@ fun TransportRouteItem(route: TransportRoute, navController: NavController) {
                     ElevatedButton(
                         onClick = {
                             deleteRoute()
+                            onDeleted()
                             showDialog = false
                         },
                         colors = ButtonDefaults.elevatedButtonColors(

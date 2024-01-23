@@ -134,7 +134,7 @@ fun RouteScreen(navController: NavController,) {
     )
 
     val context = LocalContext.current
-    var mapWeight by remember { mutableStateOf(380.dp) }
+    var mapWeight by remember { mutableStateOf(400.dp) }
 
     LaunchedEffect(scaffoldState.bottomSheetState) {
         snapshotFlow { scaffoldState.bottomSheetState.currentValue }
@@ -146,7 +146,7 @@ fun RouteScreen(navController: NavController,) {
                         println("BottomSheet colapsado")
                     }
                     BottomSheetValue.Expanded -> {
-                        mapWeight = 380.dp
+                        mapWeight = 400.dp
                         println("BottomSheet expandido")
                     }
                     else -> {
@@ -500,7 +500,7 @@ fun RouteScreen(navController: NavController,) {
                 }
 
                 PointMarker(endPoint, "End Point", end.name, bitmapDescriptor!!, "Fin", false)
-                PointMarker(startPoint, "Start Point", start.name, bitmapDescriptor!!, "Inicio", true)
+                PointMarker(startPoint, "Start Point", start.name, bitmapDescriptor!!, "Inicio", false)
             }
 
             Box(
