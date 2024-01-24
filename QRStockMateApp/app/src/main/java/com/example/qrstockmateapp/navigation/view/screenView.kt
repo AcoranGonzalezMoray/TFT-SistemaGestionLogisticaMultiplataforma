@@ -68,6 +68,7 @@ import com.example.qrstockmateapp.api.services.RetrofitInstance
 import com.example.qrstockmateapp.navigation.logic.Navigation
 import com.example.qrstockmateapp.navigation.model.ScreenModel
 import com.example.qrstockmateapp.navigation.repository.DataRepository
+import com.example.qrstockmateapp.navigation.widget.AnimatedBottomBar
 import com.example.qrstockmateapp.navigation.widget.BottomBar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -223,7 +224,7 @@ fun BottomNavigationScreen(navControllerLogin: NavController,sharedPreferences: 
             val excludedRoutes = setOf("route", "routeMinus", "addWarehouse", "updateWarehouse", "updateUser", "addRoute", "updateRoute")
 
             if (currentRoute !in excludedRoutes) {
-                BottomBar(
+                AnimatedBottomBar(
                     screens = ScreenModel().screensInHomeFromBottomNav,
                     navController = navController
                 )
