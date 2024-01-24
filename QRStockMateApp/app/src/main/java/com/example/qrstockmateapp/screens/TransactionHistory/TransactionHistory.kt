@@ -11,10 +11,13 @@ import android.os.Environment
 import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -36,6 +39,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.SwapVert
 import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -63,6 +67,7 @@ import com.example.qrstockmateapp.navigation.repository.DataRepository
 import com.example.qrstockmateapp.screens.Search.SortOrder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.apache.poi.ss.usermodel.Cell
 import org.apache.poi.ss.usermodel.Row
@@ -209,6 +214,12 @@ fun TransactionHistoryScreen(navController: NavController) {
 
 @Composable
 fun TransactionListItem(transaction: Transaction) {
+    var isloading by remember { mutableStateOf(true) }
+
+    LaunchedEffect(Unit){
+        delay(1200)
+        isloading = false
+    }
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -216,47 +227,66 @@ fun TransactionListItem(transaction: Transaction) {
         shape = RoundedCornerShape(8.dp),
         elevation = 4.dp
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp)
-        ) {
-            Text(
-                text = "ID: ${transaction.id}",
-                style = MaterialTheme.typography.body2,
-                color = MaterialTheme.colors.onSurface
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = "USER: ${transaction.name}",
-                style = MaterialTheme.typography.body1,
-                color = MaterialTheme.colors.onSurface
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = "Code: ${transaction.code}",
-                style = MaterialTheme.typography.body1,
-                color = MaterialTheme.colors.onSurface
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = "Description: ${transaction.description}",
-                style = MaterialTheme.typography.body1,
-                color = MaterialTheme.colors.onSurface
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = "Created: ${transaction.created}",
-                style = MaterialTheme.typography.body1,
-                color = MaterialTheme.colors.onSurface
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = "Operation: ${operationToString(transaction.operation)}",
-                style = MaterialTheme.typography.body1,
-                color = MaterialTheme.colors.onSurface
-            )
-        }
+       if (isloading){
+           Box(
+               modifier = Modifier
+                   .fillMaxSize()
+                   .height(200.dp)
+                   .background(Color.White.copy(alpha = 0.8f)) // Ajusta el nivel de opacidad aquí
+           ) {
+               // Muestra el indicador de carga lineal con efecto de cristal
+               LinearProgressIndicator(
+                   modifier = Modifier
+                       .fillMaxWidth()
+                       .fillMaxHeight()
+                       .align(Alignment.Center),
+                   color = Color.White.copy(alpha = 0.9f), // Ajusta el nivel de opacidad aquí
+                   trackColor = Color(0xff5a79ba).copy(alpha = 0.1f), // Ajusta el nivel de opacidad aquí
+               )
+           }
+       }else{
+           Column(
+               modifier = Modifier
+                   .fillMaxSize()
+                   .padding(16.dp)
+           ) {
+               Text(
+                   text = "ID: ${transaction.id}",
+                   style = MaterialTheme.typography.body2,
+                   color = MaterialTheme.colors.onSurface
+               )
+               Spacer(modifier = Modifier.height(8.dp))
+               Text(
+                   text = "USER: ${transaction.name}",
+                   style = MaterialTheme.typography.body1,
+                   color = MaterialTheme.colors.onSurface
+               )
+               Spacer(modifier = Modifier.height(8.dp))
+               Text(
+                   text = "Code: ${transaction.code}",
+                   style = MaterialTheme.typography.body1,
+                   color = MaterialTheme.colors.onSurface
+               )
+               Spacer(modifier = Modifier.height(8.dp))
+               Text(
+                   text = "Description: ${transaction.description}",
+                   style = MaterialTheme.typography.body1,
+                   color = MaterialTheme.colors.onSurface
+               )
+               Spacer(modifier = Modifier.height(8.dp))
+               Text(
+                   text = "Created: ${transaction.created}",
+                   style = MaterialTheme.typography.body1,
+                   color = MaterialTheme.colors.onSurface
+               )
+               Spacer(modifier = Modifier.height(8.dp))
+               Text(
+                   text = "Operation: ${operationToString(transaction.operation)}",
+                   style = MaterialTheme.typography.body1,
+                   color = MaterialTheme.colors.onSurface
+               )
+           }
+       }
     }
 }
 

@@ -243,15 +243,15 @@ fun UpdateUserScreen(navController: NavController) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.Gray)
+                .background(Color.White)
         ) {
             // Muestra el círculo de carga
             CircularProgressIndicator(
                 modifier = Modifier
                     .size(50.dp)
                     .align(Alignment.Center),
-                color = Color.Black,
-                backgroundColor = Color.White
+                color = Color.LightGray,
+                backgroundColor = Color(0xff5a79ba)
             )
         }
     }else{

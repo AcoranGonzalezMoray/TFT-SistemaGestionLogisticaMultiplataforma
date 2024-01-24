@@ -20,18 +20,19 @@ object DataRepository {
     private var warehousePlus: Warehouse? = null
     private var userPlus: User? = null
     private var routePlus: TransportRoute? = null
-
-    //Guardado temporal de variables
-    private  var totalWeight: Double? = 0.0
+    private var vehiclePlus: Vehicle? = null
 
 
-    fun setTotalWeight(newTotal: Double) {
-        totalWeight = newTotal
+    fun setVehiclePlus(vehicle: Vehicle) {
+        vehiclePlus = vehicle
     }
 
-    fun getTotalWeight(): Double?{
-        return totalWeight
+    fun getVehiclePlus():Vehicle? {
+        return vehiclePlus
     }
+
+
+
 
 
     fun setVehicles(newVehicles: List<Vehicle>) {

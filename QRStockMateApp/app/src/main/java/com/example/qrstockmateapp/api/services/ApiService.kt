@@ -170,6 +170,21 @@ interface ApiService {
         @Path("code") code: String
     ): Response<List<Vehicle>>
 
+    @HTTP(method = "DELETE", path = "Vehicle/", hasBody = true)
+    suspend fun deleteVehicle(
+        @Body vehicle: Vehicle
+    ): Response<Void>
+
+    @PUT("Vehicle/")
+    suspend fun updateVehicle(
+        @Body vehicle: Vehicle
+    ):Response<Vehicle>
+
+    @POST("Vehicle/")
+    suspend fun addVehicle(
+        @Body vehicle: Vehicle
+    ):Response<Vehicle>
+
     @GET("Vehicle/GetLocation/{Id}")
     suspend fun getLocationVehicle(
         @Path("Id") Id: Int,

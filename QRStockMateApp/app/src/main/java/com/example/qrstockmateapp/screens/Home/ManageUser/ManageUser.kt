@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -36,6 +37,7 @@ import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -209,9 +211,12 @@ fun UserListItem(user: User, navController: NavController,loadEmployees: () -> U
             }
         }
     }
+    var isloading by remember { mutableStateOf(true) }
 
     LaunchedEffect(Unit){
         checkDisabled()
+        delay(1200)
+        isloading = false
     }
 
     Card(
@@ -227,93 +232,91 @@ fun UserListItem(user: User, navController: NavController,loadEmployees: () -> U
         shape = RoundedCornerShape(16.dp),
 
         ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(24.dp))
-                .padding(16.dp)
-        ) {
-            // Mostrar la imagen del usuario (assumiendo que `url` es una URL de imagen)
-            val imageUrl = user.url
-            val placeholderImage = painterResource(id = R.drawable.user)
-
-            // Utiliza un Card para aplicar una sombra suave a la imagen del usuario
-            Card(
+        if (isloading){
+            Box(
                 modifier = Modifier
-                    .size(120.dp)
-                    .padding(16.dp),
-                elevation = CardDefaults.cardElevation(
-                    defaultElevation = 10.dp
-                ),
-                colors = CardDefaults.cardColors(
-                    containerColor = Color.White,
-                )
-            ){
-                if (imageUrl.isNullOrBlank()) {
-                    // Si la URL es nula o vacía, mostrar la imagen por defecto
-                    Image(
-                        painter = placeholderImage,
-                        contentDescription = "Default User Image",
-                        modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Crop
-                    )
-                } else {
-                    // Si hay una URL válida, cargar la imagen usando Coil
-                    val painter = rememberImagePainter(
-                        data = imageUrl,
-                        builder = {
-                            crossfade(true)
-                            placeholder(R.drawable.loading)
-                        }
-                    )
-
-                    Image(
-                        painter = painter,
-                        contentDescription = "User Image",
-                        modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Crop
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.width(16.dp))
-
-            // Column que contiene la información del usuario
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .align(Alignment.CenterVertically)
+                    .fillMaxSize()
+                    .height(190.dp)
+                    .background(Color.White.copy(alpha = 0.8f)) // Ajusta el nivel de opacidad aquí
             ) {
-                Text(text = "Name: ${user.name}", fontWeight = FontWeight.Bold)
-                Text(text = "Email: ${user.email}")
-                Text(text = "Phone: ${user.phone}")
-                Text(text = "Role: ${userRoleToString(user.role)}")
-                ElevatedButton(
+                // Muestra el indicador de carga lineal con efecto de cristal
+                LinearProgressIndicator(
                     modifier = Modifier
-                        .fillMaxWidth(),
-                    onClick = {
-                        DataRepository.setUserPlus(user)
-                        navController.navigate("updateUser")
-                    },
-                    colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
-                        containerColor =  Color(0xff5a79ba)
+                        .fillMaxWidth()
+                        .fillMaxHeight()
+                        .align(Alignment.Center),
+                    color = Color.White.copy(alpha = 0.9f), // Ajusta el nivel de opacidad aquí
+                    trackColor = Color(0xff5a79ba).copy(alpha = 0.1f), // Ajusta el nivel de opacidad aquí
+                )
+            }
+        }else{
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(24.dp))
+                    .padding(16.dp)
+            ) {
+                // Mostrar la imagen del usuario (assumiendo que `url` es una URL de imagen)
+                val imageUrl = user.url
+                val placeholderImage = painterResource(id = R.drawable.user)
+
+                // Utiliza un Card para aplicar una sombra suave a la imagen del usuario
+                Card(
+                    modifier = Modifier
+                        .size(120.dp)
+                        .padding(16.dp),
+                    elevation = CardDefaults.cardElevation(
+                        defaultElevation = 10.dp
                     ),
-                    elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
-                        defaultElevation = 5.dp
+                    colors = CardDefaults.cardColors(
+                        containerColor = Color.White,
                     )
                 ){
-                    Icon(
-                        imageVector = Icons.Filled.Create,
-                        contentDescription = "",
-                        tint = Color.White
-                    )
+                    if (imageUrl.isNullOrBlank()) {
+                        // Si la URL es nula o vacía, mostrar la imagen por defecto
+                        Image(
+                            painter = placeholderImage,
+                            contentDescription = "Default User Image",
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Crop
+                        )
+                    } else {
+                        // Si hay una URL válida, cargar la imagen usando Coil
+                        val painter = rememberImagePainter(
+                            data = imageUrl,
+                            builder = {
+                                crossfade(true)
+                                placeholder(R.drawable.loading)
+                            }
+                        )
+
+                        Image(
+                            painter = painter,
+                            contentDescription = "User Image",
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
                 }
-                if (disabled) {      //Desactivado
+
+                Spacer(modifier = Modifier.width(16.dp))
+
+                // Column que contiene la información del usuario
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .align(Alignment.CenterVertically)
+                ) {
+                    Text(text = "Name: ${user.name}", fontWeight = FontWeight.Bold)
+                    Text(text = "Email: ${user.email}")
+                    Text(text = "Phone: ${user.phone}")
+                    Text(text = "Role: ${userRoleToString(user.role)}")
                     ElevatedButton(
                         modifier = Modifier
                             .fillMaxWidth(),
                         onClick = {
-                            enableUser()
+                            DataRepository.setUserPlus(user)
+                            navController.navigate("updateUser")
                         },
                         colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
                             containerColor =  Color(0xff5a79ba)
@@ -322,27 +325,48 @@ fun UserListItem(user: User, navController: NavController,loadEmployees: () -> U
                             defaultElevation = 5.dp
                         )
                     ){
-                        Text("Enable", color = Color.White)
-                        Spacer(modifier = Modifier.padding(3.dp))
-                        Icon(imageVector = Icons.Filled.ToggleOn, contentDescription = "Enable", tint = Color.Green )
-                    }
-                } else { //Activado
-                    ElevatedButton(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        onClick = {
-                            disableUser()
-                        },
-                        colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
-                            containerColor = Color(0xff5a79ba)
-                        ),
-                        elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
-                            defaultElevation = 5.dp
+                        Icon(
+                            imageVector = Icons.Filled.Create,
+                            contentDescription = "",
+                            tint = Color.White
                         )
-                    ){
-                        Text("Disable", color = Color.White)
-                        Spacer(modifier = Modifier.padding(3.dp))
-                        Icon(imageVector = Icons.Filled.ToggleOff, contentDescription = "Disable", tint = Color.Red )
+                    }
+                    if (disabled) {      //Desactivado
+                        ElevatedButton(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            onClick = {
+                                enableUser()
+                            },
+                            colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                                containerColor =  Color(0xff5a79ba)
+                            ),
+                            elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                                defaultElevation = 5.dp
+                            )
+                        ){
+                            Text("Enable", color = Color.White)
+                            Spacer(modifier = Modifier.padding(3.dp))
+                            Icon(imageVector = Icons.Filled.ToggleOn, contentDescription = "Enable", tint = Color.Green )
+                        }
+                    } else { //Activado
+                        ElevatedButton(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            onClick = {
+                                disableUser()
+                            },
+                            colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                                containerColor = Color(0xff5a79ba)
+                            ),
+                            elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                                defaultElevation = 5.dp
+                            )
+                        ){
+                            Text("Disable", color = Color.White)
+                            Spacer(modifier = Modifier.padding(3.dp))
+                            Icon(imageVector = Icons.Filled.ToggleOff, contentDescription = "Disable", tint = Color.Red )
+                        }
                     }
                 }
             }

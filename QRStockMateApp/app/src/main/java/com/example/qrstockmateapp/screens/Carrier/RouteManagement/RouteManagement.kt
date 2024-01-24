@@ -4,12 +4,14 @@ import android.annotation.SuppressLint
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -50,6 +52,7 @@ import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDatePickerState
@@ -358,7 +361,12 @@ fun RouteManagementScreen(navController: NavController) {
 fun TransportRouteItem(route: TransportRoute, navController: NavController, onDeleted: ()->Unit) {
     val context = LocalContext.current
     var showDialog by remember { mutableStateOf(false) }
+    var isloading by remember { mutableStateOf(true) }
 
+    LaunchedEffect(Unit){
+        delay(1200)
+        isloading = false
+    }
     val deleteRoute : ()->Unit = {
         GlobalScope.launch(Dispatchers.IO) {
             val user = DataRepository.getUser()!!
@@ -411,144 +419,216 @@ fun TransportRouteItem(route: TransportRoute, navController: NavController, onDe
         ),
         shape = RoundedCornerShape(16.dp),
     ) {
-        if (showDialog) {
-            AlertDialog(
-                onDismissRequest = {
-                    // Handle dismissal if needed
-                    showDialog = false
-                },
-                title = {
-                    androidx.compose.material.Text(text = "Alert")
-                },
-                text = {
-                    androidx.compose.material.Text(text ="Are you sure you want to delete?")
-                },
-                confirmButton = {
-                    ElevatedButton(
-                        onClick = {
-                            deleteRoute()
-                            onDeleted()
-                            showDialog = false
-                        },
-                        colors = ButtonDefaults.elevatedButtonColors(
-                            containerColor = Color(0xff5a79ba)
-                        ),
-                        elevation = ButtonDefaults.elevatedButtonElevation(
-                            defaultElevation = 5.dp
-                        )
-                    ){
-                        androidx.compose.material.Text("Confirm", color = Color.White)
-                    }
-                },
-                dismissButton = {
-                    ElevatedButton(
-                        onClick = {
-                            showDialog = false
-                        },
-                        colors = ButtonDefaults.elevatedButtonColors(
-                            containerColor = Color.White
-                        ),
-                        elevation = ButtonDefaults.elevatedButtonElevation(
-                            defaultElevation = 5.dp
-                        )
-                    ){
-                        androidx.compose.material.Text("Cancel", color =  Color(0xff5a79ba))
-                    }
-                }
-            )
-        }
-        Box(
-            modifier = Modifier
-                .fillMaxWidth(),
-        ){
-            if (route.status == 0) {
-                Badge(
-                    modifier = Modifier
-                        .height(20.dp)
-                        .width(80.dp)
-                        .align(Alignment.TopEnd)
-                        .offset(x = (-4).dp, y = (5).dp),
-                    contentColor = Color.White,
-                    backgroundColor = Color.DarkGray
-                ) {
-                    Text(statusRoleToString(route.status), style = MaterialTheme.typography.labelSmall, color = Color.White)
-                }
-            }
-            if(route.status == 1){
-                Badge(
-                    modifier = Modifier
-                        .height(20.dp)
-                        .width(80.dp)
-                        .align(Alignment.TopEnd)
-                        .offset(x = (-4).dp, y = (5).dp),
-                    contentColor = Color.White,
-                    backgroundColor = Color(0xFF006400)
-                ) {
-                    Text(statusRoleToString(route.status), style = MaterialTheme.typography.labelSmall, color = Color.White)
-                }
-
-            }
-            if (route.status == 2) {
-                Badge(
-                    modifier = Modifier
-                        .height(20.dp)
-                        .width(80.dp)
-                        .align(Alignment.TopEnd)
-                        .offset(x = (-4).dp, y = (5).dp),
-                    contentColor = Color.White,
-                    backgroundColor = Color.Red
-                ) {
-                    Text(statusRoleToString(route.status), style = MaterialTheme.typography.labelSmall, color = Color.White)
-                }
-            }
-        }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp, top = 0.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            // Icono a la izquierda
-            Image(
-                painter = painterResource(id = R.drawable.maps), // Reemplaza con tu imagen desde drawable
-                contentDescription = null,
+        if (isloading){
+            Box(
                 modifier = Modifier
-                    .size(120.dp) // Ajusta el tamaño según tus necesidades
-                    .clip(shape = RoundedCornerShape(8.dp))
-                    .padding(4.dp)
-            )
-
-            Spacer(modifier = Modifier.width(16.dp))
-
-            // Columna de texto a la derecha
-            Column {
-                Text(
-                    text = "Date: ${route.date.split('T')[0]}",
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp, // Ajusta el tamaño de la fuente según tus necesidades
+                    .fillMaxSize()
+                    .height(200.dp)
+                    .background(Color.White.copy(alpha = 0.8f)) // Ajusta el nivel de opacidad aquí
+            ) {
+                // Muestra el indicador de carga lineal con efecto de cristal
+                LinearProgressIndicator(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight()
+                        .align(Alignment.Center),
+                    color = Color.White.copy(alpha = 0.9f), // Ajusta el nivel de opacidad aquí
+                    trackColor = Color(0xff5a79ba).copy(alpha = 0.1f), // Ajusta el nivel de opacidad aquí
                 )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(text = "Start Location: ${DataRepository.getWarehouses()!!.find { warehouse -> warehouse.id == route.startLocation.toInt()}?.name}", fontSize = 16.sp)
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(text = "End Location: ${DataRepository.getWarehouses()!!.find { warehouse -> warehouse.id == route.endLocation.toInt()}?.name}", fontSize = 16.sp)
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(text = "Carrier: ${DataRepository.getEmployees()?.filter { employee -> employee.id == 33 }
-                    ?.get(0)?.name}", fontSize = 16.sp)
+            }
+        }else{
+            if (showDialog) {
+                AlertDialog(
+                    onDismissRequest = {
+                        // Handle dismissal if needed
+                        showDialog = false
+                    },
+                    title = {
+                        androidx.compose.material.Text(text = "Alert")
+                    },
+                    text = {
+                        androidx.compose.material.Text(text ="Are you sure you want to delete?")
+                    },
+                    confirmButton = {
+                        ElevatedButton(
+                            onClick = {
+                                deleteRoute()
+                                onDeleted()
+                                showDialog = false
+                            },
+                            colors = ButtonDefaults.elevatedButtonColors(
+                                containerColor = Color(0xff5a79ba)
+                            ),
+                            elevation = ButtonDefaults.elevatedButtonElevation(
+                                defaultElevation = 5.dp
+                            )
+                        ){
+                            androidx.compose.material.Text("Confirm", color = Color.White)
+                        }
+                    },
+                    dismissButton = {
+                        ElevatedButton(
+                            onClick = {
+                                showDialog = false
+                            },
+                            colors = ButtonDefaults.elevatedButtonColors(
+                                containerColor = Color.White
+                            ),
+                            elevation = ButtonDefaults.elevatedButtonElevation(
+                                defaultElevation = 5.dp
+                            )
+                        ){
+                            androidx.compose.material.Text("Cancel", color =  Color(0xff5a79ba))
+                        }
+                    }
+                )
+            }
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(),
+            ){
+                if (route.status == 0) {
+                    Badge(
+                        modifier = Modifier
+                            .height(20.dp)
+                            .width(80.dp)
+                            .align(Alignment.TopEnd)
+                            .offset(x = (-4).dp, y = (5).dp),
+                        contentColor = Color.White,
+                        backgroundColor = Color.DarkGray
+                    ) {
+                        Text(statusRoleToString(route.status), style = MaterialTheme.typography.labelSmall, color = Color.White)
+                    }
+                }
+                if(route.status == 1){
+                    Badge(
+                        modifier = Modifier
+                            .height(20.dp)
+                            .width(80.dp)
+                            .align(Alignment.TopEnd)
+                            .offset(x = (-4).dp, y = (5).dp),
+                        contentColor = Color.White,
+                        backgroundColor = Color(0xFF006400)
+                    ) {
+                        Text(statusRoleToString(route.status), style = MaterialTheme.typography.labelSmall, color = Color.White)
+                    }
 
-                Row(
-                ){
+                }
+                if (route.status == 2) {
+                    Badge(
+                        modifier = Modifier
+                            .height(20.dp)
+                            .width(80.dp)
+                            .align(Alignment.TopEnd)
+                            .offset(x = (-4).dp, y = (5).dp),
+                        contentColor = Color.White,
+                        backgroundColor = Color.Red
+                    ) {
+                        Text(statusRoleToString(route.status), style = MaterialTheme.typography.labelSmall, color = Color.White)
+                    }
+                }
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp, top = 0.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                // Icono a la izquierda
+                Image(
+                    painter = painterResource(id = R.drawable.maps), // Reemplaza con tu imagen desde drawable
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(120.dp) // Ajusta el tamaño según tus necesidades
+                        .clip(shape = RoundedCornerShape(8.dp))
+                        .padding(4.dp)
+                )
+
+                Spacer(modifier = Modifier.width(16.dp))
+
+                // Columna de texto a la derecha
+                Column {
+                    Text(
+                        text = "Date: ${route.date.split('T')[0]}",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 18.sp, // Ajusta el tamaño de la fuente según tus necesidades
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(text = "Start Location: ${DataRepository.getWarehouses()!!.find { warehouse -> warehouse.id == route.startLocation.toInt()}?.name}", fontSize = 16.sp)
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(text = "End Location: ${DataRepository.getWarehouses()!!.find { warehouse -> warehouse.id == route.endLocation.toInt()}?.name}", fontSize = 16.sp)
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(text = "Carrier: ${DataRepository.getEmployees()?.filter { employee -> employee.id == 33 }
+                        ?.get(0)?.name}", fontSize = 16.sp)
+
+                    Row(
+                    ){
+                        ElevatedButton(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(1f)
+                                .padding(5.dp)
+                                .height(40.dp),
+                            onClick = {
+                                if(route.status==0){
+                                    DataRepository.setRoutePlus(route)
+                                    navController.navigate("updateRoute")
+                                }else{
+                                    Toast.makeText(context, "Route in progress or completed", Toast.LENGTH_SHORT).show()
+                                }
+                            },
+                            colors =  ButtonDefaults.elevatedButtonColors(
+                                containerColor = Color(0xff5a79ba)
+                            ),
+                            elevation = ButtonDefaults.elevatedButtonElevation(
+                                defaultElevation = 5.dp
+                            )
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.EditNote,
+                                contentDescription = "",
+                                tint = Color.White
+                            )
+                        }
+                        ElevatedButton(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(1f)
+                                .padding(5.dp)
+                                .height(40.dp),
+                            onClick = {
+                                if(route.status!=1){
+                                    showDialog = true
+                                }else{
+                                    Toast.makeText(context, "Route in progress", Toast.LENGTH_SHORT).show()
+                                }
+                            },
+                            colors = ButtonDefaults.elevatedButtonColors(
+                                containerColor = Color(0xff5a79ba)
+                            ),
+                            elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                                defaultElevation = 5.dp
+                            )
+                        ){
+                            androidx.compose.material.Icon(
+                                imageVector = Icons.Filled.DeleteSweep,
+                                contentDescription = "",
+                                tint = Color.White
+                            )
+                        }
+                    }
                     ElevatedButton(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .weight(1f)
                             .padding(5.dp)
                             .height(40.dp),
                         onClick = {
-                            if(route.status==0){
+                            Log.d("status", route.status.toString())
+                            if(route.status == 1){
                                 DataRepository.setRoutePlus(route)
-                                navController.navigate("updateRoute")
+                                navController.navigate("routeMinus")
                             }else{
-                                Toast.makeText(context, "Route in progress or completed", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(context, "The route has not started", Toast.LENGTH_SHORT).show()
                             }
                         },
                         colors =  ButtonDefaults.elevatedButtonColors(
@@ -557,66 +637,13 @@ fun TransportRouteItem(route: TransportRoute, navController: NavController, onDe
                         elevation = ButtonDefaults.elevatedButtonElevation(
                             defaultElevation = 5.dp
                         )
+
+
                     ) {
-                        Icon(
-                            imageVector = Icons.Filled.EditNote,
-                            contentDescription = "",
-                            tint = Color.White
-                        )
+                        Text("Open", color = Color.White)
                     }
-                    ElevatedButton(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(1f)
-                            .padding(5.dp)
-                            .height(40.dp),
-                        onClick = {
-                              if(route.status!=1){
-                                  showDialog = true
-                              }else{
-                                  Toast.makeText(context, "Route in progress", Toast.LENGTH_SHORT).show()
-                              }
-                        },
-                        colors = ButtonDefaults.elevatedButtonColors(
-                            containerColor = Color(0xff5a79ba)
-                        ),
-                        elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
-                            defaultElevation = 5.dp
-                        )
-                    ){
-                        androidx.compose.material.Icon(
-                            imageVector = Icons.Filled.DeleteSweep,
-                            contentDescription = "",
-                            tint = Color.White
-                        )
-                    }
+
                 }
-                ElevatedButton(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(5.dp)
-                        .height(40.dp),
-                    onClick = {
-                        Log.d("status", route.status.toString())
-                        if(route.status == 1){
-                            DataRepository.setRoutePlus(route)
-                            navController.navigate("routeMinus")
-                        }else{
-                            Toast.makeText(context, "The route has not started", Toast.LENGTH_SHORT).show()
-                        }
-                    },
-                    colors =  ButtonDefaults.elevatedButtonColors(
-                        containerColor = Color(0xff5a79ba)
-                    ),
-                    elevation = ButtonDefaults.elevatedButtonElevation(
-                        defaultElevation = 5.dp
-                    )
-
-
-                ) {
-                    Text("Open", color = Color.White)
-                }
-
             }
         }
     }

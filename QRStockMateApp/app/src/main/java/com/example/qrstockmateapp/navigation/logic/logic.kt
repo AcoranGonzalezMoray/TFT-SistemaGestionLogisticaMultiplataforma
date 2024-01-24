@@ -13,6 +13,8 @@ import com.example.qrstockmateapp.screens.Carrier.Route.RouteScreen
 import com.example.qrstockmateapp.screens.Carrier.RouteManagement.AddRoute.AddRouteScreen
 import com.example.qrstockmateapp.screens.Carrier.RouteManagement.RouteManagementScreen
 import com.example.qrstockmateapp.screens.Carrier.RouteManagement.UpdateRoute.UpdateRouteScreen
+import com.example.qrstockmateapp.screens.Carrier.VehicleManagement.AddVehicle.AddVehicleScreen
+import com.example.qrstockmateapp.screens.Carrier.VehicleManagement.UpdateVehicle.UpdateVehicleScreen
 import com.example.qrstockmateapp.screens.Carrier.VehicleManagement.VehicleManagementScreen
 import com.example.qrstockmateapp.screens.Home.AddWarehouse.AddWarehouseScreen
 import com.example.qrstockmateapp.screens.Home.HomeScreen
@@ -62,6 +64,12 @@ fun  Navigation(navController: NavHostController) {
 
 
         //fuera del menu
+        composable("updateVehicle"){
+            UpdateVehicleScreen(navController)
+        }
+        composable("addVehicle"){
+            AddVehicleScreen(navController)
+        }
         composable("addRoute"){
             AddRouteScreen(navController)
         }

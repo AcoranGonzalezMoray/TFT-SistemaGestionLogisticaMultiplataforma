@@ -124,7 +124,7 @@ fun BottomNavigationScreen(navControllerLogin: NavController,sharedPreferences: 
                 }
             }
             if(DataRepository.getUser()?.role == 0 && currentRoute == "vehicleManagement"){
-                androidx.compose.material3.FloatingActionButton(onClick = { }, containerColor = Color.White, modifier = Modifier
+                androidx.compose.material3.FloatingActionButton(onClick = {navController.navigate("addVehicle") }, containerColor = Color.White, modifier = Modifier
                     .shadow(4.dp, shape = RoundedCornerShape(18.dp))
                     .border(0.5.dp, Color(0xff5a79ba), shape = RoundedCornerShape(18.dp)),
                 )  {
@@ -148,7 +148,7 @@ fun BottomNavigationScreen(navControllerLogin: NavController,sharedPreferences: 
             )
         },
         topBar = {
-            val excludedRoutes = setOf("route", "routeMinus", "addWarehouse", "updateWarehouse", "updateUser", "addRoute", "updateRoute")
+            val excludedRoutes = setOf("addVehicle","updateVehicle","route", "routeMinus", "addWarehouse", "updateWarehouse", "updateUser", "addRoute", "updateRoute")
 
             if (currentRoute !in excludedRoutes) {
                 TopAppBar(
@@ -221,7 +221,7 @@ fun BottomNavigationScreen(navControllerLogin: NavController,sharedPreferences: 
         },
 
         bottomBar = {
-            val excludedRoutes = setOf("route", "routeMinus", "addWarehouse", "updateWarehouse", "updateUser", "addRoute", "updateRoute")
+            val excludedRoutes = setOf("addVehicle","updateVehicle", "route", "routeMinus", "addWarehouse", "updateWarehouse", "updateUser", "addRoute", "updateRoute")
 
             if (currentRoute !in excludedRoutes) {
                 AnimatedBottomBar(

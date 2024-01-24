@@ -515,13 +515,33 @@ fun BottomSheetContent(
                         .size(80.dp)  // Ajusta el tamaño según tus preferencias
                         .background(color = Color(0xff5a79ba), shape = CircleShape)
                 ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.user),
-                        contentDescription = "Default User Image",
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .clip(CircleShape)  // Esta línea hará que la imagen sea circular
-                    )
+
+                    if (person!!.url.isNullOrBlank()) {
+                        Image(
+                            painter = painterResource(id = R.drawable.user),
+                            contentDescription = "Default User Image",
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(CircleShape)  // Esta línea hará que la imagen sea circular
+                        )
+                    }else{
+                        val painter = rememberImagePainter(
+                            data = person!!.url,
+                            builder = {
+                                crossfade(true)
+                                placeholder(R.drawable.loading)
+                            }
+                        )
+                        Image(
+                            painter = painter,
+                            contentDescription = "User Image",
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(CircleShape),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
+
                     // Badge sobre la imagen
                     Box(
                         modifier = Modifier

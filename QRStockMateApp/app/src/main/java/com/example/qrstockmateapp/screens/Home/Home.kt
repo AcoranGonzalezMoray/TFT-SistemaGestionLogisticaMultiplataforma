@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -25,6 +26,7 @@ import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Card
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
@@ -39,6 +41,7 @@ import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -50,7 +53,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
@@ -252,8 +258,25 @@ fun WarehouseItem(warehouse: Warehouse,navController: NavController, loadWarehou
         }
     }
 
+    var isloading by remember { mutableStateOf(true) }
+    val modifierDire =
+        if (DataRepository.getUser()?.role==0 || DataRepository.getUser()?.role==1 ){
+            Modifier
+                .fillMaxSize()
+                .height(215.dp)
+                .background(Color.White.copy(alpha = 0.8f))
+        }else{
+            Modifier
+                .fillMaxSize()
+                .height(160.dp)
+                .background(Color.White.copy(alpha = 0.8f))
+        }
 
 
+    LaunchedEffect(Unit){
+        delay(1200)
+        isloading = false
+    }
     // Muestra los detalles del almacén dentro de un Card
     androidx.compose.material3.Card(
         modifier = Modifier
@@ -268,23 +291,229 @@ fun WarehouseItem(warehouse: Warehouse,navController: NavController, loadWarehou
         shape = RoundedCornerShape(16.dp),
 
     ) {
-        if (showDialog) {
-            AlertDialog(
-                onDismissRequest = {
-                    // Handle dismissal if needed
-                    showDialog = false
-                },
-                title = {
-                    Text(text = "Alert")
-                },
-                text = {
-                    Text(text ="Are you sure you want to delete?")
-                },
-                confirmButton = {
+        if (isloading){
+            Box(
+                modifier = modifierDire
+            ) {
+                // Muestra el indicador de carga lineal con efecto de cristal
+                LinearProgressIndicator(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight()
+                        .align(Alignment.Center),
+                    color = Color.White.copy(alpha = 0.9f), // Ajusta el nivel de opacidad aquí
+                    trackColor = Color(0xff5a79ba).copy(alpha = 0.1f), // Ajusta el nivel de opacidad aquí
+                )
+            }
+
+        }else{
+            if (showDialog) {
+                AlertDialog(
+                    onDismissRequest = {
+                        // Handle dismissal if needed
+                        showDialog = false
+                    },
+                    title = {
+                        Text(text = "Alert")
+                    },
+                    text = {
+                        Text(text ="Are you sure you want to delete?")
+                    },
+                    confirmButton = {
+                        ElevatedButton(
+                            onClick = {
+                                deleteWarehouse()
+                                showDialog = false
+                            },
+                            colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                                containerColor = Color(0xff5a79ba)
+                            ),
+                            elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                                defaultElevation = 5.dp
+                            )
+                        ){
+                            Text("Confirm", color = Color.White)
+                        }
+                    },
+                    dismissButton = {
+                        ElevatedButton(
+                            onClick = {
+                                showDialog = false
+                            },
+                            colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                                containerColor = Color.White
+                            ),
+                            elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                                defaultElevation = 5.dp
+                            )
+                        ){
+                            Text("Cancel", color =  Color(0xff5a79ba))
+                        }
+                    }
+                )
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                val placeholderImage = painterResource(id = R.drawable.warehouse)
+                if (warehouse.url.isNullOrBlank()) {
+                    androidx.compose.material3.Card(
+                        modifier = Modifier
+                            .size(120.dp)
+                            .padding(16.dp),
+                        elevation = CardDefaults.cardElevation(
+                            defaultElevation = 10.dp
+                        ),
+                        colors = CardDefaults.cardColors(
+                            containerColor = Color.White,
+                        )
+                    ){
+                        Image(
+                            painter = placeholderImage,
+                            contentDescription = "Default User Image",
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
+                } else {
+                    // Si hay una URL válida, cargar la imagen usando Coil
+                    val painter = rememberImagePainter(
+                        data = warehouse.url,
+                        builder = {
+                            crossfade(true)
+                            placeholder(R.drawable.loading)
+                        }
+                    )
+                    androidx.compose.material3.Card(
+                        modifier = Modifier
+                            .size(120.dp)
+                            .padding(16.dp),
+                        elevation = CardDefaults.cardElevation(
+                            defaultElevation = 10.dp
+                        ),
+                        colors = CardDefaults.cardColors(
+                            containerColor = Color.White,
+                        )
+
+                    ){
+                        Image(
+                            painter = painter,
+                            contentDescription = "warehouse Image",
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
+                }
+
+
+                Spacer(modifier = Modifier.width(16.dp))
+
+                Column {
+                    // Nombre del almacén
+                    Text(
+                        text = warehouse.name,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 18.sp,
+                        modifier = Modifier.padding(bottom = 4.dp)
+                    )
+
+                    // Ubicación del almacén
+                    Text(
+                        buildAnnotatedString {
+                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                                append("Location:")
+                            }
+                            append(" ${warehouse.location}")
+                        },
+                        fontSize = 14.sp,
+                        modifier = Modifier.padding(bottom = 4.dp)
+                    )
+
+                    // Organización del almacén
+                    Text(
+                        buildAnnotatedString {
+                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                                append("Organization:")
+                            }
+                            append(" ${warehouse.organization}")
+                        },
+                        fontSize = 14.sp,
+                        modifier = Modifier.padding(bottom = 4.dp)
+                    )
+
+                    // Administrador
+                    Text(
+                        buildAnnotatedString {
+                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                                append("Administrator:")
+                            }
+                            append(" ${DataRepository.getEmployees()?.find { user -> user.id == warehouse.idAdministrator}?.name}")
+                        },
+                        fontSize = 14.sp,
+                        modifier = Modifier.padding(bottom = 4.dp)
+                    )
+
+
+                    Row {
+                        if(DataRepository.getUser()?.role==0 || DataRepository.getUser()?.role==1 ) {
+                            ElevatedButton(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .weight(1f)
+                                    .padding(end = 4.dp),
+                                onClick = {
+                                    DataRepository.setWarehousePlus(warehouse)
+                                    navController.navigate("updateWarehouse")
+                                },
+                                colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                                    containerColor = Color(0xff5a79ba)
+                                ),
+                                elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                                    defaultElevation = 5.dp
+                                )
+                            ){
+                                Icon(
+                                    imageVector = Icons.Filled.EditNote,
+                                    contentDescription = "",
+                                    tint = Color.White
+                                )
+                            }
+
+                        }
+                        if(DataRepository.getUser()?.role==0) {
+                            ElevatedButton(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .weight(1f)
+                                    .padding(end = 4.dp),
+                                onClick = {
+                                    showDialog = true
+                                },
+                                colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                                    containerColor = Color(0xff5a79ba)
+                                ),
+                                elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                                    defaultElevation = 5.dp
+                                )
+                            ){
+                                Icon(
+                                    imageVector = Icons.Filled.DeleteSweep,
+                                    contentDescription = "",
+                                    tint = Color.White
+                                )
+                            }
+
+
+                        }
+                    }
                     ElevatedButton(
+                        modifier = Modifier
+                            .fillMaxWidth(),
                         onClick = {
-                            deleteWarehouse()
-                            showDialog = false
+                            DataRepository.setWarehousePlus(warehouse)
+                            navController.navigate("openWarehouse")
                         },
                         colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
                             containerColor = Color(0xff5a79ba)
@@ -292,203 +521,14 @@ fun WarehouseItem(warehouse: Warehouse,navController: NavController, loadWarehou
                         elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
                             defaultElevation = 5.dp
                         )
-                    ){
-                        Text("Confirm", color = Color.White)
-                    }
-                },
-                dismissButton = {
-                    ElevatedButton(
-                        onClick = {
-                            showDialog = false
-                        },
-                        colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
-                            containerColor = Color.White
-                        ),
-                        elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
-                            defaultElevation = 5.dp
-                        )
-                    ){
-                        Text("Cancel", color =  Color(0xff5a79ba))
-                    }
-                }
-            )
-        }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-        ) {
-            val placeholderImage = painterResource(id = R.drawable.warehouse)
-            if (warehouse.url.isNullOrBlank()) {
-                androidx.compose.material3.Card(
-                    modifier = Modifier
-                        .size(120.dp)
-                        .padding(16.dp),
-                    elevation = CardDefaults.cardElevation(
-                        defaultElevation = 10.dp
-                    ),
-                    colors = CardDefaults.cardColors(
-                        containerColor = Color.White,
                     )
-                ){
-                    Image(
-                        painter = placeholderImage,
-                        contentDescription = "Default User Image",
-                        modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Crop
-                    )
-                }
-            } else {
-                // Si hay una URL válida, cargar la imagen usando Coil
-                val painter = rememberImagePainter(
-                    data = warehouse.url,
-                    builder = {
-                        crossfade(true)
-                        placeholder(R.drawable.loading)
+                    {
+                        Text(text = "Open", color = Color.White)
                     }
-                )
-                androidx.compose.material3.Card(
-                    modifier = Modifier
-                        .size(120.dp)
-                        .padding(16.dp),
-                    elevation = CardDefaults.cardElevation(
-                            defaultElevation = 10.dp
-                    ),
-                    colors = CardDefaults.cardColors(
-                        containerColor = Color.White,
-                    )
 
-                ){
-                    Image(
-                        painter = painter,
-                        contentDescription = "warehouse Image",
-                        modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Crop
-                    )
-                }
-            }
-
-
-        Spacer(modifier = Modifier.width(16.dp))
-
-            Column {
-                // Nombre del almacén
-                Text(
-                    text = warehouse.name,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp,
-                    modifier = Modifier.padding(bottom = 4.dp)
-                )
-
-                // Ubicación del almacén
-                Text(
-                    buildAnnotatedString {
-                        withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append("Location:")
-                        }
-                        append(" ${warehouse.location}")
-                    },
-                    fontSize = 14.sp,
-                    modifier = Modifier.padding(bottom = 4.dp)
-                )
-
-                // Organización del almacén
-                Text(
-                    buildAnnotatedString {
-                        withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append("Organization:")
-                        }
-                        append(" ${warehouse.organization}")
-                    },
-                    fontSize = 14.sp,
-                    modifier = Modifier.padding(bottom = 4.dp)
-                )
-
-                // Administrador
-                Text(
-                    buildAnnotatedString {
-                        withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append("Administrator:")
-                        }
-                        append(" ${DataRepository.getEmployees()?.find { user -> user.id == warehouse.idAdministrator}?.name}")
-                    },
-                    fontSize = 14.sp,
-                    modifier = Modifier.padding(bottom = 4.dp)
-                )
-
-
-                Row {
-                    if(DataRepository.getUser()?.role==0 || DataRepository.getUser()?.role==1 ) {
-                        ElevatedButton(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .weight(1f)
-                                .padding(end = 4.dp),
-                            onClick = {
-                                DataRepository.setWarehousePlus(warehouse)
-                                navController.navigate("updateWarehouse")
-                            },
-                            colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
-                                containerColor = Color(0xff5a79ba)
-                            ),
-                            elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
-                                defaultElevation = 5.dp
-                            )
-                        ){
-                            Icon(
-                                imageVector = Icons.Filled.EditNote,
-                                contentDescription = "",
-                                tint = Color.White
-                            )
-                        }
-
-                    }
-                    if(DataRepository.getUser()?.role==0) {
-                        ElevatedButton(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .weight(1f)
-                                .padding(end = 4.dp),
-                            onClick = {
-                                showDialog = true
-                            },
-                            colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
-                                containerColor = Color(0xff5a79ba)
-                            ),
-                            elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
-                                defaultElevation = 5.dp
-                            )
-                        ){
-                            Icon(
-                                imageVector = Icons.Filled.DeleteSweep,
-                                contentDescription = "",
-                                tint = Color.White
-                            )
-                        }
-
-
-                    }
-                }
-                ElevatedButton(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    onClick = {
-                        DataRepository.setWarehousePlus(warehouse)
-                        navController.navigate("openWarehouse")
-                    },
-                    colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
-                        containerColor = Color(0xff5a79ba)
-                    ),
-                    elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
-                        defaultElevation = 5.dp
-                    )
-                )
-                {
-                    Text(text = "Open", color = Color.White)
                 }
 
             }
-
         }
     }
 }

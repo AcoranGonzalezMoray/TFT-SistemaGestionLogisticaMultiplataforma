@@ -244,6 +244,7 @@ fun ProfileScreen(navController: NavController) {
                 )
             } else {
                 // Si hay una URL válida, cargar la imagen usando Coil
+                Log.d("IMAGEURL", "${imageUrl}")
                 val painter = rememberImagePainter(
                     data = imageUrl,
                     builder = {
@@ -255,8 +256,9 @@ fun ProfileScreen(navController: NavController) {
                     painter = painter,
                     contentDescription = "User Image",
                     modifier = Modifier
-                        .fillMaxSize(),
-                    contentScale = ContentScale.Crop
+                        .fillMaxSize()
+                        .height(350.dp),
+                    contentScale = ContentScale.Fit
                 )
             }
         }
