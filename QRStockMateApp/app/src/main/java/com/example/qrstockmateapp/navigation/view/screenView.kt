@@ -69,7 +69,6 @@ import com.example.qrstockmateapp.navigation.logic.Navigation
 import com.example.qrstockmateapp.navigation.model.ScreenModel
 import com.example.qrstockmateapp.navigation.repository.DataRepository
 import com.example.qrstockmateapp.navigation.widget.AnimatedBottomBar
-import com.example.qrstockmateapp.navigation.widget.BottomBar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope

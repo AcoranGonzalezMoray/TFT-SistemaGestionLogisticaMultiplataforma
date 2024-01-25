@@ -57,6 +57,7 @@ dependencies {
 
     implementation ("androidx.compose.material:material-icons-extended:1.6.0-alpha07")
 
+    implementation("com.exyte:animated-navigation-bar:1.0.0")
 
     implementation ("com.google.maps.android:maps-compose:2.15.0")
     implementation ("com.google.android.gms:play-services-maps:18.2.0")
