@@ -29,6 +29,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -47,6 +48,7 @@ import com.example.qrstockmateapp.api.models.Transaction
 import com.example.qrstockmateapp.api.services.RetrofitInstance
 import com.example.qrstockmateapp.navigation.repository.DataRepository
 import com.example.qrstockmateapp.screens.Home.UpdateWarehouse.ShowDialog
+import com.example.qrstockmateapp.ui.theme.BlueSystem
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -106,11 +108,12 @@ fun UpdateVehicleScreen(navController: NavController){
 
     }
     val customTextFieldColors = TextFieldDefaults.outlinedTextFieldColors(
-        cursorColor =  Color(0xff5a79ba),
-        focusedBorderColor =  Color(0xff5a79ba),
-        focusedLabelColor = Color(0xff5a79ba),
-        backgroundColor = Color(0xfff5f6f7),
-        unfocusedBorderColor =  Color.White,
+        textColor = MaterialTheme.colorScheme.primary,
+        backgroundColor = MaterialTheme.colorScheme.outline,
+        cursorColor =  BlueSystem,
+        focusedBorderColor =  BlueSystem,
+        focusedLabelColor = BlueSystem,
+        unfocusedBorderColor =  BlueSystem
     )
 
 
@@ -137,16 +140,17 @@ fun UpdateVehicleScreen(navController: NavController){
                         Icon(
                             Icons.Default.ArrowBack,
                             contentDescription = "Back to Login",
-                            tint = Color(0xff5a79ba)
+                            tint = BlueSystem
                         )
                     }
                 },
-                backgroundColor = Color.White,
-                title = { Text(text = "Update Vehicle", color = Color(0xff5a79ba)) }
+                backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
+                title = { Text(text = "Update Vehicle", color = BlueSystem) }
             )
             Column(
                 modifier = Modifier
                     .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background)
                     .verticalScroll(rememberScrollState())
                     .padding(16.dp)
             ) {
@@ -185,7 +189,7 @@ fun UpdateVehicleScreen(navController: NavController){
                                 .padding(4.dp)
                                 .border(
                                     width = 0.5.dp,
-                                    color = Color(0xff5a79ba),
+                                    color = BlueSystem,
                                     shape = RoundedCornerShape(8.dp)
                                 )
                         )
@@ -200,7 +204,7 @@ fun UpdateVehicleScreen(navController: NavController){
                                 .padding(4.dp)
                                 .border(
                                     width = 0.5.dp,
-                                    color = Color(0xff5a79ba),
+                                    color = BlueSystem,
                                     shape = RoundedCornerShape(8.dp)
                                 )
                         )
@@ -215,7 +219,7 @@ fun UpdateVehicleScreen(navController: NavController){
                                 .padding(4.dp)
                                 .border(
                                     width = 0.5.dp,
-                                    color = Color(0xff5a79ba),
+                                    color = BlueSystem,
                                     shape = RoundedCornerShape(8.dp)
                                 )
                         )
@@ -230,7 +234,7 @@ fun UpdateVehicleScreen(navController: NavController){
                                 .padding(4.dp)
                                 .border(
                                     width = 0.5.dp,
-                                    color = Color(0xff5a79ba),
+                                    color = BlueSystem,
                                     shape = RoundedCornerShape(8.dp)
                                 )
                         )
@@ -245,7 +249,7 @@ fun UpdateVehicleScreen(navController: NavController){
                                 .padding(4.dp)
                                 .border(
                                     width = 0.5.dp,
-                                    color = Color(0xff5a79ba),
+                                    color = BlueSystem,
                                     shape = RoundedCornerShape(8.dp)
                                 )
                         )
@@ -260,7 +264,7 @@ fun UpdateVehicleScreen(navController: NavController){
                                 .padding(4.dp)
                                 .border(
                                     width = 0.5.dp,
-                                    color = Color(0xff5a79ba),
+                                    color = BlueSystem,
                                     shape = RoundedCornerShape(8.dp)
                                 )
                         )
@@ -275,13 +279,13 @@ fun UpdateVehicleScreen(navController: NavController){
                                     navController.popBackStack()
                                 },
                                 colors = ButtonDefaults.elevatedButtonColors(
-                                    containerColor = Color.White
+                                    containerColor = MaterialTheme.colorScheme.secondaryContainer
                                 ),
                                 elevation = ButtonDefaults.elevatedButtonElevation(
                                     defaultElevation = 5.dp
                                 )
                             ){
-                                androidx.compose.material3.Text(text = "Cancel", color = Color(0xff5a79ba))
+                                androidx.compose.material3.Text(text = "Cancel", color = BlueSystem)
                             }
 
                             ElevatedButton(
@@ -298,7 +302,7 @@ fun UpdateVehicleScreen(navController: NavController){
                                     updateVehicle()
                                 },
                                 colors = ButtonDefaults.elevatedButtonColors(
-                                    containerColor = Color(0xff5a79ba)
+                                    containerColor = BlueSystem
                                 ),
                                 elevation = ButtonDefaults.elevatedButtonElevation(
                                     defaultElevation = 5.dp

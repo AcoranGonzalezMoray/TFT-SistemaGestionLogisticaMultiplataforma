@@ -47,6 +47,7 @@ import com.example.qrstockmateapp.api.models.User
 import com.example.qrstockmateapp.api.services.ApiService
 import com.example.qrstockmateapp.api.services.RetrofitInstance
 import com.example.qrstockmateapp.screens.Auth.JoinWithCode.isValidEmail
+import com.example.qrstockmateapp.ui.theme.BlueSystem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -77,11 +78,12 @@ fun Login(navController: NavHostController, onLoginSuccess: (Boolean, User, Stri
     val context = LocalContext.current
 
     val customTextFieldColors = TextFieldDefaults.outlinedTextFieldColors(
-        backgroundColor = Color(0xfff5f6f7),
-        cursorColor =  Color(0xff5a79ba),
-        focusedBorderColor =  Color(0xff5a79ba),
-        focusedLabelColor = Color(0xff5a79ba),
-        unfocusedBorderColor =  Color.White
+        textColor = MaterialTheme.colorScheme.primary,
+        backgroundColor = MaterialTheme.colorScheme.outline,
+        cursorColor =  BlueSystem,
+        focusedBorderColor =  BlueSystem,
+        focusedLabelColor = BlueSystem,
+        unfocusedBorderColor =  MaterialTheme.colorScheme.secondaryContainer
     )
 
     val onLoginClicked: () -> Unit = {
@@ -134,7 +136,7 @@ fun Login(navController: NavHostController, onLoginSuccess: (Boolean, User, Stri
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.White)
+                .background(MaterialTheme.colorScheme.background)
         ) {
             // Muestra el círculo de carga
             CircularProgressIndicator(
@@ -142,13 +144,14 @@ fun Login(navController: NavHostController, onLoginSuccess: (Boolean, User, Stri
                     .size(50.dp)
                     .align(Alignment.Center),
                 color = Color.LightGray,
-                backgroundColor = Color(0xff5a79ba)
+                backgroundColor = BlueSystem
             )
         }
     }else{
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
                 .padding(26.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
@@ -156,7 +159,7 @@ fun Login(navController: NavHostController, onLoginSuccess: (Boolean, User, Stri
             Image(
                 painter = painterResource(R.drawable.icon),
                 contentDescription = "Descripción de la imagen",
-                colorFilter = ColorFilter.tint(Color(0xff5a79ba)),
+                colorFilter = ColorFilter.tint(BlueSystem),
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(300.dp)
@@ -180,10 +183,11 @@ fun Login(navController: NavHostController, onLoginSuccess: (Boolean, User, Stri
                     .fillMaxWidth()
                     .border(
                         width = 0.5.dp,
-                        color = Color(0xff5a79ba),
+                        color = BlueSystem,
                         shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
 
                     ),
+                shape = RoundedCornerShape(8.dp),
                 colors = customTextFieldColors
             )
             if(!isValidEmail(email) && start) androidx.compose.material.Text(
@@ -194,6 +198,7 @@ fun Login(navController: NavHostController, onLoginSuccess: (Boolean, User, Stri
             TextField(
                 value = password,
                 isError = isError,
+                shape = RoundedCornerShape(8.dp),
                 onValueChange = { password = it;if(!start)start = true },
                 label = { Text("Password") },
                 visualTransformation = PasswordVisualTransformation(),
@@ -202,7 +207,7 @@ fun Login(navController: NavHostController, onLoginSuccess: (Boolean, User, Stri
                     .fillMaxWidth()
                     .border(
                         width = 0.5.dp,
-                        color = Color(0xff5a79ba),
+                        color = BlueSystem,
                         shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
 
                     ),
@@ -218,7 +223,7 @@ fun Login(navController: NavHostController, onLoginSuccess: (Boolean, User, Stri
                     onLoginClicked()
                 },
                 colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
-                    containerColor = Color(0xff5a79ba)
+                    containerColor = BlueSystem
                 ),
                 elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
                     defaultElevation = 5.dp

@@ -8,6 +8,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -36,6 +37,7 @@ import androidx.compose.material.icons.filled.AddAPhoto
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Update
 import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -60,6 +62,7 @@ import coil.compose.rememberImagePainter
 import com.example.qrstockmateapp.R
 import com.example.qrstockmateapp.api.services.RetrofitInstance
 import com.example.qrstockmateapp.navigation.repository.DataRepository
+import com.example.qrstockmateapp.ui.theme.BlueSystem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -103,11 +106,12 @@ fun ProfileScreen(navController: NavController) {
     }
 
     val customTextFieldColors = TextFieldDefaults.outlinedTextFieldColors(
-        cursorColor =  Color(0xff5a79ba),
-        focusedBorderColor =  Color(0xff5a79ba),
-        focusedLabelColor = Color(0xff5a79ba),
-        backgroundColor = Color(0xfff5f6f7),
-        unfocusedBorderColor =  Color.White,
+        textColor = MaterialTheme.colorScheme.primary,
+        backgroundColor = MaterialTheme.colorScheme.outline,
+        cursorColor =  BlueSystem,
+        focusedBorderColor =  BlueSystem,
+        focusedLabelColor = BlueSystem,
+        unfocusedBorderColor =  BlueSystem
     )
 
     val updateImage:(File)->Unit={ file ->
@@ -197,6 +201,7 @@ fun ProfileScreen(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
             .verticalScroll(rememberScrollState()),
         )
     {
@@ -212,7 +217,7 @@ fun ProfileScreen(navController: NavController) {
                     pickImageLauncher.launch("image/*")
                 },
                 colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
-                    containerColor = Color(0xff5a79ba)
+                    containerColor = BlueSystem
                 ),
                 elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
                     defaultElevation = 5.dp
@@ -266,6 +271,7 @@ fun ProfileScreen(navController: NavController) {
         if (userName != null) {
             Text(
                 text = userName,
+                color = MaterialTheme.colorScheme.primary,
                 fontSize = 15.sp,
                 style = TextStyle(fontWeight = FontWeight.Bold),
                 textAlign = TextAlign.Center,
@@ -279,13 +285,14 @@ fun ProfileScreen(navController: NavController) {
         if (userRole != null) {
             Text(
                 text = buildAnnotatedString {
-                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold,color = MaterialTheme.colorScheme.primary,)) {
                         append("Role: ")
                     }
                     append(userRoleToString(userRole))
                 },
                 fontSize = 15.sp,
                 textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.padding(start = 10.dp)
             )
         }
@@ -293,13 +300,14 @@ fun ProfileScreen(navController: NavController) {
         if (userCode != null) {
             Text(
                 text = buildAnnotatedString {
-                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary,)) {
                         append("Warehouse Code: ")
                     }
                     append(userCode)
                 },
                 fontSize = 15.sp,
                 textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.padding(start = 10.dp)
             )
         }
@@ -321,7 +329,7 @@ fun ProfileScreen(navController: NavController) {
                         .fillMaxWidth()
                         .padding(horizontal = 10.dp).border(
                             width = 0.5.dp,
-                            color =  Color(0xff5a79ba),
+                            color =  BlueSystem,
                             shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
 
                         ),
@@ -334,6 +342,7 @@ fun ProfileScreen(navController: NavController) {
             if (userPhone != null) {
                 TextField(
                     value = userPhone!!,
+                    shape = RoundedCornerShape(8.dp),
                     label = { androidx.compose.material3.Text("Phone") },
                     colors = customTextFieldColors,
                     onValueChange = {userPhone=it},
@@ -341,7 +350,7 @@ fun ProfileScreen(navController: NavController) {
                         .fillMaxWidth()
                         .padding(horizontal = 10.dp).border(
                             width = 0.5.dp,
-                            color =  Color(0xff5a79ba),
+                            color =  BlueSystem,
                             shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
 
                         ),
@@ -360,7 +369,7 @@ fun ProfileScreen(navController: NavController) {
                     updateInfo()
                 },
                 colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
-                    containerColor = Color(0xff5a79ba)
+                    containerColor = BlueSystem
                 ),
                 elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
                     defaultElevation = 5.dp
@@ -369,7 +378,7 @@ fun ProfileScreen(navController: NavController) {
                 Text(text = "Update", color=Color.White)
             }
         }
-        Spacer(modifier = Modifier.fillMaxWidth().height(60.dp))
+        Spacer(modifier = Modifier.fillMaxWidth().height(75.dp))
     }
 
 

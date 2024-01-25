@@ -172,6 +172,7 @@ fun CarrierScreen(navController: NavController) {
     Box(
         modifier = Modifier
             .pullRefresh(pullRefreshState)
+            .background(MaterialTheme.colorScheme.background)
     ){
         PullRefreshIndicator(
             refreshing = isloading,
@@ -179,7 +180,7 @@ fun CarrierScreen(navController: NavController) {
             modifier = Modifier
                 .align(Alignment.TopCenter)
                 .zIndex(1f),
-            backgroundColor =  Color.White,
+            backgroundColor =  MaterialTheme.colorScheme.background,
             contentColor = Color(0xff5a79ba)
         )
 
@@ -385,7 +386,7 @@ fun itemRoute(routesPorFila: List<TransportRoute>, navController: NavController)
                     defaultElevation = 10.dp
                 ),
                 colors = CardDefaults.cardColors(
-                    containerColor = Color.White,
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
                 ),
                 shape = RoundedCornerShape(16.dp),
             ) {
@@ -402,7 +403,7 @@ fun itemRoute(routesPorFila: List<TransportRoute>, navController: NavController)
                                 .fillMaxWidth()
                                 .fillMaxHeight()
                                 .align(Alignment.Center),
-                            color = Color.White.copy(alpha = 0.9f), // Ajusta el nivel de opacidad aquí
+                            color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.9f), // Ajusta el nivel de opacidad aquí
                             trackColor = Color(0xff5a79ba).copy(alpha = 0.1f), // Ajusta el nivel de opacidad aquí
                         )
                     }
@@ -488,7 +489,8 @@ fun itemRoute(routesPorFila: List<TransportRoute>, navController: NavController)
                                 }
                                 append(" ${DataRepository.getWarehouses()?.find { warehouse -> warehouse.id == route.startLocation.toInt() }?.name}")
                             },
-                            fontSize = 12.sp
+                            fontSize = 12.sp,
+                            color = MaterialTheme.colorScheme.primary
                         )
                         Spacer(modifier = Modifier.height(4.dp))
 
@@ -499,7 +501,8 @@ fun itemRoute(routesPorFila: List<TransportRoute>, navController: NavController)
                                 }
                                 append(" ${DataRepository.getWarehouses()?.find { warehouse -> warehouse.id == route.endLocation.toInt() }?.name}")
                             },
-                            fontSize = 12.sp
+                            fontSize = 12.sp,
+                            color = MaterialTheme.colorScheme.primary
                         )
 
                         Spacer(modifier = Modifier.height(4.dp))
@@ -511,7 +514,8 @@ fun itemRoute(routesPorFila: List<TransportRoute>, navController: NavController)
                                 }
                                 append(" ${route.date.split('T')[0]}")
                             },
-                            fontSize = 12.sp
+                            fontSize = 12.sp,
+                            color = MaterialTheme.colorScheme.primary
                         )
 
 

@@ -36,6 +36,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -55,6 +56,7 @@ import com.example.qrstockmateapp.api.models.Warehouse
 import com.example.qrstockmateapp.api.services.RetrofitInstance
 import com.example.qrstockmateapp.navigation.repository.DataRepository
 import com.example.qrstockmateapp.screens.Home.UpdateWarehouse.ShowDialog
+import com.example.qrstockmateapp.ui.theme.BlueSystem
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -81,11 +83,12 @@ fun AddWarehouseScreen(navController: NavController) {
     val context = LocalContext.current
 
     val customTextFieldColors = TextFieldDefaults.outlinedTextFieldColors(
-        cursorColor =  Color(0xff5a79ba),
-        focusedBorderColor =  Color(0xff5a79ba),
-        focusedLabelColor = Color(0xff5a79ba),
-        backgroundColor = Color(0xfff5f6f7),
-        unfocusedBorderColor =  Color.White,
+        textColor = MaterialTheme.colorScheme.primary,
+        backgroundColor = MaterialTheme.colorScheme.outline,
+        cursorColor =  BlueSystem,
+        focusedBorderColor =  BlueSystem,
+        focusedLabelColor = BlueSystem,
+        unfocusedBorderColor =  MaterialTheme.colorScheme.secondaryContainer
     )
 
     val addWarehouse:() -> Unit = {
@@ -156,14 +159,15 @@ fun AddWarehouseScreen(navController: NavController) {
         TopAppBar(
             navigationIcon = {
                 IconButton(onClick = { navController.popBackStack() }) {
-                    androidx.compose.material3.Icon(Icons.Default.ArrowBack, contentDescription = "Back to Login", tint = Color(0xff5a79ba))
+                    androidx.compose.material3.Icon(Icons.Default.ArrowBack, contentDescription = "Back to Login", tint = BlueSystem)
                 }
             },
-            backgroundColor = Color.White,
-            title = { androidx.compose.material.Text(text = "Add New Warehouse", color = Color(0xff5a79ba)) }
+            backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
+            title = { androidx.compose.material.Text(text = "Add New Warehouse", color = BlueSystem) }
         )
         Column(
             modifier = Modifier
+                .background(MaterialTheme.colorScheme.background)
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
                 .padding(16.dp),
@@ -184,12 +188,13 @@ fun AddWarehouseScreen(navController: NavController) {
                 value = name,
                 onValueChange = { name = it },
                 label = { Text("Name") },
+                shape = RoundedCornerShape(8.dp),
                 colors = customTextFieldColors,
                 modifier = Modifier
                     .fillMaxWidth()
                     .border(
                         width = 0.5.dp,
-                        color = Color(0xff5a79ba),
+                        color = BlueSystem,
                         shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
 
                     ),
@@ -200,12 +205,13 @@ fun AddWarehouseScreen(navController: NavController) {
                 value = location,
                 onValueChange = { location = it },
                 label = { Text("Location") },
+                shape = RoundedCornerShape(8.dp),
                 colors = customTextFieldColors,
                 modifier = Modifier
                     .fillMaxWidth()
                     .border(
                         width = 0.5.dp,
-                        color = Color(0xff5a79ba),
+                        color = BlueSystem,
                         shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
 
                     ),
@@ -214,13 +220,14 @@ fun AddWarehouseScreen(navController: NavController) {
             TextField(
                 value = organization,
                 onValueChange = { organization = it },
+                shape = RoundedCornerShape(8.dp),
                 label = { Text("Organization") },
                 colors = customTextFieldColors,
                 modifier = Modifier
                     .fillMaxWidth()
                     .border(
                         width = 0.5.dp,
-                        color = Color(0xff5a79ba),
+                        color = BlueSystem,
                         shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
 
                     ),
@@ -233,7 +240,7 @@ fun AddWarehouseScreen(navController: NavController) {
                     showDialog = true
                 },
                 colors =  androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
-                    containerColor = Color(0xff5a79ba)
+                    containerColor = BlueSystem
                 ),
                 elevation =  androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
                     defaultElevation = 5.dp
@@ -250,13 +257,13 @@ fun AddWarehouseScreen(navController: NavController) {
 
                     },
                     colors =  androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
-                        containerColor = Color.White
+                        containerColor =  MaterialTheme.colorScheme.secondaryContainer
                     ),
                     elevation =  androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
                         defaultElevation = 5.dp
                     )
                 ){
-                    Text("${pinLocation}", color = Color(0xff5a79ba))
+                    Text("${pinLocation}", color = BlueSystem)
                 }
                 Spacer(modifier = Modifier.height(10.dp))
             }
@@ -265,19 +272,21 @@ fun AddWarehouseScreen(navController: NavController) {
                     .background(Color(0xfff5f6f7))
                     .border(
                         width = 0.5.dp,
-                        color = Color(0xff5a79ba),
+                        color = BlueSystem,
                         shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
 
                     )
             ) {
                 Row(
+                    modifier = Modifier.background(MaterialTheme.colorScheme.outline),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
                         text = selectedOption,
+                        color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier
                             .weight(9f)
-                            .background(Color(0xfff5f6f7))
+                            .background(MaterialTheme.colorScheme.outline)
                             .clickable(
                                 interactionSource = remember { MutableInteractionSource() },
                                 indication = null
@@ -290,7 +299,7 @@ fun AddWarehouseScreen(navController: NavController) {
                     DropdownMenu(
                         expanded = isMenuExpanded,
                         onDismissRequest = { isMenuExpanded = false },
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.secondaryContainer)
                     ) {
                         employees.forEach { employee ->
                             DropdownMenuItem(onClick = {
@@ -302,16 +311,16 @@ fun AddWarehouseScreen(navController: NavController) {
                                 .padding(5.dp)
                                 .border(
                                     width = 0.5.dp,
-                                    color = Color(0xff5a79ba),
+                                    color = BlueSystem,
                                     shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
 
                                 )
                             ) {
-                                Text("Name: ${employee.name}  Role: Administrator Code: ${employee.code}" )
+                                Text("Name: ${employee.name}  Role: Administrator Code: ${employee.code}", color = MaterialTheme.colorScheme.primary )
                             }
                         }
                     }
-                    Icon(modifier = Modifier.weight(1f), imageVector = Icons.Filled.ArrowDropDown, contentDescription = null, tint =Color(0xff5a79ba))
+                    Icon(modifier = Modifier.weight(1f), imageVector = Icons.Filled.ArrowDropDown, contentDescription = null, tint =BlueSystem)
 
                 }
             }
@@ -329,13 +338,13 @@ fun AddWarehouseScreen(navController: NavController) {
                         navController.navigate(route = "home")
                     },
                     colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
-                        containerColor = Color.White
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer
                     ),
                     elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
                         defaultElevation = 5.dp
                     )
                 ){
-                    Text("Cancel", color = Color(0xff5a79ba))
+                    Text("Cancel", color = BlueSystem)
                 }
 
                 ElevatedButton(
@@ -346,7 +355,7 @@ fun AddWarehouseScreen(navController: NavController) {
                         addWarehouse()
                     },
                     colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
-                        containerColor = Color(0xff5a79ba)
+                        containerColor = BlueSystem
                     ),
                     elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
                         defaultElevation = 5.dp

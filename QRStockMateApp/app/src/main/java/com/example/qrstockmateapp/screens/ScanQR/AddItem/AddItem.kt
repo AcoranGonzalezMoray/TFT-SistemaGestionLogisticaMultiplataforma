@@ -36,6 +36,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -47,6 +48,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
@@ -65,6 +67,7 @@ import com.example.qrstockmateapp.api.models.User
 import com.example.qrstockmateapp.api.models.Warehouse
 import com.example.qrstockmateapp.api.services.RetrofitInstance
 import com.example.qrstockmateapp.navigation.repository.DataRepository
+import com.example.qrstockmateapp.ui.theme.BlueSystem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -82,13 +85,16 @@ fun AddItemScreen(navController: NavController) {
     var count by remember { mutableStateOf(0) }
     var countState = rememberUpdatedState(count)
     val context = LocalContext.current
+
     val customTextFieldColors = TextFieldDefaults.outlinedTextFieldColors(
-        cursorColor =  Color(0xff5a79ba),
-        focusedBorderColor =  Color(0xff5a79ba),
-        focusedLabelColor = Color(0xff5a79ba),
-        backgroundColor = Color(0xfff5f6f7),
-        unfocusedBorderColor =  Color.White
+        textColor = MaterialTheme.colorScheme.primary,
+        backgroundColor = MaterialTheme.colorScheme.outline,
+        cursorColor =  BlueSystem,
+        focusedBorderColor =  BlueSystem,
+        focusedLabelColor = BlueSystem,
+        unfocusedBorderColor =  BlueSystem
     )
+
 
     var selectedOption by remember { mutableStateOf("Select a warehouse to add your product") }
     var isMenuExpanded by remember { mutableStateOf(false) }
@@ -164,6 +170,7 @@ fun AddItemScreen(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
             .padding(16.dp)
             .verticalScroll(rememberScrollState())
     ) {
@@ -194,6 +201,7 @@ fun AddItemScreen(navController: NavController) {
                 Image(
                     painter = painter,
                     contentDescription = null,
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.background),
                     modifier = Modifier
                         .fillMaxWidth()
                         .fillMaxHeight(0.5f)
@@ -225,7 +233,7 @@ fun AddItemScreen(navController: NavController) {
                     .padding(4.dp)
                     .border(
                         width = 0.5.dp,
-                        color = Color(0xff5a79ba),
+                        color = BlueSystem,
                         shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
 
                     )
@@ -241,7 +249,7 @@ fun AddItemScreen(navController: NavController) {
                     .padding(4.dp)
                     .border(
                         width = 0.5.dp,
-                        color = Color(0xff5a79ba),
+                        color = BlueSystem,
                         shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
 
                     )
@@ -257,7 +265,7 @@ fun AddItemScreen(navController: NavController) {
                     .padding(4.dp)
                     .border(
                         width = 0.5.dp,
-                        color = Color(0xff5a79ba),
+                        color = BlueSystem,
                         shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
 
                     )
@@ -269,19 +277,21 @@ fun AddItemScreen(navController: NavController) {
                 .background(Color(0xfff5f6f7))
                 .border(
                     width = 0.5.dp,
-                    color = Color(0xff5a79ba),
+                    color = BlueSystem,
                     shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
 
                 )
             ) {
                 Row(
+                    modifier = Modifier.background(MaterialTheme.colorScheme.outline),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
                         text = selectedOption,
+                        color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier
                             .weight(9f)
-                            .background(Color(0xfff5f6f7))
+                            .background(MaterialTheme.colorScheme.outline)
                             .clickable(
                                 interactionSource = remember { MutableInteractionSource() },
                                 indication = null
@@ -293,7 +303,7 @@ fun AddItemScreen(navController: NavController) {
                     DropdownMenu(
                         expanded = isMenuExpanded,
                         onDismissRequest = { isMenuExpanded = false },
-                        modifier = Modifier.fillMaxWidth().padding(4.dp)
+                        modifier = Modifier.fillMaxWidth().padding(4.dp).background(MaterialTheme.colorScheme.secondaryContainer)
                     ) {
                         warehouses.forEach { warehouse ->
                             DropdownMenuItem(onClick = {
@@ -301,17 +311,18 @@ fun AddItemScreen(navController: NavController) {
                                 isMenuExpanded = false
                             }, modifier = Modifier
                                 .padding(5.dp)
+                                .background(MaterialTheme.colorScheme.outline)
                                 .border(
                                     width = 0.5.dp,
-                                    color = Color(0xff5a79ba),
+                                    color = BlueSystem,
                                     shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
 
                                 )) {
-                                Text("Name : ${warehouse.name} with Id : ${warehouse.id}")
+                                Text("Name : ${warehouse.name} with Id : ${warehouse.id}", color = MaterialTheme.colorScheme.primary)
                             }
                         }
                     }
-                    Icon(modifier = Modifier.weight(1f), imageVector = Icons.Filled.ArrowDropDown, contentDescription = null, tint =Color(0xff5a79ba))
+                    Icon(modifier = Modifier.weight(1f), imageVector = Icons.Filled.ArrowDropDown, contentDescription = null, tint =BlueSystem)
 
                 }
             }
@@ -334,6 +345,7 @@ fun AddItemScreen(navController: NavController) {
                     append(availableState.value.toString())
                 },
                     fontSize = 15.sp,
+                    color = MaterialTheme.colorScheme.primary,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(16.dp)
                 )
@@ -348,7 +360,7 @@ fun AddItemScreen(navController: NavController) {
                                 count++
                             },
                             colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
-                                containerColor = Color(0xff5a79ba)
+                                containerColor = BlueSystem
                             ),
                             elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
                                 defaultElevation = 5.dp
@@ -361,7 +373,7 @@ fun AddItemScreen(navController: NavController) {
                                 count--
                             },
                             colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
-                                containerColor =  Color(0xff5a79ba)
+                                containerColor =  BlueSystem
                             ),
                             elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
                                 defaultElevation = 5.dp
@@ -382,7 +394,7 @@ fun AddItemScreen(navController: NavController) {
                             .height(55.dp)
                             .border(
                                 width = 0.5.dp,
-                                color = Color(0xff5a79ba),
+                                color = BlueSystem,
                                 shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
 
                             )
@@ -394,13 +406,13 @@ fun AddItemScreen(navController: NavController) {
                             navController.popBackStack()
                         },
                         colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
-                            containerColor = Color.White
+                            containerColor = MaterialTheme.colorScheme.secondaryContainer
                         ),
                         elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
                             defaultElevation = 5.dp
                         )
                     ){
-                        Text(text = "Cancel", color=Color(0xff5a79ba))
+                        Text(text = "Cancel", color=BlueSystem)
                     }
                     Spacer(modifier = Modifier.width(5.dp))
                     ElevatedButton(
@@ -431,7 +443,7 @@ fun AddItemScreen(navController: NavController) {
                             }
                         },
                         colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
-                            containerColor = Color(0xff5a79ba)
+                            containerColor = BlueSystem
                         ),
                         elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
                             defaultElevation = 5.dp

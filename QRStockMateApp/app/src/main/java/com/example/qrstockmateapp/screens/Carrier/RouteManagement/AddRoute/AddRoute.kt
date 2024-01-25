@@ -59,6 +59,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -76,6 +77,7 @@ import com.example.qrstockmateapp.api.models.Warehouse
 import com.example.qrstockmateapp.api.models.userRoleToString
 import com.example.qrstockmateapp.api.services.RetrofitInstance
 import com.example.qrstockmateapp.navigation.repository.DataRepository
+import com.example.qrstockmateapp.ui.theme.BlueSystem
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -304,7 +306,7 @@ fun AddRouteScreen(navController: NavController){
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.White)
+                .background( color = MaterialTheme.colorScheme.background)
         ) {
             // Muestra el círculo de carga
             CircularProgressIndicator(
@@ -312,19 +314,21 @@ fun AddRouteScreen(navController: NavController){
                     .size(50.dp)
                     .align(Alignment.Center),
                 color = Color.LightGray,
-                backgroundColor = Color(0xff5a79ba)
+                backgroundColor = BlueSystem
             )
         }
     }else{
-        Column {
+        Column(
+            modifier = Modifier.background(color = MaterialTheme.colorScheme.background)
+        ) {
             TopAppBar(
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        androidx.compose.material3.Icon(Icons.Default.ArrowBack, contentDescription = "Back to Login", tint = Color(0xff5a79ba))
+                        androidx.compose.material3.Icon(Icons.Default.ArrowBack, contentDescription = "Back to Login", tint = BlueSystem)
                     }
                 },
-                backgroundColor = Color.White,
-                title = { androidx.compose.material.Text(text = "Add Route", color = Color(0xff5a79ba)) }
+                backgroundColor =  MaterialTheme.colorScheme.secondaryContainer,
+                title = { androidx.compose.material.Text(text = "Add Route", color = BlueSystem) }
             )
             Column(
                 modifier = Modifier
@@ -353,38 +357,40 @@ fun AddRouteScreen(navController: NavController){
 
                     route?.let {
                         //Carrier
-                        Text(text = "Carrier: ")
+                        Text(text = "Carrier: ", color = MaterialTheme.colorScheme.primary)
                         Box(modifier = Modifier
                             .fillMaxWidth()
                             .background(Color(0xfff5f6f7))
                             .border(
                                 width = 0.5.dp,
-                                color = Color(0xff5a79ba),
+                                color = BlueSystem,
                                 shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
 
                             )
                         ) {
                             Row(
+                                modifier = Modifier.background(color = MaterialTheme.colorScheme.outline),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
                                     text = selectedOptionCarrier,
                                     modifier = Modifier
                                         .weight(9f)
-                                        .background(Color(0xfff5f6f7))
+                                        .background(color = MaterialTheme.colorScheme.outline)
                                         .clickable(
                                             interactionSource = remember { MutableInteractionSource() },
                                             indication = null
                                         ) {
                                             isMenuExpandedCarrier = true
                                         }
-                                        .padding(16.dp)
+                                        .padding(16.dp),
+                                    color = MaterialTheme.colorScheme.primary
                                 )
 
                                 DropdownMenu(
                                     expanded = isMenuExpandedCarrier,
                                     onDismissRequest = { isMenuExpandedCarrier = false },
-                                    modifier = Modifier.fillMaxWidth()
+                                    modifier = Modifier.fillMaxWidth().background(color = MaterialTheme.colorScheme.secondaryContainer)
                                 ) {
                                     employees?.forEach { employee ->
                                         DropdownMenuItem(onClick = {
@@ -393,54 +399,57 @@ fun AddRouteScreen(navController: NavController){
                                             isMenuExpandedCarrier = false
                                         }, modifier = Modifier
                                             .padding(5.dp)
+                                            .background(color = MaterialTheme.colorScheme.secondaryContainer)
                                             .border(
                                                 width = 0.5.dp,
-                                                color = Color(0xff5a79ba),
+                                                color = BlueSystem,
                                                 shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
 
                                             )) {
-                                            Text( "Name: ${employee.name}  Role: Carrier")
+                                            Text( "Name: ${employee.name}  Role: Carrier", color = MaterialTheme.colorScheme.primary,)
                                         }
                                     }
                                 }
-                                Icon(modifier = Modifier.weight(1f), imageVector = Icons.Filled.ArrowDropDown, contentDescription = null, tint =Color(0xff5a79ba))
+                                Icon(modifier = Modifier.weight(1f), imageVector = Icons.Filled.ArrowDropDown, contentDescription = null, tint =BlueSystem)
 
                             }
 
                         }
                         Spacer(modifier = Modifier.padding(5.dp))
                         //Date
-                        Text(text = "Date: ")
+                        Text(text = "Date: ", color = MaterialTheme.colorScheme.primary)
                         Box(modifier = Modifier
                             .fillMaxWidth()
                             .background(Color(0xfff5f6f7))
                             .border(
                                 width = 0.5.dp,
-                                color = Color(0xff5a79ba),
+                                color = BlueSystem,
                                 shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
 
                             )) {
                             Row(
+                                modifier = Modifier.background(color = MaterialTheme.colorScheme.outline),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
                                     text = selectedOptionDate,
                                     modifier = Modifier
                                         .weight(9f)
-                                        .background(Color(0xfff5f6f7))
+                                        .background(color = MaterialTheme.colorScheme.outline)
                                         .clickable(
                                             interactionSource = remember { MutableInteractionSource() },
                                             indication = null
                                         ) {
                                             isMenuExpandedDate = true
                                         }
-                                        .padding(16.dp)
+                                        .padding(16.dp),
+                                    color = MaterialTheme.colorScheme.primary
                                 )
 
                                 DropdownMenu(
                                     expanded = isMenuExpandedDate,
                                     onDismissRequest = { isMenuExpandedDate = false },
-                                    modifier = Modifier.fillMaxWidth()
+                                    modifier = Modifier.fillMaxWidth().background(color = MaterialTheme.colorScheme.secondaryContainer)
                                 ) {
                                     dates?.forEach { date->
                                         DropdownMenuItem(onClick = {
@@ -449,54 +458,57 @@ fun AddRouteScreen(navController: NavController){
                                             isMenuExpandedDate= false
                                         }, modifier = Modifier
                                             .padding(5.dp)
+                                            .background(color = MaterialTheme.colorScheme.secondaryContainer)
                                             .border(
                                                 width = 0.5.dp,
-                                                color = Color(0xff5a79ba),
+                                                color = BlueSystem,
                                                 shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
 
                                             )) {
-                                            Text( "Date: ${date}" )
+                                            Text( "Date: ${date}", color = MaterialTheme.colorScheme.primary )
                                         }
                                     }
                                 }
-                                Icon(modifier = Modifier.weight(1f), imageVector = Icons.Filled.ArrowDropDown, contentDescription = null, tint =Color(0xff5a79ba))
+                                Icon(modifier = Modifier.weight(1f), imageVector = Icons.Filled.ArrowDropDown, contentDescription = null, tint =BlueSystem)
 
                             }
                         }
 
                         Spacer(modifier = Modifier.padding(5.dp))
                         //Vehicle
-                        Text(text = "Vehicle: ")
+                        Text(text = "Vehicle: ",color = MaterialTheme.colorScheme.primary)
                         Box(modifier = Modifier
                             .fillMaxWidth()
                             .background(Color(0xfff5f6f7))
                             .border(
                                 width = 0.5.dp,
-                                color = Color(0xff5a79ba),
+                                color = BlueSystem,
                                 shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
 
                             )) {
                            Row(
+                               modifier = Modifier.background(color = MaterialTheme.colorScheme.outline),
                                verticalAlignment = Alignment.CenterVertically
                            ){
                                Text(
                                    text = selectedOptionVehicle,
                                    modifier = Modifier
                                          .weight(9f)
-                                        .background(Color(0xfff5f6f7))
+                                       .background(color = MaterialTheme.colorScheme.outline)
                                        .clickable(
                                            interactionSource = remember { MutableInteractionSource() },
                                            indication = null
                                        ) {
                                            isMenuExpandedVehicle = true
                                        }
-                                       .padding(16.dp)
+                                       .padding(16.dp),
+                                   color = MaterialTheme.colorScheme.primary
                                )
 
                                DropdownMenu(
                                    expanded = isMenuExpandedVehicle,
                                    onDismissRequest = { isMenuExpandedVehicle = false },
-                                   modifier = Modifier.fillMaxWidth()
+                                   modifier = Modifier.fillMaxWidth().background(color = MaterialTheme.colorScheme.secondaryContainer)
                                ) {
                                    vehicles?.forEach { ve ->
                                        DropdownMenuItem(onClick = {
@@ -505,17 +517,18 @@ fun AddRouteScreen(navController: NavController){
                                            isMenuExpandedVehicle = false
                                        }, modifier = Modifier
                                            .padding(5.dp)
+                                           .background(color = MaterialTheme.colorScheme.secondaryContainer)
                                            .border(
                                                width = 0.5.dp,
-                                               color = Color(0xff5a79ba),
+                                               color = BlueSystem,
                                                shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
 
                                            )) {
-                                           Text( "License Plate: ${ve.licensePlate}  Max Load: ${ve.maxLoad} Year: ${ve.year}" )
+                                           Text( "License Plate: ${ve.licensePlate}  Max Load: ${ve.maxLoad} Year: ${ve.year}",  color = MaterialTheme.colorScheme.primary )
                                        }
                                    }
                                }
-                               Icon(modifier = Modifier.weight(1f), imageVector = Icons.Filled.ArrowDropDown, contentDescription = null, tint =Color(0xff5a79ba))
+                               Icon(modifier = Modifier.weight(1f), imageVector = Icons.Filled.ArrowDropDown, contentDescription = null, tint =BlueSystem)
 
                            }
                         }
@@ -523,7 +536,7 @@ fun AddRouteScreen(navController: NavController){
 
                         if(selectedOptionVehicle[0]!='S'){
                             //Palets
-                            Text(text = "Shipload (${"%.2f".format(totalWeight).toDouble()} / ${selectedOptionVehicle.split(';')[2].split(':')[1]} Kg): ")
+                            Text(text = "Shipload (${"%.2f".format(totalWeight).toDouble()} / ${selectedOptionVehicle.split(';')[2].split(':')[1]} Kg): ", color = MaterialTheme.colorScheme.primary )
                             Box(modifier = Modifier.fillMaxWidth()) {
                                 ElevatedButton(
                                     modifier = Modifier
@@ -532,7 +545,7 @@ fun AddRouteScreen(navController: NavController){
                                         showDialog = true
                                     },
                                     colors = ButtonDefaults.elevatedButtonColors(
-                                        containerColor = Color(0xff5a79ba)
+                                        containerColor = BlueSystem
                                     ),
                                     elevation = ButtonDefaults.elevatedButtonElevation(
                                         defaultElevation = 5.dp
@@ -599,35 +612,38 @@ fun AddRouteScreen(navController: NavController){
                         }
                         Spacer(modifier = Modifier.padding(bottom = 10.dp))
                         //StartLocatiopn
-                        Text(text = "Start Location: ")
+                        Text(text = "Start Location: ",color = MaterialTheme.colorScheme.primary)
                         Box(modifier = Modifier
                             .fillMaxWidth()
                             .background(Color(0xfff5f6f7))
                             .border(
                                 width = 0.5.dp,
-                                color = Color(0xff5a79ba),
+                                color = BlueSystem,
                                 shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
 
                             )) {
-                            Row(verticalAlignment = Alignment.CenterVertically){
+                            Row(
+                                modifier = Modifier.background(color = MaterialTheme.colorScheme.outline),
+                                verticalAlignment = Alignment.CenterVertically){
                                 Text(
                                     text = selectedOptionStartLocation,
                                     modifier = Modifier
                                           .weight(9f)
-                                        .background(Color(0xfff5f6f7))
+                                        .background(color = MaterialTheme.colorScheme.outline)
                                         .clickable(
                                             interactionSource = remember { MutableInteractionSource() },
                                             indication = null
                                         ) {
                                             isMenuExpandedStartLocation = true
                                         }
-                                        .padding(16.dp)
+                                        .padding(16.dp),
+                                    color = MaterialTheme.colorScheme.primary
                                 )
 
                                 DropdownMenu(
                                     expanded = isMenuExpandedStartLocation,
                                     onDismissRequest = { isMenuExpandedStartLocation = false },
-                                    modifier = Modifier.fillMaxWidth()
+                                    modifier = Modifier.fillMaxWidth().background(color = MaterialTheme.colorScheme.secondaryContainer)
                                 ) {
                                     warehouses?.forEach { waStart->
                                         DropdownMenuItem(onClick = {
@@ -637,51 +653,55 @@ fun AddRouteScreen(navController: NavController){
                                             isMenuExpandedStartLocation= false
                                         }, modifier = Modifier
                                             .padding(5.dp)
+                                            .background(color = MaterialTheme.colorScheme.secondaryContainer)
                                             .border(
                                                 width = 0.5.dp,
-                                                color = Color(0xff5a79ba),
+                                                color = BlueSystem,
                                                 shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
 
                                             )) {
-                                            Text( "Warehouse:  ${waStart!!.name} Latitude: ${waStart.latitude} Longitude: ${waStart.longitude}" )
+                                            Text( "Warehouse:  ${waStart!!.name} Latitude: ${waStart.latitude} Longitude: ${waStart.longitude}", color = MaterialTheme.colorScheme.primary  )
                                         }
                                     }
                                 }
-                                Icon(modifier = Modifier.weight(1f), imageVector = Icons.Filled.ArrowDropDown, contentDescription = null, tint =Color(0xff5a79ba))
+                                Icon(modifier = Modifier.weight(1f), imageVector = Icons.Filled.ArrowDropDown, contentDescription = null, tint =BlueSystem)
 
                             }
                         }
                         Spacer(modifier = Modifier.padding(5.dp))
                         //EndLocatiopn
-                        Text(text = "End Location: ")
+                        Text(text = "End Location: ",color = MaterialTheme.colorScheme.primary)
                         Box(modifier = Modifier
                             .fillMaxWidth()
                             .background(Color(0xfff5f6f7))
                             .border(
                                 width = 0.5.dp,
-                                color = Color(0xff5a79ba),
+                                color = BlueSystem,
                                 shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
 
                             )) {
-                           Row(verticalAlignment = Alignment.CenterVertically) {
+                           Row(
+                               modifier = Modifier.background(color = MaterialTheme.colorScheme.outline),
+                               verticalAlignment = Alignment.CenterVertically) {
                                Text(
                                    text = selectedOptionEndLocation,
                                    modifier = Modifier
                                        .weight(9f)
-                                       .background(Color(0xfff5f6f7))
+                                       .background(color = MaterialTheme.colorScheme.outline)
                                        .clickable(
                                            interactionSource = remember { MutableInteractionSource() },
                                            indication = null
                                        ) {
                                            isMenuExpandedEndLocation = true
                                        }
-                                       .padding(16.dp)
+                                       .padding(16.dp),
+                                   color = MaterialTheme.colorScheme.primary
                                )
 
                                DropdownMenu(
                                    expanded = isMenuExpandedEndLocation,
                                    onDismissRequest = { isMenuExpandedEndLocation = false },
-                                   modifier = Modifier.fillMaxWidth()
+                                   modifier = Modifier.fillMaxWidth().background(color = MaterialTheme.colorScheme.secondaryContainer)
                                ) {
                                    warehouses?.forEach { waEnd->
                                        DropdownMenuItem(onClick = {
@@ -690,17 +710,18 @@ fun AddRouteScreen(navController: NavController){
                                            isMenuExpandedEndLocation= false
                                        }, modifier = Modifier
                                            .padding(5.dp)
+                                           .background(color = MaterialTheme.colorScheme.secondaryContainer)
                                            .border(
                                                width = 0.5.dp,
-                                               color = Color(0xff5a79ba),
+                                               color = BlueSystem,
                                                shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
 
                                            )) {
-                                           Text( "Warehouse:  ${waEnd!!.name} Latitude: ${waEnd.latitude} Longitude: ${waEnd.longitude}" )
+                                           Text( "Warehouse:  ${waEnd!!.name} Latitude: ${waEnd.latitude} Longitude: ${waEnd.longitude}", color = MaterialTheme.colorScheme.primary  )
                                        }
                                    }
                                }
-                               Icon(modifier = Modifier.weight(1f), imageVector = Icons.Filled.ArrowDropDown, contentDescription = null, tint =Color(0xff5a79ba))
+                               Icon(modifier = Modifier.weight(1f), imageVector = Icons.Filled.ArrowDropDown, contentDescription = null, tint =BlueSystem)
 
                            }
                         }
@@ -719,13 +740,13 @@ fun AddRouteScreen(navController: NavController){
                                     navController.navigate("routeManagement")
                                 },
                                 colors = ButtonDefaults.elevatedButtonColors(
-                                    containerColor = Color.White
+                                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
                                 ),
                                 elevation = ButtonDefaults.elevatedButtonElevation(
                                     defaultElevation = 5.dp
                                 )
                             ){
-                                Text(text = "Cancel", color = Color(0xff5a79ba))
+                                Text(text = "Cancel", color = BlueSystem)
                             }
 
                             ElevatedButton(
@@ -737,7 +758,7 @@ fun AddRouteScreen(navController: NavController){
                                     addRoute()
                                 },
                                 colors = ButtonDefaults.elevatedButtonColors(
-                                    containerColor = Color(0xff5a79ba)
+                                    containerColor = BlueSystem
                                 ),
                                 elevation = ButtonDefaults.elevatedButtonElevation(
                                     defaultElevation = 5.dp
@@ -779,7 +800,7 @@ fun ShowListDialog(listaItems: List<Item>, onDismiss: () -> Unit, onSuccessfully
             // Puedes personalizar y agregar tu propia lógica aquí
             Column(
                 modifier = Modifier
-                    .background(Color.White)
+                    .background( MaterialTheme.colorScheme.background )
                     .fillMaxWidth()
                     .padding(6.dp)
             ) {
@@ -788,13 +809,13 @@ fun ShowListDialog(listaItems: List<Item>, onDismiss: () -> Unit, onSuccessfully
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceAround
                 ) {
-                    Text(text = "EuroPalet", fontWeight = FontWeight.Bold)
+                    Text(text = "EuroPalet", fontWeight = FontWeight.Bold,  color = MaterialTheme.colorScheme.primary )
                     TextButton(
                         onClick = onDismiss,
                         colors = ButtonDefaults.textButtonColors(contentColor = Color.Gray)
                     ) {
-                        Icon(imageVector = Icons.Filled.Clear, contentDescription = null)
-                        Text("Cancel")
+                        Icon(imageVector = Icons.Filled.Clear, contentDescription = null, tint = Color.Gray)
+                        Text("Cancel", color = MaterialTheme.colorScheme.primary )
                     }
                 }
                 Row(
@@ -802,13 +823,13 @@ fun ShowListDialog(listaItems: List<Item>, onDismiss: () -> Unit, onSuccessfully
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceAround
                 ){
-                    Text(text = "Total weight: ${roundedTotalWeight}/1500 Kg")
+                    Text(text = "Total weight: ${roundedTotalWeight}/1500 Kg", color = MaterialTheme.colorScheme.primary )
                     ElevatedButton(
                         onClick = {
                             onSuccessfully()
                         },
                         colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
-                            containerColor = Color(0xff5a79ba)
+                            containerColor = BlueSystem
                         ),
                         elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
                             defaultElevation = 5.dp
@@ -846,18 +867,19 @@ fun itemTemplate(item: Item, onCountStateChanged: (Double) -> Unit){
     var count by rememberSaveable { mutableStateOf(0) }
     val countState = rememberUpdatedState(count)
     val customTextFieldColors = TextFieldDefaults.outlinedTextFieldColors(
-        cursorColor =  Color(0xff5a79ba),
-        focusedBorderColor =  Color(0xff5a79ba),
-        focusedLabelColor = Color(0xff5a79ba),
-        backgroundColor = Color(0xfff5f6f7),
-        unfocusedBorderColor =  Color.White
+        textColor = MaterialTheme.colorScheme.primary,
+        backgroundColor = MaterialTheme.colorScheme.outline,
+        cursorColor =  BlueSystem,
+        focusedBorderColor =  BlueSystem,
+        focusedLabelColor = BlueSystem,
+        unfocusedBorderColor =  BlueSystem
     )
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
-            .background(Color.White)
+            .background(color = MaterialTheme.colorScheme.background )
     ) {
         // Imagen del producto a la izquierda (puedes personalizar esto según tus necesidades)
         Image(
@@ -865,7 +887,8 @@ fun itemTemplate(item: Item, onCountStateChanged: (Double) -> Unit){
             contentDescription = null,
             modifier = Modifier
                 .size(80.dp)
-                .clip(CircleShape)
+                .clip(CircleShape),
+            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
         )
 
         Spacer(modifier = Modifier.width(16.dp))
@@ -876,9 +899,9 @@ fun itemTemplate(item: Item, onCountStateChanged: (Double) -> Unit){
                 .weight(1f)
                 .align(Alignment.CenterVertically)
         ) {
-            Text(text = "Name: "+item.name)
-            Text(text = "Weight Per Unit: ${item.weightPerUnit} Kg")
-            Text(text = "Available: ${item.stock-countState.value} units")
+            Text(text = "Name: "+item.name, color = MaterialTheme.colorScheme.primary )
+            Text(text = "Weight Per Unit: ${item.weightPerUnit} Kg", color = MaterialTheme.colorScheme.primary )
+            Text(text = "Available: ${item.stock-countState.value} units", color = MaterialTheme.colorScheme.primary )
         }
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -904,7 +927,7 @@ fun itemTemplate(item: Item, onCountStateChanged: (Double) -> Unit){
                 }
             },
             colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
-                containerColor = Color(0xff5a79ba)
+                containerColor = BlueSystem
             ),
             elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
                 defaultElevation = 5.dp
@@ -931,7 +954,7 @@ fun itemTemplate(item: Item, onCountStateChanged: (Double) -> Unit){
                 .height(45.dp)
                 .border(
                     width = 0.5.dp,
-                    color =  Color(0xff5a79ba),
+                    color =  BlueSystem,
                     shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
 
                 )
@@ -949,7 +972,7 @@ fun itemTemplate(item: Item, onCountStateChanged: (Double) -> Unit){
                 }
             },
             colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
-                containerColor = Color(0xff5a79ba)
+                containerColor = BlueSystem
             ),
             elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
                 defaultElevation = 5.dp
@@ -980,7 +1003,7 @@ fun PaletTemplate(map: Map<Int, String>, onDelete: (Double) -> Unit) {
             .padding(start = 25.dp, end = 25.dp),
         onClick = { /* Acción al hacer clic en el botón */ },
         colors = ButtonDefaults.elevatedButtonColors(
-            containerColor = Color.White
+            containerColor = MaterialTheme.colorScheme.secondaryContainer
         ),
         elevation = ButtonDefaults.elevatedButtonElevation(
             defaultElevation = 5.dp
@@ -1004,13 +1027,13 @@ fun PaletTemplate(map: Map<Int, String>, onDelete: (Double) -> Unit) {
             ) {
                 Text(
                     text = "Nombre: ",
-                    color = Color(0xff5a79ba),
+                    color = BlueSystem,
                     fontWeight = FontWeight.Bold
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = "Peso: ${ String.format("%.2f", Math.round(weight* 100.0) / 100.0).toDouble()} Kg",
-                    color = Color(0xff5a79ba),
+                    color = BlueSystem,
                 )
             }
             ElevatedButton(
@@ -1018,7 +1041,7 @@ fun PaletTemplate(map: Map<Int, String>, onDelete: (Double) -> Unit) {
                     onDelete(weight)
                 },
                 colors = ButtonDefaults.elevatedButtonColors(
-                    containerColor = Color(0xff5a79ba)
+                    containerColor = BlueSystem
                 ),
             ) {
                 Icon(imageVector = Icons.Filled.DeleteSweep, contentDescription = null, tint = Color.White, )

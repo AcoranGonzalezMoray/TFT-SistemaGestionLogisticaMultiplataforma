@@ -39,6 +39,7 @@ import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -60,6 +61,7 @@ import com.example.qrstockmateapp.api.models.User
 import com.example.qrstockmateapp.api.models.userRoleToString
 import com.example.qrstockmateapp.api.services.RetrofitInstance
 import com.example.qrstockmateapp.navigation.repository.DataRepository
+import com.example.qrstockmateapp.ui.theme.BlueSystem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -180,13 +182,13 @@ fun UpdateUserScreen(navController: NavController) {
     LaunchedEffect(Unit){
         if(roles!=null && user!=null)selectedOption= "Role:${ userRoleToString(user.role)}"
     }
-
     val customTextFieldColors = TextFieldDefaults.outlinedTextFieldColors(
-        cursorColor =  Color(0xff5a79ba),
-        focusedBorderColor =  Color(0xff5a79ba),
-        focusedLabelColor = Color(0xff5a79ba),
-        backgroundColor = Color(0xfff5f6f7),
-        unfocusedBorderColor =  Color.White,
+        textColor = MaterialTheme.colorScheme.primary,
+        backgroundColor = MaterialTheme.colorScheme.outline,
+        cursorColor =  BlueSystem,
+        focusedBorderColor =  BlueSystem,
+        focusedLabelColor = BlueSystem,
+        unfocusedBorderColor =  BlueSystem
     )
 
 
@@ -251,19 +253,19 @@ fun UpdateUserScreen(navController: NavController) {
                     .size(50.dp)
                     .align(Alignment.Center),
                 color = Color.LightGray,
-                backgroundColor = Color(0xff5a79ba)
+                backgroundColor = BlueSystem
             )
         }
     }else{
-        Column {
+        Column(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
             TopAppBar(
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        androidx.compose.material3.Icon(Icons.Default.ArrowBack, contentDescription = "Back to Login", tint = Color(0xff5a79ba))
+                        androidx.compose.material3.Icon(Icons.Default.ArrowBack, contentDescription = "Back to Login", tint = BlueSystem)
                     }
                 },
-                backgroundColor = Color.White,
-                title = { androidx.compose.material.Text(text = "Update User", color = Color(0xff5a79ba)) }
+                backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
+                title = { androidx.compose.material.Text(text = "Update User", color = BlueSystem) }
             )
             Column(
                 modifier = Modifier
@@ -307,7 +309,7 @@ fun UpdateUserScreen(navController: NavController) {
                                 pickImageLauncher.launch("image/*")
                             },
                             colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
-                                containerColor = Color(0xff5a79ba)
+                                containerColor = BlueSystem
                             ),
                             elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
                                 defaultElevation = 5.dp
@@ -335,6 +337,7 @@ fun UpdateUserScreen(navController: NavController) {
 
                         TextField(
                             value = name,
+                            shape = RoundedCornerShape(8.dp),
                             label = { Text("Name") },
                             onValueChange = { name = it },
                             colors= customTextFieldColors,
@@ -343,13 +346,14 @@ fun UpdateUserScreen(navController: NavController) {
                                 .padding(4.dp)
                                 .border(
                                     width = 0.5.dp,
-                                    color = Color(0xff5a79ba),
+                                    color = BlueSystem,
                                     shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
 
                                 )
                         )
                         TextField(
                             value = email,
+                            shape = RoundedCornerShape(8.dp),
                             label = { Text("Email") },
                             onValueChange = {email = it },
                             colors= customTextFieldColors,
@@ -358,13 +362,14 @@ fun UpdateUserScreen(navController: NavController) {
                                 .padding(4.dp)
                                 .border(
                                     width = 0.5.dp,
-                                    color = Color(0xff5a79ba),
+                                    color = BlueSystem,
                                     shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
 
                                 )
                         )
                         TextField(
                             value = phone,
+                            shape = RoundedCornerShape(8.dp),
                             label = { Text("Phone") },
                             onValueChange = { phone = it },
                             colors= customTextFieldColors,
@@ -373,7 +378,7 @@ fun UpdateUserScreen(navController: NavController) {
                                 .padding(4.dp)
                                 .border(
                                     width = 0.5.dp,
-                                    color = Color(0xff5a79ba),
+                                    color = BlueSystem,
                                     shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
 
                                 )
@@ -382,22 +387,24 @@ fun UpdateUserScreen(navController: NavController) {
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(4.dp)
-                                .background(Color(0xfff5f6f7))
+                                .background(BlueSystem)
                                 .border(
                                     width = 0.5.dp,
-                                    color = Color(0xff5a79ba),
+                                    color = BlueSystem,
                                     shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
 
                                 )
                         ) {
                             Row(
+                                modifier = Modifier.background(MaterialTheme.colorScheme.outline),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
                                     text = selectedOption,
+                                    color = MaterialTheme.colorScheme.primary,
                                     modifier = Modifier
                                         .weight(9f)
-                                        .background(Color(0xfff5f6f7))
+                                        .background(MaterialTheme.colorScheme.outline)
                                         .clickable(
                                             interactionSource = remember { MutableInteractionSource() },
                                             indication = null
@@ -410,7 +417,7 @@ fun UpdateUserScreen(navController: NavController) {
                                 DropdownMenu(
                                     expanded = isMenuExpanded,
                                     onDismissRequest = { isMenuExpanded = false },
-                                    modifier = Modifier.fillMaxWidth()
+                                    modifier = Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.secondaryContainer)
                                 ) {
                                     roles?.forEach { rol ->
                                         DropdownMenuItem(onClick = {
@@ -422,16 +429,16 @@ fun UpdateUserScreen(navController: NavController) {
                                                 .padding(5.dp)
                                                 .border(
                                                     width = 0.5.dp,
-                                                    color = Color(0xff5a79ba),
+                                                    color = BlueSystem,
                                                     shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
 
                                                 )
                                         ) {
-                                            Text("Role:${ userRoleToString(rol)}" )
+                                            Text("Role:${ userRoleToString(rol)}", color = MaterialTheme.colorScheme.primary )
                                         }
                                     }
                                 }
-                                Icon(modifier = Modifier.weight(1f), imageVector = Icons.Filled.ArrowDropDown, contentDescription = null, tint =Color(0xff5a79ba))
+                                Icon(modifier = Modifier.weight(1f), imageVector = Icons.Filled.ArrowDropDown, contentDescription = null, tint =BlueSystem)
                             }
 
                         }
@@ -447,13 +454,13 @@ fun UpdateUserScreen(navController: NavController) {
                                     navController.navigate("manageUser")
                                 },
                                 colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
-                                    containerColor = Color.White
+                                    containerColor = MaterialTheme.colorScheme.secondaryContainer
                                 ),
                                 elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
                                     defaultElevation = 5.dp
                                 )
                             ){
-                                Text(text = "Cancel",color = Color(0xff5a79ba))
+                                Text(text = "Cancel",color = BlueSystem)
                             }
                             ElevatedButton(
                                 modifier = Modifier
@@ -466,7 +473,7 @@ fun UpdateUserScreen(navController: NavController) {
                                     updateUser()
                                 },
                                 colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
-                                    containerColor = Color(0xff5a79ba)
+                                    containerColor = BlueSystem
                                 ),
                                 elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
                                     defaultElevation = 5.dp

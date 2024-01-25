@@ -30,6 +30,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -47,6 +48,7 @@ import com.example.qrstockmateapp.api.models.Transaction
 import com.example.qrstockmateapp.api.models.Vehicle
 import com.example.qrstockmateapp.api.services.RetrofitInstance
 import com.example.qrstockmateapp.navigation.repository.DataRepository
+import com.example.qrstockmateapp.ui.theme.BlueSystem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -114,13 +116,13 @@ fun AddVehicleScreen(navController: NavController){
 
     }
     val customTextFieldColors = TextFieldDefaults.outlinedTextFieldColors(
-        cursorColor =  Color(0xff5a79ba),
-        focusedBorderColor =  Color(0xff5a79ba),
-        focusedLabelColor = Color(0xff5a79ba),
-        backgroundColor = Color(0xfff5f6f7),
-        unfocusedBorderColor =  Color.White,
+        textColor = MaterialTheme.colorScheme.primary,
+        backgroundColor = MaterialTheme.colorScheme.outline,
+        cursorColor =  BlueSystem,
+        focusedBorderColor =  BlueSystem,
+        focusedLabelColor = BlueSystem,
+        unfocusedBorderColor =  BlueSystem
     )
-
 
     if (isloading){
         Box(
@@ -138,19 +140,21 @@ fun AddVehicleScreen(navController: NavController){
             )
         }
     }else {
-        Column {
+        Column(
+            modifier = Modifier.background(MaterialTheme.colorScheme.background)
+        ) {
             TopAppBar(
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
                             Icons.Default.ArrowBack,
                             contentDescription = "Back to Login",
-                            tint = Color(0xff5a79ba)
+                            tint = BlueSystem
                         )
                     }
                 },
-                backgroundColor = Color.White,
-                title = { Text(text = "Add Vehicle", color = Color(0xff5a79ba)) }
+                backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
+                title = { Text(text = "Add Vehicle", color = BlueSystem) }
             )
             Column(
                 modifier = Modifier
@@ -193,7 +197,7 @@ fun AddVehicleScreen(navController: NavController){
                                 .padding(4.dp)
                                 .border(
                                     width = 0.5.dp,
-                                    color = Color(0xff5a79ba),
+                                    color = BlueSystem,
                                     shape = RoundedCornerShape(8.dp)
                                 )
                         )
@@ -208,7 +212,7 @@ fun AddVehicleScreen(navController: NavController){
                                 .padding(4.dp)
                                 .border(
                                     width = 0.5.dp,
-                                    color = Color(0xff5a79ba),
+                                    color = BlueSystem,
                                     shape = RoundedCornerShape(8.dp)
                                 )
                         )
@@ -223,7 +227,7 @@ fun AddVehicleScreen(navController: NavController){
                                 .padding(4.dp)
                                 .border(
                                     width = 0.5.dp,
-                                    color = Color(0xff5a79ba),
+                                    color = BlueSystem,
                                     shape = RoundedCornerShape(8.dp)
                                 )
                         )
@@ -238,7 +242,7 @@ fun AddVehicleScreen(navController: NavController){
                                 .padding(4.dp)
                                 .border(
                                     width = 0.5.dp,
-                                    color = Color(0xff5a79ba),
+                                    color = BlueSystem,
                                     shape = RoundedCornerShape(8.dp)
                                 )
                         )
@@ -253,7 +257,7 @@ fun AddVehicleScreen(navController: NavController){
                                 .padding(4.dp)
                                 .border(
                                     width = 0.5.dp,
-                                    color = Color(0xff5a79ba),
+                                    color = BlueSystem,
                                     shape = RoundedCornerShape(8.dp)
                                 )
                         )
@@ -268,7 +272,7 @@ fun AddVehicleScreen(navController: NavController){
                                 .padding(4.dp)
                                 .border(
                                     width = 0.5.dp,
-                                    color = Color(0xff5a79ba),
+                                    color = BlueSystem,
                                     shape = RoundedCornerShape(8.dp)
                                 )
                         )
@@ -283,13 +287,13 @@ fun AddVehicleScreen(navController: NavController){
                                     navController.popBackStack()
                                 },
                                 colors = ButtonDefaults.elevatedButtonColors(
-                                    containerColor = Color.White
+                                    containerColor = MaterialTheme.colorScheme.secondaryContainer
                                 ),
                                 elevation = ButtonDefaults.elevatedButtonElevation(
                                     defaultElevation = 5.dp
                                 )
                             ){
-                                Text(text = "Cancel", color = Color(0xff5a79ba))
+                                Text(text = "Cancel", color = BlueSystem)
                             }
 
                             ElevatedButton(
@@ -306,7 +310,7 @@ fun AddVehicleScreen(navController: NavController){
                                     addVehicle()
                                 },
                                 colors = ButtonDefaults.elevatedButtonColors(
-                                    containerColor = Color(0xff5a79ba)
+                                    containerColor = BlueSystem
                                 ),
                                 elevation = ButtonDefaults.elevatedButtonElevation(
                                     defaultElevation = 5.dp

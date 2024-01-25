@@ -30,7 +30,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -65,6 +65,7 @@ import com.example.qrstockmateapp.api.models.operationToString
 import com.example.qrstockmateapp.api.services.RetrofitInstance
 import com.example.qrstockmateapp.navigation.repository.DataRepository
 import com.example.qrstockmateapp.screens.Search.SortOrder
+import com.example.qrstockmateapp.ui.theme.BlueSystem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -92,11 +93,12 @@ fun TransactionHistoryScreen(navController: NavController) {
     var filteredItems by remember { mutableStateOf<List<Transaction>>(emptyList()) }
 
     val customTextFieldColors = TextFieldDefaults.outlinedTextFieldColors(
-        cursorColor =  Color(0xff5a79ba),
-        focusedBorderColor =  Color(0xff5a79ba),
-        focusedLabelColor = Color(0xff5a79ba),
-        backgroundColor = Color(0xfff5f6f7),
-        unfocusedBorderColor =  Color(0xff5a79ba)
+        textColor = MaterialTheme.colorScheme.primary,
+        backgroundColor = MaterialTheme.colorScheme.outline,
+        cursorColor =  BlueSystem,
+        focusedBorderColor =  BlueSystem,
+        focusedLabelColor = BlueSystem,
+        unfocusedBorderColor =  BlueSystem
     )
 
     filteredItems = if (searchQuery.isEmpty()) {
@@ -130,6 +132,7 @@ fun TransactionHistoryScreen(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(color = MaterialTheme.colorScheme.background)
             .padding(16.dp)
     ) {
         if(DataRepository.getUser()?.role!=3 && DataRepository.getUser()?.role!=4){
@@ -202,6 +205,7 @@ fun TransactionHistoryScreen(navController: NavController) {
         }else{
             Text(
                 text = "Permission denied",
+                color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.align(Alignment.CenterHorizontally),
                 textAlign = TextAlign.Center,
                 fontSize = 25.sp,
@@ -223,6 +227,7 @@ fun TransactionListItem(transaction: Transaction) {
     Surface(
         modifier = Modifier
             .fillMaxWidth()
+            .background(color = MaterialTheme.colorScheme.background)
             .padding(8.dp),
         shape = RoundedCornerShape(8.dp),
         elevation = 4.dp
@@ -240,7 +245,7 @@ fun TransactionListItem(transaction: Transaction) {
                        .fillMaxWidth()
                        .fillMaxHeight()
                        .align(Alignment.Center),
-                   color = Color.White.copy(alpha = 0.9f), // Ajusta el nivel de opacidad aquí
+                   color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.9f), // Ajusta el nivel de opacidad aquí
                    trackColor = Color(0xff5a79ba).copy(alpha = 0.1f), // Ajusta el nivel de opacidad aquí
                )
            }
@@ -248,42 +253,43 @@ fun TransactionListItem(transaction: Transaction) {
            Column(
                modifier = Modifier
                    .fillMaxSize()
+                   .background(color = MaterialTheme.colorScheme.secondaryContainer)
                    .padding(16.dp)
            ) {
                Text(
                    text = "ID: ${transaction.id}",
-                   style = MaterialTheme.typography.body2,
-                   color = MaterialTheme.colors.onSurface
+                   style = MaterialTheme.typography.bodyMedium,
+                   color = MaterialTheme.colorScheme.primary
                )
                Spacer(modifier = Modifier.height(8.dp))
                Text(
                    text = "USER: ${transaction.name}",
-                   style = MaterialTheme.typography.body1,
-                   color = MaterialTheme.colors.onSurface
+                   style = MaterialTheme.typography.bodyMedium,
+                   color = MaterialTheme.colorScheme.primary
                )
                Spacer(modifier = Modifier.height(8.dp))
                Text(
                    text = "Code: ${transaction.code}",
-                   style = MaterialTheme.typography.body1,
-                   color = MaterialTheme.colors.onSurface
+                   style = MaterialTheme.typography.bodyMedium,
+                   color = MaterialTheme.colorScheme.primary
                )
                Spacer(modifier = Modifier.height(8.dp))
                Text(
                    text = "Description: ${transaction.description}",
-                   style = MaterialTheme.typography.body1,
-                   color = MaterialTheme.colors.onSurface
+                   style = MaterialTheme.typography.bodyMedium,
+                   color = MaterialTheme.colorScheme.primary
                )
                Spacer(modifier = Modifier.height(8.dp))
                Text(
                    text = "Created: ${transaction.created}",
-                   style = MaterialTheme.typography.body1,
-                   color = MaterialTheme.colors.onSurface
+                   style = MaterialTheme.typography.bodyMedium,
+                   color = MaterialTheme.colorScheme.primary
                )
                Spacer(modifier = Modifier.height(8.dp))
                Text(
                    text = "Operation: ${operationToString(transaction.operation)}",
-                   style = MaterialTheme.typography.body1,
-                   color = MaterialTheme.colors.onSurface
+                   style = MaterialTheme.typography.bodyMedium,
+                   color = MaterialTheme.colorScheme.primary
                )
            }
        }

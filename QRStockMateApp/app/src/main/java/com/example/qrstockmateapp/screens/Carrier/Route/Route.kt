@@ -57,6 +57,7 @@ import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -91,6 +92,7 @@ import com.example.qrstockmateapp.api.models.TransportRoute
 import com.example.qrstockmateapp.api.models.Warehouse
 import com.example.qrstockmateapp.api.services.RetrofitInstance
 import com.example.qrstockmateapp.navigation.repository.DataRepository
+import com.example.qrstockmateapp.ui.theme.isDarkMode
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
@@ -101,9 +103,11 @@ import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MapStyleOptions
 
 
 import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.Polyline
 import com.google.maps.android.compose.rememberCameraPositionState
@@ -431,6 +435,7 @@ fun RouteScreen(navController: NavController,) {
             coroutineScope.cancel()
         }
     }
+    val darkMapStyle = MapStyleOptions.loadRawResourceStyle(context, R.raw.map_style_dark)
 
     BottomSheetScaffold(
         sheetContent = {
@@ -472,11 +477,13 @@ fun RouteScreen(navController: NavController,) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
         ) {
             GoogleMap(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(bottom = mapWeight),
+                properties = if(isDarkMode()) MapProperties(mapStyleOptions = darkMapStyle ) else MapProperties(),
                 cameraPositionState = cameraPositionState,
                 onMapClick = onMapClick
             ) {
@@ -512,7 +519,7 @@ fun RouteScreen(navController: NavController,) {
                 if (scaffoldState.bottomSheetState.isExpanded) {
                     Row {
                         FloatingActionButton(
-                            containerColor = Color.White,
+                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
                             modifier = Modifier
                                 .padding(16.dp)
                                 .shadow(4.dp, shape = RoundedCornerShape(18.dp))
@@ -545,7 +552,7 @@ fun RouteScreen(navController: NavController,) {
                             Icon(imageVector = Icons.Filled.MyLocation, contentDescription = "", tint=Color(0xff5a79ba))
                         }
                         FloatingActionButton(
-                            containerColor = Color.White,
+                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
                             modifier = Modifier
                                 .padding(16.dp)
                                 .shadow(4.dp, shape = RoundedCornerShape(18.dp))
@@ -661,7 +668,7 @@ fun RouteScreen(navController: NavController,) {
                    }else{
                        Row {
                            FloatingActionButton(
-                               containerColor = Color.White,
+                               containerColor = MaterialTheme.colorScheme.secondaryContainer,
                                modifier = Modifier
                                    .padding(16.dp)
                                    .shadow(4.dp, shape = RoundedCornerShape(18.dp))
@@ -676,7 +683,7 @@ fun RouteScreen(navController: NavController,) {
                                Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "", tint=Color(0xff5a79ba))
                            }
                            FloatingActionButton(
-                               containerColor = Color.White,
+                               containerColor = MaterialTheme.colorScheme.secondaryContainer,
                                modifier = Modifier
                                    .padding(16.dp)
                                    .shadow(4.dp, shape = RoundedCornerShape(18.dp))
@@ -691,7 +698,7 @@ fun RouteScreen(navController: NavController,) {
                                Icon(imageVector = Icons.Filled.DesignServices, contentDescription = "", tint=Color(0xff5a79ba))
                            }
                            FloatingActionButton(
-                               containerColor = Color.White,
+                               containerColor = MaterialTheme.colorScheme.secondaryContainer,
                                modifier = Modifier
                                    .padding(16.dp)
                                    .shadow(4.dp, shape = RoundedCornerShape(18.dp))
@@ -757,7 +764,7 @@ fun BottomSheetContent(
             .fillMaxWidth()
             .fillMaxHeight(0.5f)
             .background(
-                color = Color.White,
+                color = MaterialTheme.colorScheme.secondaryContainer,
             )
             .border(
                 BorderStroke(1.dp, Color(0xff5a79ba)),
@@ -776,6 +783,7 @@ fun BottomSheetContent(
                         append("${distanceRounded} Km")
                     }
                 },
+                color = MaterialTheme.colorScheme.primary,
                 fontSize = 9.sp,
             )
             androidx.compose.material.Text(
@@ -816,6 +824,7 @@ fun BottomSheetContent(
                         append(" ${person?.name?.toUpperCase()}")
                     },
                     fontSize = 14.sp,
+                    color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.padding(bottom = 1.dp)
                 )
                 androidx.compose.material.Text(
@@ -826,10 +835,10 @@ fun BottomSheetContent(
                         append(" ${person?.phone?.toUpperCase()}")
                     },
                     fontSize = 14.sp,
-                    color = Color.DarkGray,
+                    color = MaterialTheme.colorScheme.onTertiary,
                     modifier = Modifier.padding(bottom = 1.dp)
                 )
-                Icon(imageVector = Icons.Filled.PersonPin, contentDescription = null )
+                Icon(imageVector = Icons.Filled.PersonPin, contentDescription = null, tint = MaterialTheme.colorScheme.primary )
             }
 
             // Columna central con la imagen circular
@@ -924,6 +933,7 @@ fun BottomSheetContent(
                         append(" ${vehicle!!.make?.toUpperCase()}")
                     },
                     fontSize = 14.sp,
+                    color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.padding(bottom = 1.dp)
                 )
                 androidx.compose.material.Text(
@@ -934,10 +944,10 @@ fun BottomSheetContent(
                         append(" ${DataRepository.getVehicles()!!.filter{ vehicle -> vehicle.id == route!!.assignedVehicleId}.firstOrNull()?.model?.toUpperCase()}")
                     },
                     fontSize = 14.sp,
-                    color = Color.DarkGray,
+                    color = MaterialTheme.colorScheme.onTertiary,
                     modifier = Modifier.padding(bottom = 1.dp)
                 )
-                Icon(imageVector = Icons.Filled.DirectionsCar, contentDescription = null )
+                Icon(imageVector = Icons.Filled.DirectionsCar, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
             }
         }
 
@@ -969,7 +979,7 @@ fun BottomSheetContent(
                         defaultElevation = 10.dp
                     ),
                     colors = CardDefaults.cardColors(
-                        containerColor = Color.White,
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
                     ),
                     shape = RoundedCornerShape(16.dp),
 
@@ -978,6 +988,7 @@ fun BottomSheetContent(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
+                            .background(Color.White)
                             .padding(1.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -1052,7 +1063,7 @@ fun BottomSheetContent(
                         defaultElevation = 10.dp
                     ),
                     colors = CardDefaults.cardColors(
-                        containerColor = Color.White,
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
                     ),
                     shape = RoundedCornerShape(16.dp),
 
@@ -1061,6 +1072,7 @@ fun BottomSheetContent(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
+                            .background(Color.White)
                             .padding(1.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -1154,7 +1166,7 @@ fun BottomSheetContent(
                     onFinishRoute.invoke()
                 },
                 colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
-                    containerColor = Color.White
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer
                 ),
                 elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
                     defaultElevation = 5.dp

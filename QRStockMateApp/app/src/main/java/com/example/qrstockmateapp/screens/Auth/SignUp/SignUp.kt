@@ -2,6 +2,7 @@ package com.example.qrstockmateapp.screens.Auth.SignUp
 
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -45,6 +46,7 @@ import com.example.qrstockmateapp.api.models.User
 import com.example.qrstockmateapp.api.services.RegistrationBody
 import com.example.qrstockmateapp.api.services.RetrofitInstance
 import com.example.qrstockmateapp.screens.Auth.JoinWithCode.isValidEmail
+import com.example.qrstockmateapp.ui.theme.BlueSystem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -78,13 +80,14 @@ fun SignUpScreen(navController: NavHostController) {
     } else null
 
     val context = LocalContext.current
-    
+
     val customTextFieldColors = TextFieldDefaults.outlinedTextFieldColors(
-        cursorColor = Color(0xff5a79ba),
-        focusedBorderColor = Color(0xff5a79ba),
-        focusedLabelColor =Color(0xff5a79ba),
-        backgroundColor = Color(0xfff5f6f7),
-        unfocusedBorderColor =  Color.White,
+        textColor = MaterialTheme.colorScheme.primary,
+        backgroundColor = MaterialTheme.colorScheme.outline,
+        cursorColor =  BlueSystem,
+        focusedBorderColor =  BlueSystem,
+        focusedLabelColor = BlueSystem,
+        unfocusedBorderColor =  MaterialTheme.colorScheme.secondaryContainer
     )
     val onSignUp:() -> Unit = {
         GlobalScope.launch(Dispatchers.IO) {
@@ -124,15 +127,17 @@ fun SignUpScreen(navController: NavHostController) {
     val keyboardOptions = KeyboardOptions(
         keyboardType = KeyboardType.Email
     )
-   Column{
+   Column(
+       modifier = Modifier.background(MaterialTheme.colorScheme.background)
+   ){
        TopAppBar(
            navigationIcon = {
                IconButton(onClick = { navController.navigate("login") }) {
-                   Icon(Icons.Default.ArrowBack, contentDescription = "Back to Login", tint = Color(0xff5a79ba))
+                   Icon(Icons.Default.ArrowBack, contentDescription = "Back to Login", tint = BlueSystem)
                }
            },
-           backgroundColor = Color.White,
-           title = { Text(text = "Sign Up", color = Color(0xff5a79ba)) }
+           backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
+           title = { Text(text = "Sign Up", color = BlueSystem) }
        )
        Column(
            modifier = Modifier.padding(16.dp).fillMaxSize() ,
@@ -156,7 +161,7 @@ fun SignUpScreen(navController: NavHostController) {
                label = { Text("Name") },
                modifier = Modifier.fillMaxWidth().border(
                    width = 0.5.dp,
-                   color =  Color(0xff5a79ba),
+                   color =  BlueSystem,
                    shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
 
                ),
@@ -172,7 +177,7 @@ fun SignUpScreen(navController: NavHostController) {
                keyboardOptions = keyboardOptions,
                modifier = Modifier.fillMaxWidth().border(
                    width = 0.5.dp,
-                   color =  Color(0xff5a79ba),
+                   color =  BlueSystem,
                    shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
 
                ),
@@ -190,7 +195,7 @@ fun SignUpScreen(navController: NavHostController) {
                label = { Text("Password") },
                modifier = Modifier.fillMaxWidth().border(
                    width = 0.5.dp,
-                   color =  Color(0xff5a79ba),
+                   color =  BlueSystem,
                    shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
 
                ),
@@ -210,7 +215,7 @@ fun SignUpScreen(navController: NavHostController) {
                label = { Text("Confirm Password") },
                modifier = Modifier.fillMaxWidth().border(
                    width = 0.5.dp,
-                   color =  Color(0xff5a79ba),
+                   color =  BlueSystem,
                    shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
 
                ),
@@ -228,7 +233,7 @@ fun SignUpScreen(navController: NavHostController) {
                label = { Text("Phone") },
                modifier = Modifier.fillMaxWidth().border(
                    width = 0.5.dp,
-                   color =  Color(0xff5a79ba),
+                   color =  BlueSystem,
                    shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
 
                ),
@@ -242,7 +247,7 @@ fun SignUpScreen(navController: NavHostController) {
                label = { Text("Company Name") },
                modifier = Modifier.fillMaxWidth().border(
                    width = 0.5.dp,
-                   color =  Color(0xff5a79ba),
+                   color =  BlueSystem,
                    shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
 
                ),
@@ -260,13 +265,13 @@ fun SignUpScreen(navController: NavHostController) {
                        navController.navigate("login")
                    },
                    colors = ButtonDefaults.elevatedButtonColors(
-                       containerColor = Color.White
+                       containerColor = MaterialTheme.colorScheme.secondaryContainer
                    ),
                    elevation = ButtonDefaults.elevatedButtonElevation(
                        defaultElevation = 5.dp
                    )
                ){
-                   Text("Cancel", color = Color(0xff5a79ba))
+                   Text("Cancel", color = BlueSystem)
                }
                ElevatedButton(
                    modifier = Modifier
@@ -276,7 +281,7 @@ fun SignUpScreen(navController: NavHostController) {
                        onSignUp()
                    },
                    colors = ButtonDefaults.elevatedButtonColors(
-                       containerColor = Color(0xff5a79ba)
+                       containerColor = BlueSystem
                    ),
                    elevation = ButtonDefaults.elevatedButtonElevation(
                        defaultElevation = 5.dp

@@ -36,6 +36,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -47,6 +48,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -70,6 +72,7 @@ import com.example.qrstockmateapp.api.models.userRoleToString
 import com.example.qrstockmateapp.api.services.RetrofitInstance
 import com.example.qrstockmateapp.navigation.repository.DataRepository
 import com.example.qrstockmateapp.screens.Home.ManageUser.UserListItem
+import com.example.qrstockmateapp.ui.theme.BlueSystem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -132,11 +135,12 @@ fun SearchScreen(navController: NavController) {
     }
 
     val customTextFieldColors = TextFieldDefaults.outlinedTextFieldColors(
-        cursorColor =  Color(0xff5a79ba),
-        focusedBorderColor =  Color(0xff5a79ba),
-        focusedLabelColor = Color(0xff5a79ba),
-        backgroundColor = Color(0xfff5f6f7),
-        unfocusedBorderColor =  Color(0xff5a79ba)
+        textColor = MaterialTheme.colorScheme.primary,
+        backgroundColor = MaterialTheme.colorScheme.outline,
+        cursorColor =  BlueSystem,
+        focusedBorderColor =  BlueSystem,
+        focusedLabelColor = BlueSystem,
+        unfocusedBorderColor =  BlueSystem
     )
 
     val sortedItems = sortItems(filteredItems, sortOrder)
@@ -144,6 +148,7 @@ fun SearchScreen(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -154,7 +159,7 @@ fun SearchScreen(navController: NavController) {
             colors = customTextFieldColors,
             modifier = Modifier
                 .fillMaxWidth()
-                .background(color = Color.White)
+                .background(color = MaterialTheme.colorScheme.background)
                 .padding(bottom = 12.dp)
 
         )
@@ -169,7 +174,7 @@ fun SearchScreen(navController: NavController) {
                 }
             },
             colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
-                containerColor = Color(0xff5a79ba)
+                containerColor = BlueSystem
             ),
             elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
                 defaultElevation = 5.dp
@@ -186,7 +191,7 @@ fun SearchScreen(navController: NavController) {
 
         }else{
             Box {
-                Text(text = "There are no items in this company")
+                Text(text = "There are no items in this company", color = MaterialTheme.colorScheme.primary)
             }
         }
     }
@@ -222,12 +227,12 @@ fun Item(item: Item,navController: NavController) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
-            .background(Color.White),
+            ,
         elevation = CardDefaults.cardElevation(
             defaultElevation = 10.dp
         ),
         colors = CardDefaults.cardColors(
-            containerColor = Color.White,
+            containerColor = MaterialTheme.colorScheme.secondaryContainer,
         ),
         shape = RoundedCornerShape(16.dp)
     ) {
@@ -244,8 +249,8 @@ fun Item(item: Item,navController: NavController) {
                        .fillMaxWidth()
                        .fillMaxHeight()
                        .align(Alignment.Center),
-                   color = Color.White.copy(alpha = 0.9f), // Ajusta el nivel de opacidad aquí
-                   trackColor = Color(0xff5a79ba).copy(alpha = 0.1f), // Ajusta el nivel de opacidad aquí
+                   color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.9f), // Ajusta el nivel de opacidad aquí
+                   trackColor = BlueSystem.copy(alpha = 0.1f), // Ajusta el nivel de opacidad aquí
                )
            }
        }else{
@@ -268,7 +273,7 @@ fun Item(item: Item,navController: NavController) {
                        defaultElevation = 10.dp
                    ),
                    colors = CardDefaults.cardColors(
-                       containerColor = Color.White,
+                       containerColor = MaterialTheme.colorScheme.background,
                    ),
                    shape = RoundedCornerShape(16.dp),
                ){
@@ -278,7 +283,8 @@ fun Item(item: Item,navController: NavController) {
                            painter = placeholderImage,
                            contentDescription = "Default User Image",
                            modifier = Modifier.fillMaxSize(),
-                           contentScale = ContentScale.Crop
+                           contentScale = ContentScale.Crop,
+                           colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
                        )
                    } else {
                        // Si hay una URL válida, cargar la imagen usando Coil
@@ -310,31 +316,34 @@ fun Item(item: Item,navController: NavController) {
                    // Nombre (en negrita)
                    Text(
                        buildAnnotatedString {
-                           withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                           withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)) {
                                append("Name:")
                            }
                            append(" ${item.name}")
-                       }
+                       },
+                       color = MaterialTheme.colorScheme.primary
                    )
 
                    // Almacén
                    Text(
                        buildAnnotatedString {
-                           withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                           withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)) {
                                append("Warehouse:")
                            }
                            append(" ${DataRepository.getWarehouses()?.find { it.id == item.warehouseId }?.name}")
-                       }
+                       },
+                       color = MaterialTheme.colorScheme.primary
                    )
 
                    // Stock (en negrita)
                    Text(
                        buildAnnotatedString {
-                           withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                           withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)) {
                                append("Stock:")
                            }
                            append(" ${item.stock}")
-                       }
+                       },
+                       color = MaterialTheme.colorScheme.primary
                    )
 
                    ElevatedButton(
@@ -349,7 +358,7 @@ fun Item(item: Item,navController: NavController) {
                            }
                        },
                        colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
-                           containerColor = Color(0xff5a79ba)
+                           containerColor = BlueSystem
                        ),
                        elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
                            defaultElevation = 5.dp

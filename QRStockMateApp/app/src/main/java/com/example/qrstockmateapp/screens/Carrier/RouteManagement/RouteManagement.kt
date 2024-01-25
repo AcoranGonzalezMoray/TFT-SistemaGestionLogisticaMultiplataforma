@@ -177,6 +177,8 @@ fun RouteManagementScreen(navController: NavController) {
     }
     Box(
         modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
             .pullRefresh(pullRefreshState)
     ){
         PullRefreshIndicator(
@@ -185,7 +187,7 @@ fun RouteManagementScreen(navController: NavController) {
             modifier = Modifier
                 .align(Alignment.TopCenter)
                 .zIndex(1f),
-            backgroundColor =  Color.White,
+            backgroundColor =  MaterialTheme.colorScheme.background,
             contentColor = Color(0xff5a79ba)
         )
         Column {
@@ -415,7 +417,7 @@ fun TransportRouteItem(route: TransportRoute, navController: NavController, onDe
             defaultElevation = 10.dp
         ),
         colors = CardDefaults.cardColors(
-            containerColor = Color.White,
+            containerColor = MaterialTheme.colorScheme.secondaryContainer,
         ),
         shape = RoundedCornerShape(16.dp),
     ) {
@@ -432,22 +434,23 @@ fun TransportRouteItem(route: TransportRoute, navController: NavController, onDe
                         .fillMaxWidth()
                         .fillMaxHeight()
                         .align(Alignment.Center),
-                    color = Color.White.copy(alpha = 0.9f), // Ajusta el nivel de opacidad aquí
+                    color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.9f), // Ajusta el nivel de opacidad aquí
                     trackColor = Color(0xff5a79ba).copy(alpha = 0.1f), // Ajusta el nivel de opacidad aquí
                 )
             }
         }else{
             if (showDialog) {
                 AlertDialog(
+                    backgroundColor = MaterialTheme.colorScheme.background,
                     onDismissRequest = {
                         // Handle dismissal if needed
                         showDialog = false
                     },
                     title = {
-                        androidx.compose.material.Text(text = "Alert")
+                        androidx.compose.material.Text(text = "Alert",color = MaterialTheme.colorScheme.primary)
                     },
                     text = {
-                        androidx.compose.material.Text(text ="Are you sure you want to delete?")
+                        androidx.compose.material.Text(text ="Are you sure you want to delete?",color = MaterialTheme.colorScheme.primary)
                     },
                     confirmButton = {
                         ElevatedButton(
@@ -472,7 +475,7 @@ fun TransportRouteItem(route: TransportRoute, navController: NavController, onDe
                                 showDialog = false
                             },
                             colors = ButtonDefaults.elevatedButtonColors(
-                                containerColor = Color.White
+                                containerColor = MaterialTheme.colorScheme.secondaryContainer,
                             ),
                             elevation = ButtonDefaults.elevatedButtonElevation(
                                 defaultElevation = 5.dp
@@ -551,15 +554,18 @@ fun TransportRouteItem(route: TransportRoute, navController: NavController, onDe
                     Text(
                         text = "Date: ${route.date.split('T')[0]}",
                         fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.primary,
                         fontSize = 18.sp, // Ajusta el tamaño de la fuente según tus necesidades
                     )
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(text = "Start Location: ${DataRepository.getWarehouses()!!.find { warehouse -> warehouse.id == route.startLocation.toInt()}?.name}", fontSize = 16.sp)
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(text = "End Location: ${DataRepository.getWarehouses()!!.find { warehouse -> warehouse.id == route.endLocation.toInt()}?.name}", fontSize = 16.sp)
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(text = "Carrier: ${DataRepository.getEmployees()?.filter { employee -> employee.id == 33 }
-                        ?.get(0)?.name}", fontSize = 16.sp)
+                    if(DataRepository.getWarehouses()!=null){
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(color = MaterialTheme.colorScheme.primary, text = "Start Location: ${DataRepository.getWarehouses()!!.find { warehouse -> warehouse.id == route.startLocation.toInt()}?.name}", fontSize = 16.sp)
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(color = MaterialTheme.colorScheme.primary,text = "End Location: ${DataRepository.getWarehouses()!!.find { warehouse -> warehouse.id == route.endLocation.toInt()}?.name}", fontSize = 16.sp)
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(color = MaterialTheme.colorScheme.primary,text = "Carrier: ${DataRepository.getEmployees()?.filter { employee -> employee.id == 33 }
+                            ?.get(0)?.name}", fontSize = 16.sp)
+                    }
 
                     Row(
                     ){
@@ -665,7 +671,7 @@ fun DatePickerSample(onDateSelected: (Triple<Int, Int, Int>) -> Unit, onClose: (
             defaultElevation = 10.dp
         ),
         colors = CardDefaults.cardColors(
-            containerColor = Color.White,
+            containerColor = MaterialTheme.colorScheme.secondaryContainer,
         ),
     ) {
         Row(

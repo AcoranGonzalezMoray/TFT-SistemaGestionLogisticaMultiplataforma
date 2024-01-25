@@ -32,6 +32,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -111,6 +112,7 @@ fun VehicleManagementScreen(navController: NavController) {
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .background(color = MaterialTheme.colorScheme.background)
             .pullRefresh(pullRefreshState)
     ) {
         PullRefreshIndicator(
@@ -119,7 +121,7 @@ fun VehicleManagementScreen(navController: NavController) {
             modifier = Modifier
                 .align(Alignment.TopCenter)
                 .zIndex(1f),
-            backgroundColor = Color.White,
+            backgroundColor = MaterialTheme.colorScheme.background,
             contentColor = Color(0xff5a79ba)
         )
         LazyColumn(
@@ -193,7 +195,7 @@ fun VehicleItem(navController: NavController, vehicle: Vehicle, onDeleted:()->Un
             .fillMaxWidth()
             .padding(8.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 10.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer,),
         shape = RoundedCornerShape(16.dp),
     ) {
         if (isloading){
@@ -209,22 +211,23 @@ fun VehicleItem(navController: NavController, vehicle: Vehicle, onDeleted:()->Un
                         .fillMaxWidth()
                         .fillMaxHeight()
                         .align(Alignment.Center),
-                    color = Color.White.copy(alpha = 0.9f), // Ajusta el nivel de opacidad aquí
+                    color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.9f), // Ajusta el nivel de opacidad aquí
                     trackColor = Color(0xff5a79ba).copy(alpha = 0.1f), // Ajusta el nivel de opacidad aquí
                 )
             }
         }else{
             if (showDialog) {
                 AlertDialog(
+                    backgroundColor = MaterialTheme.colorScheme.background,
                     onDismissRequest = {
                         // Handle dismissal if needed
                         showDialog = false
                     },
                     title = {
-                        androidx.compose.material.Text(text = "Alert")
+                        androidx.compose.material.Text(text = "Alert", color = MaterialTheme.colorScheme.primary)
                     },
                     text = {
-                        androidx.compose.material.Text(text ="Are you sure you want to delete?")
+                        androidx.compose.material.Text(text ="Are you sure you want to delete?", color = MaterialTheme.colorScheme.primary)
                     },
                     confirmButton = {
                         ElevatedButton(
@@ -249,7 +252,7 @@ fun VehicleItem(navController: NavController, vehicle: Vehicle, onDeleted:()->Un
                                 showDialog = false
                             },
                             colors = ButtonDefaults.elevatedButtonColors(
-                                containerColor = Color.White
+                                containerColor = MaterialTheme.colorScheme.secondaryContainer
                             ),
                             elevation = ButtonDefaults.elevatedButtonElevation(
                                 defaultElevation = 5.dp
@@ -290,39 +293,42 @@ fun VehicleItem(navController: NavController, vehicle: Vehicle, onDeleted:()->Un
                     // Puedes personalizar el contenido según tus necesidades
                     Text(
                         text = buildAnnotatedString {
-                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary, )) {
                                 append("Make/Model:")
                             }
                             append(" ${vehicle.make} ${vehicle.model}")
                         },
                         fontSize = 16.sp,
+                        color = MaterialTheme.colorScheme.primary
                     )
                     Spacer(modifier = Modifier.height(8.dp))
 
                     // Otros detalles del vehículo
                     Text(
                         buildAnnotatedString {
-                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)) {
                                 append("Year:")
                             }
                             append(" ${vehicle.year}")
                         },
                         fontSize = 14.sp,
-                        modifier = Modifier.padding(bottom = 4.dp)
+                        modifier = Modifier.padding(bottom = 4.dp),
+                        color = MaterialTheme.colorScheme.primary
                     )
                     Text(
                         buildAnnotatedString {
-                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)) {
                                 append("Color:")
                             }
                             append(" ${vehicle.color}")
                         },
                         fontSize = 14.sp,
-                        modifier = Modifier.padding(bottom = 4.dp)
+                        modifier = Modifier.padding(bottom = 4.dp),
+                        color = MaterialTheme.colorScheme.primary
                     )
                     Text(
                         buildAnnotatedString {
-                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)) {
                                 append("License Plate:")
                             }
                             append(" ${vehicle.licensePlate}")
@@ -332,13 +338,14 @@ fun VehicleItem(navController: NavController, vehicle: Vehicle, onDeleted:()->Un
                     )
                     Text(
                         buildAnnotatedString {
-                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)) {
                                 append("Max Load:")
                             }
                             append(" ${vehicle.maxLoad} kg")
                         },
                         fontSize = 14.sp,
-                        modifier = Modifier.padding(bottom = 4.dp)
+                        modifier = Modifier.padding(bottom = 4.dp),
+                        color = MaterialTheme.colorScheme.primary
                     )
                     Row {
                         ElevatedButton(

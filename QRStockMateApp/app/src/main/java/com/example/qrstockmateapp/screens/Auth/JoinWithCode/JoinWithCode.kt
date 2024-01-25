@@ -3,6 +3,7 @@ package com.example.qrstockmateapp.screens.Auth.JoinWithCode
 import android.util.Log
 import android.util.Patterns
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Spacer
@@ -53,6 +54,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarData
 import androidx.compose.ui.platform.LocalContext
+import com.example.qrstockmateapp.ui.theme.BlueSystem
 
 @Composable
 fun JoinWithCodeScreen(navController: NavHostController) {
@@ -89,12 +91,14 @@ fun JoinWithCodeScreen(navController: NavHostController) {
         keyboardType = KeyboardType.Email
     )
     val customTextFieldColors = TextFieldDefaults.outlinedTextFieldColors(
-        backgroundColor = Color(0xfff5f6f7),
-        unfocusedBorderColor =  Color.White,
-        cursorColor =  Color(0xff5a79ba),
-        focusedBorderColor =  Color(0xff5a79ba),
-        focusedLabelColor =  Color(0xff5a79ba)
-        )
+        textColor = MaterialTheme.colorScheme.primary,
+        backgroundColor = MaterialTheme.colorScheme.outline,
+        cursorColor =  BlueSystem,
+        focusedBorderColor =  BlueSystem,
+        focusedLabelColor = BlueSystem,
+        unfocusedBorderColor =  MaterialTheme.colorScheme.secondaryContainer
+    )
+
     val onJoin:() -> Unit = {
         GlobalScope.launch(Dispatchers.IO) {
             try {
@@ -136,18 +140,20 @@ fun JoinWithCodeScreen(navController: NavHostController) {
 
     }
 
-    Column {
+    Column(
+        modifier = Modifier.background(MaterialTheme.colorScheme.background),
+        ) {
         TopAppBar(
             navigationIcon = {
                 IconButton(onClick = { navController.navigate("login") }) {
-                    Icon(Icons.Default.ArrowBack, contentDescription = "Back to Login", tint = Color(0xff5a79ba))
+                    Icon(Icons.Default.ArrowBack, contentDescription = "Back to Login", tint = BlueSystem)
                 }
             },
-            backgroundColor = Color.White,
-            title = { Text(text = "Join With Code", color = Color(0xff5a79ba)) }
+            backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
+            title = { Text(text = "Join With Code", color = BlueSystem) }
         )
         Column(
-            modifier = Modifier.padding(16.dp).fillMaxSize() ,
+            modifier = Modifier.padding(16.dp).fillMaxSize().background(MaterialTheme.colorScheme.background),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally // Alineación central horizontal
         ) {
@@ -163,12 +169,13 @@ fun JoinWithCodeScreen(navController: NavHostController) {
 
             TextField(
                 value = name,
+                shape = RoundedCornerShape(8.dp),
                 isError = isError,
                 onValueChange = { name = it;if(!start)start = true },
                 label = { Text("Name") },
                 modifier = Modifier.fillMaxWidth().border(
                     width = 0.5.dp,
-                    color =  Color(0xff5a79ba),
+                    color =  BlueSystem,
                     shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
 
                 ),
@@ -178,13 +185,14 @@ fun JoinWithCodeScreen(navController: NavHostController) {
 
             TextField(
                 value = email,
+                shape = RoundedCornerShape(8.dp),
                 isError = isError,
                 onValueChange = { email = it;if(!start)start = true },
                 label = { Text("Email") },
                 keyboardOptions = keyboardOptionsEmail,
                 modifier = Modifier.fillMaxWidth().border(
                     width = 0.5.dp,
-                    color =  Color(0xff5a79ba),
+                    color =  BlueSystem,
                     shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
 
                 ),
@@ -195,6 +203,7 @@ fun JoinWithCodeScreen(navController: NavHostController) {
 
             TextField(
                 value = password,
+                shape = RoundedCornerShape(8.dp),
                 isError = isError,
                 visualTransformation = PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
@@ -202,7 +211,7 @@ fun JoinWithCodeScreen(navController: NavHostController) {
                 label = { Text("Password") },
                 modifier = Modifier.fillMaxWidth().border(
                     width = 0.5.dp,
-                    color =  Color(0xff5a79ba),
+                    color =  BlueSystem,
                     shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
 
                 ),
@@ -212,6 +221,7 @@ fun JoinWithCodeScreen(navController: NavHostController) {
 
             TextField(
                 value = confirmPassword,
+                shape = RoundedCornerShape(8.dp),
                 isError = isError,
                 visualTransformation = PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
@@ -222,7 +232,7 @@ fun JoinWithCodeScreen(navController: NavHostController) {
                 label = { Text("Confirm Password") },
                 modifier = Modifier.fillMaxWidth().border(
                     width = 0.5.dp,
-                    color =  Color(0xff5a79ba),
+                    color =  BlueSystem,
                     shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
 
                 ),
@@ -235,12 +245,13 @@ fun JoinWithCodeScreen(navController: NavHostController) {
 
             TextField(
                 value = phone,
+                shape = RoundedCornerShape(8.dp),
                 isError = isError,
                 onValueChange = { phone = it;if(!start)start = true },
                 label = { Text("Phone") },
                 modifier = Modifier.fillMaxWidth().border(
                     width = 0.5.dp,
-                    color =  Color(0xff5a79ba),
+                    color =  BlueSystem,
                     shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
 
                 ),
@@ -250,6 +261,7 @@ fun JoinWithCodeScreen(navController: NavHostController) {
 
             TextField(
                 value = code,
+                shape = RoundedCornerShape(8.dp),
                 isError = isError,
                 onValueChange = {
                     if (it.length <= 7 && it.matches(Regex("[A-Za-z0-9-]*"))) {
@@ -266,7 +278,7 @@ fun JoinWithCodeScreen(navController: NavHostController) {
                 keyboardOptions = keyboardOptions,
                 modifier = Modifier.fillMaxWidth().border(
                     width = 0.5.dp,
-                    color =  Color(0xff5a79ba),
+                    color =  BlueSystem,
                     shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
 
                 ),
@@ -285,13 +297,13 @@ fun JoinWithCodeScreen(navController: NavHostController) {
                         navController.navigate("login")
                     },
                     colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
-                        containerColor = Color.White
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer
                     ),
                     elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
                         defaultElevation = 5.dp
                     )
                 ){
-                    Text("Cancel", color = Color(0xff5a79ba))
+                    Text("Cancel", color = BlueSystem)
                 }
                 ElevatedButton(
                     modifier = Modifier
@@ -301,7 +313,7 @@ fun JoinWithCodeScreen(navController: NavHostController) {
                         onJoin()
                     },
                     colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
-                        containerColor = Color(0xff5a79ba)
+                        containerColor = BlueSystem
                     ),
                     elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
                         defaultElevation = 5.dp

@@ -39,6 +39,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddAPhoto
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -67,6 +68,7 @@ import com.example.qrstockmateapp.api.models.Transaction
 import com.example.qrstockmateapp.api.models.Warehouse
 import com.example.qrstockmateapp.api.services.RetrofitInstance
 import com.example.qrstockmateapp.navigation.repository.DataRepository
+import com.example.qrstockmateapp.ui.theme.BlueSystem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -89,11 +91,12 @@ fun ItemDetailsScreen(navController: NavController) {
     val countState = rememberUpdatedState(count)
     val context = LocalContext.current
     val customTextFieldColors = TextFieldDefaults.outlinedTextFieldColors(
-        cursorColor =  Color(0xff5a79ba),
-        focusedBorderColor =  Color(0xff5a79ba),
-        focusedLabelColor = Color(0xff5a79ba),
-        backgroundColor = Color(0xfff5f6f7),
-        unfocusedBorderColor =  Color.White
+        textColor = MaterialTheme.colorScheme.primary,
+        backgroundColor = MaterialTheme.colorScheme.outline,
+        cursorColor =  BlueSystem,
+        focusedBorderColor =  BlueSystem,
+        focusedLabelColor = BlueSystem,
+        unfocusedBorderColor =  BlueSystem
     )
 
     val updateImage:(File)->Unit={ file ->
@@ -199,6 +202,7 @@ fun ItemDetailsScreen(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(color = MaterialTheme.colorScheme.background)
             .padding(16.dp)
             .verticalScroll(rememberScrollState())
     ) {
@@ -209,6 +213,7 @@ fun ItemDetailsScreen(navController: NavController) {
         ) {
             var name by remember { mutableStateOf(item?.name) }
             Text(text = "Name: "+name.toString(),
+                color = MaterialTheme.colorScheme.primary,
                 fontSize = 20.sp,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(16.dp)
@@ -230,7 +235,7 @@ fun ItemDetailsScreen(navController: NavController) {
                         pickImageLauncher.launch("image/*")
                     },
                     colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
-                        containerColor = Color(0xff5a79ba)
+                        containerColor = BlueSystem
                     ),
                     elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
                         defaultElevation = 5.dp
@@ -276,34 +281,37 @@ fun ItemDetailsScreen(navController: NavController) {
             var warehouse by remember { mutableStateOf(item?.warehouseId) }
             var weight by remember { mutableStateOf(item?.weightPerUnit) }
             Text(text = buildAnnotatedString {
-                withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary,)) {
                     append("Location: ")
                 }
                 append(location)
             },
                 fontSize = 15.sp,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(16.dp),
+                color = MaterialTheme.colorScheme.primary,
             )
             Text(text = buildAnnotatedString {
-                withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary,)) {
                     append("Warehouse: ")
                 }
                 append(DataRepository.getWarehouses()?.find { it.id == warehouse }?.name)
             },
                 fontSize = 15.sp,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(16.dp),
+                color = MaterialTheme.colorScheme.primary,
             )
             Text(text = buildAnnotatedString {
-                withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                withStyle(style = SpanStyle(fontWeight = FontWeight.Bold,color = MaterialTheme.colorScheme.primary,)) {
                     append("Weight per unit: ")
                 }
                 append(weight.toString()+"  Kg")
             },
                 fontSize = 15.sp,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(16.dp),
+                color = MaterialTheme.colorScheme.primary,
             )
         }
 
@@ -318,14 +326,15 @@ fun ItemDetailsScreen(navController: NavController) {
                     .wrapContentSize(Alignment.Center)
             ) {
                 Text(text = buildAnnotatedString {
-                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary,)) {
                         append("Available: ")
                     }
                     append(availableState.value.toString())
                 },
                     fontSize = 15.sp,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(16.dp)
+                    modifier = Modifier.padding(16.dp),
+                    color = MaterialTheme.colorScheme.primary,
                 )
                 Row(
                     modifier = Modifier
@@ -339,7 +348,7 @@ fun ItemDetailsScreen(navController: NavController) {
                                 count++
                             },
                             colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
-                                containerColor = Color(0xff5a79ba)
+                                containerColor = BlueSystem
                             ),
                             elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
                                 defaultElevation = 5.dp
@@ -352,7 +361,7 @@ fun ItemDetailsScreen(navController: NavController) {
                                 count--
                             },
                             colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
-                                containerColor =  Color(0xff5a79ba)
+                                containerColor =  BlueSystem
                             ),
                             elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
                                 defaultElevation = 5.dp
@@ -364,6 +373,7 @@ fun ItemDetailsScreen(navController: NavController) {
                     TextField(
                         value = countState.value.toString(),
                         colors = customTextFieldColors,
+                        shape = RoundedCornerShape(8.dp),
                         onValueChange = { newValue ->
                             count = newValue.toIntOrNull() ?: 0
                         },
@@ -372,7 +382,7 @@ fun ItemDetailsScreen(navController: NavController) {
                             .width(60.dp)
                             .height(55.dp).border(
                                 width = 0.5.dp,
-                                color =  Color(0xff5a79ba),
+                                color =  BlueSystem,
                                 shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
 
                             )
@@ -385,13 +395,13 @@ fun ItemDetailsScreen(navController: NavController) {
                             navController.popBackStack()
                         },
                         colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
-                            containerColor = Color.White
+                            containerColor = MaterialTheme.colorScheme.secondaryContainer
                         ),
                         elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
                             defaultElevation = 5.dp
                         )
                     ){
-                        Text(text = "Cancel", color=Color(0xff5a79ba))
+                        Text(text = "Cancel", color=BlueSystem)
                     }
                     Spacer(modifier = Modifier.width(5.dp))
                     ElevatedButton(
@@ -415,7 +425,7 @@ fun ItemDetailsScreen(navController: NavController) {
                             }
                         },
                         colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
-                            containerColor = Color(0xff5a79ba)
+                            containerColor = BlueSystem
                         ),
                         elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
                             defaultElevation = 5.dp

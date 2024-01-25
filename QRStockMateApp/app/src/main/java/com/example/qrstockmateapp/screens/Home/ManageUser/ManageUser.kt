@@ -63,6 +63,7 @@ import com.example.qrstockmateapp.api.models.User
 import com.example.qrstockmateapp.api.models.userRoleToString
 import com.example.qrstockmateapp.api.services.RetrofitInstance
 import com.example.qrstockmateapp.navigation.repository.DataRepository
+import com.example.qrstockmateapp.ui.theme.BlueSystem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -110,11 +111,12 @@ fun ManageUserScreen(navController: NavController) {
     )
 
     val customTextFieldColors = TextFieldDefaults.outlinedTextFieldColors(
-        cursorColor =  Color(0xff5a79ba),
-        focusedBorderColor =  Color(0xff5a79ba),
-        focusedLabelColor = Color(0xff5a79ba),
-        unfocusedBorderColor =  Color(0xff5a79ba),
-        backgroundColor = Color.LightGray
+        textColor = MaterialTheme.colorScheme.primary,
+        backgroundColor = MaterialTheme.colorScheme.outline,
+        cursorColor =  BlueSystem,
+        focusedBorderColor =  BlueSystem,
+        focusedLabelColor = BlueSystem,
+        unfocusedBorderColor =  BlueSystem
     )
     // Filtrar la lista de empleados en función de la consulta de búsqueda
     val filteredEmployees = if (searchQuery.isEmpty()) {
@@ -134,12 +136,13 @@ fun ManageUserScreen(navController: NavController) {
             modifier = Modifier
                 .align(Alignment.TopCenter)
                 .zIndex(1f),
-            backgroundColor =  Color.White,
-            contentColor = Color(0xff5a79ba)
+            backgroundColor =  MaterialTheme.colorScheme.background,
+            contentColor = BlueSystem
         )
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
                 .padding(16.dp)
         ) {
             OutlinedTextField(
@@ -227,7 +230,7 @@ fun UserListItem(user: User, navController: NavController,loadEmployees: () -> U
             defaultElevation = 10.dp
         ),
         colors = CardDefaults.cardColors(
-            containerColor = Color.White,
+            containerColor = MaterialTheme.colorScheme.secondaryContainer,
         ),
         shape = RoundedCornerShape(16.dp),
 
@@ -245,8 +248,8 @@ fun UserListItem(user: User, navController: NavController,loadEmployees: () -> U
                         .fillMaxWidth()
                         .fillMaxHeight()
                         .align(Alignment.Center),
-                    color = Color.White.copy(alpha = 0.9f), // Ajusta el nivel de opacidad aquí
-                    trackColor = Color(0xff5a79ba).copy(alpha = 0.1f), // Ajusta el nivel de opacidad aquí
+                    color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.9f), // Ajusta el nivel de opacidad aquí
+                    trackColor = BlueSystem.copy(alpha = 0.1f), // Ajusta el nivel de opacidad aquí
                 )
             }
         }else{
@@ -307,10 +310,10 @@ fun UserListItem(user: User, navController: NavController,loadEmployees: () -> U
                         .weight(1f)
                         .align(Alignment.CenterVertically)
                 ) {
-                    Text(text = "Name: ${user.name}", fontWeight = FontWeight.Bold)
-                    Text(text = "Email: ${user.email}")
-                    Text(text = "Phone: ${user.phone}")
-                    Text(text = "Role: ${userRoleToString(user.role)}")
+                    Text(text = "Name: ${user.name}", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
+                    Text(text = "Email: ${user.email}", color = MaterialTheme.colorScheme.primary)
+                    Text(text = "Phone: ${user.phone}", color = MaterialTheme.colorScheme.primary)
+                    Text(text = "Role: ${userRoleToString(user.role)}", color = MaterialTheme.colorScheme.primary)
                     ElevatedButton(
                         modifier = Modifier
                             .fillMaxWidth(),
@@ -319,7 +322,7 @@ fun UserListItem(user: User, navController: NavController,loadEmployees: () -> U
                             navController.navigate("updateUser")
                         },
                         colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
-                            containerColor =  Color(0xff5a79ba)
+                            containerColor =  BlueSystem
                         ),
                         elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
                             defaultElevation = 5.dp
@@ -339,7 +342,7 @@ fun UserListItem(user: User, navController: NavController,loadEmployees: () -> U
                                 enableUser()
                             },
                             colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
-                                containerColor =  Color(0xff5a79ba)
+                                containerColor =  BlueSystem
                             ),
                             elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
                                 defaultElevation = 5.dp
@@ -357,7 +360,7 @@ fun UserListItem(user: User, navController: NavController,loadEmployees: () -> U
                                 disableUser()
                             },
                             colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
-                                containerColor = Color(0xff5a79ba)
+                                containerColor = BlueSystem
                             ),
                             elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
                                 defaultElevation = 5.dp

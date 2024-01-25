@@ -30,6 +30,7 @@ import com.example.qrstockmateapp.screens.Auth.ForgotPassword.ForgotPassword
 import com.example.qrstockmateapp.screens.Auth.JoinWithCode.JoinWithCodeScreen
 import com.example.qrstockmateapp.screens.Auth.Login.Login
 import com.example.qrstockmateapp.screens.Auth.SignUp.SignUpScreen
+import com.example.qrstockmateapp.ui.theme.QRStockMateAppTheme
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -60,16 +61,18 @@ class MainActivity : ComponentActivity() {
             )
         }
         setContent {
-            val navController = rememberNavController()
-            // Verificar si hay un token y un usuario almacenados
-            val savedToken = sharedPreferences.getString(KEY_TOKEN, null)
-            val savedUserJson = sharedPreferences.getString(KEY_USER, null)
-            Log.d("savedToken", "${savedToken}")
-            if (!savedToken.isNullOrBlank() && !savedUserJson.isNullOrBlank()) {
-                val savedUser = Gson().fromJson(savedUserJson, User::class.java)
-                navigateToBottomScreen(navController,savedUser,savedToken,::saveTokenAndUser,sharedPreferences)
-            } else {
-                NavigationContent(navController,::saveTokenAndUser,sharedPreferences)
+            QRStockMateAppTheme {
+                val navController = rememberNavController()
+                // Verificar si hay un token y un usuario almacenados
+                val savedToken = sharedPreferences.getString(KEY_TOKEN, null)
+                val savedUserJson = sharedPreferences.getString(KEY_USER, null)
+                Log.d("savedToken", "${savedToken}")
+                if (!savedToken.isNullOrBlank() && !savedUserJson.isNullOrBlank()) {
+                    val savedUser = Gson().fromJson(savedUserJson, User::class.java)
+                    navigateToBottomScreen(navController,savedUser,savedToken,::saveTokenAndUser,sharedPreferences)
+                } else {
+                    NavigationContent(navController,::saveTokenAndUser,sharedPreferences)
+                }
             }
         }
 

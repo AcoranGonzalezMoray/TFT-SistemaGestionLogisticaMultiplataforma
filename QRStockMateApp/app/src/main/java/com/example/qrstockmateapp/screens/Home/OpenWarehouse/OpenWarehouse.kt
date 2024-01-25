@@ -29,6 +29,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -41,6 +42,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -60,6 +62,7 @@ import com.example.qrstockmateapp.api.services.RetrofitInstance
 import com.example.qrstockmateapp.navigation.repository.DataRepository
 import com.example.qrstockmateapp.screens.Search.SortOrder
 import com.example.qrstockmateapp.screens.Search.sortItems
+import com.example.qrstockmateapp.ui.theme.BlueSystem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -114,16 +117,16 @@ fun OpenWarehouseScreen(navController: NavController){
         }
     }
     val sortedItems = sortItems(filteredItems, sortOrder)
-
     val customTextFieldColors = TextFieldDefaults.outlinedTextFieldColors(
-        cursorColor = Color.Black,
-        focusedBorderColor = Color.Black,
-        focusedLabelColor = Color.Black,
-        unfocusedBorderColor = Color.Black,
-        backgroundColor = Color.LightGray
+        textColor = MaterialTheme.colorScheme.primary,
+        backgroundColor = MaterialTheme.colorScheme.outline,
+        cursorColor =  BlueSystem,
+        focusedBorderColor =  BlueSystem,
+        focusedLabelColor = BlueSystem,
+        unfocusedBorderColor =  BlueSystem
     )
 
-    Column(modifier = Modifier .padding(16.dp),
+    Column(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background).padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         OutlinedTextField(
@@ -195,13 +198,12 @@ fun Item(item: Item,navController: NavController) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp)
-            .background(Color.White),
+            .padding(8.dp),
         elevation = CardDefaults.cardElevation(
             defaultElevation = 10.dp
         ),
         colors = CardDefaults.cardColors(
-            containerColor = Color.White,
+            containerColor = MaterialTheme.colorScheme.secondaryContainer,
         ),
         shape = RoundedCornerShape(16.dp)
     ){
@@ -218,7 +220,7 @@ fun Item(item: Item,navController: NavController) {
                         .fillMaxWidth()
                         .fillMaxHeight()
                         .align(Alignment.Center),
-                    color = Color.White.copy(alpha = 0.9f), // Ajusta el nivel de opacidad aquí
+                    color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.9f), // Ajusta el nivel de opacidad aquí
                     trackColor = Color(0xff5a79ba).copy(alpha = 0.1f), // Ajusta el nivel de opacidad aquí
                 )
             }
@@ -242,7 +244,7 @@ fun Item(item: Item,navController: NavController) {
                         defaultElevation = 10.dp
                     ),
                     colors = CardDefaults.cardColors(
-                        containerColor = Color.White,
+                        containerColor = MaterialTheme.colorScheme.background,
                     ),
                     shape = RoundedCornerShape(16.dp),
                 ){
@@ -252,6 +254,7 @@ fun Item(item: Item,navController: NavController) {
                             painter = placeholderImage,
                             contentDescription = "Default User Image",
                             modifier = Modifier.fillMaxSize(),
+                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
                             contentScale = ContentScale.Crop
                         )
                     } else {
@@ -269,6 +272,7 @@ fun Item(item: Item,navController: NavController) {
                             contentDescription = "User Image",
                             modifier = Modifier.fillMaxSize(),
                             contentScale = ContentScale.Crop
+
                         )
                     }
                 }
@@ -284,30 +288,31 @@ fun Item(item: Item,navController: NavController) {
                     // Nombre (en negrita)
                     Text(
                         buildAnnotatedString {
-                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold,color = MaterialTheme.colorScheme.primary)) {
                                 append("Name:")
                             }
                             append(" ${item.name}")
-                        }
+                        },color = MaterialTheme.colorScheme.primary
                     )
 
                     // Ubicación
                     Text(
                         buildAnnotatedString {
-                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)) {
                                 append("Location:")
                             }
                             append(" ${item.location}")
-                        }
+                        },
+                        color = MaterialTheme.colorScheme.primary
                     )
                     // Stock (en negrita)
                     Text(
                         buildAnnotatedString {
-                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold,color = MaterialTheme.colorScheme.primary)) {
                                 append("Stock:")
                             }
                             append(" ${item.stock}")
-                        }
+                        },color = MaterialTheme.colorScheme.primary
                     )
 
 

@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -31,14 +32,20 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddBusiness
 import androidx.compose.material.icons.filled.AddLocationAlt
 import androidx.compose.material.icons.filled.Apartment
+import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.DirectionsCar
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.ManageAccounts
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Message
+import androidx.compose.material.icons.filled.ModeNight
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.SystemUpdate
 import androidx.compose.material.icons.filled.Warehouse
 import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -52,6 +59,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -69,6 +77,8 @@ import com.example.qrstockmateapp.navigation.logic.Navigation
 import com.example.qrstockmateapp.navigation.model.ScreenModel
 import com.example.qrstockmateapp.navigation.repository.DataRepository
 import com.example.qrstockmateapp.navigation.widget.AnimatedBottomBar
+import com.example.qrstockmateapp.ui.theme.BlueSystem
+import com.example.qrstockmateapp.ui.theme.isDarkMode
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -104,7 +114,7 @@ fun BottomNavigationScreen(navControllerLogin: NavController,sharedPreferences: 
         drawerGesturesEnabled = drawerGesturesEnabled ,
         floatingActionButton = {
             if(DataRepository.getUser()?.role == 1 && currentRoute == "routeManagement"){
-                androidx.compose.material3.FloatingActionButton(onClick = {navController.navigate("addRoute") }, containerColor = Color.White, modifier = Modifier
+                androidx.compose.material3.FloatingActionButton(onClick = {navController.navigate("addRoute") }, containerColor = MaterialTheme.colorScheme.secondaryContainer, modifier = Modifier
                     .shadow(4.dp, shape = RoundedCornerShape(18.dp))
                     .border(0.5.dp, Color(0xff5a79ba), shape = RoundedCornerShape(18.dp)),
                 ) {
@@ -112,7 +122,7 @@ fun BottomNavigationScreen(navControllerLogin: NavController,sharedPreferences: 
                 }
             }
             if(DataRepository.getUser()?.role == 0 && currentRoute == "home"  ){
-                androidx.compose.material3.FloatingActionButton(onClick = { navController.navigate("addWarehouse")}, containerColor = Color.White, modifier = Modifier
+                androidx.compose.material3.FloatingActionButton(onClick = { navController.navigate("addWarehouse")}, containerColor = MaterialTheme.colorScheme.secondaryContainer, modifier = Modifier
                     .shadow(4.dp, shape = RoundedCornerShape(18.dp))
                     .border(0.5.dp, Color(0xff5a79ba), shape = RoundedCornerShape(18.dp)),
                 )  {
@@ -123,7 +133,7 @@ fun BottomNavigationScreen(navControllerLogin: NavController,sharedPreferences: 
                 }
             }
             if(DataRepository.getUser()?.role == 0 && currentRoute == "vehicleManagement"){
-                androidx.compose.material3.FloatingActionButton(onClick = {navController.navigate("addVehicle") }, containerColor = Color.White, modifier = Modifier
+                androidx.compose.material3.FloatingActionButton(onClick = {navController.navigate("addVehicle") }, containerColor = MaterialTheme.colorScheme.secondaryContainer, modifier = Modifier
                     .shadow(4.dp, shape = RoundedCornerShape(18.dp))
                     .border(0.5.dp, Color(0xff5a79ba), shape = RoundedCornerShape(18.dp)),
                 )  {
@@ -151,7 +161,7 @@ fun BottomNavigationScreen(navControllerLogin: NavController,sharedPreferences: 
 
             if (currentRoute !in excludedRoutes) {
                 TopAppBar(
-                    backgroundColor = Color.White,
+                    backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
                     title = {
                         // Colocar la imagen en el centro y el icono a la derecha
                         Row(
@@ -247,6 +257,7 @@ fun Drawer(
     scope: CoroutineScope
 ) {
     var showDialog by remember { mutableStateOf(false) }
+    var changeMode by remember { mutableStateOf(false) }
 
     val deleteAccount:()->Unit = {
         GlobalScope.launch(Dispatchers.IO) {
@@ -276,7 +287,7 @@ fun Drawer(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(MaterialTheme.colorScheme.secondaryContainer)
     ) {
         Surface(
             modifier = Modifier
@@ -285,15 +296,16 @@ fun Drawer(
         ) {
             if (showDialog) {
                 AlertDialog(
+                    backgroundColor = MaterialTheme.colorScheme.background,
                     onDismissRequest = {
                         // Handle dismissal if needed
                         showDialog = false
                     },
                     title = {
-                        Text(text = "Alert")
+                        Text(text = "Alert", color = MaterialTheme.colorScheme.primary)
                     },
                     text = {
-                        Text(text ="Are you sure you want to delete this account?")
+                        Text(text ="Are you sure you want to delete this account?",  color = MaterialTheme.colorScheme.primary)
                     },
                     confirmButton = {
                         ElevatedButton(
@@ -318,7 +330,58 @@ fun Drawer(
                                 showDialog = false
                             },
                             colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
-                                containerColor = Color.White
+                                containerColor = MaterialTheme.colorScheme.secondaryContainer
+                            ),
+                            elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                                defaultElevation = 5.dp
+                            )
+                        ){
+                            Text("Cancel", color =  Color(0xff5a79ba))
+                        }
+                    }
+                )
+            }
+            if (changeMode) {
+                var selectedOption by remember { mutableStateOf<Option?>(null) }
+
+                AlertDialog(
+                    backgroundColor = MaterialTheme.colorScheme.background,
+                    onDismissRequest = {
+                        // Handle dismissal if needed
+                        changeMode = false
+                    },
+                    title = {
+                        Text(text = "Style Settings", color = MaterialTheme.colorScheme.primary)
+                    },
+                    text = {
+                        StyleSelectionBox(selectedOption = selectedOption) {
+                            selectedOption = it
+                        }
+                    },
+                    confirmButton = {
+                        ElevatedButton(
+                            onClick = {
+                                //sharedPreferences.edit().clear().apply()
+
+                                changeMode = false
+                            },
+                            colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                                containerColor = Color(0xff5a79ba)
+                            ),
+                            elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                                defaultElevation = 5.dp
+                            )
+                        ){
+                            Text("Confirm", color = Color.White)
+                        }
+                    },
+                    dismissButton = {
+                        ElevatedButton(
+                            onClick = {
+                                changeMode = false
+                            },
+                            colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                                containerColor = MaterialTheme.colorScheme.secondaryContainer
                             ),
                             elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
                                 defaultElevation = 5.dp
@@ -332,7 +395,7 @@ fun Drawer(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color.White) ,
+                    .background(MaterialTheme.colorScheme.secondaryContainer) ,
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -478,25 +541,101 @@ fun Drawer(
                     modifier = Modifier
                         .fillMaxWidth()
                         .fillMaxHeight()
-                        .padding(top = 16.dp, start = 16.dp, end = 16.dp, bottom = 60.dp),
+                        .padding(top = 16.dp, start = 16.dp, end = 16.dp, bottom = 20.dp),
                     verticalArrangement = Arrangement.Bottom
 
                 ) {
-                    Button(
-                        onClick = {showDialog = true},
-                        colors = ButtonDefaults.buttonColors(Color.Red),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 4.dp) // Agrega espacio a la izquierda del botón
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(text = "Delete Account", color= Color.White)
+                        Button(
+                            onClick = {showDialog = true},
+                            colors = ButtonDefaults.buttonColors(Color.Red),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(9f)
+                                .padding(start = 4.dp) // Agrega espacio a la izquierda del botón
+                        ) {
+                            Text(text = "Delete Account", color= Color.White)
+                        }
+                        Spacer(modifier = Modifier.padding(10.dp))
+                        ElevatedButton(
+                            colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                                containerColor = BlueSystem,
+                            )
+                            ,onClick = {
+                            changeMode = true
+                        }) {
+                            if(isDarkMode()){
+                                Icon(imageVector = Icons.Filled.DarkMode, contentDescription = null, tint = Color.White)
+                            }else{
+                                Icon(imageVector = Icons.Filled.LightMode, contentDescription = null, tint = Color.Black)
+                            }
+                        }
                     }
                 }
+            }else{
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight()
+                        .padding(top = 16.dp, start = 16.dp, end = 16.dp, bottom = 20.dp),
+                    verticalArrangement = Arrangement.Bottom
+
+                ) {
+                    Icon(imageVector = Icons.Filled.Settings, contentDescription = null )
+                }
             }
+
         }
 
 
     }
 
 
+}
+
+data class Option(val label: String, val icon: ImageVector)
+@Composable
+fun StyleSelectionBox(selectedOption: Option?, onOptionSelected: (Option) -> Unit) {
+    val options = listOf(
+        Option("Dark Mode", Icons.Default.DarkMode),
+        Option("Light Mode", Icons.Default.LightMode),
+        Option("System Mode", Icons.Default.SystemUpdate),
+    )
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+    ) {
+        options.forEach { option ->
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp)
+                    .selectable(
+                        selected = (selectedOption == option),
+                        onClick = {
+                            onOptionSelected(option)
+                        }
+                    )
+                    .padding(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                RadioButton(
+                    selected = (selectedOption == option),
+                    colors = RadioButtonDefaults.colors(selectedColor = BlueSystem, unselectedColor = MaterialTheme.colorScheme.primary),
+                    onClick = {
+                        onOptionSelected(option)
+                    }
+                )
+
+                Icon(imageVector = option.icon, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+
+                Text(text = option.label, color = MaterialTheme.colorScheme.primary)
+            }
+        }
+    }
 }

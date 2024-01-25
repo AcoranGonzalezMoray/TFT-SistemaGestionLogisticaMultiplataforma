@@ -1,5 +1,6 @@
 package com.example.qrstockmateapp.screens.Auth.ForgotPassword
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -39,6 +40,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.qrstockmateapp.ui.theme.BlueSystem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -57,12 +59,13 @@ fun ForgotPassword(
     var expanded by remember { mutableStateOf(false) }
 
     val customTextFieldColors = TextFieldDefaults.outlinedTextFieldColors(
-        cursorColor =  Color(0xff5a79ba),
-        focusedBorderColor =  Color(0xff5a79ba),
-        focusedLabelColor = Color(0xff5a79ba),
-        backgroundColor = Color(0xfff5f6f7),
-        unfocusedBorderColor =  Color.White,
-        )
+        textColor = MaterialTheme.colorScheme.primary,
+        backgroundColor = MaterialTheme.colorScheme.outline,
+        cursorColor =  BlueSystem,
+        focusedBorderColor =  BlueSystem,
+        focusedLabelColor = BlueSystem,
+        unfocusedBorderColor =  MaterialTheme.colorScheme.secondaryContainer
+    )
 
 
     // Función para manejar la selección del usuario
@@ -70,7 +73,9 @@ fun ForgotPassword(
         selectedOption = option
         expanded = false
     }
-    Column {
+    Column(
+        modifier = Modifier.background(MaterialTheme.colorScheme.background)
+    ){
         // Agregar el icono en la esquina superior izquierda
         TopAppBar(
             navigationIcon = {
@@ -78,7 +83,7 @@ fun ForgotPassword(
                     Icon(Icons.Default.ArrowBack, contentDescription = "Back to Login", tint = Color(0xff5a79ba))
                 }
             },
-            backgroundColor = Color.White,
+            backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
             title = { Text(text = "Forgot Password", color = Color(0xff5a79ba)) }
         )
         Column(
@@ -92,6 +97,7 @@ fun ForgotPassword(
 
             TextField(
                 value = email,
+                shape = RoundedCornerShape(8.dp),
                 onValueChange = { email = it },
                 label = { Text("Email") },
                 keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email),
@@ -110,6 +116,7 @@ fun ForgotPassword(
             ) {
                 Text(
                     text = selectedOption,
+                    color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier
                         .clickable(
                             interactionSource = remember { MutableInteractionSource() },
@@ -122,14 +129,14 @@ fun ForgotPassword(
                 DropdownMenu(
                     expanded = expanded,
                     onDismissRequest = { expanded = false },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.secondaryContainer)
                 ) {
                     options.forEach { option ->
                         DropdownMenuItem(onClick = {
                             onOptionSelected("Option: $option")
                             expanded = false
                         }) {
-                            Text(text = option)
+                            Text(text = option, color = MaterialTheme.colorScheme.primary)
                         }
                     }
                 }
@@ -143,7 +150,7 @@ fun ForgotPassword(
                     navController.navigate("login")
                 },
                 colors = ButtonDefaults.elevatedButtonColors(
-                    containerColor = Color.White
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer
                 ),
                 elevation = ButtonDefaults.elevatedButtonElevation(
                     defaultElevation = 5.dp

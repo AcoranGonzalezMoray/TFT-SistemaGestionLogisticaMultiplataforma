@@ -26,6 +26,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Cabin
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -43,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.qrstockmateapp.navigation.model.ScreenModel
+import com.example.qrstockmateapp.ui.theme.BlueSystem
 import com.exyte.animatednavbar.AnimatedNavigationBar
 import com.exyte.animatednavbar.animation.balltrajectory.Straight
 import com.exyte.animatednavbar.animation.indendshape.StraightIndent
@@ -88,8 +90,8 @@ fun ColorButtonNavBar(screens: List<ScreenModel.HomeScreens>, navController: Nav
             .padding(6.dp) // Ajusta el relleno según tus necesidades
             .height(65.dp),
         selectedIndex = selectedIndex,
-        barColor = Color.White,
-        ballColor =  Color(0xff5a79ba),
+        barColor = MaterialTheme.colorScheme.secondaryContainer,
+        ballColor =  BlueSystem,
         cornerRadius = shapeCornerRadius(25.dp),
         ballAnimation = Straight(
             spring(dampingRatio = 0.6f, stiffness = Spring.StiffnessVeryLow)
@@ -123,10 +125,10 @@ fun ColorButtonNavBar(screens: List<ScreenModel.HomeScreens>, navController: Nav
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     Icon(
-                        imageVector = screens.icon,
+                        imageVector = if(selectedIndex == index) screens.icon else screens.iconO,
                         contentDescription = "",
-                        tint = if(selectedIndex == index)  Color(0xff5a79ba) else Color.DarkGray,
-                        modifier = if (selectedIndex == index) Modifier.size(20.dp) else Modifier.size(25.dp)
+                        tint = if(selectedIndex == index)  BlueSystem else  BlueSystem,
+                        modifier = if (selectedIndex == index) Modifier.size(22.dp) else Modifier.size(21.dp)
                     )
                     if (selectedIndex == index){
                         Text(

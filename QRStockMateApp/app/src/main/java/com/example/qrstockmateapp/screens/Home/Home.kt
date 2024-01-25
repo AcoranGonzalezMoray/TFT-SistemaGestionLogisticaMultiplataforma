@@ -77,6 +77,7 @@ import com.example.qrstockmateapp.api.models.User
 import com.example.qrstockmateapp.api.models.Warehouse
 import com.example.qrstockmateapp.api.services.RetrofitInstance
 import com.example.qrstockmateapp.navigation.repository.DataRepository
+import com.example.qrstockmateapp.ui.theme.BlueSystem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -170,6 +171,7 @@ fun HomeScreen(navController: NavController) {
 
     Box(
         modifier = Modifier
+            .background(MaterialTheme.colorScheme.background)
             .pullRefresh(pullRefreshState)
     ){
         PullRefreshIndicator(
@@ -178,8 +180,8 @@ fun HomeScreen(navController: NavController) {
             modifier = Modifier
                 .align(Alignment.TopCenter)
                 .zIndex(1f),
-            backgroundColor =  Color.White,
-            contentColor = Color(0xff5a79ba)
+            backgroundColor = MaterialTheme.colorScheme.background,
+            contentColor = BlueSystem
         )
         Column(
             modifier = Modifier
@@ -192,7 +194,7 @@ fun HomeScreen(navController: NavController) {
                 WarehouseList(warehouses,navController,loadWarehouse)
             }else{
                 Box {
-                    Text(text = "There are no warehouses available for this company")
+                    Text(text = "There are no warehouses available for this company", color = MaterialTheme.colorScheme.primary,)
                 }
             }
         }
@@ -209,7 +211,7 @@ fun WarehouseList(warehouses: List<Warehouse>,navController: NavController,loadW
             Spacer(modifier = Modifier.height(8.dp)) // Agrega un espacio entre elementos de la lista
         }
         item { 
-            Spacer(modifier = Modifier.padding(bottom = 40.dp))
+            Spacer(modifier = Modifier.padding(bottom = 55.dp))
         }
     }
 }
@@ -286,7 +288,7 @@ fun WarehouseItem(warehouse: Warehouse,navController: NavController, loadWarehou
             defaultElevation = 10.dp
         ),
         colors = CardDefaults.cardColors(
-            containerColor = Color.White,
+            containerColor = MaterialTheme.colorScheme.secondaryContainer,
         ),
         shape = RoundedCornerShape(16.dp),
 
@@ -301,23 +303,24 @@ fun WarehouseItem(warehouse: Warehouse,navController: NavController, loadWarehou
                         .fillMaxWidth()
                         .fillMaxHeight()
                         .align(Alignment.Center),
-                    color = Color.White.copy(alpha = 0.9f), // Ajusta el nivel de opacidad aquí
-                    trackColor = Color(0xff5a79ba).copy(alpha = 0.1f), // Ajusta el nivel de opacidad aquí
+                    color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.9f), // Ajusta el nivel de opacidad aquí
+                    trackColor = BlueSystem.copy(alpha = 0.1f), // Ajusta el nivel de opacidad aquí
                 )
             }
 
         }else{
             if (showDialog) {
                 AlertDialog(
+                    backgroundColor = MaterialTheme.colorScheme.background,
                     onDismissRequest = {
                         // Handle dismissal if needed
                         showDialog = false
                     },
                     title = {
-                        Text(text = "Alert")
+                        Text(text = "Alert", color = MaterialTheme.colorScheme.primary)
                     },
                     text = {
-                        Text(text ="Are you sure you want to delete?")
+                        Text(text ="Are you sure you want to delete?", color = MaterialTheme.colorScheme.primary)
                     },
                     confirmButton = {
                         ElevatedButton(
@@ -326,7 +329,7 @@ fun WarehouseItem(warehouse: Warehouse,navController: NavController, loadWarehou
                                 showDialog = false
                             },
                             colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
-                                containerColor = Color(0xff5a79ba)
+                                containerColor = BlueSystem
                             ),
                             elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
                                 defaultElevation = 5.dp
@@ -341,13 +344,13 @@ fun WarehouseItem(warehouse: Warehouse,navController: NavController, loadWarehou
                                 showDialog = false
                             },
                             colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
-                                containerColor = Color.White
+                                containerColor = MaterialTheme.colorScheme.secondaryContainer
                             ),
                             elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
                                 defaultElevation = 5.dp
                             )
                         ){
-                            Text("Cancel", color =  Color(0xff5a79ba))
+                            Text("Cancel", color =  BlueSystem)
                         }
                     }
                 )
@@ -367,7 +370,7 @@ fun WarehouseItem(warehouse: Warehouse,navController: NavController, loadWarehou
                             defaultElevation = 10.dp
                         ),
                         colors = CardDefaults.cardColors(
-                            containerColor = Color.White,
+                            containerColor = MaterialTheme.colorScheme.background,
                         )
                     ){
                         Image(
@@ -394,7 +397,7 @@ fun WarehouseItem(warehouse: Warehouse,navController: NavController, loadWarehou
                             defaultElevation = 10.dp
                         ),
                         colors = CardDefaults.cardColors(
-                            containerColor = Color.White,
+                            containerColor = MaterialTheme.colorScheme.background,
                         )
 
                     ){
@@ -414,45 +417,49 @@ fun WarehouseItem(warehouse: Warehouse,navController: NavController, loadWarehou
                     // Nombre del almacén
                     Text(
                         text = warehouse.name,
+                        color = MaterialTheme.colorScheme.primary,
                         fontWeight = FontWeight.Bold,
                         fontSize = 18.sp,
-                        modifier = Modifier.padding(bottom = 4.dp)
+                        modifier = Modifier.padding(bottom = 4.dp),
                     )
 
                     // Ubicación del almacén
                     Text(
                         buildAnnotatedString {
-                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)) {
                                 append("Location:")
                             }
                             append(" ${warehouse.location}")
                         },
                         fontSize = 14.sp,
-                        modifier = Modifier.padding(bottom = 4.dp)
+                        modifier = Modifier.padding(bottom = 4.dp),
+                        color = MaterialTheme.colorScheme.primary
                     )
 
                     // Organización del almacén
                     Text(
                         buildAnnotatedString {
-                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)) {
                                 append("Organization:")
                             }
                             append(" ${warehouse.organization}")
                         },
                         fontSize = 14.sp,
-                        modifier = Modifier.padding(bottom = 4.dp)
+                        modifier = Modifier.padding(bottom = 4.dp),
+                        color = MaterialTheme.colorScheme.primary
                     )
 
                     // Administrador
                     Text(
                         buildAnnotatedString {
-                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold,color = MaterialTheme.colorScheme.primary)) {
                                 append("Administrator:")
                             }
                             append(" ${DataRepository.getEmployees()?.find { user -> user.id == warehouse.idAdministrator}?.name}")
                         },
                         fontSize = 14.sp,
-                        modifier = Modifier.padding(bottom = 4.dp)
+                        modifier = Modifier.padding(bottom = 4.dp),
+                        color = MaterialTheme.colorScheme.primary
                     )
 
 
@@ -468,7 +475,7 @@ fun WarehouseItem(warehouse: Warehouse,navController: NavController, loadWarehou
                                     navController.navigate("updateWarehouse")
                                 },
                                 colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
-                                    containerColor = Color(0xff5a79ba)
+                                    containerColor = BlueSystem
                                 ),
                                 elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
                                     defaultElevation = 5.dp
@@ -492,7 +499,7 @@ fun WarehouseItem(warehouse: Warehouse,navController: NavController, loadWarehou
                                     showDialog = true
                                 },
                                 colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
-                                    containerColor = Color(0xff5a79ba)
+                                    containerColor = BlueSystem
                                 ),
                                 elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
                                     defaultElevation = 5.dp
@@ -516,7 +523,7 @@ fun WarehouseItem(warehouse: Warehouse,navController: NavController, loadWarehou
                             navController.navigate("openWarehouse")
                         },
                         colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
-                            containerColor = Color(0xff5a79ba)
+                            containerColor = BlueSystem
                         ),
                         elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
                             defaultElevation = 5.dp

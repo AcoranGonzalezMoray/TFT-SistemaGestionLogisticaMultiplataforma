@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ManageSearch
+import androidx.compose.material.icons.automirrored.outlined.ManageSearch
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Badge
@@ -20,6 +21,13 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Warehouse
 import androidx.compose.material.icons.materialIcon
 import androidx.compose.material.icons.materialPath
+import androidx.compose.material.icons.outlined.Badge
+import androidx.compose.material.icons.outlined.DirectionsCar
+import androidx.compose.material.icons.outlined.LocalShipping
+import androidx.compose.material.icons.outlined.Map
+import androidx.compose.material.icons.outlined.QrCodeScanner
+import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material.icons.outlined.Warehouse
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -37,16 +45,17 @@ class ScreenModel {
     sealed class HomeScreens(
         val route: String,
         val title: String,
-        val icon: ImageVector
+        val icon: ImageVector,
+        val iconO: ImageVector
     ) {
-        object Home : HomeScreens("home", "Home", Icons.Filled.Warehouse)
-        object TransactionHistory : HomeScreens("transactionHistory", "History", Icons.AutoMirrored.Filled.ManageSearch)
-        object Scan : HomeScreens("scan", "Scan QR", Icons.Filled.QrCodeScanner)
-        object Carrier : HomeScreens("carrier", "Carrier", Icons.Filled.LocalShipping)
-        object Route: HomeScreens("routeManagement", "Route", Icons.Filled.Map)
-        object Vehicle : HomeScreens("vehicleManagement", "Vehicle", Icons.Filled.DirectionsCar)
-        object Search : HomeScreens("search", "Search", Icons.Filled.Search)
-        object Profile : HomeScreens("profile", "Profile", Icons.Filled.Badge)
+        object Home : HomeScreens("home", "Home", Icons.Filled.Warehouse, Icons.Outlined.Warehouse )
+        object TransactionHistory : HomeScreens("transactionHistory", "History", Icons.AutoMirrored.Filled.ManageSearch, Icons.AutoMirrored.Outlined.ManageSearch)
+        object Scan : HomeScreens("scan", "Scan QR", Icons.Filled.QrCodeScanner, Icons.Outlined.QrCodeScanner)
+        object Carrier : HomeScreens("carrier", "Carrier", Icons.Filled.LocalShipping, Icons.Outlined.LocalShipping)
+        object Route: HomeScreens("routeManagement", "Route", Icons.Filled.Map, Icons.Outlined.Map)
+        object Vehicle : HomeScreens("vehicleManagement", "Vehicle", Icons.Filled.DirectionsCar, Icons.Outlined.DirectionsCar)
+        object Search : HomeScreens("search", "Search", Icons.Filled.Search, Icons.Outlined.Search)
+        object Profile : HomeScreens("profile", "Profile", Icons.Filled.Badge, Icons.Outlined.Badge)
 
     }
 
