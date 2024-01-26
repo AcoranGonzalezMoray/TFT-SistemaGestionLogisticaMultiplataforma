@@ -225,7 +225,7 @@ fun AddItemScreen(navController: NavController) {
 
             TextField(
                 value = name,
-                label = { Text("Name: ") },
+                label = { Text("Name: ", color = MaterialTheme.colorScheme.outlineVariant) },
                 onValueChange = { name = it },
                 colors= customTextFieldColors,
                 modifier = Modifier
@@ -241,7 +241,7 @@ fun AddItemScreen(navController: NavController) {
 
             TextField(
                 value = location,
-                label = { Text("Location: ") },
+                label = { Text("Location: ", color = MaterialTheme.colorScheme.outlineVariant) },
                 onValueChange = { location = it },
                 colors= customTextFieldColors,
                 modifier = Modifier
@@ -257,7 +257,7 @@ fun AddItemScreen(navController: NavController) {
 
             TextField(
                 value = weight,
-                label = { Text("Weight Per Unit : ") },
+                label = { Text("Weight Per Unit : ", color = MaterialTheme.colorScheme.outlineVariant) },
                 onValueChange = { weight = it+" Kg" },
                 colors= customTextFieldColors,
                 modifier = Modifier

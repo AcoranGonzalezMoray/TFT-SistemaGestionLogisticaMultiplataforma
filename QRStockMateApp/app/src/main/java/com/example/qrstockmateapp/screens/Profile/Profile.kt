@@ -322,7 +322,7 @@ fun ProfileScreen(navController: NavController) {
             if (userEmail != null) {
                 TextField(
                     value = userEmail!!,
-                    label = { androidx.compose.material3.Text("Email") },
+                    label = { androidx.compose.material3.Text("Email", color = MaterialTheme.colorScheme.outlineVariant) },
                     colors = customTextFieldColors,
                     onValueChange = {userEmail = it},
                     modifier = Modifier
@@ -343,7 +343,7 @@ fun ProfileScreen(navController: NavController) {
                 TextField(
                     value = userPhone!!,
                     shape = RoundedCornerShape(8.dp),
-                    label = { androidx.compose.material3.Text("Phone") },
+                    label = { androidx.compose.material3.Text("Phone", color = MaterialTheme.colorScheme.outlineVariant) },
                     colors = customTextFieldColors,
                     onValueChange = {userPhone=it},
                     modifier = Modifier

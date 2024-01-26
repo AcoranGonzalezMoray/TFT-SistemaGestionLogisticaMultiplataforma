@@ -30,7 +30,8 @@ private val DarkColorScheme = darkColorScheme(
     background = Color(0xFF121212 ),
     secondaryContainer = Color(0xFF222222),
     outline = Color(0xFF2c2c2c),
-    onTertiary = Color.White
+    onTertiary = Color.White,
+    outlineVariant = Color.LightGray
 )
 
 private val LightColorScheme = lightColorScheme(
@@ -40,7 +41,8 @@ private val LightColorScheme = lightColorScheme(
     background = Color.White,
     secondaryContainer = Color.White,
     outline = Color(0xfff5f6f7),
-    onTertiary = Color.Gray
+    onTertiary = Color.Gray,
+    outlineVariant = Color.DarkGray
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
     surface = Color(0xFFFFFBFE),

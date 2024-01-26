@@ -21,7 +21,7 @@ object DataRepository {
     private var userPlus: User? = null
     private var routePlus: TransportRoute? = null
     private var vehiclePlus: Vehicle? = null
-
+    private var routeSplash: String? = null
 
     fun setVehiclePlus(vehicle: Vehicle) {
         vehiclePlus = vehicle
@@ -32,6 +32,13 @@ object DataRepository {
     }
 
 
+    fun setSplash(route: String) {
+        routeSplash = route
+    }
+
+    fun getSplash():String? {
+        return routeSplash
+    }
 
 
 

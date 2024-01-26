@@ -155,7 +155,7 @@ fun SearchScreen(navController: NavController) {
         OutlinedTextField(
             value = searchQuery,
             onValueChange = { searchQuery = it },
-            label = { Text("Search") },
+            label = { Text("Search", color = MaterialTheme.colorScheme.outlineVariant) },
             colors = customTextFieldColors,
             modifier = Modifier
                 .fillMaxWidth()

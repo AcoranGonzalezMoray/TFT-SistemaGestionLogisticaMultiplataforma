@@ -181,7 +181,7 @@ fun UpdateVehicleScreen(navController: NavController){
 
                         TextField(
                             value = make,
-                            label = { Text("Make") },
+                            label = { Text("Make", color = MaterialTheme.colorScheme.outlineVariant) },
                             onValueChange = { make = it },
                             colors = customTextFieldColors ,
                             modifier = Modifier
@@ -196,7 +196,7 @@ fun UpdateVehicleScreen(navController: NavController){
 
                         TextField(
                             value = model,
-                            label = { Text("Model") },
+                            label = { Text("Model", color = MaterialTheme.colorScheme.outlineVariant) },
                             onValueChange = { model = it },
                             colors = customTextFieldColors,
                             modifier = Modifier
@@ -211,7 +211,7 @@ fun UpdateVehicleScreen(navController: NavController){
 
                         TextField(
                             value = year,
-                            label = { Text("Year") },
+                            label = { Text("Year", color = MaterialTheme.colorScheme.outlineVariant) },
                             onValueChange = { year = it },
                             colors = customTextFieldColors ,
                             modifier = Modifier
@@ -226,7 +226,7 @@ fun UpdateVehicleScreen(navController: NavController){
 
                         TextField(
                             value = color,
-                            label = { Text("Color") },
+                            label = { Text("Color", color = MaterialTheme.colorScheme.outlineVariant) },
                             onValueChange = { color = it },
                             colors = customTextFieldColors ,
                             modifier = Modifier
@@ -241,7 +241,7 @@ fun UpdateVehicleScreen(navController: NavController){
 
                         TextField(
                             value = licensePlate,
-                            label = { Text("License Plate") },
+                            label = { Text("License Plate", color = MaterialTheme.colorScheme.outlineVariant) },
                             onValueChange = { licensePlate = it },
                             colors = customTextFieldColors ,
                             modifier = Modifier
@@ -256,7 +256,7 @@ fun UpdateVehicleScreen(navController: NavController){
 
                         TextField(
                             value = maxLoad,
-                            label = { Text("Max Load") },
+                            label = { Text("Max Load", color = MaterialTheme.colorScheme.outlineVariant) },
                             onValueChange = { maxLoad = it },
                             colors = customTextFieldColors ,
                             modifier = Modifier

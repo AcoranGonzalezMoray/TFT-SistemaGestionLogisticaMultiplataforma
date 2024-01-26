@@ -158,7 +158,7 @@ fun SignUpScreen(navController: NavHostController) {
                value = name,
                isError = isError,
                onValueChange = { name = it;if(!start)start = true },
-               label = { Text("Name") },
+               label = { Text("Name", color = MaterialTheme.colorScheme.outlineVariant) },
                modifier = Modifier.fillMaxWidth().border(
                    width = 0.5.dp,
                    color =  BlueSystem,
@@ -173,7 +173,7 @@ fun SignUpScreen(navController: NavHostController) {
                value = email,
                isError = isError,
                onValueChange = { email = it;if(!start)start = true },
-               label = { Text("Email") },
+               label = { Text("Email", color = MaterialTheme.colorScheme.outlineVariant) },
                keyboardOptions = keyboardOptions,
                modifier = Modifier.fillMaxWidth().border(
                    width = 0.5.dp,
@@ -192,7 +192,7 @@ fun SignUpScreen(navController: NavHostController) {
                visualTransformation = PasswordVisualTransformation(),
                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                onValueChange = { password = it;if(!start)start = true },
-               label = { Text("Password") },
+               label = { Text("Password", color = MaterialTheme.colorScheme.outlineVariant) },
                modifier = Modifier.fillMaxWidth().border(
                    width = 0.5.dp,
                    color =  BlueSystem,
@@ -212,7 +212,7 @@ fun SignUpScreen(navController: NavHostController) {
                    confirmPassword = it
                    passwordMatches = password == it
                },
-               label = { Text("Confirm Password") },
+               label = { Text("Confirm Password", color = MaterialTheme.colorScheme.outlineVariant) },
                modifier = Modifier.fillMaxWidth().border(
                    width = 0.5.dp,
                    color =  BlueSystem,
@@ -230,7 +230,7 @@ fun SignUpScreen(navController: NavHostController) {
                value = phone,
                isError = isError,
                onValueChange = { phone = it;if(!start)start = true },
-               label = { Text("Phone") },
+               label = { Text("Phone", color = MaterialTheme.colorScheme.outlineVariant) },
                modifier = Modifier.fillMaxWidth().border(
                    width = 0.5.dp,
                    color =  BlueSystem,
@@ -244,7 +244,7 @@ fun SignUpScreen(navController: NavHostController) {
                value = companyName ,
                isError = isError,
                onValueChange = {companyName  = it;if(!start)start = true },
-               label = { Text("Company Name") },
+               label = { Text("Company Name", color = MaterialTheme.colorScheme.outlineVariant) },
                modifier = Modifier.fillMaxWidth().border(
                    width = 0.5.dp,
                    color =  BlueSystem,

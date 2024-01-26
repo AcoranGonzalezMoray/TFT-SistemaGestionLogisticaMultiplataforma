@@ -187,7 +187,7 @@ fun AddWarehouseScreen(navController: NavController) {
             TextField(
                 value = name,
                 onValueChange = { name = it },
-                label = { Text("Name") },
+                label = { Text("Name", color = MaterialTheme.colorScheme.outlineVariant) },
                 shape = RoundedCornerShape(8.dp),
                 colors = customTextFieldColors,
                 modifier = Modifier
@@ -204,7 +204,7 @@ fun AddWarehouseScreen(navController: NavController) {
             TextField(
                 value = location,
                 onValueChange = { location = it },
-                label = { Text("Location") },
+                label = { Text("Location", color = MaterialTheme.colorScheme.outlineVariant) },
                 shape = RoundedCornerShape(8.dp),
                 colors = customTextFieldColors,
                 modifier = Modifier
@@ -221,7 +221,7 @@ fun AddWarehouseScreen(navController: NavController) {
                 value = organization,
                 onValueChange = { organization = it },
                 shape = RoundedCornerShape(8.dp),
-                label = { Text("Organization") },
+                label = { Text("Organization", color = MaterialTheme.colorScheme.outlineVariant) },
                 colors = customTextFieldColors,
                 modifier = Modifier
                     .fillMaxWidth()

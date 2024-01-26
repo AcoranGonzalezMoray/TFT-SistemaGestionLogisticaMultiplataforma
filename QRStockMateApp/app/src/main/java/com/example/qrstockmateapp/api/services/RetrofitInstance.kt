@@ -12,7 +12,9 @@ import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
 
 object RetrofitInstance {
+    //private const val BASE_URL = "https://10.0.2.2:7220/api/"
     private const val BASE_URL = "https://10.0.2.2:7220/api/"
+
     private var token: String = "" // Token de autorización
 
     private val trustAllCerts = arrayOf<TrustManager>(object : X509TrustManager {

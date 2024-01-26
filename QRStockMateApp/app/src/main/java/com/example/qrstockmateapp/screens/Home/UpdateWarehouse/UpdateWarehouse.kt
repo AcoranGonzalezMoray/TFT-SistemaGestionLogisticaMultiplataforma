@@ -362,7 +362,7 @@ fun UpdateWarehouseScreen(navController: NavController) {
 
                        TextField(
                            value = name,
-                           label = { Text("Name") },
+                           label = { Text("Name", color = MaterialTheme.colorScheme.outlineVariant) },
                            onValueChange = { name = it },
                            shape = RoundedCornerShape(8.dp),
                            colors= customTextFieldColors,
@@ -378,7 +378,7 @@ fun UpdateWarehouseScreen(navController: NavController) {
                        )
                        TextField(
                            value = location,
-                           label = { Text("Location") },
+                           label = { Text("Location", color = MaterialTheme.colorScheme.outlineVariant) },
                            shape = RoundedCornerShape(8.dp),
                            onValueChange = { location = it },
                            colors= customTextFieldColors,
@@ -394,7 +394,7 @@ fun UpdateWarehouseScreen(navController: NavController) {
                        )
                        TextField(
                            value = organization,
-                           label = { Text("Organization") },
+                           label = { Text("Organization", color = MaterialTheme.colorScheme.outlineVariant) },
                            shape = RoundedCornerShape(8.dp),
                            onValueChange = { organization = it },
                            colors= customTextFieldColors,

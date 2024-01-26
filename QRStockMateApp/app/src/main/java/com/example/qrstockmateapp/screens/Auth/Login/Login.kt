@@ -157,14 +157,12 @@ fun Login(navController: NavHostController, onLoginSuccess: (Boolean, User, Stri
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
-                painter = painterResource(R.drawable.icon),
+                painter = painterResource(R.drawable.app_icon_removed),
                 contentDescription = "Descripción de la imagen",
-                colorFilter = ColorFilter.tint(BlueSystem),
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(300.dp)
+                    .size(400.dp)
             )
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(5.dp))
             if (isError) {
                 Text(
                     text = errorMessage ?: "",
@@ -177,7 +175,7 @@ fun Login(navController: NavHostController, onLoginSuccess: (Boolean, User, Stri
                 value = email,
                 isError = isError,
                 onValueChange = { email = it;if(!start)start = true },
-                label = { Text("Email") },
+                label = { Text("Email", color = MaterialTheme.colorScheme.outlineVariant) },
                 keyboardOptions = keyboardOptionsEmail,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -200,7 +198,7 @@ fun Login(navController: NavHostController, onLoginSuccess: (Boolean, User, Stri
                 isError = isError,
                 shape = RoundedCornerShape(8.dp),
                 onValueChange = { password = it;if(!start)start = true },
-                label = { Text("Password") },
+                label = { Text("Password", color = MaterialTheme.colorScheme.outlineVariant) },
                 visualTransformation = PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 modifier = Modifier

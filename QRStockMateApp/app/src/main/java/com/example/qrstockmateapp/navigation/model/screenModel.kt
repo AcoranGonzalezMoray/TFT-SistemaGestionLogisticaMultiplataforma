@@ -8,6 +8,7 @@ import androidx.compose.material.icons.automirrored.outlined.ManageSearch
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Badge
+import androidx.compose.material.icons.filled.Contacts
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.DirectionsCar
 import androidx.compose.material.icons.filled.Home
@@ -15,19 +16,24 @@ import androidx.compose.material.icons.filled.LocalShipping
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.ManageSearch
 import androidx.compose.material.icons.filled.Map
+import androidx.compose.material.icons.filled.Message
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.QrCodeScanner
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Warehouse
+import androidx.compose.material.icons.filled.WorkHistory
 import androidx.compose.material.icons.materialIcon
 import androidx.compose.material.icons.materialPath
 import androidx.compose.material.icons.outlined.Badge
+import androidx.compose.material.icons.outlined.Contacts
 import androidx.compose.material.icons.outlined.DirectionsCar
 import androidx.compose.material.icons.outlined.LocalShipping
 import androidx.compose.material.icons.outlined.Map
+import androidx.compose.material.icons.outlined.Message
 import androidx.compose.material.icons.outlined.QrCodeScanner
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.Warehouse
+import androidx.compose.material.icons.outlined.WorkHistory
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -57,6 +63,9 @@ class ScreenModel {
         object Search : HomeScreens("search", "Search", Icons.Filled.Search, Icons.Outlined.Search)
         object Profile : HomeScreens("profile", "Profile", Icons.Filled.Badge, Icons.Outlined.Badge)
 
+        object Message : HomeScreens("profile", "Message", Icons.Filled.Message, Icons.Outlined.Message)
+        object Comunity : HomeScreens("profile", "Comunication", Icons.Filled.WorkHistory, Icons.Outlined.WorkHistory)
+        object Contact : HomeScreens("profile", "Contact", Icons.Filled.Contacts, Icons.Outlined.Contacts)
     }
 
 

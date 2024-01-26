@@ -16,6 +16,7 @@ import com.example.qrstockmateapp.screens.Carrier.RouteManagement.UpdateRoute.Up
 import com.example.qrstockmateapp.screens.Carrier.VehicleManagement.AddVehicle.AddVehicleScreen
 import com.example.qrstockmateapp.screens.Carrier.VehicleManagement.UpdateVehicle.UpdateVehicleScreen
 import com.example.qrstockmateapp.screens.Carrier.VehicleManagement.VehicleManagementScreen
+import com.example.qrstockmateapp.screens.Chat.ChatScreen
 import com.example.qrstockmateapp.screens.Home.AddWarehouse.AddWarehouseScreen
 import com.example.qrstockmateapp.screens.Home.HomeScreen
 import com.example.qrstockmateapp.screens.Home.ManageUser.ManageUserScreen
@@ -28,6 +29,7 @@ import com.example.qrstockmateapp.screens.ScanQR.ScanScreen
 import com.example.qrstockmateapp.screens.Search.ItemDetails.ItemDetailsScreen
 import com.example.qrstockmateapp.screens.Search.SearchScreen
 import com.example.qrstockmateapp.screens.TransactionHistory.TransactionHistoryScreen
+import com.example.qrstockmateapp.ui.theme.splashScreen
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -64,6 +66,12 @@ fun  Navigation(navController: NavHostController) {
 
 
         //fuera del menu
+        composable("chat"){
+            ChatScreen(navController)
+        }
+        composable("splashScreen"){
+            splashScreen(navController, 1)
+        }
         composable("updateVehicle"){
             UpdateVehicleScreen(navController)
         }

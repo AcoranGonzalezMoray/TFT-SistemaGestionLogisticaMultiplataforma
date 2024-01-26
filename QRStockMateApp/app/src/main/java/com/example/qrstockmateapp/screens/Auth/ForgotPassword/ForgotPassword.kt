@@ -99,7 +99,7 @@ fun ForgotPassword(
                 value = email,
                 shape = RoundedCornerShape(8.dp),
                 onValueChange = { email = it },
-                label = { Text("Email") },
+                label = { Text("Email", color = MaterialTheme.colorScheme.outlineVariant) },
                 keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email),
                 modifier = Modifier.fillMaxWidth().border(
                     width = 0.5.dp,

@@ -19,6 +19,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -28,6 +33,12 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.app.ActivityCompat.requestPermissions
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.animateLottieCompositionAsState
+import com.airbnb.lottie.compose.rememberLottieComposition
+import com.example.qrstockmateapp.R
 import com.example.qrstockmateapp.api.models.Item
 import com.example.qrstockmateapp.api.services.RetrofitInstance
 import com.example.qrstockmateapp.navigation.repository.DataRepository
@@ -42,6 +53,10 @@ import java.util.concurrent.Executors
 @ExperimentalGetImage
 fun ScanScreen(navController: NavController) {
     val user = DataRepository.getUser()
+
+    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.qrscan))
+    val progress by animateLottieCompositionAsState(composition = composition, iterations = LottieConstants.IterateForever)
+
     // Contenedor principal
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -104,18 +119,19 @@ fun ScanScreen(navController: NavController) {
         )
 
         // Cuadro de guía visual
+
         Box(
             modifier = Modifier
-                .size(300.dp) // Ajusta el tamaño del cuadro según tus necesidades
-                .border(2.dp, color = androidx.compose.ui.graphics.Color.White),
+                .size(400.dp),
             contentAlignment = Alignment.Center
         ) {
             // Puedes personalizar el cuadro de guía visual según tus necesidades
-            Text(
-                text = "Place the QR code here",
-                color = androidx.compose.ui.graphics.Color.White,
-                fontWeight = FontWeight.Bold
+            LottieAnimation(
+                modifier = Modifier.size(400.dp),
+                composition = composition,
+                progress = { progress }
             )
+
         }
     }
 }

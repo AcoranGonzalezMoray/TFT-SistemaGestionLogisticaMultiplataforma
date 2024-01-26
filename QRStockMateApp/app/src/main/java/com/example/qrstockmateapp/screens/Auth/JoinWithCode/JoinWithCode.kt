@@ -172,7 +172,7 @@ fun JoinWithCodeScreen(navController: NavHostController) {
                 shape = RoundedCornerShape(8.dp),
                 isError = isError,
                 onValueChange = { name = it;if(!start)start = true },
-                label = { Text("Name") },
+                label = { Text("Name", color = MaterialTheme.colorScheme.outlineVariant) },
                 modifier = Modifier.fillMaxWidth().border(
                     width = 0.5.dp,
                     color =  BlueSystem,
@@ -188,7 +188,7 @@ fun JoinWithCodeScreen(navController: NavHostController) {
                 shape = RoundedCornerShape(8.dp),
                 isError = isError,
                 onValueChange = { email = it;if(!start)start = true },
-                label = { Text("Email") },
+                label = { Text("Email", color = MaterialTheme.colorScheme.outlineVariant) },
                 keyboardOptions = keyboardOptionsEmail,
                 modifier = Modifier.fillMaxWidth().border(
                     width = 0.5.dp,
@@ -208,7 +208,7 @@ fun JoinWithCodeScreen(navController: NavHostController) {
                 visualTransformation = PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 onValueChange = { password = it;if(!start)start = true },
-                label = { Text("Password") },
+                label = { Text("Password", color = MaterialTheme.colorScheme.outlineVariant) },
                 modifier = Modifier.fillMaxWidth().border(
                     width = 0.5.dp,
                     color =  BlueSystem,
@@ -229,7 +229,7 @@ fun JoinWithCodeScreen(navController: NavHostController) {
                     confirmPassword = it
                     passwordMatches = password == it
                 },
-                label = { Text("Confirm Password") },
+                label = { Text("Confirm Password", color = MaterialTheme.colorScheme.outlineVariant) },
                 modifier = Modifier.fillMaxWidth().border(
                     width = 0.5.dp,
                     color =  BlueSystem,
@@ -248,7 +248,7 @@ fun JoinWithCodeScreen(navController: NavHostController) {
                 shape = RoundedCornerShape(8.dp),
                 isError = isError,
                 onValueChange = { phone = it;if(!start)start = true },
-                label = { Text("Phone") },
+                label = { Text("Phone", color = MaterialTheme.colorScheme.outlineVariant) },
                 modifier = Modifier.fillMaxWidth().border(
                     width = 0.5.dp,
                     color =  BlueSystem,
@@ -273,7 +273,7 @@ fun JoinWithCodeScreen(navController: NavHostController) {
                         }
                     }
                 },
-                label = { Text("Code") },
+                label = { Text("Code", color = MaterialTheme.colorScheme.outlineVariant) },
                 visualTransformation = VisualTransformation.None,
                 keyboardOptions = keyboardOptions,
                 modifier = Modifier.fillMaxWidth().border(

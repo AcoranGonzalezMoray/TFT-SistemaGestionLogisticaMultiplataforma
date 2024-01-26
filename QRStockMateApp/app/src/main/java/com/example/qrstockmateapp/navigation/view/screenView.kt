@@ -33,6 +33,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddBusiness
 import androidx.compose.material.icons.filled.AddLocationAlt
 import androidx.compose.material.icons.filled.Apartment
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.DirectionsCar
 import androidx.compose.material.icons.filled.ExitToApp
@@ -84,6 +85,7 @@ import com.example.qrstockmateapp.navigation.widget.AnimatedBottomBar
 import com.example.qrstockmateapp.ui.theme.BlueSystem
 import com.example.qrstockmateapp.ui.theme.isDarkMode
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -97,6 +99,8 @@ fun BottomNavigationScreen(navControllerLogin: NavController,sharedPreferences: 
     val scaffoldState = rememberScaffoldState(rememberDrawerState(DrawerValue.Closed))
     val scope = rememberCoroutineScope()
     var drawerGesturesEnabled by remember { mutableStateOf(true) }
+
+    val chat = setOf("chat")
 
     val navController = rememberNavController()
     DisposableEffect(navController) {
@@ -185,30 +189,41 @@ fun BottomNavigationScreen(navControllerLogin: NavController,sharedPreferences: 
                             ) {
                                 // Imagen en el centro
                                 Image(
-                                    painter = painterResource(id = R.drawable.icon_white),
+                                    painter = painterResource(id = R.drawable.app_icon_removed),
                                     contentDescription = "",
-                                    colorFilter = ColorFilter.tint(Color(0xff5a79ba))
                                 )
                             }
 
                             // Icono a la derecha
-                            Box(
-                                modifier = Modifier
-                                    .padding(end = 16.dp)
-                                    .fillMaxHeight()
-                                    .wrapContentSize(Alignment.Center),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                androidx.compose.material3.Icon(
-                                    imageVector = Icons.Filled.Message,
-                                    contentDescription = null,
-                                    tint = Color(0xff5a79ba)
-                                )
-                                Badge(
-                                    content = { Text(text = "5", color = Color.White) },
-                                    modifier = Modifier.offset(x = 12.dp, y = -8.dp)
-                                )
-                            }
+                           Box(
+
+                               modifier = Modifier
+                                   .padding(end = 16.dp)
+                                   .fillMaxHeight()
+                                   .wrapContentSize(Alignment.Center)
+                                   .clickable {
+                                       DataRepository.setSplash("chat")
+                                       navController.navigate("splashScreen")
+                                   },
+                               contentAlignment = Alignment.Center
+                           ) {
+                               if(currentRoute !in chat){
+                                   Image(
+                                       painter = painterResource(id = R.drawable.message_icon),
+                                       modifier = Modifier.size(25.dp),
+                                       contentDescription = "",
+                                   )
+                                   Badge(
+                                       content = { Text(text = "5", color = Color.White) },
+                                       modifier = Modifier.offset(x = 12.dp, y = -8.dp)
+                                   )
+                               }else{
+                                   Icon(imageVector = Icons.Filled.Close, contentDescription = null, tint = BlueSystem, modifier = Modifier.clickable {
+                                       navController.navigate("home")
+                                   })
+                               }
+                           }
+
                         }
                     },
                     navigationIcon = {
@@ -234,13 +249,25 @@ fun BottomNavigationScreen(navControllerLogin: NavController,sharedPreferences: 
         },
 
         bottomBar = {
-            val excludedRoutes = setOf("addVehicle","updateVehicle", "route", "routeMinus", "addWarehouse", "updateWarehouse", "updateUser", "addRoute", "updateRoute")
-
+            val excludedRoutes = setOf("splashScreen","addVehicle","updateVehicle", "route", "routeMinus", "addWarehouse", "updateWarehouse", "updateUser", "addRoute", "updateRoute")
             if (currentRoute !in excludedRoutes) {
-                AnimatedBottomBar(
-                    screens = ScreenModel().screensInHomeFromBottomNav,
-                    navController = navController
-                )
+                if(currentRoute !in chat){
+                    AnimatedBottomBar(
+                        screens = ScreenModel().screensInHomeFromBottomNav,
+                        navController = navController
+                    )
+                }else{
+                    val screens = listOf( //Chat
+                        ScreenModel.HomeScreens.Message,
+                        ScreenModel.HomeScreens.Comunity,
+                        ScreenModel.HomeScreens.Contact
+                    )
+                    AnimatedBottomBar(
+                        screens = screens,
+                        navController = navController
+                    )
+                }
+
             }
         },
     ) {
@@ -251,6 +278,7 @@ fun BottomNavigationScreen(navControllerLogin: NavController,sharedPreferences: 
 }
 
 
+@OptIn(DelicateCoroutinesApi::class)
 @Composable
 fun Drawer(
     item: List<ScreenModel.HomeScreens>,
@@ -373,7 +401,9 @@ fun Drawer(
                             onClick = {
                                 changeMode = false
                                 sharedPreferences.edit().putInt(KEY_DARK_THEME, selectedOption!!.mode).apply()
-                                context.recreate()
+                                GlobalScope.launch(Dispatchers.Main) {
+                                    context.recreate()
+                                }
                             },
                             colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
                                 containerColor = Color(0xff5a79ba)
@@ -401,6 +431,7 @@ fun Drawer(
                         }
                     }
                 )
+
             }
             Row(
                 modifier = Modifier
@@ -593,7 +624,10 @@ fun Drawer(
                     verticalArrangement = Arrangement.Bottom
 
                 ) {
-                    Spacer(modifier = Modifier.fillMaxWidth().padding(10.dp).weight(9f))
+                    Spacer(modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp)
+                        .weight(9f))
                     Spacer(modifier = Modifier.padding(10.dp))
                     ElevatedButton(
                         colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(

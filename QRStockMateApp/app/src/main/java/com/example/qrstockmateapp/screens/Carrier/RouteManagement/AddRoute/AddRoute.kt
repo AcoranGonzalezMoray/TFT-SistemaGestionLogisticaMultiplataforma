@@ -536,7 +536,7 @@ fun AddRouteScreen(navController: NavController){
 
                         if(selectedOptionVehicle[0]!='S'){
                             //Palets
-                            Text(text = "Shipload (${"%.2f".format(totalWeight).toDouble()} / ${selectedOptionVehicle.split(';')[2].split(':')[1]} Kg): ", color = MaterialTheme.colorScheme.primary )
+                            Text(text = "Shipload (${"%.2f".format(totalWeight).replace(",", ".").toDouble()} / ${selectedOptionVehicle.split(';')[2].split(':')[1]} Kg): ", color = MaterialTheme.colorScheme.primary )
                             Box(modifier = Modifier.fillMaxWidth()) {
                                 ElevatedButton(
                                     modifier = Modifier
@@ -562,7 +562,7 @@ fun AddRouteScreen(navController: NavController){
                                             showDialog = false;
                                             //=======================
                                             myMap.forEach { (key, value) ->
-                                                totalWeight += "%.2f".format(value.split(":")[2].replace(";", "").toDouble()).toDouble()
+                                                totalWeight += "%.2f".format(value.split(":")[2].replace(";", "").toDouble()).replace(",", ".").toDouble()
                                                 val itemIndex = listaItems.indexOfFirst { it.id == key }
                                                 val count = value.split(":")[1].toInt()
                                                 if (itemIndex != -1) listaItems[itemIndex] = listaItems[itemIndex].copy(stock = listaItems[itemIndex].stock - count)
@@ -584,7 +584,7 @@ fun AddRouteScreen(navController: NavController){
                         Column {
                             mapEuroPalet.forEachIndexed { index, map ->
                                 PaletTemplate(map = map, onDelete = { weight ->
-                                    totalWeight -= "%.2f".format(weight).toDouble()
+                                    totalWeight -= "%.2f".format(weight).replace(",", ".").toDouble()
 
                                     map.forEach{(key, value)->
                                         val itemIndex = listaItems.indexOfFirst { it.id == key}
@@ -787,7 +787,7 @@ fun ShowListDialog(listaItems: List<Item>, onDismiss: () -> Unit, onSuccessfully
     var totalWeight by rememberSaveable { mutableStateOf(0.0) }
 
     val roundedTotalWeight = remember(totalWeight) {
-        String.format("%.2f", Math.round(totalWeight * 100.0) / 100.0).toDouble()
+        String.format("%.2f", Math.round(totalWeight * 100.0) / 100.0).replace(",", ".").toDouble()
     }
     Dialog(
         onDismissRequest = onDismiss,
@@ -992,7 +992,7 @@ fun PaletTemplate(map: Map<Int, String>, onDelete: (Double) -> Unit) {
     // Calcular el peso cada vez que cambia el mapa
     LaunchedEffect(map) {
         weight = map.values.sumByDouble {
-            "%.2f".format(it.split(":")[2].replace(";", "").toDouble()).toDouble()
+            "%.2f".format(it.split(":")[2].replace(";", "").toDouble()).replace(",", ".").toDouble()
         }
     }
 

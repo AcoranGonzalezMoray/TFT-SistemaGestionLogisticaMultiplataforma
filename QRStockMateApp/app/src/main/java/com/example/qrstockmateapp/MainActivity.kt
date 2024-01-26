@@ -34,6 +34,7 @@ import com.example.qrstockmateapp.screens.Auth.JoinWithCode.JoinWithCodeScreen
 import com.example.qrstockmateapp.screens.Auth.Login.Login
 import com.example.qrstockmateapp.screens.Auth.SignUp.SignUpScreen
 import com.example.qrstockmateapp.ui.theme.QRStockMateAppTheme
+import com.example.qrstockmateapp.ui.theme.splashScreen
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -175,7 +176,7 @@ fun navigateToBottomScreen(
     onSaveTokenAndUser: (String, User) -> Unit,
     sharedPreferences: SharedPreferences
 ) {
-    NavHost(navController = navController, startDestination = "bottomScreen"){
+    NavHost(navController = navController, startDestination = "splashScreen"){
         // Pantallas de Autenticacion
         composable("login") {
             Login(navController = navController) { loggedIn,user,token ->
@@ -202,7 +203,9 @@ fun navigateToBottomScreen(
         composable("signUp"){
             SignUpScreen(navController = navController)
         }
-
+        composable("splashScreen"){
+            splashScreen(navController = navController)
+        }
         //Aplicacion Con sus Funciones
         composable("bottomScreen") {
             BottomNavigationScreen(navController,sharedPreferences)
@@ -211,7 +214,8 @@ fun navigateToBottomScreen(
     LaunchedEffect(Unit) {
         withContext(Dispatchers.Main) {
             Initializaton(user = savedUser, token = savedToken)
-            navController.navigate("bottomScreen")
+            DataRepository.setSplash("bottomScreen")
+            navController.navigate("splashScreen")
         }
     }
 }
@@ -231,7 +235,7 @@ fun NavigationContent(
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Navigation(navController: NavHostController, onSaveTokenAndUser: (String, User) -> Unit,sharedPreferences: SharedPreferences) {
-    NavHost(navController = navController, startDestination = "login") {
+    NavHost(navController = navController, startDestination = "splashScreen") {
         // Pantallas de Autenticacion
         composable("login") {
             Login(navController = navController) { loggedIn,user,token ->
@@ -246,7 +250,10 @@ fun Navigation(navController: NavHostController, onSaveTokenAndUser: (String, Us
                 }
             }
         }
-
+        composable("splashScreen"){
+            DataRepository.setSplash("login")
+            splashScreen(navController = navController)
+        }
         composable("forgotPassword"){
             ForgotPassword(navController = navController) {}
         }

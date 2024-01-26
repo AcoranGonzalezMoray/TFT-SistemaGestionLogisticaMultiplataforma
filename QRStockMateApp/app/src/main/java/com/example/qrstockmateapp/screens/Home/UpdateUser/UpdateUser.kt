@@ -338,7 +338,7 @@ fun UpdateUserScreen(navController: NavController) {
                         TextField(
                             value = name,
                             shape = RoundedCornerShape(8.dp),
-                            label = { Text("Name") },
+                            label = { Text("Name", color = MaterialTheme.colorScheme.outlineVariant) },
                             onValueChange = { name = it },
                             colors= customTextFieldColors,
                             modifier = Modifier
@@ -354,7 +354,7 @@ fun UpdateUserScreen(navController: NavController) {
                         TextField(
                             value = email,
                             shape = RoundedCornerShape(8.dp),
-                            label = { Text("Email") },
+                            label = { Text("Email", color = MaterialTheme.colorScheme.outlineVariant) },
                             onValueChange = {email = it },
                             colors= customTextFieldColors,
                             modifier = Modifier
@@ -370,7 +370,7 @@ fun UpdateUserScreen(navController: NavController) {
                         TextField(
                             value = phone,
                             shape = RoundedCornerShape(8.dp),
-                            label = { Text("Phone") },
+                            label = { Text("Phone", color = MaterialTheme.colorScheme.outlineVariant) },
                             onValueChange = { phone = it },
                             colors= customTextFieldColors,
                             modifier = Modifier
