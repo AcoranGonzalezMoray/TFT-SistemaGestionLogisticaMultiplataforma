@@ -56,14 +56,30 @@ private val LightColorScheme = lightColorScheme(
 
 @Composable
 fun QRStockMateAppTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    darkTheme: Int,
     content: @Composable () -> Unit
 ) {
+    var darkThemeOption = when (darkTheme) {
+        0 -> true
+        1 -> false
+        else -> isSystemInDarkTheme()
+    }
     MaterialTheme(
-        colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme,
+        colorScheme = if (darkThemeOption) DarkColorScheme else LightColorScheme,
         /* Define typography and shapes if needed */
         content = content
     )
+
+    val view = LocalView.current
+    if (!view.isInEditMode) {
+        SideEffect {
+            val window = (view.context as Activity).window
+            window.statusBarColor = if(darkThemeOption) DarkColorScheme.secondaryContainer.toArgb() else LightColorScheme.secondaryContainer.toArgb()
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars =!darkThemeOption
+        }
+    }
+
+
 }
 @Composable
 fun isDarkMode(): Boolean {

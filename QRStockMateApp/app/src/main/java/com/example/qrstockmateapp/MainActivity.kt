@@ -16,6 +16,9 @@ import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
@@ -61,7 +64,7 @@ class MainActivity : ComponentActivity() {
             )
         }
         setContent {
-            QRStockMateAppTheme {
+            QRStockMateAppTheme(sharedPreferences.getInt(KEY_DARK_THEME, 2)) {
                 val navController = rememberNavController()
                 // Verificar si hay un token y un usuario almacenados
                 val savedToken = sharedPreferences.getString(KEY_TOKEN, null)
@@ -160,6 +163,7 @@ class MainActivity : ComponentActivity() {
         private const val PERMISSION_CAMERA_REQUEST = 1
         private const val KEY_TOKEN = "TOKEN_KEY"
         private const val KEY_USER = "USER_KEY"
+        const val KEY_DARK_THEME = "dark_theme_preference"
     }
 }
 @RequiresApi(Build.VERSION_CODES.O)

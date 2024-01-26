@@ -1,6 +1,7 @@
 package com.example.qrstockmateapp.navigation.view
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.SharedPreferences
 import android.os.Build
 import android.util.Log
@@ -60,6 +61,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -70,6 +72,8 @@ import androidx.core.content.edit
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.qrstockmateapp.MainActivity
+import com.example.qrstockmateapp.MainActivity.Companion.KEY_DARK_THEME
 import com.example.qrstockmateapp.R
 import com.example.qrstockmateapp.api.models.User
 import com.example.qrstockmateapp.api.services.RetrofitInstance
@@ -258,6 +262,7 @@ fun Drawer(
 ) {
     var showDialog by remember { mutableStateOf(false) }
     var changeMode by remember { mutableStateOf(false) }
+    val context = LocalContext.current as Activity
 
     val deleteAccount:()->Unit = {
         GlobalScope.launch(Dispatchers.IO) {
@@ -342,7 +347,12 @@ fun Drawer(
                 )
             }
             if (changeMode) {
-                var selectedOption by remember { mutableStateOf<Option?>(null) }
+                val options = listOf(
+                    Option("Dark Mode", Icons.Default.DarkMode, 0),
+                    Option("Light Mode", Icons.Default.LightMode, 1),
+                    Option("System Mode", Icons.Default.SystemUpdate, 2),
+                )
+                var selectedOption by remember { mutableStateOf<Option?>(options[sharedPreferences.getInt(KEY_DARK_THEME, 2)]) }
 
                 AlertDialog(
                     backgroundColor = MaterialTheme.colorScheme.background,
@@ -361,9 +371,9 @@ fun Drawer(
                     confirmButton = {
                         ElevatedButton(
                             onClick = {
-                                //sharedPreferences.edit().clear().apply()
-
                                 changeMode = false
+                                sharedPreferences.edit().putInt(KEY_DARK_THEME, selectedOption!!.mode).apply()
+                                context.recreate()
                             },
                             colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
                                 containerColor = Color(0xff5a79ba)
@@ -569,7 +579,7 @@ fun Drawer(
                             if(isDarkMode()){
                                 Icon(imageVector = Icons.Filled.DarkMode, contentDescription = null, tint = Color.White)
                             }else{
-                                Icon(imageVector = Icons.Filled.LightMode, contentDescription = null, tint = Color.Black)
+                                Icon(imageVector = Icons.Filled.LightMode, contentDescription = null, tint = Color.White)
                             }
                         }
                     }
@@ -583,7 +593,21 @@ fun Drawer(
                     verticalArrangement = Arrangement.Bottom
 
                 ) {
-                    Icon(imageVector = Icons.Filled.Settings, contentDescription = null )
+                    Spacer(modifier = Modifier.fillMaxWidth().padding(10.dp).weight(9f))
+                    Spacer(modifier = Modifier.padding(10.dp))
+                    ElevatedButton(
+                        colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                            containerColor = BlueSystem,
+                        )
+                        ,onClick = {
+                            changeMode = true
+                        }) {
+                        if(isDarkMode()){
+                            Icon(imageVector = Icons.Filled.DarkMode, contentDescription = null, tint = Color.White)
+                        }else{
+                            Icon(imageVector = Icons.Filled.LightMode, contentDescription = null, tint = Color.White)
+                        }
+                    }
                 }
             }
 
@@ -595,13 +619,13 @@ fun Drawer(
 
 }
 
-data class Option(val label: String, val icon: ImageVector)
+data class Option(val label: String, val icon: ImageVector, val mode: Int)
 @Composable
 fun StyleSelectionBox(selectedOption: Option?, onOptionSelected: (Option) -> Unit) {
     val options = listOf(
-        Option("Dark Mode", Icons.Default.DarkMode),
-        Option("Light Mode", Icons.Default.LightMode),
-        Option("System Mode", Icons.Default.SystemUpdate),
+        Option("Dark Mode", Icons.Default.DarkMode, 0),
+        Option("Light Mode", Icons.Default.LightMode, 1),
+        Option("System Mode", Icons.Default.SystemUpdate, 2),
     )
 
     Column(
