@@ -57,6 +57,10 @@ dependencies {
 
     implementation ("androidx.compose.material:material-icons-extended:1.6.0-alpha07")
 
+    implementation ("com.google.android.exoplayer:exoplayer-core:2.16.1")
+    implementation ("com.google.android.exoplayer:exoplayer-ui:2.16.1")
+
+
     implementation("com.exyte:animated-navigation-bar:1.0.0")
     implementation ("com.airbnb.android:lottie-compose:6.0.0")
     implementation ("com.google.maps.android:maps-compose:2.15.0")

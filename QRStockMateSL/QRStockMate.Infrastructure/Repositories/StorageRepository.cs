@@ -62,5 +62,58 @@ namespace QRStockMate.Infrastructure.Repositories
 
             return downloadURL;
         }
-    }
+
+
+		public async Task DeleteAudio(string name)
+		{
+			var auth = new FirebaseAuthProvider(new FirebaseConfig(api_key));
+			var a = await auth.SignInWithEmailAndPasswordAsync(email, clave);
+
+			var cancellation = new CancellationTokenSource();
+
+			// Parsear la URL
+			Uri uri = new Uri(name);
+
+			// Obtener el nombre del archivo
+			string fileName = System.IO.Path.GetFileName(uri.LocalPath);
+
+
+			await new FirebaseStorage(
+				ruta,
+				new FirebaseStorageOptions
+				{
+					AuthTokenAsyncFactory = () => Task.FromResult(a.FirebaseToken),
+					ThrowOnCancel = true
+				})
+				.Child("Audios")
+				.Child(fileName)
+				.DeleteAsync();
+		}
+
+
+		public async Task<string> UploadAudio(Stream archivo, string name)
+		{
+			var auth = new FirebaseAuthProvider(new FirebaseConfig(api_key));
+			var a = await auth.SignInWithEmailAndPasswordAsync(email, clave);
+
+			var cancellation = new CancellationTokenSource();
+			string nameNew = DateTime.Now.ToString().Replace("/", "_").Replace(" ", "_") + "_" +name;
+			var task = new FirebaseStorage(
+				ruta,
+				new FirebaseStorageOptions
+				{
+					AuthTokenAsyncFactory = () => Task.FromResult(a.FirebaseToken),
+					ThrowOnCancel = true
+				})
+				.Child("Audios")
+				.Child(nameNew)
+				.PutAsync(archivo, cancellation.Token);
+
+
+			var downloadURL = await task;
+
+
+			return downloadURL;
+		}
+	}
 }

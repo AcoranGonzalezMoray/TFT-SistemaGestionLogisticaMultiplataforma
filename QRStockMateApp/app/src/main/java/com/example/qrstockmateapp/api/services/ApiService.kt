@@ -2,6 +2,7 @@ package com.example.qrstockmateapp.api.services
 
 import com.example.qrstockmateapp.api.models.Company
 import com.example.qrstockmateapp.api.models.Item
+import com.example.qrstockmateapp.api.models.Message
 import com.example.qrstockmateapp.api.models.Transaction
 import com.example.qrstockmateapp.api.models.TransportRoute
 import com.example.qrstockmateapp.api.models.User
@@ -81,6 +82,20 @@ interface ApiService {
         @Part image: MultipartBody.Part
     ):Response<Void>
 
+
+    @Multipart
+    @POST("Message/UploadAudio/")
+    suspend fun uploadAudio(
+        @Part audio: MultipartBody.Part,
+        @Part("code") code: RequestBody,
+        @Part("senderContactId") senderContactId: RequestBody,
+        @Part("receiverContactId") receiverContactId: RequestBody,
+        @Part("content") content: RequestBody,
+        @Part("sentDate") sentDate: RequestBody,
+        @Part("type") type: RequestBody
+    ): Response<Void>
+
+
     @Multipart
     @POST("User/UpdateImage")
     suspend fun updateImageUser(
@@ -124,6 +139,18 @@ interface ApiService {
         @Path("Id") Id: Int,
         @Body item: Item
     ):Response<Void>
+
+
+    @GET("Message/MessageByCode/{code}")
+    suspend fun getMessageByCode(
+        @Path("code") code: String
+    ): Response<List<Message>>
+
+    @POST("Message/")
+    suspend fun sendMessage(
+        @Body message: Message
+    ):Response<Void>
+
 
 
 

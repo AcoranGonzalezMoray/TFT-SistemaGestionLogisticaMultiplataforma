@@ -93,6 +93,39 @@ namespace QRStockMate.Infrastructure.Migrations
                     b.ToTable("Items");
                 });
 
+            modelBuilder.Entity("QRStockMate.AplicationCore.Entities.Message", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ReceiverContactId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SenderContactId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("SentDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.Property<string>("code")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Messages");
+                });
+
             modelBuilder.Entity("QRStockMate.AplicationCore.Entities.TransactionHistory", b =>
                 {
                     b.Property<int>("Id")

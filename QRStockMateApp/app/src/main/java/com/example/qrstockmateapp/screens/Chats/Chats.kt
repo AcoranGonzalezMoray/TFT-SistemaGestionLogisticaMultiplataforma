@@ -1,4 +1,4 @@
-package com.example.qrstockmateapp.screens.Chat
+package com.example.qrstockmateapp.screens.Chats
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -9,7 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 
 @Composable
-fun ChatScreen(navController: NavController){
+fun ChatsScreen(navController: NavController){
     Column(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
 
 

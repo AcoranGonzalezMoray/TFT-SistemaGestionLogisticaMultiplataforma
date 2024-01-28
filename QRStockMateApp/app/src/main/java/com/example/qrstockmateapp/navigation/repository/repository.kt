@@ -2,6 +2,7 @@ package com.example.qrstockmateapp.navigation.repository
 
 import com.example.qrstockmateapp.api.models.Company
 import com.example.qrstockmateapp.api.models.Item
+import com.example.qrstockmateapp.api.models.Message
 import com.example.qrstockmateapp.api.models.TransportRoute
 import com.example.qrstockmateapp.api.models.User
 import com.example.qrstockmateapp.api.models.Vehicle
@@ -22,6 +23,17 @@ object DataRepository {
     private var routePlus: TransportRoute? = null
     private var vehiclePlus: Vehicle? = null
     private var routeSplash: String? = null
+
+    private var messages: List<Message>? = null
+
+    fun setMessages(newMessages: List<Message>) {
+        messages = newMessages
+    }
+
+    fun getMessages():List<Message>? {
+        return messages
+    }
+
 
     fun setVehiclePlus(vehicle: Vehicle) {
         vehiclePlus = vehicle

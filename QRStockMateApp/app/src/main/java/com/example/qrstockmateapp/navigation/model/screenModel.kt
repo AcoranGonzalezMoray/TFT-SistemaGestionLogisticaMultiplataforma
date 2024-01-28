@@ -63,9 +63,9 @@ class ScreenModel {
         object Search : HomeScreens("search", "Search", Icons.Filled.Search, Icons.Outlined.Search)
         object Profile : HomeScreens("profile", "Profile", Icons.Filled.Badge, Icons.Outlined.Badge)
 
-        object Message : HomeScreens("profile", "Message", Icons.Filled.Message, Icons.Outlined.Message)
+        object Message : HomeScreens("chats", "Chats", Icons.Filled.Message, Icons.Outlined.Message)
         object Comunity : HomeScreens("profile", "Comunication", Icons.Filled.WorkHistory, Icons.Outlined.WorkHistory)
-        object Contact : HomeScreens("profile", "Contact", Icons.Filled.Contacts, Icons.Outlined.Contacts)
+        object Contact : HomeScreens("contact", "Contact", Icons.Filled.Contacts, Icons.Outlined.Contacts)
     }
 
 

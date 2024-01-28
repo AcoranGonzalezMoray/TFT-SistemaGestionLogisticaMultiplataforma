@@ -10,5 +10,7 @@ namespace QRStockMate.AplicationCore.Interfaces.Repositories
     {
         Task<string> UploadImage(Stream archivo, string name);
         Task DeleteImage(string url);
-    }
+		Task<string> UploadAudio(Stream archivo, string name);
+		Task DeleteAudio(string url);
+	}
 }

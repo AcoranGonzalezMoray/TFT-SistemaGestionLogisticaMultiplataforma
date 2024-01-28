@@ -35,6 +35,10 @@ namespace CleanArquitecture.Api.Mapping
 			//TransportRoute
 			CreateMap<TransportRoute, TransportRouteModel>();
 			CreateMap<TransportRouteModel, TransportRoute>();
+
+            //Message
+            CreateMap<Message, MessageModel>();
+			CreateMap<MessageModel, Message>();
 		}
     }
 }

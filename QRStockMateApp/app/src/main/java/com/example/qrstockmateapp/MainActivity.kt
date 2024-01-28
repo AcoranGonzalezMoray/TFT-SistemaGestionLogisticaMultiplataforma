@@ -34,6 +34,7 @@ import com.example.qrstockmateapp.screens.Auth.JoinWithCode.JoinWithCodeScreen
 import com.example.qrstockmateapp.screens.Auth.Login.Login
 import com.example.qrstockmateapp.screens.Auth.SignUp.SignUpScreen
 import com.example.qrstockmateapp.ui.theme.QRStockMateAppTheme
+import com.example.qrstockmateapp.ui.theme.errorApiScreen
 import com.example.qrstockmateapp.ui.theme.splashScreen
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
@@ -184,9 +185,11 @@ fun navigateToBottomScreen(
                     // Ejecutar la navegación en el hilo principal
                     CoroutineScope(Dispatchers.Main).launch {
                         //se guarda aqui shared prefe
-                        Initializaton(user = user, token=token)
-                        onSaveTokenAndUser(token, user)
-                        navController.navigate("bottomScreen")
+                        Initializaton(navController = navController,user = user, token=token, onError = { navController.navigate("errorApiScreen") },
+                            onSuccess = {
+                                onSaveTokenAndUser(token, user)
+                                navController.navigate("bottomScreen")
+                            })
                     }
                 }
             }
@@ -206,6 +209,9 @@ fun navigateToBottomScreen(
         composable("splashScreen"){
             splashScreen(navController = navController)
         }
+        composable("errorApiScreen") {
+            errorApiScreen(navController = navController)
+        }
         //Aplicacion Con sus Funciones
         composable("bottomScreen") {
             BottomNavigationScreen(navController,sharedPreferences)
@@ -213,9 +219,11 @@ fun navigateToBottomScreen(
     }
     LaunchedEffect(Unit) {
         withContext(Dispatchers.Main) {
-            Initializaton(user = savedUser, token = savedToken)
-            DataRepository.setSplash("bottomScreen")
-            navController.navigate("splashScreen")
+            Initializaton(navController = navController, user = savedUser, token = savedToken, onError = { navController.navigate("errorApiScreen") },
+                onSuccess = {
+                    DataRepository.setSplash("bottomScreen")
+                    navController.navigate("splashScreen")
+                })
         }
     }
 }
@@ -243,9 +251,11 @@ fun Navigation(navController: NavHostController, onSaveTokenAndUser: (String, Us
                     // Ejecutar la navegación en el hilo principal
                     CoroutineScope(Dispatchers.Main).launch {
                         //se guarda aqui shared prefe
-                        Initializaton(user = user, token=token)
-                        onSaveTokenAndUser(token, user)
-                        navController.navigate("bottomScreen")
+                        Initializaton(navController = navController, user = user, token=token,
+                            onError = { navController.navigate("errorApiScreen") },
+                            onSuccess = {
+                                onSaveTokenAndUser(token, user)
+                                navController.navigate("bottomScreen") })
                     }
                 }
             }
@@ -265,7 +275,9 @@ fun Navigation(navController: NavHostController, onSaveTokenAndUser: (String, Us
         composable("signUp"){
             SignUpScreen(navController = navController)
         }
-
+        composable("errorApiScreen") {
+            errorApiScreen(navController = navController)
+        }
         //Aplicacion Con sus Funciones
         composable("bottomScreen") {
             BottomNavigationScreen(navController,sharedPreferences)
@@ -273,28 +285,35 @@ fun Navigation(navController: NavHostController, onSaveTokenAndUser: (String, Us
     }
 }
 
-suspend fun Initializaton(user: User, token:String){
+suspend fun Initializaton(navController: NavHostController, user: User, token:String, onError: ()-> Unit, onSuccess: ()-> Unit){
     DataRepository.setToken(token)
     RetrofitInstance.updateToken(token)
-    val companyResponse = RetrofitInstance.api.getCompanyByUser(user)
-    if (companyResponse.isSuccessful) {
-        val company = companyResponse.body()
-        if(company!=null)DataRepository.setCompany(company)
-    } else Log.d("compnayError", "error")
+   try {
+       val companyResponse = RetrofitInstance.api.getCompanyByUser(user)
+       if (companyResponse.isSuccessful) {
+           val company = companyResponse.body()
+           if(company!=null)DataRepository.setCompany(company)
+       } else Log.d("compnayError", "error")
 
 
-    val company = DataRepository.getCompany()
-    if(company!=null){
-        val employeesResponse = RetrofitInstance.api.getEmployees(company)
-        if (employeesResponse.isSuccessful) {
-            val employees = employeesResponse.body()
-            Log.d("EMPLOYEE", "${employees}")
-            if(employees!=null){
-                DataRepository.setEmployees(employees)
-                employees.find { it.id == user.id }?.let { DataRepository.setUser(it) }
-            }
-        } else Log.d("compnayError", "error")
-    }
+       val company = DataRepository.getCompany()
+       if(company!=null){
+           val employeesResponse = RetrofitInstance.api.getEmployees(company)
+           if (employeesResponse.isSuccessful) {
+               val employees = employeesResponse.body()
+               Log.d("EMPLOYEE", "${employees}")
+               if(employees!=null){
+                   DataRepository.setEmployees(employees)
+                   employees.find { it.id == user.id }?.let { DataRepository.setUser(it) }
+               }
+           } else Log.d("compnayError", "error")
+       }
+
+       onSuccess()
+   }catch (e: Exception) {
+       Log.e("APIError", "An error occurred: ${e.message}", e)
+       onError()
+   }
 
 }
 

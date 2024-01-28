@@ -100,7 +100,7 @@ fun BottomNavigationScreen(navControllerLogin: NavController,sharedPreferences: 
     val scope = rememberCoroutineScope()
     var drawerGesturesEnabled by remember { mutableStateOf(true) }
 
-    val chat = setOf("chat")
+    val chat = setOf("chats", "chat", "contact")
 
     val navController = rememberNavController()
     DisposableEffect(navController) {
@@ -165,7 +165,7 @@ fun BottomNavigationScreen(navControllerLogin: NavController,sharedPreferences: 
             )
         },
         topBar = {
-            val excludedRoutes = setOf("addVehicle","updateVehicle","route", "routeMinus", "addWarehouse", "updateWarehouse", "updateUser", "addRoute", "updateRoute")
+            val excludedRoutes = setOf("chat","addVehicle","updateVehicle","route", "routeMinus", "addWarehouse", "updateWarehouse", "updateUser", "addRoute", "updateRoute")
 
             if (currentRoute !in excludedRoutes) {
                 TopAppBar(
@@ -202,7 +202,7 @@ fun BottomNavigationScreen(navControllerLogin: NavController,sharedPreferences: 
                                    .fillMaxHeight()
                                    .wrapContentSize(Alignment.Center)
                                    .clickable {
-                                       DataRepository.setSplash("chat")
+                                       DataRepository.setSplash("chats")
                                        navController.navigate("splashScreen")
                                    },
                                contentAlignment = Alignment.Center
@@ -249,7 +249,7 @@ fun BottomNavigationScreen(navControllerLogin: NavController,sharedPreferences: 
         },
 
         bottomBar = {
-            val excludedRoutes = setOf("splashScreen","addVehicle","updateVehicle", "route", "routeMinus", "addWarehouse", "updateWarehouse", "updateUser", "addRoute", "updateRoute")
+            val excludedRoutes = setOf("chat","splashScreen","addVehicle","updateVehicle", "route", "routeMinus", "addWarehouse", "updateWarehouse", "updateUser", "addRoute", "updateRoute")
             if (currentRoute !in excludedRoutes) {
                 if(currentRoute !in chat){
                     AnimatedBottomBar(

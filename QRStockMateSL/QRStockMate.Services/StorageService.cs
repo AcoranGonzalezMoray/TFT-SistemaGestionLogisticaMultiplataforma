@@ -22,5 +22,15 @@ namespace QRStockMate.Services
         {
             return await _storageRepository.UploadImage(archivo, name);
         }
-    }
+
+		public async Task DeleteAudio(string url)
+		{
+			await _storageRepository.DeleteAudio(url);
+		}
+
+		public async Task<string> UploadAudio(Stream archivo, string name)
+		{
+			return await _storageRepository.UploadAudio(archivo, name);
+		}
+	}
 }

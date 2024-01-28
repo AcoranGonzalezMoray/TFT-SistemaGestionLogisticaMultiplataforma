@@ -72,14 +72,23 @@ builder.Services.AddScoped(typeof(IVehicleRepository), typeof(VehicleRepository)
 builder.Services.AddScoped(typeof(ITransportRouteService), typeof(TransportRouteService));
 builder.Services.AddScoped(typeof(ITransportRouteRepository), typeof(TransportRouteRepository));
 
-//StorageFirebase
+    //StorageFirebase
 builder.Services.AddScoped(typeof(IStorageService), typeof(StorageService));
 builder.Services.AddScoped(typeof(IStorageRepository), typeof(StorageRepository));
 
-    //AutoMapper
+    //StorageFirebase
+builder.Services.AddScoped(typeof(IMessageService), typeof(MessageService));
+builder.Services.AddScoped(typeof(IMessageRepository), typeof(MessageRepository));
+
+
+//AutoMapper
 builder.Services.AddAutoMapper(typeof(Program));
 
-    //JWT
+
+
+
+
+//JWT
 builder.Services.AddScoped<IJwtTokenRepository, JwtTokenRepository>();
 
 //CORS
