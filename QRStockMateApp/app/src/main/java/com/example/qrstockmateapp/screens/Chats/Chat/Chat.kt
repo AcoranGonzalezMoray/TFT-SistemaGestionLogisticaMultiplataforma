@@ -151,13 +151,26 @@ fun ChatScreen(navController: NavController) {
                 if (response.isSuccessful) {
                     val newMessage = response.body()
                     if (newMessage != null) {
-                        messages = response.body()?.filter { message ->
+                        val newMessagesList = newMessage.filter { message ->
                             // Filtrar mensajes enviados por el usuario actual
                             (message.senderContactId == DataRepository.getUser()?.id && message.receiverContactId == DataRepository.getUserPlus()?.id) ||
 
                                     // Filtrar mensajes enviados al usuario actual
                                     (message.senderContactId == DataRepository.getUserPlus()?.id && message.receiverContactId == DataRepository.getUser()?.id)
-                        } ?: emptyList()
+                        }
+
+                        // Verificar si hay nuevos mensajes
+                        val hasNewMessages = newMessagesList.any { newMessage ->
+                            !messages.any { oldMessage ->
+                                newMessage.id == oldMessage.id
+                            }
+                        }
+
+                        if (hasNewMessages) {
+                            // Añadir los nuevos mensajes al final de la lista
+                            messages = newMessagesList
+                            goBottom()
+                        }
                     }
                 }
                 Log.d("sigue", "${messages}")

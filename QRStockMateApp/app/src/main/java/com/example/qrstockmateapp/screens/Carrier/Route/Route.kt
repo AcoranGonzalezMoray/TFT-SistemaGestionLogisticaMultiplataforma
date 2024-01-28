@@ -1,9 +1,13 @@
 package com.example.qrstockmateapp.screens.Carrier.Route
 
 import android.Manifest
+import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.location.Location
+import android.location.LocationManager
+import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -442,17 +446,30 @@ fun RouteScreen(navController: NavController,) {
             // Contenido del Bottom Sheet
             BottomSheetContent(scope, scaffoldState,isRouteStarted, haversine(userRoutePoints),
                 onStartRoute = {
-                    isRouteStarted = true
+                    val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+                    val isLocationEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
+                            locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
 
-                    GlobalScope.launch(Dispatchers.Main) {
-                        cameraPositionState.animate(
-                            update = CameraUpdateFactory.newCameraPosition(
-                                CameraPosition(LatLng(currentLocation!!.latitude, currentLocation!!.longitude), 15f, 50f, 0f)
-                            ),
-                            durationMs = 2000
-                        )
+                    if (!isLocationEnabled) {
+                        // La ubicación no está activada, mostrar un mensaje y ofrecer activarla
+                        Toast.makeText(context, "La ubicación no está activada. Actívela para continuar.", Toast.LENGTH_LONG).show()
+
+                        // Puedes lanzar la configuración de ubicación para que el usuario la active
+                        val settingsIntent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                        context.startActivity(settingsIntent)
+                    }else{
+                        isRouteStarted = true
+
+                        GlobalScope.launch(Dispatchers.Main) {
+                            cameraPositionState.animate(
+                                update = CameraUpdateFactory.newCameraPosition(
+                                    CameraPosition(LatLng(currentLocation!!.latitude, currentLocation!!.longitude), 15f, 50f, 0f)
+                                ),
+                                durationMs = 2000
+                            )
+                        }
+                        startRoute()
                     }
-                    startRoute()
                                },
                 onFinishRoute = {
                     isRouteStarted = false

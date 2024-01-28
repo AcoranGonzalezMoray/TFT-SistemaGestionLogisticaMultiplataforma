@@ -81,15 +81,15 @@ fun EmployeeItem(employee: User, navController: NavController) {
 
            // Employee details
            Column {
-               Text(text = employee.name, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary)
-               Text(text = employee.email, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary)
+               Text(text = employee.name, style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
+               Text(text = employee.email, style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
                Row(
                    verticalAlignment = Alignment.CenterVertically,
                    modifier = Modifier.background(MaterialTheme.colorScheme.background)
                ) {
                    Icon(imageVector = Icons.Default.Phone, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(15.dp))
                    Spacer(modifier = Modifier.width(8.dp))
-                   Text(text = employee.phone, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary)
+                   Text(text = employee.phone, style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
                }
            }
        }

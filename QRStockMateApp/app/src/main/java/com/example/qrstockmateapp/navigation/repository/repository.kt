@@ -23,8 +23,19 @@ object DataRepository {
     private var routePlus: TransportRoute? = null
     private var vehiclePlus: Vehicle? = null
     private var routeSplash: String? = null
-
+    private var newMessages: Int? = null
     private var messages: List<Message>? = null
+
+
+    fun setNewMessages(number :Int){
+        newMessages = number
+    }
+
+    fun getNewMessages(): Int?{
+        return newMessages
+    }
+
+
 
     fun setMessages(newMessages: List<Message>) {
         messages = newMessages

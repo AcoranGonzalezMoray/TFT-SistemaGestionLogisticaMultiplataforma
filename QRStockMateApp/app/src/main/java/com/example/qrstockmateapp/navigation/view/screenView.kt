@@ -75,6 +75,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.qrstockmateapp.MainActivity
 import com.example.qrstockmateapp.MainActivity.Companion.KEY_DARK_THEME
+import com.example.qrstockmateapp.MainActivity.Companion.NEW_MESSAGES
 import com.example.qrstockmateapp.R
 import com.example.qrstockmateapp.api.models.User
 import com.example.qrstockmateapp.api.services.RetrofitInstance
@@ -88,6 +89,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -99,10 +101,59 @@ fun BottomNavigationScreen(navControllerLogin: NavController,sharedPreferences: 
     val scaffoldState = rememberScaffoldState(rememberDrawerState(DrawerValue.Closed))
     val scope = rememberCoroutineScope()
     var drawerGesturesEnabled by remember { mutableStateOf(true) }
-
+    val user = DataRepository.getUser()
     val chat = setOf("chats", "chat", "contact")
 
     val navController = rememberNavController()
+    val coroutineScope = rememberCoroutineScope()
+
+
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+
+    var new by remember {
+        mutableStateOf(DataRepository.getNewMessages()?.minus(
+            sharedPreferences.getInt(
+                NEW_MESSAGES, 0)
+        ))
+    }
+    LaunchedEffect(Unit) {
+        val excludedRoutes = setOf("chat","route","routeMinus")
+
+        // Lanzar una corrutina en el alcance de la pantalla
+            coroutineScope.launch(Dispatchers.IO) {
+                while (user!=null){
+                    if(navBackStackEntry?.destination?.route !in excludedRoutes){
+                        Log.d("RUTA", "${navBackStackEntry?.destination?.route}")
+                        try {
+                            val response = RetrofitInstance.api.getNewMessages("${user.code};${user.id}")
+                            if (response.isSuccessful) {
+                                val messages = response.body()
+                                if (messages != null) {
+                                    Log.d("novo", messages.toString())
+                                    DataRepository.setNewMessages(messages)
+                                }else{
+                                    DataRepository.setNewMessages(0)
+                                }
+                            } else {
+                                DataRepository.setNewMessages(0)
+                            }
+                        } catch (e: Exception) {
+                            // Manejar cualquier excepción que pueda ocurrir durante la solicitud
+                            e.printStackTrace()
+                        }
+                        new = DataRepository.getNewMessages()?.minus(
+                            sharedPreferences.getInt(
+                                NEW_MESSAGES, 0)
+                        );
+                    }
+
+                    // Esperar 2 segundos antes de realizar la próxima solicitud
+                    delay(2000)
+                }
+            }
+    }
+
     DisposableEffect(navController) {
         val listener = NavController.OnDestinationChangedListener { _, destination, _ ->
             drawerGesturesEnabled = destination.route != "route" &&  destination.route != "routeMinus"
@@ -114,8 +165,7 @@ fun BottomNavigationScreen(navControllerLogin: NavController,sharedPreferences: 
             navController.removeOnDestinationChangedListener(listener)
         }
     }
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry?.destination?.route
+
 
     Scaffold(
         scaffoldState = scaffoldState,
@@ -213,10 +263,12 @@ fun BottomNavigationScreen(navControllerLogin: NavController,sharedPreferences: 
                                        modifier = Modifier.size(25.dp),
                                        contentDescription = "",
                                    )
-                                   Badge(
-                                       content = { Text(text = "5", color = Color.White) },
-                                       modifier = Modifier.offset(x = 12.dp, y = -8.dp)
-                                   )
+                                   if(new !=null && new!=0){
+                                       Badge(
+                                           content = { Text(text = "${if(new!! >0)new else 0}", color = Color.White) },
+                                           modifier = Modifier.offset(x = 12.dp, y = -8.dp)
+                                       )
+                                   }
                                }else{
                                    Icon(imageVector = Icons.Filled.Close, contentDescription = null, tint = BlueSystem, modifier = Modifier.clickable {
                                        navController.navigate("home")
@@ -271,7 +323,7 @@ fun BottomNavigationScreen(navControllerLogin: NavController,sharedPreferences: 
             }
         },
     ) {
-        Navigation(navController = navController)
+        Navigation(navController = navController, sharedPreferences)
     }
 
 

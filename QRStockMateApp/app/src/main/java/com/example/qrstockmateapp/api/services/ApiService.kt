@@ -70,6 +70,16 @@ interface ApiService {
         @Body user: User
     ): Response<Unit>
 
+    @GET("Message/NewMessage/{format}")
+    suspend fun getNewMessages(
+        @Path("format") format: String,
+    ): Response<Int>
+
+    @HTTP(method = "DELETE", path = "Message/DeleteConversation", hasBody = true) //Para un Delete con Body hay que hacerlo asi
+    suspend fun deleteConversation(
+        @Body users: String
+    ): Response<Void>
+
     @GET("Warehouse/GetItems/{id}")
     suspend fun getItems(
         @Path("id") id: Int,

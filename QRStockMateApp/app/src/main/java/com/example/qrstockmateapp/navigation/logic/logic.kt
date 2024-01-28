@@ -1,5 +1,6 @@
 package com.example.qrstockmateapp.navigation.logic
 
+import android.content.SharedPreferences
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -38,7 +39,7 @@ import com.example.qrstockmateapp.ui.theme.splashScreen
 @OptIn(ExperimentalAnimationApi::class)
 @androidx.annotation.OptIn(androidx.camera.core.ExperimentalGetImage::class)
 @Composable
-fun  Navigation(navController: NavHostController) {
+fun  Navigation(navController: NavHostController, sharedPreferences: SharedPreferences) {
     NavHost(navController = navController, startDestination = "home") {
         composable("home") {
             HomeScreen(navController)
@@ -72,7 +73,7 @@ fun  Navigation(navController: NavHostController) {
             ChatScreen(navController)
         }
         composable("chats"){
-            ChatsScreen(navController)
+            ChatsScreen(navController, sharedPreferences = sharedPreferences)
         }
         composable("contact"){
             ContactScreen(navController)

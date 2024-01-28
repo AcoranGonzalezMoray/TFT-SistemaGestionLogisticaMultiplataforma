@@ -39,6 +39,7 @@ import com.example.qrstockmateapp.ui.theme.splashScreen
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -56,7 +57,8 @@ class MainActivity : ComponentActivity() {
             checkAndRequestNotificationPermission()
         }
 
-
+        Log.d("NEVO SHARE","${sharedPreferences.getInt(
+            MainActivity.NEW_MESSAGES, 0)}")
         if (isCameraPermissionGranted()) { }
         else {
             ActivityCompat.requestPermissions(
@@ -166,6 +168,8 @@ class MainActivity : ComponentActivity() {
         private const val KEY_TOKEN = "TOKEN_KEY"
         private const val KEY_USER = "USER_KEY"
         const val KEY_DARK_THEME = "dark_theme_preference"
+        const val NEW_MESSAGES = "messages"
+
     }
 }
 @RequiresApi(Build.VERSION_CODES.O)
@@ -294,7 +298,6 @@ suspend fun Initializaton(navController: NavHostController, user: User, token:St
            val company = companyResponse.body()
            if(company!=null)DataRepository.setCompany(company)
        } else Log.d("compnayError", "error")
-
 
        val company = DataRepository.getCompany()
        if(company!=null){

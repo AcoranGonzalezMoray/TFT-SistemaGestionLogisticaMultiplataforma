@@ -16,12 +16,14 @@ namespace QRStockMate.Controller
 	{
 		private readonly IMessageService _messageService ;
 		private readonly IStorageService _context_storage;
+		private readonly IUserService _userService;
 		private readonly IMapper _mapper;
 
-		public MessageController(IMessageService messageService, IStorageService context_storage, IMapper mapper)
+		public MessageController(IMessageService messageService, IStorageService context_storage, IUserService userService, IMapper mapper)
 		{
 			_messageService = messageService;
 			_context_storage = context_storage;
+			_userService = userService;
 			_mapper = mapper;
 		}
 
@@ -147,6 +149,72 @@ namespace QRStockMate.Controller
 			{
 
 				return BadRequest(e.Message);//400
+			}
+		}
+
+
+		[HttpDelete("DeleteConversation")]
+		public async Task<IActionResult> DeleteConversation([FromBody] string user)
+		{
+			try
+			{
+				var userA = await _userService.GetById(int.Parse(user.Split(";")[0]));
+				var userB = await _userService.GetById(int.Parse(user.Split(";")[1]));
+
+				if (userA == null || userB == null)
+					return NotFound();
+
+				var messages = await _messageService.GetMessageByCode(userA.Code);
+
+				var messagesToDelete = messages
+					.Where(item =>
+						(item.SenderContactId == userA.Id && item.ReceiverContactId == userB.Id) ||
+						(item.ReceiverContactId == userA.Id && item.SenderContactId == userB.Id))
+					.ToList();
+
+				foreach (var item in messagesToDelete)
+				{
+					if (Uri.IsWellFormedUriString(item.Content, UriKind.Absolute))
+					{
+						// Es una URL válida, puedes proceder con la eliminación
+						await _context_storage.DeleteAudio(item.Content);
+					}
+				}
+
+				await _messageService.DeleteRange(messagesToDelete);
+				return NoContent();
+			}
+			catch (Exception ex)
+			{
+
+				return BadRequest(ex.Message);
+			}
+		}
+
+
+		[HttpGet("NewMessage/{format}")]
+		public async Task<ActionResult<int>> GetNewMessage(string format)
+		{
+			try
+			{
+				var messages = await _messageService.GetMessageByCode(format.Split(";")[0]);
+				Console.WriteLine(format.Split(";")[0]);
+
+				if (messages is null) return NotFound();//404
+				var messagesToMe= messages
+					.Where(item =>
+						(item.SenderContactId == int.Parse(format.Split(";")[1])) ||
+						(item.ReceiverContactId == int.Parse(format.Split(";")[1])))
+					.ToList();
+
+
+
+				return Ok(messagesToMe.Count); //200
+			}
+			catch (Exception ex)
+			{
+
+				return BadRequest(ex.Message);//400
 			}
 		}
 	}
