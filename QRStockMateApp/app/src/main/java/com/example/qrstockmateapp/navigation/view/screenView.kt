@@ -102,7 +102,7 @@ fun BottomNavigationScreen(navControllerLogin: NavController,sharedPreferences: 
     val scope = rememberCoroutineScope()
     var drawerGesturesEnabled by remember { mutableStateOf(true) }
     val user = DataRepository.getUser()
-    val chat = setOf("chats", "chat", "contact")
+    val chat = setOf("chats", "chat", "contact", "communication")
 
     val navController = rememberNavController()
     val coroutineScope = rememberCoroutineScope()
@@ -156,7 +156,7 @@ fun BottomNavigationScreen(navControllerLogin: NavController,sharedPreferences: 
 
     DisposableEffect(navController) {
         val listener = NavController.OnDestinationChangedListener { _, destination, _ ->
-            drawerGesturesEnabled = destination.route != "route" &&  destination.route != "routeMinus"
+            drawerGesturesEnabled = destination.route != "route" &&  destination.route != "routeMinus" &&  destination.route != "chat"
         }
 
         navController.addOnDestinationChangedListener(listener)

@@ -50,10 +50,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import coil.compose.rememberImagePainter
 import com.example.qrstockmateapp.MainActivity
 import com.example.qrstockmateapp.R
 import com.example.qrstockmateapp.api.models.User
@@ -106,8 +108,7 @@ fun ChatsScreen(navController: NavController, sharedPreferences: SharedPreferenc
         GlobalScope.launch(Dispatchers.IO) {
             val response = RetrofitInstance.api.deleteConversation("${it.id};${DataRepository.getUser()!!.id}")
             if (response.isSuccessful) {
-                employees = DataRepository.getEmployees()!!.filter { user: User -> user.id!= DataRepository.getUser()!!.id  }
-                getMessages()
+                //getMessages()
             }
         }
     }
@@ -126,7 +127,6 @@ fun ChatsScreen(navController: NavController, sharedPreferences: SharedPreferenc
                 EmployeeItem(employee, navController, onDelete = {user ->
                     deleteMessages(user)
                 })
-                Divider(modifier = Modifier.padding(start = 16.dp, end = 16.dp))
             }
         }
     }
@@ -139,109 +139,136 @@ fun EmployeeItem(employee: User, navController: NavController, onDelete:(user: U
     val context = LocalContext.current
     val totalDismissDistance = 300 // Ajusta según el ancho del card u otro criterio
     val dismissThreshold = 0.95f
-
+    var visible by remember {
+        mutableStateOf(true)
+    }
     val dismissState = rememberDismissState()
-    SwipeToDismiss(
-        state = dismissState,
-        dismissThresholds = { direction ->
-            FractionalThreshold(dismissThreshold)
-        },
-        dismissContent = {
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.background)
-                    .padding(16.dp)
-            ) {
-                Row(
+    if(visible){
+        SwipeToDismiss(
+            state = dismissState,
+            dismissThresholds = { direction ->
+                FractionalThreshold(dismissThreshold)
+            },
+            dismissContent = {
+                Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(MaterialTheme.colorScheme.secondaryContainer)
-                        .padding(16.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
+                        .background(MaterialTheme.colorScheme.background)
+                        .padding(16.dp)
                 ) {
-                    Row {
-                        // Image
-                        Image(
-                            painter = painterResource(id = R.drawable.user), // Replace with your actual image resource
-                            contentDescription = null,
-                            modifier = Modifier
-                                .size(50.dp)
-                                .clip(CircleShape)
-                                .background(MaterialTheme.colorScheme.primary)
-                                .shadow(4.dp, CircleShape)
-                        )
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(MaterialTheme.colorScheme.secondaryContainer)
+                            .padding(16.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Row {
+                            // Image
+                            if (employee.url.isNullOrBlank()) {
+                                // Si la URL es nula o vacía, mostrar la imagen por defecto
+                                Image(
+                                    painter = painterResource(id = R.drawable.user), // Replace with your actual image resource
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .size(50.dp)
+                                        .clip(CircleShape)
+                                        .background(MaterialTheme.colorScheme.primary)
+                                        .shadow(4.dp, CircleShape)
+                                )
+                            } else {
 
-                        // Space between image and text
-                        Spacer(modifier = Modifier.width(16.dp))
+                                val painter = rememberImagePainter(
+                                    data = employee.url,
+                                    builder = {
+                                        crossfade(true)
+                                        placeholder(R.drawable.loading)
+                                    }
+                                )
+                                Image(
+                                    painter = painter, // Replace with your actual image resource
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .size(50.dp)
+                                        .clip(CircleShape)
+                                        .background(MaterialTheme.colorScheme.primary)
+                                        .shadow(4.dp, CircleShape),
+                                    contentScale = ContentScale.FillBounds
+                                )
+                            }
 
-                        // Employee details
-                        Column {
-                            Text(text = employee.name, style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
-                            Text(text = employee.email, style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier.background(MaterialTheme.colorScheme.secondaryContainer)
-                            ) {
-                                Icon(imageVector = Icons.Default.Phone, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(15.dp))
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Text(text = employee.phone, style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
+                            // Space between image and text
+                            Spacer(modifier = Modifier.width(16.dp))
+
+                            // Employee details
+                            Column {
+                                Text(text = employee.name, style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
+                                Text(text = employee.email, style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier.background(MaterialTheme.colorScheme.secondaryContainer)
+                                ) {
+                                    Icon(imageVector = Icons.Default.Phone, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(15.dp))
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Text(text = employee.phone, style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
+                                }
+                            }
+                        }
+
+                        ElevatedButton(
+                            onClick = {
+                                DataRepository.setUserPlus(employee)
+                                navController.navigate("chat")
+                            },
+                            colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                                containerColor = BlueSystem
+                            ),
+                            elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                                defaultElevation = 5.dp
+                            )
+                        ){
+                            Icon(imageVector = Icons.Filled.NearMe, contentDescription = null, tint =  Color.White )
+                        }
+                    }
+                }
+            },
+            directions = setOf(DismissDirection.EndToStart), // Solo permite swipe de derecha a izquierda
+            background = {
+                val color by animateColorAsState(
+                    when (dismissState.targetValue) {
+                        DismissValue.Default -> MaterialTheme.colorScheme.background
+                        DismissValue.DismissedToEnd -> Color.Green
+                        DismissValue.DismissedToStart -> Color.Red
+                    }
+                )
+                if (dismissState.isAnimationRunning) {
+                    DisposableEffect(Unit) {
+                        onDispose {
+                            when (dismissState.targetValue) {
+                                DismissValue.DismissedToStart -> {
+                                    Toast.makeText(context, "Deleting conversation", Toast.LENGTH_SHORT).show()
+                                    onDelete(employee)
+                                    visible = false
+                                }
+                                else -> {
+                                    return@onDispose
+                                }
                             }
                         }
                     }
-
-                    ElevatedButton(
-                        onClick = {
-                            DataRepository.setUserPlus(employee)
-                            navController.navigate("chat")
-                        },
-                        colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
-                            containerColor = BlueSystem
-                        ),
-                        elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
-                            defaultElevation = 5.dp
-                        )
-                    ){
-                        Icon(imageVector = Icons.Filled.NearMe, contentDescription = null, tint =  Color.White )
-                    }
+                }
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(color = color)
+                        .padding(16.dp),
+                    contentAlignment = Alignment.CenterEnd
+                ) {
+                    Icon(imageVector = Icons.Default.Delete, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
                 }
             }
-        },
-        directions = setOf(DismissDirection.EndToStart), // Solo permite swipe de derecha a izquierda
-        background = {
-            val color by animateColorAsState(
-                when (dismissState.targetValue) {
-                    DismissValue.Default -> MaterialTheme.colorScheme.background
-                    DismissValue.DismissedToEnd -> Color.Green
-                    DismissValue.DismissedToStart -> Color.Red
-                }
-            )
-            if (dismissState.isAnimationRunning) {
-                DisposableEffect(Unit) {
-                    onDispose {
-                        when (dismissState.targetValue) {
-                            DismissValue.DismissedToStart -> {
-                                Toast.makeText(context, "Deleting conversation", Toast.LENGTH_SHORT).show()
-                                onDelete(employee)
-                            }
-                            else -> {
-                                return@onDispose
-                            }
-                        }
-                    }
-                }
-            }
-
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(color = color)
-                    .padding(16.dp),
-                contentAlignment = Alignment.CenterEnd
-            ) {
-                Icon(imageVector = Icons.Default.Delete, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
-            }
-        }
-    )
+        )
+        Divider(modifier = Modifier.padding(start = 16.dp, end = 16.dp))
+    }
 }

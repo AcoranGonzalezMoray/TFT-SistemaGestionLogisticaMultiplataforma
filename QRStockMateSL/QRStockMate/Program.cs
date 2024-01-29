@@ -76,9 +76,13 @@ builder.Services.AddScoped(typeof(ITransportRouteRepository), typeof(TransportRo
 builder.Services.AddScoped(typeof(IStorageService), typeof(StorageService));
 builder.Services.AddScoped(typeof(IStorageRepository), typeof(StorageRepository));
 
-    //StorageFirebase
+    //Message
 builder.Services.AddScoped(typeof(IMessageService), typeof(MessageService));
 builder.Services.AddScoped(typeof(IMessageRepository), typeof(MessageRepository));
+
+    //Communication
+builder.Services.AddScoped(typeof(ICommunicationService), typeof(CommunicationService));
+builder.Services.AddScoped(typeof(ICommunicationRepository), typeof(CommunicationRepository));
 
 
 //AutoMapper

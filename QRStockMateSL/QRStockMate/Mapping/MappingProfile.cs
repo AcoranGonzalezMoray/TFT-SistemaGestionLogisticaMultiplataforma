@@ -39,6 +39,10 @@ namespace CleanArquitecture.Api.Mapping
             //Message
             CreateMap<Message, MessageModel>();
 			CreateMap<MessageModel, Message>();
+
+            //Communication
+            CreateMap<Communication, CommunicationModel>();
+            CreateMap<CommunicationModel, Communication>();
 		}
     }
 }

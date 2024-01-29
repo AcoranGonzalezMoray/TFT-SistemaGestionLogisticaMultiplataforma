@@ -3,6 +3,7 @@ package com.example.qrstockmateapp.screens.Chats.Chat
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.media.MediaRecorder
 import android.net.Uri
@@ -16,7 +17,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -26,13 +26,17 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.AlertDialog
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material.LocalTextStyle
+import androidx.compose.material.RadioButton
+import androidx.compose.material.RadioButtonDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Send
@@ -44,19 +48,17 @@ import androidx.compose.material3.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.PhoneEnabled
-import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.PlayCircle
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.StopCircle
 import androidx.compose.material.icons.outlined.MicNone
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
+import androidx.compose.material3.ElevatedButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -65,8 +67,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
@@ -74,16 +78,17 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
+import androidx.compose.ui.unit.sp
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
-import com.airbnb.lottie.LottieComposition
+import coil.compose.rememberImagePainter
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
+import com.example.qrstockmateapp.MainActivity
 import com.example.qrstockmateapp.R
 import com.example.qrstockmateapp.api.models.Message
 import com.example.qrstockmateapp.api.services.RetrofitInstance
@@ -92,8 +97,6 @@ import com.example.qrstockmateapp.ui.theme.BlueSystem
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.SimpleExoPlayer
-import com.google.android.exoplayer2.ui.PlayerControlView
 import com.google.android.exoplayer2.ui.PlayerView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -115,7 +118,9 @@ import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChatScreen(navController: NavController) {
+fun ChatScreen(navController: NavController, sharedPreferences: SharedPreferences) {
+
+    val context = LocalContext.current
 
     var newMessage by remember { mutableStateOf(TextFieldValue()) }
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -125,6 +130,15 @@ fun ChatScreen(navController: NavController) {
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.audio))
     val progress by animateLottieCompositionAsState(composition = composition, iterations = LottieConstants.IterateForever, speed = 1f)
 
+    //var currentDate by remember { mutableStateOf("") }
+
+    val options = listOf(
+        OptionSize("Small",  12, 0),
+        OptionSize("Medium",  17, 1),
+        OptionSize("Large",  24, 2)
+    )
+    var selectedOption by remember { mutableStateOf<OptionSize?>(options[sharedPreferences.getInt(
+        MainActivity.FONT_SIZE_CHAT, 0)]) }
 
     // Variable para rastrear si el botón de grabación está presionado
     var isRecording by remember { mutableStateOf(false) }
@@ -179,7 +193,7 @@ fun ChatScreen(navController: NavController) {
 
         }
     }
-    val context = LocalContext.current
+
 
     val REQUEST_RECORD_AUDIO_PERMISSION = 200 // Puedes elegir cualquier número entero
 
@@ -187,7 +201,7 @@ fun ChatScreen(navController: NavController) {
     // Función para iniciar la grabación
     val startRecording: () -> Unit = {
         current = false
-
+        goBottom()
         // Verificar y solicitar permisos de grabación de audio
         if (ContextCompat.checkSelfPermission(
                 context,
@@ -209,6 +223,14 @@ fun ChatScreen(navController: NavController) {
                 mediaRecorder?.setAudioSource(MediaRecorder.AudioSource.MIC)
                 mediaRecorder?.setOutputFormat(MediaRecorder.OutputFormat.AAC_ADTS);
                 mediaRecorder?.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+                mediaRecorder?.setAudioChannels(1);
+
+                val bitDepth = 16;
+                val sampleRate = 44100;
+                val  bitRate = sampleRate * bitDepth;
+
+                mediaRecorder?.setAudioEncodingBitRate(bitRate);
+                mediaRecorder?.setAudioSamplingRate(sampleRate);
 
                 // Especifica la ruta del archivo de salida
                 // Reemplaza "output.3gp" con el nombre y formato deseado
@@ -318,13 +340,64 @@ fun ChatScreen(navController: NavController) {
         getMessages()
     }
 
-
+    var showDialog by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
+        if (showDialog) {
+            AlertDialog(
+                backgroundColor = MaterialTheme.colorScheme.background,
+                onDismissRequest = {
+                    // Handle dismissal if needed
+                    showDialog = false
+                },
+                title = {
+                    androidx.compose.material.Text(
+                        text = "Font Size Settings",
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                },
+                text = {
+                    FontSelectionBox(selectedOption = selectedOption) {
+                        selectedOption = it
+                    }
+                },
+                confirmButton = {
+                    ElevatedButton(
+                        onClick = {
+                            showDialog = false
+                            sharedPreferences.edit().putInt(MainActivity.FONT_SIZE_CHAT, selectedOption!!.pos).apply()
+                        },
+                        colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                            containerColor = Color(0xff5a79ba)
+                        ),
+                        elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                            defaultElevation = 5.dp
+                        )
+                    ){
+                        androidx.compose.material.Text("Confirm", color = Color.White)
+                    }
+                },
+                dismissButton = {
+                    ElevatedButton(
+                        onClick = {
+                            showDialog = false
+                        },
+                        colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                            containerColor = MaterialTheme.colorScheme.secondaryContainer
+                        ),
+                        elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                            defaultElevation = 5.dp
+                        )
+                    ){
+                        androidx.compose.material.Text("Cancel", color = Color(0xff5a79ba))
+                    }
+                }
+            )
+        }
         TopAppBar(
             navigationIcon = {
                 // Puedes personalizar el ícono de navegación según tus necesidades
@@ -338,13 +411,33 @@ fun ChatScreen(navController: NavController) {
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.user), // Reemplazar con tu recurso de imagen
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(40.dp)
-                            .clip(CircleShape)
-                    )
+                    if (DataRepository.getUserPlus()?.url.isNullOrBlank()) {
+                        // Si la URL es nula o vacía, mostrar la imagen por defecto
+                        Image(
+                            painter = painterResource(id = R.drawable.user), // Reemplazar con tu recurso de imagen
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(40.dp)
+                                .clip(CircleShape)
+                        )
+                    } else {
+
+                        val painter = rememberImagePainter(
+                            data = DataRepository.getUserPlus()?.url,
+                            builder = {
+                                crossfade(true)
+                                placeholder(R.drawable.loading)
+                            }
+                        )
+                        Image(
+                            painter = painter, // Reemplazar con tu recurso de imagen
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(40.dp)
+                                .clip(CircleShape),
+                            contentScale = ContentScale.FillBounds
+                        )
+                    }
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = DataRepository.getUserPlus()!!.name, // Reemplazar con el nombre del usuario
@@ -375,7 +468,7 @@ fun ChatScreen(navController: NavController) {
                     Icon(Icons.Default.PhoneEnabled, contentDescription = "Settings", tint = BlueSystem)
                 }
                 // Puedes agregar más acciones según tus necesidades
-                IconButton(onClick = { /* Handle settings */ }) {
+                IconButton(onClick = { showDialog = true}) {
                     Icon(Icons.Default.Settings, contentDescription = "Settings", tint = BlueSystem)
                 }
             },
@@ -392,95 +485,123 @@ fun ChatScreen(navController: NavController) {
                 .padding(10.dp)
         ) {
             items(messages) { message ->
-                MessageItem(message)
+                MessageItem(message, selectedOption)
             }
         }
 
-        // Input section
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(12.dp),
-            elevation = CardDefaults.cardElevation(
-                    defaultElevation = 10.dp
-            ),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.secondaryContainer,
-            ),
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(
-                modifier = Modifier.padding(5.dp),
-                verticalAlignment = Alignment.CenterVertically
+            // Input section
+            Card(
+                modifier = Modifier
+                    .weight(8f)
+                    .padding(start = 12.dp, bottom = 12.dp, top = 5.dp),
+                elevation = CardDefaults.cardElevation(
+                    defaultElevation = 10.dp
+                ),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                ),
             ) {
-                if(!isRecording){
-                    if(!isloading){
-                        BasicTextField(
-                            value = newMessage,
-                            onValueChange = {
-                                newMessage = it
-                            },
-                            textStyle = LocalTextStyle.current.copy(color = MaterialTheme.colorScheme.primary),
-                            singleLine = false,
-                            cursorBrush = SolidColor(BlueSystem), // Cambiamos el color del cursor a rojo
-                            keyboardOptions = KeyboardOptions(
-                                imeAction = ImeAction.Send,
-                                keyboardType = KeyboardType.Text
-                            ),
-                            keyboardActions = KeyboardActions(
-                                onSend = {
+                Row(
+                    modifier = Modifier.padding(5.dp),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    if(!isRecording){
+                        if(!isloading){
+                            BasicTextField(
+                                value = newMessage,
+                                onValueChange = {
+                                    newMessage = it
+                                },
+                                textStyle = LocalTextStyle.current.copy(color = MaterialTheme.colorScheme.primary),
+                                singleLine = false,
+                                cursorBrush = SolidColor(BlueSystem), // Cambiamos el color del cursor a rojo
+                                keyboardOptions = KeyboardOptions(
+                                    imeAction = ImeAction.Send,
+                                    keyboardType = KeyboardType.Text
+                                ),
+                                keyboardActions = KeyboardActions(
+                                    onSend = {
+                                        if (newMessage.text.isNotEmpty()) {
+                                            postMessage(newMessage.text)
+                                            newMessage = TextFieldValue()
+                                        }
+                                        keyboardController?.hide()
+                                    }
+                                ),
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(end = 8.dp)
+                            )
+                        }else{
+                            LinearProgressIndicator(
+                                modifier = Modifier
+                                    .fillMaxWidth() ,
+                                color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.9f), // Ajusta el nivel de opacidad aquí
+                                trackColor = BlueSystem.copy(alpha = 0.1f), // Ajusta el nivel de opacidad aquí
+                            )
+                        }
+                        IconButton(onClick = {}) {
+                            Icon(imageVector = Icons.Default.Send, contentDescription = "Send", tint = MaterialTheme.colorScheme.secondaryContainer)
+                        }
+                    }else{
+                        LottieAnimation(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(0.8f),
+                            composition = composition,
+                            progress = { progress }
+                        )
+                    }
+                }
+            }
+            Card(
+                modifier = Modifier
+                    .weight(2f)
+                    .padding(start = 12.dp, bottom = 12.dp, top = 5.dp, end = 12.dp),
+                elevation = CardDefaults.cardElevation(
+                    defaultElevation = 10.dp
+                ),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                ),
+            ) {
+                Row(
+                    modifier = Modifier.padding(5.dp),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    if (newMessage.text.isNotEmpty()) {
+                        IconButton(
+                            onClick = {
+                                if (newMessage.text.isNotEmpty()) {
                                     if (newMessage.text.isNotEmpty()) {
                                         postMessage(newMessage.text)
                                         newMessage = TextFieldValue()
                                     }
                                     keyboardController?.hide()
                                 }
-                            ),
-                            modifier = Modifier
-                                .weight(1f)
-                                .padding(end = 8.dp)
-                        )
-                    }else{
-                        LinearProgressIndicator(
-                            modifier = Modifier
-                                .fillMaxWidth() ,
-                            color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.9f), // Ajusta el nivel de opacidad aquí
-                            trackColor = BlueSystem.copy(alpha = 0.1f), // Ajusta el nivel de opacidad aquí
-                        )
-                    }
-                }else{
-                    LottieAnimation(
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(end = 8.dp),
-                        composition = composition,
-                        progress = { progress }
-                    )
-                }
-                if (newMessage.text.isNotEmpty()) {
-                    IconButton(
-                        onClick = {
-                            if (newMessage.text.isNotEmpty()) {
-                                if (newMessage.text.isNotEmpty()) {
-                                    postMessage(newMessage.text)
-                                    newMessage = TextFieldValue()
-                                }
-                                keyboardController?.hide()
                             }
+                        ) {
+                            Icon(imageVector = Icons.Default.Send, contentDescription = "Send", tint = BlueSystem)
                         }
-                    ) {
-                        Icon(imageVector = Icons.Default.Send, contentDescription = "Send", tint = BlueSystem)
-                    }
-                }else{
-                    IconButton(
-                        onClick = {
-                            if(!isRecording) startRecording()
-                            else stopRecording()
+                    }else{
+                        IconButton(
+                            onClick = {
+                                if(!isRecording) startRecording()
+                                else stopRecording()
+                            }
+                        ) {
+                            if(isRecording==false) Icon(imageVector = Icons.Outlined.MicNone, contentDescription = "Send", tint = BlueSystem)
+                            else  Icon(imageVector = Icons.Filled.Mic, contentDescription = "Send", tint = BlueSystem)
                         }
-                    ) {
-                        if(isRecording==false) Icon(imageVector = Icons.Outlined.MicNone, contentDescription = "Send", tint = BlueSystem)
-                        else  Icon(imageVector = Icons.Filled.Mic, contentDescription = "Send", tint = BlueSystem)
                     }
                 }
+
             }
         }
 
@@ -489,13 +610,12 @@ fun ChatScreen(navController: NavController) {
 }
 
 @Composable
-fun MessageItem(message: Message) {
+fun MessageItem(message: Message, selectedOption: OptionSize?) {
     val isSentByUser = message.senderContactId == DataRepository.getUser()!!.id // Replace with the actual user's contact ID
     val horaYMinuto = obtenerHoraYMinuto(message.sentDate)
 
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.audioprogess))
     val progress by animateLottieCompositionAsState(composition = composition, iterations = LottieConstants.IterateForever, speed = 1f)
-
 
     Row(
         modifier = Modifier
@@ -505,13 +625,34 @@ fun MessageItem(message: Message) {
     ) {
         // Message bubble
         if (!isSentByUser){
-            Image(
-                painter = painterResource(id = R.drawable.user),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(32.dp)
-                    .clip(CircleShape)
-            )
+            if (DataRepository.getUserPlus()?.url.isNullOrBlank()) {
+                Image(
+                    painter = painterResource(id = R.drawable.user),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(32.dp)
+                        .clip(CircleShape)
+                )
+            } else {
+
+                val painter = rememberImagePainter(
+                    data = DataRepository.getUserPlus()?.url,
+                    builder = {
+                        crossfade(true)
+                        placeholder(R.drawable.loading)
+                    }
+                )
+                Image(
+                    painter = painter,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(32.dp)
+                        .clip(CircleShape),
+                    contentScale = ContentScale.FillBounds
+                )
+            }
+
+
         }
 
        if(message.type == 0){
@@ -532,7 +673,7 @@ fun MessageItem(message: Message) {
                ) {
                    Text(
                        text = message.content,
-                       style = MaterialTheme.typography.labelLarge,
+                       style = MaterialTheme.typography.labelLarge.copy(fontSize = selectedOption!!.size.sp),
                        color = Color.White
                    )
                    Row(
@@ -628,13 +769,32 @@ fun MessageItem(message: Message) {
 
         // Sender image
         if (isSentByUser){
-            Image(
-                painter = painterResource(id = R.drawable.user),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(32.dp)
-                    .clip(CircleShape)
-            )
+            if (DataRepository.getUser()?.url.isNullOrBlank()) {
+                Image(
+                    painter = painterResource(id = R.drawable.user),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(32.dp)
+                        .clip(CircleShape)
+                )
+            } else {
+
+                val painter = rememberImagePainter(
+                    data = DataRepository.getUser()?.url,
+                    builder = {
+                        crossfade(true)
+                        placeholder(R.drawable.loading)
+                    }
+                )
+                Image(
+                    painter = painter,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(32.dp)
+                        .clip(CircleShape),
+                    contentScale = ContentScale.FillBounds
+                )
+            }
         }
     }
 }
@@ -653,6 +813,7 @@ fun obtenerHoraYMinuto(fechaString: String): Pair<Int, Int>? {
         return null
     }
 }
+
 
 @Composable
 fun AudioPlayer(url: String): ExoPlayer {
@@ -674,3 +835,48 @@ fun AudioPlayer(url: String): ExoPlayer {
 }
 
 
+data class OptionSize(val label: String, val size: Int, val pos: Int)
+@Composable
+fun FontSelectionBox(selectedOption: OptionSize?, onOptionSelected: (OptionSize) -> Unit) {
+    val options = listOf(
+        OptionSize("Small",  12, 0),
+        OptionSize("Medium",  17, 1),
+        OptionSize("Large",  24, 2)
+    )
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+    ) {
+        options.forEach { option ->
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp)
+                    .selectable(
+                        selected = (selectedOption == option),
+                        onClick = {
+                            onOptionSelected(option)
+                        }
+                    )
+                    .padding(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                RadioButton(
+                    selected = (selectedOption == option),
+                    colors = RadioButtonDefaults.colors(selectedColor = BlueSystem, unselectedColor = MaterialTheme.colorScheme.primary),
+                    onClick = {
+                        onOptionSelected(option)
+                    }
+                )
+
+                androidx.compose.material.Text(
+                    text = option.label,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
+        }
+    }
+}

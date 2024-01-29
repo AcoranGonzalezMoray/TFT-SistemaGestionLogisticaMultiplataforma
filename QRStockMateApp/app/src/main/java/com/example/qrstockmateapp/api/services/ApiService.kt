@@ -1,5 +1,6 @@
 package com.example.qrstockmateapp.api.services
 
+import com.example.qrstockmateapp.api.models.Communication
 import com.example.qrstockmateapp.api.models.Company
 import com.example.qrstockmateapp.api.models.Item
 import com.example.qrstockmateapp.api.models.Message
@@ -103,6 +104,23 @@ interface ApiService {
         @Part("content") content: RequestBody,
         @Part("sentDate") sentDate: RequestBody,
         @Part("type") type: RequestBody
+    ): Response<Void>
+
+
+
+
+
+    @GET("Communication/GetByCode/{code}")
+    suspend fun getCommunicationsByCode(
+        @Path("code") code: String,
+    ): Response<List<Communication>>
+
+
+
+
+    @POST("Communication/")
+    suspend fun postCommunication(
+        @Body comunication: Communication,
     ): Response<Void>
 
 

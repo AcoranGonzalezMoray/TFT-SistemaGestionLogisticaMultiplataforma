@@ -1,5 +1,6 @@
 package com.example.qrstockmateapp.screens.Chats.Contact
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -27,9 +29,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import coil.compose.rememberImagePainter
 import com.example.qrstockmateapp.R
 import com.example.qrstockmateapp.api.models.User
 import com.example.qrstockmateapp.navigation.repository.DataRepository
@@ -66,16 +70,38 @@ fun EmployeeItem(employee: User, navController: NavController) {
     ) {
        Row {
            // Image
-           Image(
-               painter = painterResource(id = R.drawable.user), // Replace with your actual image resource
-               contentDescription = null,
-               modifier = Modifier
-                   .size(50.dp)
-                   .clip(CircleShape)
-                   .background(MaterialTheme.colorScheme.primary)
-                   .shadow(4.dp, CircleShape)
-           )
 
+           if (employee.url.isNullOrBlank()) {
+               // Si la URL es nula o vacía, mostrar la imagen por defecto
+               Image(
+                   painter = painterResource(id = R.drawable.user), // Replace with your actual image resource
+                   contentDescription = null,
+                   modifier = Modifier
+                       .size(50.dp)
+                       .clip(CircleShape)
+                       .background(MaterialTheme.colorScheme.primary)
+                       .shadow(4.dp, CircleShape)
+               )
+           } else {
+
+               val painter = rememberImagePainter(
+                   data = employee.url,
+                   builder = {
+                       crossfade(true)
+                       placeholder(R.drawable.loading)
+                   }
+               )
+               Image(
+                   painter = painter, // Replace with your actual image resource
+                   contentDescription = null,
+                   modifier = Modifier
+                       .size(50.dp)
+                       .clip(CircleShape)
+                       .background(MaterialTheme.colorScheme.primary)
+                       .shadow(4.dp, CircleShape),
+                   contentScale = ContentScale.FillBounds
+               )
+           }
            // Space between image and text
            Spacer(modifier = Modifier.width(16.dp))
 

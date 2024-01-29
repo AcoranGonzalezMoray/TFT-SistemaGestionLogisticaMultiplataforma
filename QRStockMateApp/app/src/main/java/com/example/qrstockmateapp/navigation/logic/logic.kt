@@ -19,6 +19,7 @@ import com.example.qrstockmateapp.screens.Carrier.VehicleManagement.UpdateVehicl
 import com.example.qrstockmateapp.screens.Carrier.VehicleManagement.VehicleManagementScreen
 import com.example.qrstockmateapp.screens.Chats.Chat.ChatScreen
 import com.example.qrstockmateapp.screens.Chats.ChatsScreen
+import com.example.qrstockmateapp.screens.Chats.Communication.CommunicatioScreen
 import com.example.qrstockmateapp.screens.Chats.Contact.ContactScreen
 import com.example.qrstockmateapp.screens.Home.AddWarehouse.AddWarehouseScreen
 import com.example.qrstockmateapp.screens.Home.HomeScreen
@@ -69,8 +70,11 @@ fun  Navigation(navController: NavHostController, sharedPreferences: SharedPrefe
 
 
         //fuera del menu
+        composable("communication"){
+            CommunicatioScreen(navController)
+        }
         composable("chat"){
-            ChatScreen(navController)
+            ChatScreen(navController, sharedPreferences)
         }
         composable("chats"){
             ChatsScreen(navController, sharedPreferences = sharedPreferences)

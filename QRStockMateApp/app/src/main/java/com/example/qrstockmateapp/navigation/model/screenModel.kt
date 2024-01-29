@@ -64,7 +64,7 @@ class ScreenModel {
         object Profile : HomeScreens("profile", "Profile", Icons.Filled.Badge, Icons.Outlined.Badge)
 
         object Message : HomeScreens("chats", "Chats", Icons.Filled.Message, Icons.Outlined.Message)
-        object Comunity : HomeScreens("profile", "Comunication", Icons.Filled.WorkHistory, Icons.Outlined.WorkHistory)
+        object Comunity : HomeScreens("communication", "Communication", Icons.Filled.WorkHistory, Icons.Outlined.WorkHistory)
         object Contact : HomeScreens("contact", "Contact", Icons.Filled.Contacts, Icons.Outlined.Contacts)
     }
 

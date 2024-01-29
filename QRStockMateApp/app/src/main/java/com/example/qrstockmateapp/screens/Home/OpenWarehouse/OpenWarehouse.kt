@@ -132,7 +132,7 @@ fun OpenWarehouseScreen(navController: NavController){
         OutlinedTextField(
             value = searchQuery,
             onValueChange = { searchQuery = it },
-            label = { androidx.compose.material.Text("Search") },
+            label = { androidx.compose.material.Text("Search", color = MaterialTheme.colorScheme.outlineVariant)  },
             colors = customTextFieldColors,
             modifier = Modifier
                 .fillMaxWidth()

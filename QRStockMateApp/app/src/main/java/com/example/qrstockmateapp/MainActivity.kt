@@ -169,6 +169,7 @@ class MainActivity : ComponentActivity() {
         private const val KEY_USER = "USER_KEY"
         const val KEY_DARK_THEME = "dark_theme_preference"
         const val NEW_MESSAGES = "messages"
+        const val FONT_SIZE_CHAT = "fontsizechat"
 
     }
 }
