@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.location.Address
+import android.location.Geocoder
 import android.location.Location
 import android.location.LocationManager
 import android.provider.Settings
@@ -16,6 +18,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -45,6 +48,7 @@ import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.DesignServices
+import androidx.compose.material.icons.filled.Directions
 import androidx.compose.material.icons.filled.DirectionsCar
 import androidx.compose.material.icons.filled.LayersClear
 import androidx.compose.material.icons.filled.LocationOn
@@ -55,6 +59,7 @@ import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.filled.Streetview
 import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material.icons.filled.Undo
+import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ElevatedButton
@@ -125,10 +130,12 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.IOException
 import java.lang.Math.atan2
 import java.lang.Math.cos
 import java.lang.Math.sin
 import java.lang.Math.sqrt
+import java.util.Locale
 import kotlin.math.roundToLong
 
 
@@ -143,6 +150,7 @@ fun RouteScreen(navController: NavController,) {
 
     val context = LocalContext.current
     var mapWeight by remember { mutableStateOf(400.dp) }
+
 
     LaunchedEffect(scaffoldState.bottomSheetState) {
         snapshotFlow { scaffoldState.bottomSheetState.currentValue }
@@ -348,6 +356,7 @@ fun RouteScreen(navController: NavController,) {
         }
     }
 
+
     val locationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult?) {
             locationResult?.lastLocation?.let {
@@ -379,6 +388,23 @@ fun RouteScreen(navController: NavController,) {
         }
     }
 
+    var geo by remember { mutableStateOf<Address?>(null) }
+
+    var getLocation:() -> Unit = {
+        GlobalScope.launch(Dispatchers.IO) {
+            try {
+                if(currentLocation!=null && isRouteStarted){
+                    geo = Geocoder(context, Locale.getDefault()).getFromLocation(currentLocation!!.latitude, currentLocation!!.longitude, 1)?.get(0)
+                }
+                Log.d("ACTUALIACION", "${geo}")
+            }catch (e: IOException) {
+                // Manejar excepciones de geocodificación (pueden ocurrir por problemas de red o límites de uso)
+                Log.d("ACTUALIACION", "${e}")
+                e.printStackTrace()
+            }
+        }
+    }
+
 
     if (fusedLocationClient != null && fusedLocationClient.lastLocation != null) {
         // Obtener la última ubicación conocida
@@ -394,7 +420,7 @@ fun RouteScreen(navController: NavController,) {
     ///////////////////////////////////////////
     LaunchedEffect(context) {
         val drawable = ContextCompat.getDrawable(context, R.drawable.warehouse)
-        val drawableNow = ContextCompat.getDrawable(context, R.drawable.carrier)
+        val drawableNow = ContextCompat.getDrawable(context, R.drawable.carrierbl)
         if (drawable != null && drawableNow!=null) {
             // Define el tamaño deseado en píxeles (por ejemplo, 50x50)
             val targetSize = 150
@@ -444,8 +470,9 @@ fun RouteScreen(navController: NavController,) {
     BottomSheetScaffold(
         sheetContent = {
             // Contenido del Bottom Sheet
-            BottomSheetContent(scope, scaffoldState,isRouteStarted, haversine(userRoutePoints),
+            BottomSheetContent("${geo?.thoroughfare}, ${geo?.subAdminArea}", onReload = { getLocation() },scope, scaffoldState,isRouteStarted, haversine(userRoutePoints),
                 onStartRoute = {
+
                     val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
                     val isLocationEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
                             locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
@@ -470,6 +497,7 @@ fun RouteScreen(navController: NavController,) {
                         }
                         startRoute()
                     }
+                    getLocation()
                                },
                 onFinishRoute = {
                     isRouteStarted = false
@@ -694,7 +722,7 @@ fun RouteScreen(navController: NavController,) {
                                        Color(0xff5a79ba),
                                        shape = RoundedCornerShape(18.dp)
                                    ),
-                               onClick = { navController.popBackStack() },
+                               onClick = { navController.popBackStack()},
 
                                ) {
                                Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "", tint=Color(0xff5a79ba))
@@ -763,6 +791,8 @@ fun PointMarker(position: LatLng, title: String, snippet: String?, icon:  Bitmap
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun BottomSheetContent(
+    address: String = "",
+    onReload: () -> Unit,
     scope: CoroutineScope,
     scaffoldState: BottomSheetScaffoldState,
     isRouteStarted: Boolean,
@@ -773,6 +803,7 @@ fun BottomSheetContent(
     start: Warehouse,
     end: Warehouse
 ) {
+
     val distanceRounded = (distance * 100.0).roundToLong() / 100.0
     val person = DataRepository.getEmployees()!!.filter{ employee -> employee.id == route!!.carrierId }.firstOrNull()
     val vehicle = DataRepository.getVehicles()!!.filter{ vehicle -> vehicle.id == route!!.assignedVehicleId}.firstOrNull()
@@ -787,8 +818,9 @@ fun BottomSheetContent(
                 BorderStroke(1.dp, Color(0xff5a79ba)),
                 shape = RoundedCornerShape(20.dp, 20.dp, 0.dp, 0.dp)
             )
-            .padding(20.dp)
+            .padding(horizontal = 20.dp)
     ) {
+
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
@@ -803,24 +835,44 @@ fun BottomSheetContent(
                 color = MaterialTheme.colorScheme.primary,
                 fontSize = 9.sp,
             )
+            Card(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .clickable {
+                            onReload()
+                    },
+                elevation = CardDefaults.cardElevation(
+                    defaultElevation = 10.dp
+                ),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.background,
+                )
+            ){
+                Row(
+                    modifier = Modifier.padding(vertical = 5.dp, horizontal = 10.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Icon(imageVector = Icons.Filled.Directions, contentDescription = null, tint = MaterialTheme.colorScheme.primary )
+                    androidx.compose.material.Text(
+                        buildAnnotatedString {
+                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                                append(address.replace("null", "-"))
+                            }
+                        },
+                        fontSize = 9.sp,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+            }
             androidx.compose.material.Text(
                 buildAnnotatedString {
                     withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                        append("${(distanceRounded/80) * 60} Min")
+                        append("${((distanceRounded/80) * 60).toString().substring(0, 4)} Min")
                     }
                 },
                 fontSize = 9.sp,
                 color = Color(0xff5a79ba)
-            )
-        }
-        Row(modifier = Modifier.fillMaxWidth(),  verticalAlignment = Alignment.CenterVertically) {
-            Icon(
-                imageVector = Icons.Filled.Maximize,
-                contentDescription = null,
-                tint = Color.DarkGray,
-                modifier = Modifier
-                    .fillMaxWidth()  // Ajusta el valor según tus necesidades
-                    .height(35.dp) // Puedes ajustar también la altura si es necesario
             )
         }
         Row(
@@ -1005,7 +1057,7 @@ fun BottomSheetContent(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(Color.White)
+                            .background(MaterialTheme.colorScheme.onSurface)
                             .padding(1.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -1021,7 +1073,8 @@ fun BottomSheetContent(
                                     append(" ${start.name}")
                                 },
                                 fontSize = 12.sp,
-                                modifier = Modifier.padding(bottom = 4.dp)
+                                modifier = Modifier.padding(bottom = 4.dp),
+                                color = MaterialTheme.colorScheme.primary
                             )
 
                             // Ubicación del almacén
@@ -1033,7 +1086,8 @@ fun BottomSheetContent(
                                     append(" ${start.location}")
                                 },
                                 fontSize = 12.sp,
-                                modifier = Modifier.padding(bottom = 4.dp)
+                                modifier = Modifier.padding(bottom = 4.dp),
+                                color = MaterialTheme.colorScheme.primary
                             )
 
                             // Organización del almacén
@@ -1045,7 +1099,8 @@ fun BottomSheetContent(
                                     append(" ${start.organization}")
                                 },
                                 fontSize = 12.sp,
-                                modifier = Modifier.padding(bottom = 4.dp)
+                                modifier = Modifier.padding(bottom = 4.dp),
+                                color = MaterialTheme.colorScheme.primary
                             )
 
                             // Administrador
@@ -1062,7 +1117,8 @@ fun BottomSheetContent(
                                     )
                                 },
                                 fontSize = 12.sp,
-                                modifier = Modifier.padding(bottom = 4.dp)
+                                modifier = Modifier.padding(bottom = 4.dp),
+                                color = MaterialTheme.colorScheme.primary
                             )
                         }
                     }
@@ -1089,7 +1145,7 @@ fun BottomSheetContent(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(Color.White)
+                            .background(MaterialTheme.colorScheme.onSurface)
                             .padding(1.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -1105,7 +1161,8 @@ fun BottomSheetContent(
                                     append(" ${end.name}")
                                 },
                                 fontSize = 12.sp,
-                                modifier = Modifier.padding(bottom = 4.dp)
+                                modifier = Modifier.padding(bottom = 4.dp),
+                                color = MaterialTheme.colorScheme.primary
                             )
 
                             // Ubicación del almacén
@@ -1117,7 +1174,8 @@ fun BottomSheetContent(
                                     append(" ${end.location}")
                                 },
                                 fontSize = 12.sp,
-                                modifier = Modifier.padding(bottom = 4.dp)
+                                modifier = Modifier.padding(bottom = 4.dp),
+                                color = MaterialTheme.colorScheme.primary
                             )
 
                             // Organización del almacén
@@ -1129,7 +1187,8 @@ fun BottomSheetContent(
                                     append(" ${end.organization}")
                                 },
                                 fontSize = 12.sp,
-                                modifier = Modifier.padding(bottom = 4.dp)
+                                modifier = Modifier.padding(bottom = 4.dp),
+                                color = MaterialTheme.colorScheme.primary
                             )
 
                             // Administrador
@@ -1146,7 +1205,8 @@ fun BottomSheetContent(
                                     )
                                 },
                                 fontSize = 12.sp,
-                                modifier = Modifier.padding(bottom = 4.dp)
+                                modifier = Modifier.padding(bottom = 4.dp),
+                                color = MaterialTheme.colorScheme.primary
                             )
                         }
                     }
@@ -1183,7 +1243,7 @@ fun BottomSheetContent(
                     onFinishRoute.invoke()
                 },
                 colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
-                    containerColor = MaterialTheme.colorScheme.secondaryContainer
+                    containerColor = MaterialTheme.colorScheme.onSurface
                 ),
                 elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
                     defaultElevation = 5.dp

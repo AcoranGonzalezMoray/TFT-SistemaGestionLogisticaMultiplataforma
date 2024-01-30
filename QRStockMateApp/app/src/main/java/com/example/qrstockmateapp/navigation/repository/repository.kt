@@ -25,6 +25,25 @@ object DataRepository {
     private var routeSplash: String? = null
     private var newMessages: Int? = null
     private var messages: List<Message>? = null
+    private var currentScreenIndex: Int = 0
+
+    private var onHideTextField : Boolean = false
+
+
+    fun getOnHide():Boolean{
+        return onHideTextField
+    }
+    fun setOnHide(hide:Boolean){
+        onHideTextField = hide
+    }
+
+
+    fun getCurrentScreenIndex():Int{
+        return currentScreenIndex
+    }
+    fun setCurrentScreenIndex(index:Int){
+        currentScreenIndex = index
+    }
 
 
     fun setNewMessages(number :Int){
@@ -34,7 +53,6 @@ object DataRepository {
     fun getNewMessages(): Int?{
         return newMessages
     }
-
 
 
     fun setMessages(newMessages: List<Message>) {

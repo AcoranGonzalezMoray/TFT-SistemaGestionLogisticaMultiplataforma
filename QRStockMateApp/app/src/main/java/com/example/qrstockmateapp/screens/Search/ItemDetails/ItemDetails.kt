@@ -405,8 +405,6 @@ fun ItemDetailsScreen(navController: NavController) {
                     }
                     Spacer(modifier = Modifier.width(5.dp))
                     ElevatedButton(
-                        modifier = Modifier
-                            .padding(top = 8.dp),
                         onClick = {
 
                             var newStock = item?.stock?.plus(countState.value)

@@ -20,20 +20,25 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddAPhoto
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Update
 import androidx.compose.material3.ElevatedButton
@@ -45,6 +50,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -197,189 +204,214 @@ fun ProfileScreen(navController: NavController) {
             else -> "Unknown Role"
         }
     }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
-            .verticalScroll(rememberScrollState()),
+    ) {
+        TopAppBar(
+            navigationIcon = {
+                IconButton(onClick = { navController.navigate("home");DataRepository.setCurrentScreenIndex(0)}) {
+                    androidx.compose.material3.Icon(Icons.Default.ArrowBack, contentDescription = "Back to Login", tint = BlueSystem)
+                }
+            },
+            backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
+            title = { Text(text = "Profile", color = BlueSystem) }
         )
-    {
-        Box(modifier = Modifier
-            .fillMaxWidth()
-            .padding(5.dp)) {
-
-            ElevatedButton(
-                modifier = Modifier
-                    .padding(top = 8.dp)
-                    .align(alignment = Alignment.CenterStart),
-                onClick = {
-                    pickImageLauncher.launch("image/*")
-                },
-                colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
-                    containerColor = BlueSystem
-                ),
-                elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
-                    defaultElevation = 5.dp
-                )
-            ){
-                Icon(
-                    imageVector = Icons.Filled.AddAPhoto,
-                    contentDescription = "",
-                    tint = Color.White
-                )
-            }
-        }
-        Column(     //Imagen de Perfil de Usuario & Nombre
-            modifier = Modifier
-                .fillMaxHeight(0.45f)
-                .fillMaxWidth()
-                .wrapContentSize(Alignment.Center)
-                .padding(7.dp)
-        ) {
-
-            if (imageUrl.isNullOrBlank()) {
-                // Si la URL es nula o vacía, mostrar la imagen por defecto
-                Image(
-                    painter = placeholderImage,
-                    contentDescription = "Default User Image",
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    contentScale = ContentScale.Crop
-                )
-            } else {
-                // Si hay una URL válida, cargar la imagen usando Coil
-                Log.d("IMAGEURL", "${imageUrl}")
-                val painter = rememberImagePainter(
-                    data = imageUrl,
-                    builder = {
-                        crossfade(true)
-                        placeholder(R.drawable.loading)
-                    }
-                )
-                Image(
-                    painter = painter,
-                    contentDescription = "User Image",
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .height(350.dp),
-                    contentScale = ContentScale.Fit
-                )
-            }
-        }
-        Spacer(modifier = Modifier.height(5.dp))
-        if (userName != null) {
-            Text(
-                text = userName,
-                color = MaterialTheme.colorScheme.primary,
-                fontSize = 15.sp,
-                style = TextStyle(fontWeight = FontWeight.Bold),
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .padding(15.dp)
-                    .fillMaxWidth()
-                    .wrapContentWidth(Alignment.CenterHorizontally)
-            )
-        }
-        Spacer(modifier = Modifier.height(30.dp)) // Espacio entre Imagen & Nombre y Info de Usuario
-        if (userRole != null) {
-            Text(
-                text = buildAnnotatedString {
-                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold,color = MaterialTheme.colorScheme.primary,)) {
-                        append("Role: ")
-                    }
-                    append(userRoleToString(userRole))
-                },
-                fontSize = 15.sp,
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.padding(start = 10.dp)
-            )
-        }
-        Spacer(modifier = Modifier.height(15.dp)) // Espacio entre Imagen & Nombre y Info de Usuario
-        if (userCode != null) {
-            Text(
-                text = buildAnnotatedString {
-                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary,)) {
-                        append("Warehouse Code: ")
-                    }
-                    append(userCode)
-                },
-                fontSize = 15.sp,
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.padding(start = 10.dp)
-            )
-        }
         Column(
             modifier = Modifier
+                .verticalScroll(rememberScrollState()),
+        )
+        {
+            Box(modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight(0.55f),
-            verticalArrangement = Arrangement.Center,
-        ) {
+                .padding(5.dp)) {
 
-            Spacer(modifier = Modifier.height(20.dp))
-            if (userEmail != null) {
-                TextField(
-                    value = userEmail!!,
-                    label = { androidx.compose.material3.Text("Email", color = MaterialTheme.colorScheme.outlineVariant) },
-                    colors = customTextFieldColors,
-                    onValueChange = {userEmail = it},
+                ElevatedButton(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 10.dp).border(
-                            width = 0.5.dp,
-                            color =  BlueSystem,
-                            shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
-
-                        ),
-                    readOnly = false
-                )
+                        .padding(top = 8.dp)
+                        .align(alignment = Alignment.CenterStart),
+                    onClick = {
+                        pickImageLauncher.launch("image/*")
+                    },
+                    colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                        containerColor = BlueSystem
+                    ),
+                    elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                        defaultElevation = 5.dp
+                    )
+                ){
+                    Icon(
+                        imageVector = Icons.Filled.AddAPhoto,
+                        contentDescription = "",
+                        tint = Color.White
+                    )
+                }
             }
+            Column(     //Imagen de Perfil de Usuario & Nombre
+                modifier = Modifier
+                    .fillMaxHeight(0.45f)
+                    .fillMaxWidth()
+                    .wrapContentSize(Alignment.Center)
+                    .padding(7.dp)
+            ) {
 
-            Spacer(modifier = Modifier.height(15.dp))
+                if (imageUrl.isNullOrBlank()) {
+                    // Si la URL es nula o vacía, mostrar la imagen por defecto
+                    Image(
+                        painter = placeholderImage,
+                        contentDescription = "Default User Image",
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .size(400.dp)
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.primary)
+                            .shadow(4.dp, CircleShape),
+                        contentScale = ContentScale.FillBounds
 
-            if (userPhone != null) {
-                TextField(
-                    value = userPhone!!,
-                    shape = RoundedCornerShape(8.dp),
-                    label = { androidx.compose.material3.Text("Phone", color = MaterialTheme.colorScheme.outlineVariant) },
-                    colors = customTextFieldColors,
-                    onValueChange = {userPhone=it},
+                    )
+                } else {
+                    // Si hay una URL válida, cargar la imagen usando Coil
+                    Log.d("IMAGEURL", "${imageUrl}")
+                    val painter = rememberImagePainter(
+                        data = imageUrl,
+                        builder = {
+                            crossfade(true)
+                            placeholder(R.drawable.loading)
+                        }
+                    )
+                    Image(
+                        painter = painter,
+                        contentDescription = "User Image",
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .size(400.dp)
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.primary)
+                            .shadow(4.dp, CircleShape),
+                        contentScale = ContentScale.FillBounds
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.height(5.dp))
+            if (userName != null) {
+                Text(
+                    text = userName,
+                    color = MaterialTheme.colorScheme.primary,
+                    fontSize = 15.sp,
+                    style = TextStyle(fontWeight = FontWeight.Bold),
+                    textAlign = TextAlign.Center,
                     modifier = Modifier
+                        .padding(15.dp)
                         .fillMaxWidth()
-                        .padding(horizontal = 10.dp).border(
-                            width = 0.5.dp,
-                            color =  BlueSystem,
-                            shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
-
-                        ),
-                    readOnly = false
+                        .wrapContentWidth(Alignment.CenterHorizontally)
                 )
             }
-
-            Spacer(modifier = Modifier.height(20.dp))
-        }
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center
-        ) {
-            ElevatedButton(
-                onClick = {
-                    updateInfo()
-                },
-                colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
-                    containerColor = BlueSystem
-                ),
-                elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
-                    defaultElevation = 5.dp
+            Spacer(modifier = Modifier.height(30.dp)) // Espacio entre Imagen & Nombre y Info de Usuario
+            if (userRole != null) {
+                Text(
+                    text = buildAnnotatedString {
+                        withStyle(style = SpanStyle(fontWeight = FontWeight.Bold,color = MaterialTheme.colorScheme.primary,)) {
+                            append("Role: ")
+                        }
+                        append(userRoleToString(userRole))
+                    },
+                    fontSize = 15.sp,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(start = 10.dp)
                 )
-            ){
-                Text(text = "Update", color=Color.White)
             }
+            Spacer(modifier = Modifier.height(15.dp)) // Espacio entre Imagen & Nombre y Info de Usuario
+            if (userCode != null) {
+                Text(
+                    text = buildAnnotatedString {
+                        withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary,)) {
+                            append("Warehouse Code: ")
+                        }
+                        append(userCode)
+                    },
+                    fontSize = 15.sp,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(start = 10.dp)
+                )
+            }
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.55f),
+                verticalArrangement = Arrangement.Center,
+            ) {
+
+                Spacer(modifier = Modifier.height(20.dp))
+                if (userEmail != null) {
+                    TextField(
+                        value = userEmail!!,
+                        label = { androidx.compose.material3.Text("Email", color = MaterialTheme.colorScheme.outlineVariant) },
+                        colors = customTextFieldColors,
+                        onValueChange = {userEmail = it},
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 10.dp)
+                            .border(
+                                width = 0.5.dp,
+                                color = BlueSystem,
+                                shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
+
+                            ),
+                        readOnly = false
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(15.dp))
+
+                if (userPhone != null) {
+                    TextField(
+                        value = userPhone!!,
+                        shape = RoundedCornerShape(8.dp),
+                        label = { androidx.compose.material3.Text("Phone", color = MaterialTheme.colorScheme.outlineVariant) },
+                        colors = customTextFieldColors,
+                        onValueChange = {userPhone=it},
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 10.dp)
+                            .border(
+                                width = 0.5.dp,
+                                color = BlueSystem,
+                                shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
+
+                            ),
+                        readOnly = false
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(20.dp))
+            }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                ElevatedButton(
+                    onClick = {
+                        updateInfo()
+                    },
+                    colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                        containerColor = BlueSystem
+                    ),
+                    elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                        defaultElevation = 5.dp
+                    )
+                ){
+                    Text(text = "Update", color=Color.White)
+                }
+            }
+            Spacer(modifier = Modifier
+                .fillMaxWidth()
+                .height(75.dp))
         }
-        Spacer(modifier = Modifier.fillMaxWidth().height(75.dp))
     }
+
 
 
 

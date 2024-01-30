@@ -1,6 +1,7 @@
 package com.example.qrstockmateapp.screens.Home.UpdateWarehouse
 
 
+import android.location.Geocoder
 import android.net.Uri
 import android.os.Build
 import android.util.Log
@@ -96,6 +97,7 @@ import okhttp3.RequestBody
 import java.io.File
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -108,6 +110,7 @@ fun UpdateWarehouseScreen(navController: NavController) {
 
     val context = LocalContext.current
 
+    val geocoder = Geocoder(context, Locale.getDefault())
 
     val updateImage:(File)->Unit={file ->
         GlobalScope.launch(Dispatchers.IO){
@@ -289,16 +292,6 @@ fun UpdateWarehouseScreen(navController: NavController) {
                    .verticalScroll(rememberScrollState())
                    .padding(16.dp)
            ) {
-               if (showDialog) {
-                   ShowDialog(
-                       onDismiss = { showDialog = false},
-                       onSuccessfully = {
-                           showDialog = false
-
-                           pinLocation = it
-                       }
-                   )
-               }
                Box(
                    modifier = Modifier
                        .height(300.dp)
@@ -359,28 +352,24 @@ fun UpdateWarehouseScreen(navController: NavController) {
                        var location by remember { mutableStateOf(it.location) }
                        var organization by remember { mutableStateOf(it.organization) }
                        var administratorId by remember { mutableStateOf(it.idAdministrator) }
-
+                       if (showDialog) {
+                           ShowDialog(
+                               onDismiss = { showDialog = false},
+                               onSuccessfully = {
+                                   showDialog = false
+                                   var geo = geocoder.getFromLocation(it.latitude, it.longitude, 1)?.get(0)
+                                   if (geo != null) {
+                                       location =  geo.getAddressLine(0)
+                                   }
+                                   pinLocation = it
+                               }
+                           )
+                       }
                        TextField(
                            value = name,
                            label = { Text("Name", color = MaterialTheme.colorScheme.outlineVariant) },
                            onValueChange = { name = it },
                            shape = RoundedCornerShape(8.dp),
-                           colors= customTextFieldColors,
-                           modifier = Modifier
-                               .fillMaxWidth()
-                               .padding(4.dp)
-                               .border(
-                                   width = 0.5.dp,
-                                   color = BlueSystem,
-                                   shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
-
-                               )
-                       )
-                       TextField(
-                           value = location,
-                           label = { Text("Location", color = MaterialTheme.colorScheme.outlineVariant) },
-                           shape = RoundedCornerShape(8.dp),
-                           onValueChange = { location = it },
                            colors= customTextFieldColors,
                            modifier = Modifier
                                .fillMaxWidth()
@@ -439,10 +428,31 @@ fun UpdateWarehouseScreen(navController: NavController) {
                                    defaultElevation = 5.dp
                                )
                            ){
-                               Text("${pinLocation}", color = BlueSystem)
+                               geocoder.getFromLocation(pinLocation!!.latitude, pinLocation!!.longitude, 1)?.get(0)
+                                   ?.let {
+                                       Text(
+                                           it.getAddressLine(0), color = BlueSystem)
+                                   }
                            }
                            Spacer(modifier = Modifier.height(10.dp))
                        }
+                       TextField(
+                           value = location,
+                           label = { Text("Location", color = MaterialTheme.colorScheme.outlineVariant) },
+                           shape = RoundedCornerShape(8.dp),
+                           onValueChange = { location = it },
+                           colors= customTextFieldColors,
+                           modifier = Modifier
+                               .fillMaxWidth()
+                               .padding(4.dp)
+                               .border(
+                                   width = 0.5.dp,
+                                   color = BlueSystem,
+                                   shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
+
+                               )
+                       )
+
                        Box(modifier = Modifier
                            .fillMaxWidth()
                            .padding(4.dp)

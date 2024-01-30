@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.qrstockmateapp.navigation.model.ScreenModel
+import com.example.qrstockmateapp.navigation.repository.DataRepository
 import com.example.qrstockmateapp.ui.theme.BlueSystem
 import com.exyte.animatednavbar.AnimatedNavigationBar
 import com.exyte.animatednavbar.animation.balltrajectory.Straight
@@ -81,8 +82,36 @@ fun AnimatedBottomBar(
 }
 
 @Composable
+fun AnimatedOutBottomBar(
+    modifier: Modifier = Modifier,
+    screens: List<ScreenModel.HomeScreens>,
+    navController: NavController,
+) {
+    var visible by remember { mutableStateOf(true) }
+
+    AnimatedVisibility(
+        visible = visible,
+        enter = slideInVertically(initialOffsetY = { it }),
+        modifier = Modifier.background(MaterialTheme.colorScheme.secondaryContainer),
+        exit = slideOutVertically(targetOffsetY = { it })
+    ) {
+        ColorButtonNavBar(
+            screens = screens,
+            navController = navController,
+        )
+    }
+
+    LaunchedEffect(navController) {
+        navController.addOnDestinationChangedListener { _, _, _ ->
+            visible = false
+        }
+    }
+}
+
+
+@Composable
 fun ColorButtonNavBar(screens: List<ScreenModel.HomeScreens>, navController: NavController) {
-    var selectedIndex by remember { mutableStateOf(0) }
+    var selectedIndex by remember { mutableStateOf(DataRepository.getCurrentScreenIndex()) }
 
     AnimatedNavigationBar(
         modifier = Modifier
@@ -113,6 +142,7 @@ fun ColorButtonNavBar(screens: List<ScreenModel.HomeScreens>, navController: Nav
                         selectedIndex = index;
                         if (currentRoute != screens.route) {
                             navController.navigate(screens.route)
+                            DataRepository.setCurrentScreenIndex(index)
                         }
                      }
                 , contentAlignment = Alignment.Center

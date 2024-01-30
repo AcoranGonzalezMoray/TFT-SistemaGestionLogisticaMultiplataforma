@@ -1,5 +1,7 @@
 package com.example.qrstockmateapp.screens.Home.AddWarehouse
 
+import android.location.Address
+import android.location.Geocoder
 import android.os.Build
 import android.util.Log
 import android.widget.Toast
@@ -65,6 +67,7 @@ import kotlinx.coroutines.withContext
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -76,11 +79,15 @@ fun AddWarehouseScreen(navController: NavController) {
     var pinLocation by remember { mutableStateOf<LatLng?>(null) }
     var organization by remember { mutableStateOf("") }
 
+
     var selectedOption by remember { mutableStateOf("Select an existing administrator to associate with the warehouse") }
     var isMenuExpanded by remember { mutableStateOf(false) }
 
     var employees by remember { mutableStateOf(emptyList<User>()) } // inicializar con una lista vacía
     val context = LocalContext.current
+
+    val geocoder = Geocoder(context, Locale.getDefault())
+
 
     val customTextFieldColors = TextFieldDefaults.outlinedTextFieldColors(
         textColor = MaterialTheme.colorScheme.primary,
@@ -179,7 +186,10 @@ fun AddWarehouseScreen(navController: NavController) {
                     onDismiss = { showDialog = false},
                     onSuccessfully = {
                         showDialog = false
-
+                        var geo = geocoder.getFromLocation(it.latitude, it.longitude, 1)?.get(0)
+                        if (geo != null) {
+                            location =  geo.getAddressLine(0)
+                        }
                         pinLocation = it
                     }
                 )
@@ -188,23 +198,6 @@ fun AddWarehouseScreen(navController: NavController) {
                 value = name,
                 onValueChange = { name = it },
                 label = { Text("Name", color = MaterialTheme.colorScheme.outlineVariant) },
-                shape = RoundedCornerShape(8.dp),
-                colors = customTextFieldColors,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .border(
-                        width = 0.5.dp,
-                        color = BlueSystem,
-                        shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
-
-                    ),
-            )
-            Spacer(modifier = Modifier.height(10.dp))
-            // Campo de entrada para la ubicación
-            TextField(
-                value = location,
-                onValueChange = { location = it },
-                label = { Text("Location", color = MaterialTheme.colorScheme.outlineVariant) },
                 shape = RoundedCornerShape(8.dp),
                 colors = customTextFieldColors,
                 modifier = Modifier
@@ -263,10 +256,31 @@ fun AddWarehouseScreen(navController: NavController) {
                         defaultElevation = 5.dp
                     )
                 ){
-                    Text("${pinLocation}", color = BlueSystem)
+                    geocoder.getFromLocation(pinLocation!!.latitude, pinLocation!!.longitude, 1)?.get(0)
+                        ?.let {
+                            Text(
+                                it.getAddressLine(0), color = BlueSystem)
+                        }
                 }
                 Spacer(modifier = Modifier.height(10.dp))
             }
+            // Campo de entrada para la ubicación
+            TextField(
+                value = location,
+                onValueChange = { location = it },
+                label = { Text("Location", color = MaterialTheme.colorScheme.outlineVariant) },
+                shape = RoundedCornerShape(8.dp),
+                colors = customTextFieldColors,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(
+                        width = 0.5.dp,
+                        color = BlueSystem,
+                        shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
+
+                    ),
+            )
+            Spacer(modifier = Modifier.height(10.dp))
             Box(
                 modifier = Modifier.fillMaxWidth()
                     .background(Color(0xfff5f6f7))

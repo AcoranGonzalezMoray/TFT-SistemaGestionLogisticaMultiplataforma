@@ -4,6 +4,8 @@ package com.example.qrstockmateapp.screens.Carrier.Route.RouteMinus
 import android.Manifest
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.location.Address
+import android.location.Geocoder
 import android.location.Location
 import android.util.Log
 import android.widget.Toast
@@ -13,6 +15,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -42,6 +45,7 @@ import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.DesignServices
+import androidx.compose.material.icons.filled.Directions
 import androidx.compose.material.icons.filled.DirectionsCar
 import androidx.compose.material.icons.filled.LayersClear
 import androidx.compose.material.icons.filled.LocationOn
@@ -52,6 +56,7 @@ import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.filled.Streetview
 import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material.icons.filled.Undo
+import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ElevatedButton
@@ -123,10 +128,12 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.IOException
 import java.lang.Math.atan2
 import java.lang.Math.cos
 import java.lang.Math.sin
 import java.lang.Math.sqrt
+import java.util.Locale
 import kotlin.math.roundToLong
 
 
@@ -217,15 +224,32 @@ fun RouteMinusScreen(navController: NavController,) {
     }
 
 
+    var geo by remember { mutableStateOf<Address?>(null) }
+
+    var getLocation:() -> Unit = {
+        GlobalScope.launch(Dispatchers.IO) {
+            try {
+                if(currentLocation!=null){
+                    geo = Geocoder(context, Locale.getDefault()).getFromLocation(currentLocation!!.latitude, currentLocation!!.longitude, 1)?.get(0)
+                }
+                Log.d("ACTUALIACION", "${geo}")
+            }catch (e: IOException) {
+                // Manejar excepciones de geocodificación (pueden ocurrir por problemas de red o límites de uso)
+                Log.d("ACTUALIACION", "${e}")
+                e.printStackTrace()
+            }
+        }
+    }
 
     ///////////////////////////////////////////
     LaunchedEffect(context) {
+        getLocation()
         coroutineScope.launch {
             updateLocation(initLocation.id)
         }
 
         val drawable = ContextCompat.getDrawable(context, R.drawable.warehouse)
-        val drawableNow = ContextCompat.getDrawable(context, R.drawable.carrier)
+        val drawableNow = ContextCompat.getDrawable(context, R.drawable.carrierbl)
         if (drawable != null && drawableNow!=null) {
             // Define el tamaño deseado en píxeles (por ejemplo, 50x50)
             val targetSize = 150
@@ -268,7 +292,7 @@ fun RouteMinusScreen(navController: NavController,) {
     BottomSheetScaffold(
         sheetContent = {
             // Contenido del Bottom Sheet
-            BottomSheetContent(
+            BottomSheetContent("${geo?.thoroughfare}, ${geo?.subAdminArea}", onReload = { getLocation() },
                 com.example.qrstockmateapp.screens.Carrier.Route.haversine(
                     userRoutePoints
                 ), route)
@@ -426,6 +450,8 @@ fun PointMarker(position: LatLng, title: String, snippet: String?, icon:  Bitmap
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun BottomSheetContent(
+    address: String = "",
+    onReload: () -> Unit,
     distance: Double,
     route: TransportRoute?
 ) {
@@ -443,7 +469,7 @@ fun BottomSheetContent(
                 BorderStroke(1.dp, Color(0xff5a79ba)),
                 shape = RoundedCornerShape(20.dp, 20.dp, 0.dp, 0.dp)
             )
-            .padding(20.dp)
+            .padding(horizontal = 20.dp)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -459,6 +485,36 @@ fun BottomSheetContent(
                 fontSize = 9.sp,
                 color = MaterialTheme.colorScheme.primary
             )
+            Card(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .clickable {
+                        onReload()
+                    },
+                elevation = CardDefaults.cardElevation(
+                    defaultElevation = 10.dp
+                ),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.background,
+                )
+            ){
+                Row(
+                    modifier = Modifier.padding(vertical = 5.dp, horizontal = 10.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Icon(imageVector = Icons.Filled.Directions, contentDescription = null, tint = MaterialTheme.colorScheme.primary )
+                    androidx.compose.material.Text(
+                        buildAnnotatedString {
+                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                                append(address.replace("null", "-"))
+                            }
+                        },
+                        fontSize = 9.sp,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+            }
             androidx.compose.material.Text(
                 buildAnnotatedString {
                     withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
@@ -467,16 +523,6 @@ fun BottomSheetContent(
                 },
                 fontSize = 9.sp,
                 color = Color(0xff5a79ba)
-            )
-        }
-        Row(modifier = Modifier.fillMaxWidth(),  verticalAlignment = Alignment.CenterVertically) {
-            Icon(
-                imageVector = Icons.Filled.Maximize,
-                contentDescription = null,
-                tint = Color.DarkGray,
-                modifier = Modifier
-                    .fillMaxWidth()  // Ajusta el valor según tus necesidades
-                    .height(35.dp) // Puedes ajustar también la altura si es necesario
             )
         }
         Row(

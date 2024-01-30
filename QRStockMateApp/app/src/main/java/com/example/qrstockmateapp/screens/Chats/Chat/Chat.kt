@@ -46,6 +46,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material.TopAppBar
+import androidx.compose.material.icons.filled.AttachFile
+import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.PhoneEnabled
 import androidx.compose.material.icons.filled.PlayCircle
@@ -401,7 +403,7 @@ fun ChatScreen(navController: NavController, sharedPreferences: SharedPreference
         TopAppBar(
             navigationIcon = {
                 // Puedes personalizar el ícono de navegación según tus necesidades
-                IconButton(onClick = { navController.navigate("chats"); current = false }) {
+                IconButton(onClick = { navController.navigate("chats"); current = false;DataRepository.setCurrentScreenIndex(0) }) {
                     Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = BlueSystem)
                 }
             },
@@ -482,7 +484,7 @@ fun ChatScreen(navController: NavController, sharedPreferences: SharedPreference
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(0.6f)
-                .padding(10.dp)
+                .padding(horizontal = 10.dp)
         ) {
             items(messages) { message ->
                 MessageItem(message, selectedOption)
@@ -534,9 +536,22 @@ fun ChatScreen(navController: NavController, sharedPreferences: SharedPreference
                                     }
                                 ),
                                 modifier = Modifier
-                                    .weight(1f)
+                                    .weight(7f)
                                     .padding(end = 8.dp)
                             )
+
+                            Row(
+                                modifier = Modifier.weight(3f),
+                                horizontalArrangement = Arrangement.End,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                IconButton(onClick = { /*TODO*/ }) {
+                                    Icon(imageVector = Icons.Filled.AttachFile, contentDescription = null, tint =  MaterialTheme.colorScheme.outlineVariant )
+                                }
+                                IconButton(onClick = { /*TODO*/ }) {
+                                    Icon(imageVector = Icons.Filled.CameraAlt, contentDescription = null, tint = MaterialTheme.colorScheme.outlineVariant  )
+                                }
+                            }
                         }else{
                             LinearProgressIndicator(
                                 modifier = Modifier
@@ -544,9 +559,6 @@ fun ChatScreen(navController: NavController, sharedPreferences: SharedPreference
                                 color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.9f), // Ajusta el nivel de opacidad aquí
                                 trackColor = BlueSystem.copy(alpha = 0.1f), // Ajusta el nivel de opacidad aquí
                             )
-                        }
-                        IconButton(onClick = {}) {
-                            Icon(imageVector = Icons.Default.Send, contentDescription = "Send", tint = MaterialTheme.colorScheme.secondaryContainer)
                         }
                     }else{
                         LottieAnimation(

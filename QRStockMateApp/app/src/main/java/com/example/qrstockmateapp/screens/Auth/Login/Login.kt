@@ -160,7 +160,7 @@ fun Login(navController: NavHostController, onLoginSuccess: (Boolean, User, Stri
                 painter = painterResource(R.drawable.app_icon_removed),
                 contentDescription = "Descripción de la imagen",
                 modifier = Modifier
-                    .size(400.dp)
+                    .size(300.dp)
             )
             Spacer(modifier = Modifier.height(5.dp))
             if (isError) {

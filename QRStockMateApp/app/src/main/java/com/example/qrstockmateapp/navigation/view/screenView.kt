@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -58,10 +59,12 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -73,6 +76,7 @@ import androidx.core.content.edit
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import coil.compose.rememberImagePainter
 import com.example.qrstockmateapp.MainActivity
 import com.example.qrstockmateapp.MainActivity.Companion.KEY_DARK_THEME
 import com.example.qrstockmateapp.MainActivity.Companion.NEW_MESSAGES
@@ -83,6 +87,7 @@ import com.example.qrstockmateapp.navigation.logic.Navigation
 import com.example.qrstockmateapp.navigation.model.ScreenModel
 import com.example.qrstockmateapp.navigation.repository.DataRepository
 import com.example.qrstockmateapp.navigation.widget.AnimatedBottomBar
+import com.example.qrstockmateapp.navigation.widget.AnimatedOutBottomBar
 import com.example.qrstockmateapp.ui.theme.BlueSystem
 import com.example.qrstockmateapp.ui.theme.isDarkMode
 import kotlinx.coroutines.CoroutineScope
@@ -118,7 +123,7 @@ fun BottomNavigationScreen(navControllerLogin: NavController,sharedPreferences: 
         ))
     }
     LaunchedEffect(Unit) {
-        val excludedRoutes = setOf("chat","route","routeMinus")
+        val excludedRoutes = setOf("chat","route","routeMinus", "addWarehouse")
 
         // Lanzar una corrutina en el alcance de la pantalla
             coroutineScope.launch(Dispatchers.IO) {
@@ -215,7 +220,7 @@ fun BottomNavigationScreen(navControllerLogin: NavController,sharedPreferences: 
             )
         },
         topBar = {
-            val excludedRoutes = setOf("chat","addVehicle","updateVehicle","route", "routeMinus", "addWarehouse", "updateWarehouse", "updateUser", "addRoute", "updateRoute")
+            val excludedRoutes = setOf("profile","chat","addVehicle","updateVehicle","route", "routeMinus", "addWarehouse", "updateWarehouse", "updateUser", "addRoute", "updateRoute")
 
             if (currentRoute !in excludedRoutes) {
                 TopAppBar(
@@ -254,6 +259,7 @@ fun BottomNavigationScreen(navControllerLogin: NavController,sharedPreferences: 
                                    .clickable {
                                        DataRepository.setSplash("chats")
                                        navController.navigate("splashScreen")
+                                       DataRepository.setCurrentScreenIndex(0)
                                    },
                                contentAlignment = Alignment.Center
                            ) {
@@ -301,7 +307,12 @@ fun BottomNavigationScreen(navControllerLogin: NavController,sharedPreferences: 
         },
 
         bottomBar = {
-            val excludedRoutes = setOf("chat","splashScreen","addVehicle","updateVehicle", "route", "routeMinus", "addWarehouse", "updateWarehouse", "updateUser", "addRoute", "updateRoute")
+            val excludedRoutes = setOf("profile", "itemDetails", "chat","splashScreen","addVehicle","updateVehicle", "route", "routeMinus", "addWarehouse", "updateWarehouse", "updateUser", "addRoute", "updateRoute")
+            val screens = listOf( //Chat
+                ScreenModel.HomeScreens.Message,
+                ScreenModel.HomeScreens.Comunity,
+                ScreenModel.HomeScreens.Contact
+            )
             if (currentRoute !in excludedRoutes) {
                 if(currentRoute !in chat){
                     AnimatedBottomBar(
@@ -309,17 +320,18 @@ fun BottomNavigationScreen(navControllerLogin: NavController,sharedPreferences: 
                         navController = navController
                     )
                 }else{
-                    val screens = listOf( //Chat
-                        ScreenModel.HomeScreens.Message,
-                        ScreenModel.HomeScreens.Comunity,
-                        ScreenModel.HomeScreens.Contact
-                    )
                     AnimatedBottomBar(
                         screens = screens,
                         navController = navController
                     )
                 }
-
+            }else {
+               if(currentRoute != "chat" && currentRoute!="route" && currentRoute !="routeMinus"){
+                   AnimatedOutBottomBar(
+                       screens = ScreenModel().screensInHomeFromBottomNav,
+                       navController = navController
+                   )
+               }
             }
         },
     ) {
@@ -453,6 +465,7 @@ fun Drawer(
                             onClick = {
                                 changeMode = false
                                 sharedPreferences.edit().putInt(KEY_DARK_THEME, selectedOption!!.mode).apply()
+                                DataRepository.setCurrentScreenIndex(0)
                                 GlobalScope.launch(Dispatchers.Main) {
                                     context.recreate()
                                 }
@@ -492,15 +505,38 @@ fun Drawer(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    imageVector = Icons.Filled.Apartment,
-                    contentDescription = "",
-                    tint =  Color(0xff5a79ba),
-                    modifier = Modifier
-                        .height(40.dp)
-                        .size(48.dp),
-                )
-                Spacer(modifier = Modifier.width(7.dp))
+                if (DataRepository.getUser()?.url.isNullOrBlank()) {
+                    // Si la URL es nula o vacía, mostrar la imagen por defecto
+                    Image(
+                        painter = painterResource(id = R.drawable.user), // Replace with your actual image resource
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(50.dp)
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.primary)
+                            .shadow(4.dp, CircleShape)
+                    )
+                } else {
+
+                    val painter = rememberImagePainter(
+                        data = DataRepository.getUser()!!.url,
+                        builder = {
+                            crossfade(true)
+                            placeholder(R.drawable.loading)
+                        }
+                    )
+                    Image(
+                        painter = painter, // Replace with your actual image resource
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(50.dp)
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.primary)
+                            .shadow(4.dp, CircleShape),
+                        contentScale = ContentScale.FillBounds
+                    )
+                }
+                Spacer(modifier = Modifier.width(30.dp))
                 Text("Company: ${DataRepository.getCompany()?.name} \nCode: ${DataRepository.getUser()?.code}", fontSize = 20.sp, fontWeight = FontWeight.Bold, color=  Color(0xff5a79ba))
             }
         }

@@ -175,6 +175,7 @@ fun AddRouteScreen(navController: NavController){
     var selectedOptionEndLocation by remember { mutableStateOf("Select an existing warehouse to associate with the end location") }
     var isMenuExpandedEndLocation by remember { mutableStateOf(false) }
 
+    val init = "Select an existing warehouse to associate with the start location"
     var selectedOptionDate by remember { mutableStateOf("Select the date on which transportation will be carried out") }
     var isMenuExpandedDate by remember { mutableStateOf(false) }
 
@@ -333,7 +334,7 @@ fun AddRouteScreen(navController: NavController){
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(16.dp)
+                    .padding(horizontal = 16.dp)
                     .verticalScroll(rememberScrollState())
             ) {
                 Box(
@@ -533,8 +534,67 @@ fun AddRouteScreen(navController: NavController){
                            }
                         }
                         Spacer(modifier = Modifier.padding(5.dp))
+                        //StartLocatiopn
+                        Text(text = "Start Location: ",color = MaterialTheme.colorScheme.primary)
+                        Box(modifier = Modifier
+                            .fillMaxWidth()
+                            .background(Color(0xfff5f6f7))
+                            .border(
+                                width = 0.5.dp,
+                                color = BlueSystem,
+                                shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
 
-                        if(selectedOptionVehicle[0]!='S'){
+                            )) {
+                            Row(
+                                modifier = Modifier.background(color = MaterialTheme.colorScheme.outline),
+                                verticalAlignment = Alignment.CenterVertically){
+                                Text(
+                                    text = selectedOptionStartLocation,
+                                    modifier = Modifier
+                                          .weight(9f)
+                                        .background(color = MaterialTheme.colorScheme.outline)
+                                        .clickable(
+                                            interactionSource = remember { MutableInteractionSource() },
+                                            indication = null
+                                        ) {
+                                            isMenuExpandedStartLocation = true
+                                        }
+                                        .padding(16.dp),
+                                    color = MaterialTheme.colorScheme.primary
+                                )
+
+                                DropdownMenu(
+                                    expanded = isMenuExpandedStartLocation,
+                                    onDismissRequest = { isMenuExpandedStartLocation = false },
+                                    modifier = Modifier.fillMaxWidth().background(color = MaterialTheme.colorScheme.secondaryContainer)
+                                ) {
+                                    warehouses?.forEach { waStart->
+                                        DropdownMenuItem(onClick = {
+                                            selectedOptionStartLocation = "Warehouse:  ${waStart!!.name}; Latitude: ${waStart.latitude}; Longitude: ${waStart.longitude}"
+                                            route.value!!.startLocation = waStart.id.toString()
+                                            loadItems()
+                                            mapEuroPalet = emptyList()
+                                            totalWeight = 0.0
+                                            isMenuExpandedStartLocation= false
+                                        }, modifier = Modifier
+                                            .padding(5.dp)
+                                            .background(color = MaterialTheme.colorScheme.secondaryContainer)
+                                            .border(
+                                                width = 0.5.dp,
+                                                color = BlueSystem,
+                                                shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
+
+                                            )) {
+                                            Text( "Warehouse:  ${waStart!!.name} Latitude: ${waStart.latitude} Longitude: ${waStart.longitude}", color = MaterialTheme.colorScheme.primary  )
+                                        }
+                                    }
+                                }
+                                Icon(modifier = Modifier.weight(1f), imageVector = Icons.Filled.ArrowDropDown, contentDescription = null, tint =BlueSystem)
+
+                            }
+                        }
+                        Spacer(modifier = Modifier.padding(5.dp))
+                        if(selectedOptionStartLocation!=init){
                             //Palets
                             Text(text = "Shipload (${"%.2f".format(totalWeight).replace(",", ".").toDouble()} / ${selectedOptionVehicle.split(';')[2].split(':')[1]} Kg): ", color = MaterialTheme.colorScheme.primary )
                             Box(modifier = Modifier.fillMaxWidth()) {
@@ -611,64 +671,6 @@ fun AddRouteScreen(navController: NavController){
 
                         }
                         Spacer(modifier = Modifier.padding(bottom = 10.dp))
-                        //StartLocatiopn
-                        Text(text = "Start Location: ",color = MaterialTheme.colorScheme.primary)
-                        Box(modifier = Modifier
-                            .fillMaxWidth()
-                            .background(Color(0xfff5f6f7))
-                            .border(
-                                width = 0.5.dp,
-                                color = BlueSystem,
-                                shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
-
-                            )) {
-                            Row(
-                                modifier = Modifier.background(color = MaterialTheme.colorScheme.outline),
-                                verticalAlignment = Alignment.CenterVertically){
-                                Text(
-                                    text = selectedOptionStartLocation,
-                                    modifier = Modifier
-                                          .weight(9f)
-                                        .background(color = MaterialTheme.colorScheme.outline)
-                                        .clickable(
-                                            interactionSource = remember { MutableInteractionSource() },
-                                            indication = null
-                                        ) {
-                                            isMenuExpandedStartLocation = true
-                                        }
-                                        .padding(16.dp),
-                                    color = MaterialTheme.colorScheme.primary
-                                )
-
-                                DropdownMenu(
-                                    expanded = isMenuExpandedStartLocation,
-                                    onDismissRequest = { isMenuExpandedStartLocation = false },
-                                    modifier = Modifier.fillMaxWidth().background(color = MaterialTheme.colorScheme.secondaryContainer)
-                                ) {
-                                    warehouses?.forEach { waStart->
-                                        DropdownMenuItem(onClick = {
-                                            selectedOptionStartLocation = "Warehouse:  ${waStart!!.name}; Latitude: ${waStart.latitude}; Longitude: ${waStart.longitude}"
-                                            route.value!!.startLocation = waStart.id.toString()
-                                            loadItems()
-                                            isMenuExpandedStartLocation= false
-                                        }, modifier = Modifier
-                                            .padding(5.dp)
-                                            .background(color = MaterialTheme.colorScheme.secondaryContainer)
-                                            .border(
-                                                width = 0.5.dp,
-                                                color = BlueSystem,
-                                                shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
-
-                                            )) {
-                                            Text( "Warehouse:  ${waStart!!.name} Latitude: ${waStart.latitude} Longitude: ${waStart.longitude}", color = MaterialTheme.colorScheme.primary  )
-                                        }
-                                    }
-                                }
-                                Icon(modifier = Modifier.weight(1f), imageVector = Icons.Filled.ArrowDropDown, contentDescription = null, tint =BlueSystem)
-
-                            }
-                        }
-                        Spacer(modifier = Modifier.padding(5.dp))
                         //EndLocatiopn
                         Text(text = "End Location: ",color = MaterialTheme.colorScheme.primary)
                         Box(modifier = Modifier

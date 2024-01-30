@@ -563,8 +563,7 @@ fun TransportRouteItem(route: TransportRoute, navController: NavController, onDe
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(color = MaterialTheme.colorScheme.primary,text = "End Location: ${DataRepository.getWarehouses()!!.find { warehouse -> warehouse.id == route.endLocation.toInt()}?.name}", fontSize = 16.sp)
                         Spacer(modifier = Modifier.height(4.dp))
-                        Text(color = MaterialTheme.colorScheme.primary,text = "Carrier: ${DataRepository.getEmployees()?.filter { employee -> employee.id == 33 }
-                            ?.get(0)?.name}", fontSize = 16.sp)
+                        Text(color = MaterialTheme.colorScheme.primary,text = "Carrier: ${DataRepository.getEmployees()?.filter { employee -> employee.id == route.carrierId }?.get(0)?.name}", fontSize = 16.sp)
                     }
 
                     Row(
