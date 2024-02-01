@@ -170,6 +170,8 @@ object DataRepository {
         token = ""
         warehouses = null
         employees = null
+        currentScreenIndex = 0
+
     }
 
 }

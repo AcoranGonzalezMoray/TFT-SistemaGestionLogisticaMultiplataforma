@@ -79,7 +79,7 @@ fun ForgotPassword(
                 }
             },
             backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
-            title = { Text(text = "Forgot Password", color = Color(0xff5a79ba)) }
+            title = { androidx.compose.material.Text(text = "Forgot Password", color = Color(0xff5a79ba)) }
         )
         Column(
             modifier = Modifier

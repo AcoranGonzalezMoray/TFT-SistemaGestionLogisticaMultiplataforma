@@ -3,6 +3,7 @@ package com.example.qrstockmateapp.screens.Home
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -43,6 +44,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
@@ -170,10 +172,17 @@ fun HomeScreen(navController: NavController) {
             if (warehouses.isNotEmpty()) {
                 WarehouseList(warehouses,navController,loadWarehouse)
             }else{
-                Box {
+                Row(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment =  Alignment.CenterVertically
+                ) {
                     Text(
                         text = "There are no warehouses available for this company",
-                        color = MaterialTheme.colorScheme.primary,
+                        color = MaterialTheme.colorScheme.outlineVariant,
+                        style = TextStyle(
+                            fontWeight = FontWeight.Bold
+                        )
                     )
                 }
             }

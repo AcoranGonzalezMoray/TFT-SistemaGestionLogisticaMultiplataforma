@@ -4,6 +4,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -45,6 +46,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
@@ -173,8 +175,18 @@ fun SearchScreen(navController: NavController) {
             ItemList(items = sortedItems, navController = navController)
 
         }else{
-            Box {
-                Text(text = "There are no items in this company", color = MaterialTheme.colorScheme.primary)
+            Row(
+                modifier = Modifier.fillMaxSize(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment =  Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "There are no items available in this company \n or in the search made",
+                    color = MaterialTheme.colorScheme.outlineVariant,
+                    style = TextStyle(
+                        fontWeight = FontWeight.Bold
+                    )
+                )
             }
         }
     }

@@ -4,6 +4,7 @@ package com.example.qrstockmateapp.screens.Home.ManageUser
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -47,6 +48,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
@@ -149,13 +151,29 @@ fun ManageUserScreen(navController: NavController) {
             )
 
 
-            // Lista de usuarios filtrada
-            LazyColumn {
-                items(filteredEmployees) { employee ->
-                    UserListItem(user = employee, navController,loadEmployees)
+            if(filteredEmployees.isNotEmpty()){
+                // Lista de usuarios filtrada
+                LazyColumn {
+                    items(filteredEmployees) { employee ->
+                        UserListItem(user = employee, navController,loadEmployees)
+                    }
+                    item {
+                        Spacer(modifier = Modifier.fillMaxWidth().height(48.dp))
+                    }
                 }
-                item {
-                    Spacer(modifier = Modifier.fillMaxWidth().height(48.dp))
+            }else {
+                Row(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment =  Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "There are no employees available ir in the search made",
+                        color = MaterialTheme.colorScheme.outlineVariant,
+                        style = TextStyle(
+                            fontWeight = FontWeight.Bold
+                        )
+                    )
                 }
             }
 

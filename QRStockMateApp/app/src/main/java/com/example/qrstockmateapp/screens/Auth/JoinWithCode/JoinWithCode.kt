@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
@@ -32,8 +33,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -78,13 +81,17 @@ fun JoinWithCodeScreen(navController: NavHostController) {
         "${emptyField?.first ?: ""} is required"
     } else null
 
+    val focusManager = LocalFocusManager.current
+
+
     val context = LocalContext.current
     val keyboardOptions = KeyboardOptions.Default.copy(
         keyboardType = KeyboardType.Text,
         imeAction = ImeAction.Done
     )
     val keyboardOptionsEmail = KeyboardOptions(
-        keyboardType = KeyboardType.Email
+        keyboardType = KeyboardType.Email,
+        imeAction = ImeAction.Next
     )
     val customTextFieldColors = TextFieldDefaults.outlinedTextFieldColors(
         textColor = MaterialTheme.colorScheme.primary,
@@ -96,42 +103,48 @@ fun JoinWithCodeScreen(navController: NavHostController) {
     )
 
     val onJoin:() -> Unit = {
-        GlobalScope.launch(Dispatchers.IO) {
-            try {
-                if(code.isEmpty()) code = "000-000"
-                val user = User(0,name, email, password,phone,code,"",3)
-                val company = Company(0,"","","","","","") //No se va a usar
-                val model  = RegistrationBody(user,company)
-                val response = RetrofitInstance.api.signUp(model)
+        if (name.isNotBlank() && email.isNotBlank() && password.isNotBlank() && phone.isNotBlank()
+            && code.isNotBlank()){
+            GlobalScope.launch(Dispatchers.IO) {
+                try {
+                    if(code.isEmpty()) code = "000-000"
+                    val user = User(0,name, email, password,phone,code,"",3)
+                    val company = Company(0,"","","","","","") //No se va a usar
+                    val model  = RegistrationBody(user,company)
+                    val response = RetrofitInstance.api.signUp(model)
 
-                // Cambiar al hilo principal para realizar operaciones en la IU
-                withContext(Dispatchers.Main) {
-                    if (response.isSuccessful) {
-                        val joinResponse = response.body()
-                        if (joinResponse != null){
-                            Toast.makeText(context, "Successful Join", Toast.LENGTH_SHORT).show()
-                            navController.navigate("login")
-                        }
-                        else Log.d("excepcionUserA", "jjj")
-                    } else{
-                        try {
-                            val errorBody = response.errorBody()?.string()
+                    // Cambiar al hilo principal para realizar operaciones en la IU
+                    withContext(Dispatchers.Main) {
+                        if (response.isSuccessful) {
+                            val joinResponse = response.body()
+                            if (joinResponse != null){
+                                Toast.makeText(context, "Successful Join", Toast.LENGTH_SHORT).show()
+                                navController.navigate("login")
+                            }
+                            else Log.d("excepcionUserA", "jjj")
+                        } else{
+                            try {
+                                val errorBody = response.errorBody()?.string()
 
 
-                            Toast.makeText(context, "$errorBody", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(context, "$errorBody", Toast.LENGTH_SHORT).show()
 
 
-                            Log.d("excepcionUserB", errorBody ?: "Error body is null")
-                        } catch (e: Exception) {
-                            Log.e("excepcionUserB", "Error al obtener el cuerpo del error: $e")
+                                Log.d("excepcionUserB", errorBody ?: "Error body is null")
+                            } catch (e: Exception) {
+                                Log.e("excepcionUserB", "Error al obtener el cuerpo del error: $e")
+                            }
                         }
                     }
-                }
-            }catch (e: Exception) {
-                Log.d("excepcionUserC","$e")
+                }catch (e: Exception) {
+                    Log.d("excepcionUserC","$e")
 
+                }
             }
+        }else {
+            Toast.makeText(context, "You should not leave empty fields", Toast.LENGTH_SHORT).show()
         }
+
 
     }
 
@@ -167,6 +180,12 @@ fun JoinWithCodeScreen(navController: NavHostController) {
                 shape = RoundedCornerShape(8.dp),
                 isError = isError,
                 onValueChange = { name = it;if(!start)start = true },
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                keyboardActions = KeyboardActions(
+                    onNext = {
+                        focusManager.moveFocus(FocusDirection.Down)
+                    }
+                ),
                 label = { Text("Name", color = MaterialTheme.colorScheme.outlineVariant) },
                 modifier = Modifier.fillMaxWidth().border(
                     width = 0.5.dp,
@@ -182,6 +201,11 @@ fun JoinWithCodeScreen(navController: NavHostController) {
                 value = email,
                 shape = RoundedCornerShape(8.dp),
                 isError = isError,
+                keyboardActions = KeyboardActions(
+                    onNext = {
+                        focusManager.moveFocus(FocusDirection.Down)
+                    }
+                ),
                 onValueChange = { email = it;if(!start)start = true },
                 label = { Text("Email", color = MaterialTheme.colorScheme.outlineVariant) },
                 keyboardOptions = keyboardOptionsEmail,
@@ -201,7 +225,7 @@ fun JoinWithCodeScreen(navController: NavHostController) {
                 shape = RoundedCornerShape(8.dp),
                 isError = isError,
                 visualTransformation = PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Next),
                 onValueChange = { password = it;if(!start)start = true },
                 label = { Text("Password", color = MaterialTheme.colorScheme.outlineVariant) },
                 modifier = Modifier.fillMaxWidth().border(
@@ -219,7 +243,7 @@ fun JoinWithCodeScreen(navController: NavHostController) {
                 shape = RoundedCornerShape(8.dp),
                 isError = isError,
                 visualTransformation = PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Next),
                 onValueChange = {
                     confirmPassword = it
                     passwordMatches = password == it
@@ -243,6 +267,12 @@ fun JoinWithCodeScreen(navController: NavHostController) {
                 shape = RoundedCornerShape(8.dp),
                 isError = isError,
                 onValueChange = { phone = it;if(!start)start = true },
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                keyboardActions = KeyboardActions(
+                    onNext = {
+                        focusManager.moveFocus(FocusDirection.Down)
+                    }
+                ),
                 label = { Text("Phone", color = MaterialTheme.colorScheme.outlineVariant) },
                 modifier = Modifier.fillMaxWidth().border(
                     width = 0.5.dp,

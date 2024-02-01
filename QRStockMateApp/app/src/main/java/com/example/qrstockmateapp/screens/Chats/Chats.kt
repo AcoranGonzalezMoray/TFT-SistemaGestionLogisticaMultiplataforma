@@ -31,6 +31,7 @@ import androidx.compose.material.icons.filled.NearMe
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.rememberDismissState
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.MaterialTheme
@@ -49,6 +50,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
@@ -115,11 +118,27 @@ fun ChatsScreen(navController: NavController, sharedPreferences: SharedPreferenc
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        LazyColumn {
-            items(employees) { employee ->
-                EmployeeItem(employee, navController, onDelete = {user ->
-                    deleteMessages(user)
-                })
+        if(employees.isNotEmpty()){
+            LazyColumn {
+                items(employees) { employee ->
+                    EmployeeItem(employee, navController, onDelete = {user ->
+                        deleteMessages(user)
+                    })
+                }
+            }
+        }else {
+            Row(
+                modifier = Modifier.fillMaxSize(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment =  Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Does not have any active chat at this time",
+                    color = MaterialTheme.colorScheme.outlineVariant,
+                    style = TextStyle(
+                        fontWeight = FontWeight.Bold
+                    )
+                )
             }
         }
     }
@@ -146,7 +165,10 @@ fun EmployeeItem(employee: User, navController: NavController, onDelete:(user: U
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(MaterialTheme.colorScheme.background)
-                        .padding(16.dp)
+                        .padding(16.dp),
+                    elevation = CardDefaults.cardElevation(
+                        defaultElevation = 10.dp
+                    )
                 ) {
                     Row(
                         modifier = Modifier

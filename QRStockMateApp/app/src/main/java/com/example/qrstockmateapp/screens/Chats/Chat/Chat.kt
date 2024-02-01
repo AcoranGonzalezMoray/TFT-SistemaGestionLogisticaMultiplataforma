@@ -128,7 +128,7 @@ import java.util.Locale
 private fun createImageFile(context: Context): File {
     // Crea un archivo de imagen único
     val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
-    val imageFileName = "JPEG_" + timeStamp + "_"
+    val imageFileName = "JPEG_TEMP" + timeStamp + "_"
     val storageDir: File = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!
     return File.createTempFile(imageFileName, ".jpg", storageDir)
 }
@@ -176,7 +176,7 @@ fun ChatScreen(navController: NavController, sharedPreferences: SharedPreference
 
     val getMessages: () -> Unit = {
         GlobalScope.launch(Dispatchers.IO) {
-            while (current){
+            while (current && DataRepository.getUser()!=null){
                 val response = RetrofitInstance.api.getMessageByCode(DataRepository.getUser()!!.code)
                 if (response.isSuccessful) {
                     val newMessage = response.body()
@@ -505,22 +505,24 @@ fun ChatScreen(navController: NavController, sharedPreferences: SharedPreference
 
 
     val postMessage:(message: String)->Unit = {
-        val zonedDateTime = ZonedDateTime.now()
-        val formattedDate = zonedDateTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
-        val m = Message(
-            id = 0,
-            code = DataRepository.getUser()!!.code,
-            senderContactId = DataRepository.getUser()!!.id,
-            receiverContactId = DataRepository.getUserPlus()!!.id,
-            content = it,
-            sentDate = formattedDate,
-            type = 0
-        )
-        GlobalScope.launch(Dispatchers.IO) {
-            val postResponse = RetrofitInstance.api.sendMessage(m)
-            if (postResponse.isSuccessful){
+        if(it.isNotBlank()){
+            val zonedDateTime = ZonedDateTime.now()
+            val formattedDate = zonedDateTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+            val m = Message(
+                id = 0,
+                code = DataRepository.getUser()!!.code,
+                senderContactId = DataRepository.getUser()!!.id,
+                receiverContactId = DataRepository.getUserPlus()!!.id,
+                content = it,
+                sentDate = formattedDate,
+                type = 0
+            )
+            GlobalScope.launch(Dispatchers.IO) {
+                val postResponse = RetrofitInstance.api.sendMessage(m)
+                if (postResponse.isSuccessful){
+                }
+                goBottom()
             }
-            goBottom()
         }
     }
 
@@ -715,11 +717,12 @@ fun ChatScreen(navController: NavController, sharedPreferences: SharedPreference
                                 ),
                                 keyboardActions = KeyboardActions(
                                     onSend = {
+                                        //keyboardController?.hide()
                                         if (newMessage.text.isNotEmpty()) {
                                             postMessage(newMessage.text)
                                             newMessage = TextFieldValue()
                                         }
-                                        keyboardController?.hide()
+
                                     }
                                 ),
                                 modifier = Modifier
@@ -780,12 +783,12 @@ fun ChatScreen(navController: NavController, sharedPreferences: SharedPreference
                     if (newMessage.text.isNotEmpty()) {
                         IconButton(
                             onClick = {
+                                //keyboardController?.hide()
                                 if (newMessage.text.isNotEmpty()) {
                                     if (newMessage.text.isNotEmpty()) {
                                         postMessage(newMessage.text)
                                         newMessage = TextFieldValue()
                                     }
-                                    keyboardController?.hide()
                                 }
                             }
                         ) {
@@ -978,16 +981,35 @@ fun MessageItem(message: Message, selectedOption: OptionSize?) {
                 ),
                 shape = RoundedCornerShape(8.dp),
                 modifier = Modifier
-                    .height(150.dp)
+                    .height(200.dp)
                     .clickable { downloadAndOpenPdf(context, message.content) }
                     .padding(8.dp)
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.pdf_icon),
-                    contentDescription = null,
+                Column(
                     modifier = Modifier
+                        .padding(8.dp)
+                ) {
+                    Row {
+                        Image(
+                            painter = painterResource(id = R.drawable.pdf_icon),
+                            contentDescription = null,
+                            modifier = Modifier.height(150.dp)
 
-                )
+                        )
+                    }
+                    Row(
+                        modifier = Modifier.padding(1.dp),
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        if(horaYMinuto!=null) {
+                            val (hora, minuto) = horaYMinuto
+                            Text(text = "${hora}:${minuto}", color = Color.LightGray,style = MaterialTheme.typography.bodySmall)
+                        }else{
+                            Text(text = "00:00", color = Color.LightGray,style = MaterialTheme.typography.bodySmall)
+                        }
+                    }
+                }
+
             }
         }
         if (message.type == 3){ //File
@@ -1003,8 +1025,8 @@ fun MessageItem(message: Message, selectedOption: OptionSize?) {
                 ),
                 shape = RoundedCornerShape(8.dp),
                 modifier = Modifier
-                    .height(130.dp)
-                    .width(150.dp)
+                    .height(150.dp)
+                    .width(160.dp)
                     .clickable {
                         downloadAndOpenImage(
                             context = context,
@@ -1013,12 +1035,33 @@ fun MessageItem(message: Message, selectedOption: OptionSize?) {
                     }
                     .padding(8.dp)
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.image_icon),
-                    contentDescription = null,
-                    modifier = Modifier.fillMaxSize()
+                Column(
+                    modifier = Modifier
+                        .padding(8.dp)
 
-                )
+                ) {
+                    Row(
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.image_icon),
+                            contentDescription = null,
+                            modifier = Modifier.fillMaxWidth().height(100.dp)
+
+                        )
+                    }
+                    Row(
+                        modifier = Modifier.padding(1.dp),
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        if(horaYMinuto!=null) {
+                            val (hora, minuto) = horaYMinuto
+                            Text(text = "${hora}:${minuto}", color = Color.LightGray,style = MaterialTheme.typography.bodySmall)
+                        }else{
+                            Text(text = "00:00", color = Color.LightGray,style = MaterialTheme.typography.bodySmall)
+                        }
+                    }
+                }
             }
         }
         Spacer(modifier = Modifier.width(8.dp))
@@ -1150,13 +1193,11 @@ fun openImageViewer(context: Context, uri: Uri) {
 }
 
 
-fun obtenerHoraYMinuto(fechaString: String): Pair<Int, Int>? {
-    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSSS")
-
+fun obtenerHoraYMinuto(fechaString: String): Pair<String, String>? {
+    ///2024-02-01T16:47:40.5631196
     return try {
-        val fecha = LocalDateTime.parse(fechaString, formatter)
-        val hora = fecha.hour
-        val minuto = fecha.minute
+        val hora = fechaString.split("T")[1].split(".")[0].split(":")[0]
+        val minuto = fechaString.split("T")[1].split(".")[0].split(":")[1]
 
         Pair(hora, minuto)
     } catch (e: Exception) {

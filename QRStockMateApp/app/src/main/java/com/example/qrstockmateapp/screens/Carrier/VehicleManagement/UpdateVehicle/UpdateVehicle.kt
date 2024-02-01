@@ -17,6 +17,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
@@ -37,9 +39,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.qrstockmateapp.R
@@ -62,12 +67,22 @@ fun UpdateVehicleScreen(navController: NavController){
 
     val isloading by remember { mutableStateOf(false) }
 
+    val focusManager = LocalFocusManager.current
+
+
     val context = LocalContext.current
 
     val updateVehicle : () -> Unit = {
-        GlobalScope.launch(Dispatchers.IO) {
-            try {
-                if(vehicle!=null){
+
+        if (vehicle != null && vehicle.code.isNotBlank() &&
+            vehicle.make.isNotBlank() &&
+            vehicle.model.isNotBlank() &&
+            vehicle.color.isNotBlank() &&
+            vehicle.licensePlate.isNotBlank() &&
+            vehicle.location.isNotBlank()) {
+            GlobalScope.launch(Dispatchers.IO) {
+                try {
+
 
                     val response =  RetrofitInstance.api.updateVehicle(vehicle)
 
@@ -96,13 +111,18 @@ fun UpdateVehicleScreen(navController: NavController){
 
                             navController.popBackStack()
                         }
-                    }else{
                     }
+
+                }catch (e: Exception) {
+                    Log.d("excepcionWarehouse","$e")
                 }
-            }catch (e: Exception) {
-                Log.d("excepcionWarehouse","$e")
             }
+        }else {
+            Toast.makeText(context, "You should not leave empty fields", Toast.LENGTH_SHORT).show()
+
         }
+
+
 
     }
     val customTextFieldColors = TextFieldDefaults.outlinedTextFieldColors(
@@ -181,6 +201,12 @@ fun UpdateVehicleScreen(navController: NavController){
                             value = make,
                             label = { Text("Make", color = MaterialTheme.colorScheme.outlineVariant) },
                             onValueChange = { make = it },
+                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                            keyboardActions = KeyboardActions(
+                                onNext = {
+                                    focusManager.moveFocus(FocusDirection.Down)
+                                }
+                            ),
                             colors = customTextFieldColors ,
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -197,6 +223,12 @@ fun UpdateVehicleScreen(navController: NavController){
                             label = { Text("Model", color = MaterialTheme.colorScheme.outlineVariant) },
                             onValueChange = { model = it },
                             colors = customTextFieldColors,
+                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                            keyboardActions = KeyboardActions(
+                                onNext = {
+                                    focusManager.moveFocus(FocusDirection.Down)
+                                }
+                            ),
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(4.dp)
@@ -212,6 +244,12 @@ fun UpdateVehicleScreen(navController: NavController){
                             label = { Text("Year", color = MaterialTheme.colorScheme.outlineVariant) },
                             onValueChange = { year = it },
                             colors = customTextFieldColors ,
+                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                            keyboardActions = KeyboardActions(
+                                onNext = {
+                                    focusManager.moveFocus(FocusDirection.Down)
+                                }
+                            ),
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(4.dp)
@@ -227,6 +265,12 @@ fun UpdateVehicleScreen(navController: NavController){
                             label = { Text("Color", color = MaterialTheme.colorScheme.outlineVariant) },
                             onValueChange = { color = it },
                             colors = customTextFieldColors ,
+                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                            keyboardActions = KeyboardActions(
+                                onNext = {
+                                    focusManager.moveFocus(FocusDirection.Down)
+                                }
+                            ),
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(4.dp)
@@ -242,6 +286,12 @@ fun UpdateVehicleScreen(navController: NavController){
                             label = { Text("License Plate", color = MaterialTheme.colorScheme.outlineVariant) },
                             onValueChange = { licensePlate = it },
                             colors = customTextFieldColors ,
+                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                            keyboardActions = KeyboardActions(
+                                onNext = {
+                                    focusManager.moveFocus(FocusDirection.Down)
+                                }
+                            ),
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(4.dp)
@@ -257,6 +307,12 @@ fun UpdateVehicleScreen(navController: NavController){
                             label = { Text("Max Load", color = MaterialTheme.colorScheme.outlineVariant) },
                             onValueChange = { maxLoad = it },
                             colors = customTextFieldColors ,
+                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                            keyboardActions = KeyboardActions(
+                                onNext = {
+                                    focusManager.moveFocus(FocusDirection.Down)
+                                }
+                            ),
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(4.dp)

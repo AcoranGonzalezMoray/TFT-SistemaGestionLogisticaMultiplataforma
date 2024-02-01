@@ -853,7 +853,7 @@ fun BottomSheetContent(
             androidx.compose.material.Text(
                 buildAnnotatedString {
                     withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                        append("${((distanceRounded/80) * 60).toString().substring(0, 4)} Min")
+                        append("${String.format("%.2f Min", (distanceRounded / 80) * 60)} Min")
                     }
                 },
                 fontSize = 9.sp,

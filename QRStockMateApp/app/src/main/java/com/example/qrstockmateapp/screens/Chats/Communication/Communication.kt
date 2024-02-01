@@ -92,28 +92,33 @@ fun CommunicatioScreen(navController: NavController){
     }
 
     val postCommunication: ()->Unit = {
-        val zonedDateTime = ZonedDateTime.now()
-        val color = when(selectedColor){
-            Color.Green -> {0}
-            Color.Yellow -> {1}
-            else -> {2}
-        }
-        val formattedDate = zonedDateTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
-        val communication = Communication(
-            id= 0,
-            code= DataRepository.getUser()!!.code,
-            content= "${color};"+newMessage.text,
-            sentDate= formattedDate
-        )
-        GlobalScope.launch(Dispatchers.IO) {
-            val response = RetrofitInstance.api.postCommunication(communication)
-            if (response.isSuccessful) {
-                withContext(Dispatchers.Main){
-                    Toast.makeText(currentContext, "Sent communication", Toast.LENGTH_SHORT).show()
-                }
-                newMessage = TextFieldValue()
-                loadCommunication()
+        if(newMessage.text.isNotBlank()){
+            val zonedDateTime = ZonedDateTime.now()
+            val color = when(selectedColor){
+                Color.Green -> {0}
+                Color.Yellow -> {1}
+                else -> {2}
             }
+            val formattedDate = zonedDateTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+            val communication = Communication(
+                id= 0,
+                code= DataRepository.getUser()!!.code,
+                content= "${color};"+newMessage.text,
+                sentDate= formattedDate
+            )
+            GlobalScope.launch(Dispatchers.IO) {
+                val response = RetrofitInstance.api.postCommunication(communication)
+                if (response.isSuccessful) {
+                    withContext(Dispatchers.Main){
+                        Toast.makeText(currentContext, "Sent communication", Toast.LENGTH_SHORT).show()
+                    }
+                    newMessage = TextFieldValue()
+                    loadCommunication()
+                }
+            }
+        }else {
+            Toast.makeText(currentContext, "You should not leave empty fields", Toast.LENGTH_SHORT).show()
+
         }
     }
 
@@ -155,6 +160,7 @@ fun CommunicatioScreen(navController: NavController){
                 ) {
                     DropdownMenu(
                         expanded = isDropdownExpanded,
+                        modifier = Modifier.background(color = MaterialTheme.colorScheme.secondaryContainer),
                         onDismissRequest = {
                             isDropdownExpanded = false
                         }
@@ -164,7 +170,7 @@ fun CommunicatioScreen(navController: NavController){
                                 horizontalArrangement = Arrangement.Center,
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Text("Low")
+                                Text("Low", color = MaterialTheme.colorScheme.primary)
                                 Spacer(modifier = Modifier.padding(5.dp))
                                 Box(
                                     modifier = Modifier
@@ -179,7 +185,7 @@ fun CommunicatioScreen(navController: NavController){
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
 
-                                Text("Medium")
+                                Text("Medium", color = MaterialTheme.colorScheme.primary)
                                 Spacer(modifier = Modifier.padding(5.dp))
                                 Box(
                                     modifier = Modifier
@@ -193,7 +199,7 @@ fun CommunicatioScreen(navController: NavController){
                                 horizontalArrangement = Arrangement.Center,
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Text("High")
+                                Text("High", color = MaterialTheme.colorScheme.primary)
                                 Spacer(modifier = Modifier.padding(5.dp))
                                 Box(
                                     modifier = Modifier

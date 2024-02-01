@@ -25,6 +25,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.DropdownMenu
@@ -51,9 +53,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
@@ -91,6 +96,7 @@ fun UpdateWarehouseScreen(navController: NavController) {
     var isloading by remember { mutableStateOf(false) }
     var showDialog by remember { mutableStateOf(false) }
     var pinLocation by remember { mutableStateOf<LatLng?>(null) }
+    val focusManager = LocalFocusManager.current
 
     val context = LocalContext.current
 
@@ -352,6 +358,12 @@ fun UpdateWarehouseScreen(navController: NavController) {
                            onValueChange = { name = it },
                            shape = RoundedCornerShape(8.dp),
                            colors= customTextFieldColors,
+                           keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                           keyboardActions = KeyboardActions(
+                               onNext = {
+                                   focusManager.moveFocus(FocusDirection.Down)
+                               }
+                           ),
                            modifier = Modifier
                                .fillMaxWidth()
                                .padding(4.dp)
@@ -367,6 +379,12 @@ fun UpdateWarehouseScreen(navController: NavController) {
                            label = { Text("Organization", color = MaterialTheme.colorScheme.outlineVariant) },
                            shape = RoundedCornerShape(8.dp),
                            onValueChange = { organization = it },
+                           keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                           keyboardActions = KeyboardActions(
+                               onNext = {
+                                   focusManager.moveFocus(FocusDirection.Down)
+                               }
+                           ),
                            colors= customTextFieldColors,
                            modifier = Modifier
                                .fillMaxWidth()
@@ -423,6 +441,12 @@ fun UpdateWarehouseScreen(navController: NavController) {
                            shape = RoundedCornerShape(8.dp),
                            onValueChange = { location = it },
                            colors= customTextFieldColors,
+                           keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                           keyboardActions = KeyboardActions(
+                               onNext = {
+                                   focusManager.moveFocus(FocusDirection.Down)
+                               }
+                           ),
                            modifier = Modifier
                                .fillMaxWidth()
                                .padding(4.dp)

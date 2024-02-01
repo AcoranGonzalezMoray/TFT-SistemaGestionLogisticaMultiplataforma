@@ -53,6 +53,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
@@ -328,17 +329,33 @@ fun CarrierScreen(navController: NavController) {
                     }
                 }
             }
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                items(filteredItems.chunked(2)) { routesPorFila ->
-                    itemRoute(routesPorFila, navController)
-                }
-                item{
-                    Spacer(modifier = Modifier
+            if(filteredItems.isNotEmpty()){
+                LazyColumn(
+                    modifier = Modifier
                         .fillMaxWidth()
-                        .height(65.dp))
+                ) {
+                    items(filteredItems.chunked(2)) { routesPorFila ->
+                        itemRoute(routesPorFila, navController)
+                    }
+                    item{
+                        Spacer(modifier = Modifier
+                            .fillMaxWidth()
+                            .height(65.dp))
+                    }
+                }
+            }else {
+                Row(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment =  Alignment.CenterVertically
+                ) {
+                    androidx.compose.material.Text(
+                        text = "You have not yet been assigned any route \n  or  for the selected date",
+                        color = MaterialTheme.colorScheme.outlineVariant,
+                        style = TextStyle(
+                            fontWeight = FontWeight.Bold
+                        )
+                    )
                 }
             }
         }

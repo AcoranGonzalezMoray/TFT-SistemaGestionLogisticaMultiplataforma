@@ -29,6 +29,8 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
@@ -39,19 +41,36 @@ import com.example.qrstockmateapp.ui.theme.BlueSystem
 
 @Composable
 fun ContactScreen(navController: NavController) {
-    val employees = DataRepository.getEmployees()!!.filter { user: User -> user.id!=DataRepository.getUser()!!.id  }
+    val employees = DataRepository.getEmployees()?.filter { user: User -> user.id!=DataRepository.getUser()?.id  }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        LazyColumn {
-            items(employees) { employee ->
-                EmployeeItem(employee, navController)
-                Divider(modifier = Modifier.padding(start = 16.dp, end = 16.dp))
+        if(employees?.isNotEmpty() == true){
+            LazyColumn {
+                items(employees) { employee ->
+                    EmployeeItem(employee, navController)
+                    Divider(modifier = Modifier.padding(start = 16.dp, end = 16.dp))
+                }
+            }
+        }else {
+            Row(
+                modifier = Modifier.fillMaxSize(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment =  Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "There are no employees available in this company",
+                    color = MaterialTheme.colorScheme.outlineVariant,
+                    style = TextStyle(
+                        fontWeight = FontWeight.Bold
+                    )
+                )
             }
         }
+
     }
 
 }

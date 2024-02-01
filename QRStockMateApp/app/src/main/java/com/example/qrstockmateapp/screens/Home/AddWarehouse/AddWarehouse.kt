@@ -20,6 +20,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
@@ -43,8 +45,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.qrstockmateapp.api.models.Transaction
@@ -93,47 +98,53 @@ fun AddWarehouseScreen(navController: NavController) {
     )
 
     val addWarehouse:() -> Unit = {
-        GlobalScope.launch(Dispatchers.IO) {
-            try {
-                val company = DataRepository.getCompany()
-                if(company!=null){
+        if(name.isNotBlank() && location.isNotBlank() && organization.isNotBlank()){
+            GlobalScope.launch(Dispatchers.IO) {
+                try {
+                    val company = DataRepository.getCompany()
+                    if(company!=null){
 
-                    val warehouse = Warehouse(0,name,location, organization,selectedOption.split(";")[1].toInt(),"","", pinLocation!!.latitude,  pinLocation!!.longitude)
-                    val response = RetrofitInstance.api.createWarehouse(company.id,warehouse)
-                    if(response.isSuccessful){
-                        val user = DataRepository.getUser()
-                        if(user!=null){
-                            val zonedDateTime = ZonedDateTime.now()
-                            val formattedDate = zonedDateTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
-                            val addTransaccion = RetrofitInstance.api.addHistory(Transaction(0,user.id.toString(),user.code, "a ${warehouse.name} warehouse has been added",
-                                formattedDate , 0))
-                            if(addTransaccion.isSuccessful){
-                            }else{
-                                try {
-                                    val errorBody = addTransaccion.errorBody()?.string()
-                                    Log.d("Transaccion", errorBody ?: "Error body is null")
-                                } catch (e: Exception) {
-                                    Log.e("Transaccion", "Error al obtener el cuerpo del error: $e")
+                        val warehouse = Warehouse(0,name,location, organization,selectedOption.split(";")[1].toInt(),"","", pinLocation!!.latitude,  pinLocation!!.longitude)
+                        val response = RetrofitInstance.api.createWarehouse(company.id,warehouse)
+                        if(response.isSuccessful){
+                            val user = DataRepository.getUser()
+                            if(user!=null){
+                                val zonedDateTime = ZonedDateTime.now()
+                                val formattedDate = zonedDateTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+                                val addTransaccion = RetrofitInstance.api.addHistory(Transaction(0,user.id.toString(),user.code, "a ${warehouse.name} warehouse has been added",
+                                    formattedDate , 0))
+                                if(addTransaccion.isSuccessful){
+                                }else{
+                                    try {
+                                        val errorBody = addTransaccion.errorBody()?.string()
+                                        Log.d("Transaccion", errorBody ?: "Error body is null")
+                                    } catch (e: Exception) {
+                                        Log.e("Transaccion", "Error al obtener el cuerpo del error: $e")
+                                    }
                                 }
                             }
+                            withContext(Dispatchers.Main){
+                                Toast.makeText(context, "Warehouse successfully added", Toast.LENGTH_SHORT).show()
+
+                                navController.navigate("home")
+                            }
+                        }else{
+                            Log.d("AddWAREHOUSE", "NO")
                         }
-                      withContext(Dispatchers.Main){
-                          Toast.makeText(context, "Warehouse successfully added", Toast.LENGTH_SHORT).show()
 
-                          navController.navigate("home")
-                      }
-                    }else{
-                        Log.d("AddWAREHOUSE", "NO")
                     }
-
+                }catch (e: Exception){
+                    Log.d("ExceptionAddWarehouse", "${e}")
                 }
-            }catch (e: Exception){
-                Log.d("ExceptionAddWarehouse", "${e}")
             }
+        }else {
+            Toast.makeText(context, "You should not leave empty fields", Toast.LENGTH_SHORT).show()
+
         }
+
     }
 
-
+    val focusManager = LocalFocusManager.current
 
 
     // Cargar la lista de empleados al inicializar
@@ -191,6 +202,12 @@ fun AddWarehouseScreen(navController: NavController) {
                 label = { Text("Name", color = MaterialTheme.colorScheme.outlineVariant) },
                 shape = RoundedCornerShape(8.dp),
                 colors = customTextFieldColors,
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                keyboardActions = KeyboardActions(
+                    onNext = {
+                        focusManager.moveFocus(FocusDirection.Down)
+                    }
+                ),
                 modifier = Modifier
                     .fillMaxWidth()
                     .border(
@@ -207,6 +224,12 @@ fun AddWarehouseScreen(navController: NavController) {
                 shape = RoundedCornerShape(8.dp),
                 label = { Text("Organization", color = MaterialTheme.colorScheme.outlineVariant) },
                 colors = customTextFieldColors,
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                keyboardActions = KeyboardActions(
+                    onNext = {
+                        focusManager.moveFocus(FocusDirection.Down)
+                    }
+                ),
                 modifier = Modifier
                     .fillMaxWidth()
                     .border(
@@ -262,6 +285,12 @@ fun AddWarehouseScreen(navController: NavController) {
                 label = { Text("Location", color = MaterialTheme.colorScheme.outlineVariant) },
                 shape = RoundedCornerShape(8.dp),
                 colors = customTextFieldColors,
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                keyboardActions = KeyboardActions(
+                    onNext = {
+                        focusManager.moveFocus(FocusDirection.Down)
+                    }
+                ),
                 modifier = Modifier
                     .fillMaxWidth()
                     .border(

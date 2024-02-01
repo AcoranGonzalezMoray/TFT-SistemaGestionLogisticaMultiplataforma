@@ -623,6 +623,7 @@ fun Drawer(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable(onClick = {
+
                         DataRepository.LogOut()
                         sharedPreferences.edit {
                             remove("TOKEN_KEY")

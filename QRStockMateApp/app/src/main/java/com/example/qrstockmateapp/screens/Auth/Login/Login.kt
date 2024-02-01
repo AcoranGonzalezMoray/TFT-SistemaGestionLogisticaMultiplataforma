@@ -18,11 +18,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.IconButton
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,11 +38,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.qrstockmateapp.R
@@ -126,10 +136,18 @@ fun Login(navController: NavHostController, onLoginSuccess: (Boolean, User, Stri
         }
     }
 
+    val focusManager = LocalFocusManager.current
+
+
     val keyboardOptionsEmail = KeyboardOptions(
+        imeAction = ImeAction.Next,
         keyboardType = KeyboardType.Email
     )
+    Column(
+        modifier = Modifier.background(MaterialTheme.colorScheme.background)
+    ){
 
+    }
     if (isloading){
         Box(
             modifier = Modifier
@@ -147,117 +165,142 @@ fun Login(navController: NavHostController, onLoginSuccess: (Boolean, User, Stri
         }
     }else{
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
-                .padding(26.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Image(
-                painter = painterResource(R.drawable.app_icon_removed),
-                contentDescription = "Descripción de la imagen",
-                modifier = Modifier
-                    .size(300.dp)
+            modifier = Modifier.background(MaterialTheme.colorScheme.background)
+        ){
+            TopAppBar(
+                backgroundColor = MaterialTheme.colorScheme.background,
+                title = { Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    //androidx.compose.material.Text(text = "QRStockMate", color = BlueSystem)
+                } }
             )
-            Spacer(modifier = Modifier.height(5.dp))
-            if (isError) {
-                Text(
-                    text = errorMessage ?: "",
-                    color = MaterialTheme.colorScheme.error,
-                    style = MaterialTheme.typography.labelSmall,
-                    modifier = Modifier.padding(start = 16.dp)
-                )
-            }
-            TextField(
-                value = email,
-                isError = isError,
-                onValueChange = { email = it;if(!start)start = true },
-                label = { Text("Email", color = MaterialTheme.colorScheme.outlineVariant) },
-                keyboardOptions = keyboardOptionsEmail,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .border(
-                        width = 0.5.dp,
-                        color = BlueSystem,
-                        shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
 
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background)
+                    .padding( horizontal = 26.dp, vertical = 10.dp),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.app_icon_removed),
+                    contentDescription = "Descripción de la imagen",
+                    modifier = Modifier
+                        .size(300.dp)
+                )
+                Spacer(modifier = Modifier.height(5.dp))
+                if (isError) {
+                    Text(
+                        text = errorMessage ?: "",
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.labelSmall,
+                        modifier = Modifier.padding(start = 16.dp)
+                    )
+                }
+                TextField(
+                    value = email,
+                    isError = isError,
+                    onValueChange = { email = it;if(!start)start = true },
+                    label = { Text("Email", color = MaterialTheme.colorScheme.outlineVariant) },
+                    keyboardActions = KeyboardActions(
+                        onNext = {
+                            focusManager.moveFocus(FocusDirection.Down)
+                        }
                     ),
-                shape = RoundedCornerShape(8.dp),
-                colors = customTextFieldColors
-            )
-            if(!isValidEmail(email) && start) androidx.compose.material.Text(
-                "put a valid email",
-                color = Color.Red
-            )
-            Spacer(modifier = Modifier.height(10.dp))
-            TextField(
-                value = password,
-                isError = isError,
-                shape = RoundedCornerShape(8.dp),
-                onValueChange = { password = it;if(!start)start = true },
-                label = { Text("Password", color = MaterialTheme.colorScheme.outlineVariant) },
-                visualTransformation = PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .border(
-                        width = 0.5.dp,
-                        color = BlueSystem,
-                        shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
+                    keyboardOptions = keyboardOptionsEmail,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .border(
+                            width = 0.5.dp,
+                            color = BlueSystem,
+                            shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
 
+                        ),
+                    shape = RoundedCornerShape(8.dp),
+                    colors = customTextFieldColors
+                )
+                if(!isValidEmail(email) && start) androidx.compose.material.Text(
+                    "put a valid email",
+                    color = Color.Red
+                )
+                Spacer(modifier = Modifier.height(10.dp))
+                TextField(
+                    value = password,
+                    isError = isError,
+                    shape = RoundedCornerShape(8.dp),
+                    onValueChange = { password = it;if(!start)start = true },
+                    label = { Text("Password", color = MaterialTheme.colorScheme.outlineVariant) },
+                    visualTransformation = PasswordVisualTransformation(),
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Go,keyboardType = KeyboardType.Password),
+                    keyboardActions = KeyboardActions(
+                        onGo= {
+                            onLoginClicked()
+                        }
                     ),
-                colors = customTextFieldColors
-            )
-            Spacer(modifier = Modifier.height(20.dp))
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .border(
+                            width = 0.5.dp,
+                            color = BlueSystem,
+                            shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
 
-            // Botón para iniciar sesión
+                        ),
+                    colors = customTextFieldColors
+                )
+                Spacer(modifier = Modifier.height(30.dp))
 
-            ElevatedButton(
-                modifier = Modifier.fillMaxWidth(),
-                onClick = {
-                    onLoginClicked()
-                },
-                colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
-                    containerColor = BlueSystem
-                ),
-                elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
-                    defaultElevation = 5.dp
-                )
-            ){
-                Text("Login", color=Color.White)
-            }
-            Row {
-                Text(
-                    text = "Forgot password",
-                    color = Color.Gray,
-                    modifier = Modifier
-                        .clickable {
-                            navController.navigate("forgotPassword")
-                        }
-                        .padding(5.dp)
-                )
-                Spacer(modifier = Modifier.width(5.dp))
-                Text(
-                    text = "Join with code",
-                    color = Color.Blue,
-                    modifier = Modifier
-                        .clickable {
-                            navController.navigate(route = "joinWithCode")
-                        }
-                        .padding(5.dp)
-                )
-                Text(
-                    text = "Sign up",
-                    color = Color.Blue,
-                    modifier = Modifier
-                        .clickable {
-                            navController.navigate(route = "signUp")
-                        }
-                        .padding(5.dp)
-                )
+                // Botón para iniciar sesión
+
+                ElevatedButton(
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = {
+                        onLoginClicked()
+                    },
+                    colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                        containerColor = BlueSystem
+                    ),
+                    elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                        defaultElevation = 5.dp
+                    )
+                ){
+                    Text("Login", color=Color.White)
+                }
+                Row {
+                    Text(
+                        text = "Forgot password",
+                        color = Color.Gray,
+                        modifier = Modifier
+                            .clickable {
+                                navController.navigate("forgotPassword")
+                            }
+                            .padding(5.dp)
+                    )
+                    Spacer(modifier = Modifier.width(5.dp))
+                    Text(
+                        text = "Join with code",
+                        color = Color.Blue,
+                        modifier = Modifier
+                            .clickable {
+                                navController.navigate(route = "joinWithCode")
+                            }
+                            .padding(5.dp)
+                    )
+                    Text(
+                        text = "Sign up",
+                        color = Color.Blue,
+                        modifier = Modifier
+                            .clickable {
+                                navController.navigate(route = "signUp")
+                            }
+                            .padding(5.dp)
+                    )
+                }
             }
         }
+
     }
 
 

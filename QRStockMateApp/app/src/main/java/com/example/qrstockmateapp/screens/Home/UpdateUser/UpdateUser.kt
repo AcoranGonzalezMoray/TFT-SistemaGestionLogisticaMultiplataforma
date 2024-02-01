@@ -22,6 +22,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
@@ -45,9 +47,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
@@ -74,6 +79,7 @@ fun UpdateUserScreen(navController: NavController) {
     var user = remember { DataRepository.getUserPlus() }
     var selectedOption by remember { mutableStateOf("Select a role") }
     var isloading by remember { mutableStateOf<Boolean>(false) }
+    val focusManager = LocalFocusManager.current
 
     val context = LocalContext.current
 
@@ -332,6 +338,12 @@ fun UpdateUserScreen(navController: NavController) {
                             label = { Text("Name", color = MaterialTheme.colorScheme.outlineVariant) },
                             onValueChange = { name = it },
                             colors= customTextFieldColors,
+                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                            keyboardActions = KeyboardActions(
+                                onNext = {
+                                    focusManager.moveFocus(FocusDirection.Down)
+                                }
+                            ),
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(4.dp)
@@ -348,6 +360,12 @@ fun UpdateUserScreen(navController: NavController) {
                             label = { Text("Email", color = MaterialTheme.colorScheme.outlineVariant) },
                             onValueChange = {email = it },
                             colors= customTextFieldColors,
+                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                            keyboardActions = KeyboardActions(
+                                onNext = {
+                                    focusManager.moveFocus(FocusDirection.Down)
+                                }
+                            ),
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(4.dp)
@@ -364,6 +382,12 @@ fun UpdateUserScreen(navController: NavController) {
                             label = { Text("Phone", color = MaterialTheme.colorScheme.outlineVariant) },
                             onValueChange = { phone = it },
                             colors= customTextFieldColors,
+                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                            keyboardActions = KeyboardActions(
+                                onNext = {
+                                    focusManager.moveFocus(FocusDirection.Down)
+                                }
+                            ),
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(4.dp)

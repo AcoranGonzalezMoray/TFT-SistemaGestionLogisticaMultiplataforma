@@ -90,20 +90,26 @@ fun ProfileScreen(navController: NavController) {
 
     val placeholderImage = painterResource(id = R.drawable.user)
     val updateInfo:()->Unit={
-        GlobalScope.launch(Dispatchers.IO){
-            var userMod = user
-            userMod?.email = userEmail.toString()
-            userMod?.phone = userPhone.toString()
-            if(userMod!=null){
-                val response = RetrofitInstance.api.updateUser(userMod)
-                if(response.isSuccessful){
-                    DataRepository.setUser(userMod)
-                    withContext(Dispatchers.Main){
-                        Toast.makeText(context, "satisfactory update", Toast.LENGTH_SHORT).show()
+        if(userEmail!=null && userEmail.toString().isNotBlank()
+            && userPhone!=null && userPhone.toString().isNotBlank()){
+            GlobalScope.launch(Dispatchers.IO){
+                var userMod = user
+                userMod?.email = userEmail.toString()
+                userMod?.phone = userPhone.toString()
+                if(userMod!=null){
+                    val response = RetrofitInstance.api.updateUser(userMod)
+                    if(response.isSuccessful){
+                        DataRepository.setUser(userMod)
+                        withContext(Dispatchers.Main){
+                            Toast.makeText(context, "satisfactory update", Toast.LENGTH_SHORT).show()
+                        }
                     }
                 }
             }
+        }else {
+            Toast.makeText(context, "You should not leave empty fields", Toast.LENGTH_SHORT).show()
         }
+
     }
 
     val customTextFieldColors = TextFieldDefaults.outlinedTextFieldColors(

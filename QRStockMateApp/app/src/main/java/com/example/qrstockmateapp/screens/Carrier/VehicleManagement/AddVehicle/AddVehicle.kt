@@ -17,6 +17,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
@@ -37,9 +39,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.qrstockmateapp.R
@@ -71,48 +76,61 @@ fun AddVehicleScreen(navController: NavController){
         location = ""
     )
 
+    val focusManager = LocalFocusManager.current
+
 
     val isloading by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
 
     val addVehicle : () -> Unit = {
-        GlobalScope.launch(Dispatchers.IO) {
-            try {
-                if(vehicle!=null){
+        if (vehicle.code.isNotBlank() &&
+            vehicle.make.isNotBlank() &&
+            vehicle.model.isNotBlank() &&
+            vehicle.color.isNotBlank() &&
+            vehicle.licensePlate.isNotBlank() &&
+            vehicle.location.isNotBlank()) {
 
-                    val response =  RetrofitInstance.api.addVehicle(vehicle)
+            GlobalScope.launch(Dispatchers.IO) {
+                try {
+                    if(vehicle!=null){
 
-                    if (response.isSuccessful) {
-                        val user = DataRepository.getUser()
-                        if(user!=null){
-                            val zonedDateTime = ZonedDateTime.now()
-                            val formattedDate = zonedDateTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
-                            val addTransaccion = RetrofitInstance.api.addHistory(Transaction(0,user.id.toString(),user.code, "a ${vehicle.licensePlate} vehicle has been added",
-                                formattedDate , 0))
-                            if(addTransaccion.isSuccessful){
-                            }else{
-                                try {
-                                    val errorBody = addTransaccion.errorBody()?.string()
-                                    Log.d("Transaccion", errorBody ?: "Error body is null")
-                                } catch (e: Exception) {
-                                    Log.e("Transaccion", "Error al obtener el cuerpo del error: $e")
+                        val response =  RetrofitInstance.api.addVehicle(vehicle)
+
+                        if (response.isSuccessful) {
+                            val user = DataRepository.getUser()
+                            if(user!=null){
+                                val zonedDateTime = ZonedDateTime.now()
+                                val formattedDate = zonedDateTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+                                val addTransaccion = RetrofitInstance.api.addHistory(Transaction(0,user.id.toString(),user.code, "a ${vehicle.licensePlate} vehicle has been added",
+                                    formattedDate , 0))
+                                if(addTransaccion.isSuccessful){
+                                }else{
+                                    try {
+                                        val errorBody = addTransaccion.errorBody()?.string()
+                                        Log.d("Transaccion", errorBody ?: "Error body is null")
+                                    } catch (e: Exception) {
+                                        Log.e("Transaccion", "Error al obtener el cuerpo del error: $e")
+                                    }
                                 }
                             }
-                        }
-                        withContext(Dispatchers.Main){
-                            Toast.makeText(context, "Vehicle successfully added", Toast.LENGTH_SHORT).show()
+                            withContext(Dispatchers.Main){
+                                Toast.makeText(context, "Vehicle successfully added", Toast.LENGTH_SHORT).show()
 
-                            navController.popBackStack()
+                                navController.popBackStack()
+                            }
+                        }else{
+                            Log.d("AddVehicle", "NO")
                         }
-                    }else{
-                        Log.d("AddVehicle", "NO")
                     }
+                }catch (e: Exception) {
+                    Log.d("excepcionVehicle","$e")
                 }
-            }catch (e: Exception) {
-                Log.d("excepcionVehicle","$e")
             }
+        }else {
+            Toast.makeText(context, "You should not leave empty fields", Toast.LENGTH_SHORT).show()
         }
+
 
     }
     val customTextFieldColors = TextFieldDefaults.outlinedTextFieldColors(
@@ -191,6 +209,12 @@ fun AddVehicleScreen(navController: NavController){
                             value = make,
                             label = { Text("Make", color = MaterialTheme.colorScheme.outlineVariant) },
                             onValueChange = { make = it },
+                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                            keyboardActions = KeyboardActions(
+                                onNext = {
+                                    focusManager.moveFocus(FocusDirection.Down)
+                                }
+                            ),
                             colors = customTextFieldColors ,
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -206,6 +230,12 @@ fun AddVehicleScreen(navController: NavController){
                             value = model,
                             label = { Text("Model", color = MaterialTheme.colorScheme.outlineVariant) },
                             onValueChange = { model = it },
+                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                            keyboardActions = KeyboardActions(
+                                onNext = {
+                                    focusManager.moveFocus(FocusDirection.Down)
+                                }
+                            ),
                             colors = customTextFieldColors,
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -222,6 +252,12 @@ fun AddVehicleScreen(navController: NavController){
                             label = { Text("Year", color = MaterialTheme.colorScheme.outlineVariant) },
                             onValueChange = { year = it },
                             colors = customTextFieldColors ,
+                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                            keyboardActions = KeyboardActions(
+                                onNext = {
+                                    focusManager.moveFocus(FocusDirection.Down)
+                                }
+                            ),
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(4.dp)
@@ -237,6 +273,12 @@ fun AddVehicleScreen(navController: NavController){
                             label = { Text("Color", color = MaterialTheme.colorScheme.outlineVariant) },
                             onValueChange = { color = it },
                             colors = customTextFieldColors ,
+                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                            keyboardActions = KeyboardActions(
+                                onNext = {
+                                    focusManager.moveFocus(FocusDirection.Down)
+                                }
+                            ),
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(4.dp)
@@ -251,6 +293,12 @@ fun AddVehicleScreen(navController: NavController){
                             value = licensePlate,
                             label = { Text("License Plate", color = MaterialTheme.colorScheme.outlineVariant) },
                             onValueChange = { licensePlate = it },
+                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                            keyboardActions = KeyboardActions(
+                                onNext = {
+                                    focusManager.moveFocus(FocusDirection.Down)
+                                }
+                            ),
                             colors = customTextFieldColors ,
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -266,6 +314,12 @@ fun AddVehicleScreen(navController: NavController){
                             value = maxLoad,
                             label = { Text("Max Load", color = MaterialTheme.colorScheme.outlineVariant) },
                             onValueChange = { maxLoad = it },
+                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                            keyboardActions = KeyboardActions(
+                                onNext = {
+                                    focusManager.moveFocus(FocusDirection.Down)
+                                }
+                            ),
                             colors = customTextFieldColors ,
                             modifier = Modifier
                                 .fillMaxWidth()

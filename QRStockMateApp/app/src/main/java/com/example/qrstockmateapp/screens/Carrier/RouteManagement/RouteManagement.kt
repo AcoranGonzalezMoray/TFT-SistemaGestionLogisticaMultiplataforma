@@ -68,6 +68,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -339,18 +340,34 @@ fun RouteManagementScreen(navController: NavController) {
                     )
                 }
             }
-            LazyColumn {
-                items(filteredItems) { route ->
-                    TransportRouteItem(route = route, navController = navController, onDeleted = {
-                        loadRoutes()
-                    })
-                }
-                item{
-                    Spacer(modifier = Modifier
-                        .fillMaxWidth()
-                        .height(65.dp))
-                }
+            if(filteredItems.isNotEmpty()){
+                LazyColumn {
+                    items(filteredItems) { route ->
+                        TransportRouteItem(route = route, navController = navController, onDeleted = {
+                            loadRoutes()
+                        })
+                    }
+                    item{
+                        Spacer(modifier = Modifier
+                            .fillMaxWidth()
+                            .height(65.dp))
+                    }
 
+                }
+            }else {
+                Row(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment =  Alignment.CenterVertically
+                ) {
+                    androidx.compose.material.Text(
+                        text = "There are no routes available for this company \n or  for the selected date",
+                        color = MaterialTheme.colorScheme.outlineVariant,
+                        style = TextStyle(
+                            fontWeight = FontWeight.Bold
+                        )
+                    )
+                }
             }
         }
     }

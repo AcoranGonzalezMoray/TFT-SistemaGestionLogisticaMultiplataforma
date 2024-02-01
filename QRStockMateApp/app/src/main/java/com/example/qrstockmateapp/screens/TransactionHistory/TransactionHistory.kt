@@ -9,6 +9,7 @@ import android.os.Build
 import android.os.Environment
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -42,6 +43,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -175,16 +177,32 @@ fun TransactionHistoryScreen(navController: NavController) {
                 }
             }
 
-            LazyColumn {
-                items(filteredItems) { transaction ->
-                    TransactionListItem(transaction = transaction)
-                }
-                item {
-                    Spacer(modifier = Modifier
-                        .fillMaxWidth()
-                        .height(48.dp))
-                }
-            }
+           if (filteredItems.isNotEmpty()){
+               LazyColumn {
+                   items(filteredItems) { transaction ->
+                       TransactionListItem(transaction = transaction)
+                   }
+                   item {
+                       Spacer(modifier = Modifier
+                           .fillMaxWidth()
+                           .height(48.dp))
+                   }
+               }
+           }else {
+               Row(
+                   modifier = Modifier.fillMaxSize(),
+                   horizontalArrangement = Arrangement.Center,
+                   verticalAlignment =  Alignment.CenterVertically
+               ) {
+                   Text(
+                       text = "There are no transactions available in this company",
+                       color = MaterialTheme.colorScheme.outlineVariant,
+                       style = TextStyle(
+                           fontWeight = FontWeight.Bold
+                       )
+                   )
+               }
+           }
         }else{
             Text(
                 text = "Permission denied",
