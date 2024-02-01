@@ -5,16 +5,12 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import android.os.Environment
-import android.util.Log
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -22,15 +18,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Button
 import androidx.compose.material.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -40,6 +31,7 @@ import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.SwapVert
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -60,7 +52,6 @@ import androidx.core.content.FileProvider
 import androidx.navigation.NavController
 import com.example.qrstockmateapp.R
 import com.example.qrstockmateapp.api.models.Transaction
-import com.example.qrstockmateapp.api.models.Warehouse
 import com.example.qrstockmateapp.api.models.operationToString
 import com.example.qrstockmateapp.api.services.RetrofitInstance
 import com.example.qrstockmateapp.navigation.repository.DataRepository
@@ -75,14 +66,7 @@ import org.apache.poi.ss.usermodel.Row
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import java.io.File
 import java.io.FileOutputStream
-import java.text.SimpleDateFormat
-import java.time.Instant
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import java.time.format.DateTimeFormatterBuilder
-import java.time.format.DateTimeParseException
-import java.time.temporal.ChronoField
-import java.util.Locale
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -158,7 +142,6 @@ fun TransactionHistoryScreen(navController: NavController) {
                                 filteredItems.sortedByDescending { it.id }
                             }
                         }
-                        Log.d("ORDEN", filteredItems.toString())
 
 
                     },
@@ -364,7 +347,6 @@ private fun showNotification(context: Context, title: String, message: String, f
 
     val notificationIntent = Intent(Intent.ACTION_VIEW)
     val uri = FileProvider.getUriForFile(context, context.packageName + ".fileprovider", file)
-    Log.d("URI", "${uri}")
     notificationIntent.setDataAndType(uri, "text/plain")
     notificationIntent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
 

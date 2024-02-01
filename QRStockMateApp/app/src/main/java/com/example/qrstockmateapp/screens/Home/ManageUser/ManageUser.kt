@@ -4,7 +4,6 @@ package com.example.qrstockmateapp.screens.Home.ManageUser
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,10 +17,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.OutlinedTextField
@@ -44,12 +40,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -88,7 +82,6 @@ fun ManageUserScreen(navController: NavController) {
                 val employeesResponse = RetrofitInstance.api.getEmployees(company)
                 if (employeesResponse.isSuccessful) {
                     val employeesIO = employeesResponse.body()
-                    Log.d("EMPLOYEE", "SI")
                     if(employeesIO!=null){
                         DataRepository.setEmployees(employeesIO)
                         users = DataRepository.getEmployees()
@@ -175,7 +168,6 @@ fun ManageUserScreen(navController: NavController) {
 fun UserListItem(user: User, navController: NavController,loadEmployees: () -> Unit) {
     //Función Comprobar Inactividad
     fun checkDisabled(): Boolean {
-        Log.d("DISABLE", "${user}")
         var result = false
         if (user != null){
             result = user.email.contains(":")
@@ -192,7 +184,6 @@ fun UserListItem(user: User, navController: NavController,loadEmployees: () -> U
                 user.email = "inactivo:" + user.email
                 val updateUser = RetrofitInstance.api.updateUser(user)
                 if (updateUser.isSuccessful) {
-                    Log.d("Updated User", "User was Disabled")
                     loadEmployees()
                     disabled = true
                 } else Log.d("compnayError", "error")
@@ -207,7 +198,6 @@ fun UserListItem(user: User, navController: NavController,loadEmployees: () -> U
                 user.email = user.email.split(':')[1]
                 val updateUser = RetrofitInstance.api.updateUser(user)
                 if (updateUser.isSuccessful) {
-                    Log.d("Updated User", "User was Enabled")
                     loadEmployees()
                     disabled = false
                 } else Log.d("compnayError", "error")

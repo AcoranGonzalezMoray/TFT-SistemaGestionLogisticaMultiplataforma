@@ -1,8 +1,5 @@
 package com.example.qrstockmateapp.screens.ScanQR
 
-import android.annotation.SuppressLint
-import android.content.Context
-import android.graphics.Color
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -13,24 +10,15 @@ import androidx.camera.core.ImageCapture
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.core.app.ActivityCompat.requestPermissions
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import com.airbnb.lottie.compose.LottieAnimation
@@ -40,13 +28,8 @@ import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.qrstockmateapp.R
 import com.example.qrstockmateapp.api.models.Item
-import com.example.qrstockmateapp.api.services.RetrofitInstance
 import com.example.qrstockmateapp.navigation.repository.DataRepository
 import com.example.qrstockmateapp.qr.BarcodeAnalyser
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.util.concurrent.Executors
 
 @Composable
@@ -88,7 +71,6 @@ fun ScanScreen(navController: NavController) {
                                 if(user?.role!=3){
                                     addItem(qrCodeValue)
                                     navController.navigate("addItem")
-                                    Log.d("QRCodeScan", "QR Code found: $qrCodeValue")
                                     Toast.makeText(context, "QR Code found: $qrCodeValue", Toast.LENGTH_SHORT).show()
                                 }else{
                                     Toast.makeText(context, "you do not have permission to scan", Toast.LENGTH_SHORT).show()

@@ -256,7 +256,6 @@ fun AddRouteScreen(navController: NavController){
         route.value!!.palets = itemsFormat
         GlobalScope.launch(Dispatchers.IO) {
             val user = DataRepository.getUser()!!
-            Log.d("FUNCIONORUTA", route.value!!.toString())
             val response= RetrofitInstance.api.addTransportRoutes(transportRoute = route.value!!)
             if (response.isSuccessful) {
                 val transporRoutesResponse = response.body()
@@ -269,7 +268,6 @@ fun AddRouteScreen(navController: NavController){
                             formattedDate , 0)
                     )
                     if(addTransaccion.isSuccessful){
-                        Log.d("Transaccion", "OK")
                         withContext(Dispatchers.Main){
                             Toast.makeText(context, "Route has been added", Toast.LENGTH_SHORT).show()
                             navController.navigate("routeManagement")
@@ -632,8 +630,6 @@ fun AddRouteScreen(navController: NavController){
                                             mapEuroPalet += myMap.filterValues { value ->
                                                 !(value is String && value.contains(":0;"))
                                             }
-
-                                            Log.d("EroPalte", mapEuroPalet.toString())
                                             myMap.clear()
 
                                         })
@@ -660,12 +656,7 @@ fun AddRouteScreen(navController: NavController){
                                         mapEuroPalet = mapEuroPalet.toMutableList().apply {
                                             removeAt(mapIndex)
                                         }
-                                        Log.d("EroPalte", mapEuroPalet.toString())
                                     }
-
-
-
-                                    Log.d("EroPalte", mapEuroPalet.toString())
                                 })
                             }
 
@@ -847,7 +838,6 @@ fun ShowListDialog(listaItems: List<Item>, onDismiss: () -> Unit, onSuccessfully
                             onCountStateChanged = { newCount ->
                                 if(newCount!=0.00){
                                     totalWeight = 0.00
-                                    Log.d("DICCIONARIO", myMap.toString())
                                     myMap.forEach{(key, value) ->
                                         totalWeight += value.split(":")[2].replace(";", "").toDouble()
                                     }

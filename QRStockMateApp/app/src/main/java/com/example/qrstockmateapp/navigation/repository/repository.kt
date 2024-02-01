@@ -157,7 +157,7 @@ object DataRepository {
     }
 
     fun setItem(newItem: Item) {
-        item = newItem;
+        item = newItem
     }
 
     fun getItem(): Item? {

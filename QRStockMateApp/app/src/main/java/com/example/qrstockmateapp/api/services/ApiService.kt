@@ -13,7 +13,6 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.Body
-import retrofit2.http.DELETE
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
@@ -141,11 +140,6 @@ interface ApiService {
         @Path("idCompany") id: Int,
         @Body warehouse: Warehouse
     ): Response<Void>
-
-    @GET("Item/Search/{name}")
-    suspend fun searchItem(
-        @Path("name") id: String,
-    ): Response<List<Item>>
 
     @PUT("Item/")
     suspend fun updateItem(

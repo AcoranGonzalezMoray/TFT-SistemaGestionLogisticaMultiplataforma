@@ -5,8 +5,6 @@ import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,19 +21,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Badge
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material.icons.filled.Send
-import androidx.compose.material3.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.FilterList
@@ -48,6 +37,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -59,9 +49,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.clipToBounds
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -81,17 +68,18 @@ import com.example.qrstockmateapp.navigation.repository.DataRepository
 import com.example.qrstockmateapp.screens.Carrier.RouteManagement.DatePickerSample
 import com.example.qrstockmateapp.screens.Search.SortOrder
 import com.example.qrstockmateapp.screens.Search.StateFilter
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import okhttp3.internal.wait
-import org.apache.poi.hpsf.Date
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class,
+    DelicateCoroutinesApi::class
+)
 @Composable
 fun CarrierScreen(navController: NavController) {
     // Supongamos que tienes una lista de objetos TransportRouteModel
@@ -108,7 +96,7 @@ fun CarrierScreen(navController: NavController) {
     fun filterOption(status: Int):List<TransportRoute>{
 
         if(status == 5){
-            var tmp = if (selectedDate == Triple(0, 0, 0)) {
+            val tmp = if (selectedDate == Triple(0, 0, 0)) {
                 transportRoutes
             } else {
                 transportRoutes.filter { item ->
@@ -119,7 +107,7 @@ fun CarrierScreen(navController: NavController) {
             }
             return tmp
         }else {
-            var tmp = if (selectedDate == Triple(0, 0, 0)) {
+            val tmp = if (selectedDate == Triple(0, 0, 0)) {
                 transportRoutes.filter { it.status == status }
             } else {
                 transportRoutes.filter { item ->
@@ -146,7 +134,6 @@ fun CarrierScreen(navController: NavController) {
                 if(transporRoutesResponse!=null && vehiclesResponse !=null ){
                     transportRoutes = transporRoutesResponse.filter { transportRoute: TransportRoute -> transportRoute.carrierId == DataRepository.getUser()!!.id }
                     DataRepository.setVehicles(vehiclesResponse)
-                    Log.d("route", "$transportRoutes")
                 }
             } else{
                 try {
@@ -309,7 +296,7 @@ fun CarrierScreen(navController: NavController) {
                                 StateFilter.ON_ROUTE -> StateFilter.FINALIZED
                                 StateFilter.FINALIZED -> StateFilter.NULL
                             }
-                            Log.d("FILTER", filteredItems.toString())
+
                             filteredItems = when (stateFilter) {
                                 StateFilter.PENDING -> filterOption(0)
                                 StateFilter.ON_ROUTE -> filterOption(1)

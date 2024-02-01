@@ -7,18 +7,13 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
@@ -39,7 +34,6 @@ import com.example.qrstockmateapp.ui.theme.splashScreen
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -48,7 +42,6 @@ class MainActivity : ComponentActivity() {
     private val POST_NOTIFICATION_REQUEST_CODE = 123 // Puedes usar cualquier número que desees
     private val NOTIFICATION_PERMISSION_REQUESTED = "notification_permission_requested"
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         sharedPreferences = getPreferences(Context.MODE_PRIVATE)
@@ -73,7 +66,7 @@ class MainActivity : ComponentActivity() {
                 // Verificar si hay un token y un usuario almacenados
                 val savedToken = sharedPreferences.getString(KEY_TOKEN, null)
                 val savedUserJson = sharedPreferences.getString(KEY_USER, null)
-                Log.d("savedToken", "${savedToken}")
+                Log.d("savedToken", "$savedToken")
                 if (!savedToken.isNullOrBlank() && !savedUserJson.isNullOrBlank()) {
                     val savedUser = Gson().fromJson(savedUserJson, User::class.java)
                     navigateToBottomScreen(navController,savedUser,savedToken,::saveTokenAndUser,sharedPreferences)
@@ -86,27 +79,25 @@ class MainActivity : ComponentActivity() {
     }
     private fun checkAndRequestNotificationPermission() {
         // Verificar si ya tienes permisos
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(
-                    this,
-                    Manifest.permission.BIND_NOTIFICATION_LISTENER_SERVICE
-                ) !=
-                PackageManager.PERMISSION_GRANTED
-            ) {
-                // Si no tienes el permiso, verifica si se deben mostrar explicaciones
-                if (shouldShowRequestPermissionRationale(Manifest.permission.BIND_NOTIFICATION_LISTENER_SERVICE)) {
-                    // Aquí puedes mostrar un mensaje explicativo al usuario si es necesario
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.BIND_NOTIFICATION_LISTENER_SERVICE
+            ) !=
+            PackageManager.PERMISSION_GRANTED
+        ) {
+            // Si no tienes el permiso, verifica si se deben mostrar explicaciones
+            if (shouldShowRequestPermissionRationale(Manifest.permission.BIND_NOTIFICATION_LISTENER_SERVICE)) {
+                // Aquí puedes mostrar un mensaje explicativo al usuario si es necesario
 
-                } else {
-                    // Lleva al usuario a la configuración de la aplicación para otorgar los permisos
-                    showDialogWithExplanation()
-                    sharedPreferences.edit().putBoolean(NOTIFICATION_PERMISSION_REQUESTED, true).apply()
-
-                }
             } else {
-                // El permiso ya está concedido, realiza las acciones necesarias aquí
+                // Lleva al usuario a la configuración de la aplicación para otorgar los permisos
+                showDialogWithExplanation()
+                sharedPreferences.edit().putBoolean(NOTIFICATION_PERMISSION_REQUESTED, true).apply()
 
             }
+        } else {
+            // El permiso ya está concedido, realiza las acciones necesarias aquí
+
         }
     }
 
@@ -155,7 +146,7 @@ class MainActivity : ComponentActivity() {
         ) == PackageManager.PERMISSION_GRANTED
     }
     private fun saveTokenAndUser(token: String, user: User) {
-        Log.d("LLAVE","${token}")
+        Log.d("LLAVE", token)
         with(sharedPreferences.edit()) {
             putString(KEY_TOKEN, token)
             putString(KEY_USER, Gson().toJson(user))
@@ -173,7 +164,6 @@ class MainActivity : ComponentActivity() {
 
     }
 }
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun navigateToBottomScreen(
     navController: NavHostController,
@@ -234,7 +224,6 @@ fun navigateToBottomScreen(
 }
 
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NavigationContent(
     navController: NavHostController,
@@ -245,7 +234,6 @@ fun NavigationContent(
 }
 
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Navigation(navController: NavHostController, onSaveTokenAndUser: (String, User) -> Unit,sharedPreferences: SharedPreferences) {
     NavHost(navController = navController, startDestination = "splashScreen") {
@@ -305,7 +293,7 @@ suspend fun Initializaton(navController: NavHostController, user: User, token:St
            val employeesResponse = RetrofitInstance.api.getEmployees(company)
            if (employeesResponse.isSuccessful) {
                val employees = employeesResponse.body()
-               Log.d("EMPLOYEE", "${employees}")
+               Log.d("EMPLOYEE", "$employees")
                if(employees!=null){
                    DataRepository.setEmployees(employees)
                    employees.find { it.id == user.id }?.let { DataRepository.setUser(it) }

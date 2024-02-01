@@ -205,15 +205,12 @@ fun UpdateRouteScreen(navController: NavController){
                 totalWeight = total
 
                 for(map in mapEuroPalet){
-                    Log.d("MAP", map.toString())
                     map.forEach { (key, value) ->
                         val itemIndex = listaItems.indexOfFirst { it.id == key }
                         val count = value.split(":")[1].toInt()
-                        Log.d("MAP", count.toString())
                         if (itemIndex != -1) listaItems[itemIndex] = listaItems[itemIndex].copy(stock = listaItems[itemIndex].stock - count)
 
                     }
-                    Log.d("MAP", listaItems.toString())
                 }
 
             }
@@ -258,7 +255,6 @@ fun UpdateRouteScreen(navController: NavController){
             if (response.isSuccessful) {
                 val transporRoutesResponse = response.body()
                 if(transporRoutesResponse==null){
-                    Log.d("FUNCIONORUTA", route.toString())
                     val zonedDateTime = ZonedDateTime.now()
                     val formattedDate = zonedDateTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
                     val addTransaccion = RetrofitInstance.api.addHistory(
@@ -266,7 +262,6 @@ fun UpdateRouteScreen(navController: NavController){
                             formattedDate , 2)
                     )
                     if(addTransaccion.isSuccessful){
-                        Log.d("Transaccion", "OK")
                         withContext(Dispatchers.Main){
                             Toast.makeText(context, "Route has been updated", Toast.LENGTH_SHORT).show()
                             navController.navigate("routeManagement")
@@ -647,7 +642,6 @@ fun UpdateRouteScreen(navController: NavController){
                                                !(value is String && value.contains(":0;"))
                                            }
 
-                                           Log.d("EroPalte", mapEuroPalet.toString())
                                            myMap.clear()
 
                                        })
@@ -677,12 +671,7 @@ fun UpdateRouteScreen(navController: NavController){
                                            mapEuroPalet = mapEuroPalet.toMutableList().apply {
                                                removeAt(mapIndex)
                                            }
-                                           Log.d("EroPalte", mapEuroPalet.toString())
                                        }
-
-
-
-                                       Log.d("EroPalte", mapEuroPalet.toString())
                                    })
                            }
 
@@ -867,7 +856,6 @@ fun ShowListDialog(listaItems: List<Item>, onDismiss: () -> Unit, onSuccessfully
                             onCountStateChanged = { newCount ->
                                 if(newCount!=0.00){
                                     totalWeight = 0.00
-                                    Log.d("DICCIONARIO", myMap.toString())
                                     myMap.forEach{ (key, value) ->
                                         totalWeight += value.split(":")[2].replace(";", "").toDouble()
                                     }

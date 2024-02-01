@@ -10,14 +10,10 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -27,17 +23,12 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.DropdownMenu
-import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddAPhoto
-import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -65,7 +56,6 @@ import coil.compose.rememberImagePainter
 import com.example.qrstockmateapp.R
 import com.example.qrstockmateapp.api.models.Item
 import com.example.qrstockmateapp.api.models.Transaction
-import com.example.qrstockmateapp.api.models.Warehouse
 import com.example.qrstockmateapp.api.services.RetrofitInstance
 import com.example.qrstockmateapp.navigation.repository.DataRepository
 import com.example.qrstockmateapp.ui.theme.BlueSystem
@@ -164,7 +154,6 @@ fun ItemDetailsScreen(navController: NavController) {
         GlobalScope.launch(Dispatchers.IO) {
             try {
                 if(item!=null){
-                    Log.d("excepcionItemCambio","${item}")
                     val response =  RetrofitInstance.api.updateItem(item)
 
                     if (response.isSuccessful) {
@@ -177,7 +166,6 @@ fun ItemDetailsScreen(navController: NavController) {
                                     formattedDate , 2)
                             )
                             if(addTransaccion.isSuccessful){
-                                Log.d("Transaccion", "OK")
                             }else{
                                 try {
                                     val errorBody = addTransaccion.errorBody()?.string()
@@ -188,7 +176,6 @@ fun ItemDetailsScreen(navController: NavController) {
                             }
                         }
                         val wResponse = response.body()
-                        Log.d("UpdatedItem", "${wResponse}")
                     }else{
                     }
                 }
@@ -408,12 +395,10 @@ fun ItemDetailsScreen(navController: NavController) {
                         onClick = {
 
                             var newStock = item?.stock?.plus(countState.value)
-                            Log.d("New Stock", "${newStock}")
                             var newItem = item
                             if (newItem != null) {
                                 if (newStock != null && newStock>=0) {
                                     newItem.stock = newStock
-                                    Log.d("NEW ITEM","Nuevo Item: ${newItem}")
                                     updateStock(newItem)
                                     availableCount = newStock
                                     count = 0

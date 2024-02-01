@@ -26,7 +26,7 @@ import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.MaterialTheme
@@ -42,14 +42,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import coil.compose.rememberImagePainter
 import com.example.qrstockmateapp.R
 import com.example.qrstockmateapp.api.models.Transaction
 import com.example.qrstockmateapp.api.services.RetrofitInstance
 import com.example.qrstockmateapp.navigation.repository.DataRepository
-import com.example.qrstockmateapp.screens.Home.UpdateWarehouse.ShowDialog
 import com.example.qrstockmateapp.ui.theme.BlueSystem
-import com.google.android.gms.maps.model.LatLng
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -57,11 +55,12 @@ import kotlinx.coroutines.withContext
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
+@OptIn(DelicateCoroutinesApi::class)
 @Composable
 fun UpdateVehicleScreen(navController: NavController){
-    var vehicle = remember { DataRepository.getVehiclePlus() }
+    val vehicle = remember { DataRepository.getVehiclePlus() }
 
-    var isloading by remember { mutableStateOf<Boolean>(false) }
+    val isloading by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
 
@@ -73,7 +72,7 @@ fun UpdateVehicleScreen(navController: NavController){
                     val response =  RetrofitInstance.api.updateVehicle(vehicle)
 
                     if (response.isSuccessful) {
-                        val wResponse = response.body()
+                        response.body()
                         val user = DataRepository.getUser()
                         if(user!=null){
                             val zonedDateTime = ZonedDateTime.now()
@@ -83,7 +82,6 @@ fun UpdateVehicleScreen(navController: NavController){
                                     formattedDate , 2)
                             )
                             if(addTransaccion.isSuccessful){
-                                Log.d("Transaccion", "OK")
                             }else{
                                 try {
                                     val errorBody = addTransaccion.errorBody()?.string()
@@ -102,7 +100,7 @@ fun UpdateVehicleScreen(navController: NavController){
                     }
                 }
             }catch (e: Exception) {
-                Log.d("excepcionWarehouse","${e}")
+                Log.d("excepcionWarehouse","$e")
             }
         }
 
@@ -138,7 +136,7 @@ fun UpdateVehicleScreen(navController: NavController){
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
-                            Icons.Default.ArrowBack,
+                            Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back to Login",
                             tint = BlueSystem
                         )

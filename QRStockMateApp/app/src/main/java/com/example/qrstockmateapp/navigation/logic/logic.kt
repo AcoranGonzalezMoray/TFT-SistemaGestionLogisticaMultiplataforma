@@ -1,8 +1,6 @@
 package com.example.qrstockmateapp.navigation.logic
 
 import android.content.SharedPreferences
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
@@ -36,7 +34,6 @@ import com.example.qrstockmateapp.screens.TransactionHistory.TransactionHistoryS
 import com.example.qrstockmateapp.ui.theme.splashScreen
 
 
-@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalAnimationApi::class)
 @androidx.annotation.OptIn(androidx.camera.core.ExperimentalGetImage::class)
 @Composable

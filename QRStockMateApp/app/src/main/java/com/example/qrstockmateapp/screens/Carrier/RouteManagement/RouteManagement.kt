@@ -153,7 +153,6 @@ fun RouteManagementScreen(navController: NavController) {
                 if(transporRoutesResponse!=null && vehiclesResponse !=null ){
                     transportRoutes = transporRoutesResponse
                     DataRepository.setVehicles(vehiclesResponse)
-                    Log.d("route", "$transportRoutes")
                 }
             } else{
                 try {
@@ -310,7 +309,6 @@ fun RouteManagementScreen(navController: NavController) {
                             StateFilter.ON_ROUTE -> StateFilter.FINALIZED
                             StateFilter.FINALIZED -> StateFilter.NULL
                         }
-                        Log.d("FILTER", filteredItems.toString())
                         filteredItems = when (stateFilter) {
                             StateFilter.PENDING -> filterOption(0)
                             StateFilter.ON_ROUTE -> filterOption(1)
@@ -383,7 +381,6 @@ fun TransportRouteItem(route: TransportRoute, navController: NavController, onDe
                         formattedDate , 3)
                 )
                 if(addTransaccion.isSuccessful){
-                    Log.d("Transaccion", "OK")
                     withContext(Dispatchers.Main){
                         Toast.makeText(context, "Route has been deleted", Toast.LENGTH_SHORT).show()
                     }
@@ -628,7 +625,6 @@ fun TransportRouteItem(route: TransportRoute, navController: NavController, onDe
                             .padding(5.dp)
                             .height(40.dp),
                         onClick = {
-                            Log.d("status", route.status.toString())
                             if(route.status == 1){
                                 DataRepository.setRoutePlus(route)
                                 navController.navigate("routeMinus")

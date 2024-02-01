@@ -15,7 +15,6 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,8 +22,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
@@ -36,7 +33,6 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.MaterialTheme
@@ -57,7 +53,6 @@ import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.example.qrstockmateapp.R
 import com.example.qrstockmateapp.api.models.Transaction
-import com.example.qrstockmateapp.api.models.User
 import com.example.qrstockmateapp.api.models.userRoleToString
 import com.example.qrstockmateapp.api.services.RetrofitInstance
 import com.example.qrstockmateapp.navigation.repository.DataRepository
@@ -66,7 +61,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -117,7 +111,6 @@ fun UpdateUserScreen(navController: NavController) {
                                 formattedDate , 2)
                         )
                         if(addTransaccion.isSuccessful){
-                            Log.d("Transaccion", "OK")
                         }else{
                             try {
                                 val errorBody = addTransaccion.errorBody()?.string()
@@ -196,7 +189,6 @@ fun UpdateUserScreen(navController: NavController) {
         GlobalScope.launch(Dispatchers.IO) {
             try {
                 if(user!=null){
-                    Log.d("excepcionWarehouseCambio","${user}")
                     val response =  RetrofitInstance.api.updateUser(user)
                     val userC = user
                     if (response.isSuccessful) {
@@ -219,7 +211,6 @@ fun UpdateUserScreen(navController: NavController) {
                                     formattedDate , 2)
                             )
                             if(addTransaccion.isSuccessful){
-                                Log.d("Transaccion", "OK")
                             }else{
                                 try {
                                     val errorBody = addTransaccion.errorBody()?.string()

@@ -3,9 +3,7 @@ package com.example.qrstockmateapp.navigation.view
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.SharedPreferences
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -29,22 +27,16 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBox
+import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddBusiness
 import androidx.compose.material.icons.filled.AddLocationAlt
-import androidx.compose.material.icons.filled.Apartment
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.DirectionsCar
-import androidx.compose.material.icons.filled.ExitToApp
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.ManageAccounts
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Message
-import androidx.compose.material.icons.filled.ModeNight
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.SystemUpdate
 import androidx.compose.material.icons.filled.Warehouse
 import androidx.compose.material3.ElevatedButton
@@ -62,14 +54,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.edit
@@ -77,11 +66,9 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberImagePainter
-import com.example.qrstockmateapp.MainActivity
 import com.example.qrstockmateapp.MainActivity.Companion.KEY_DARK_THEME
 import com.example.qrstockmateapp.MainActivity.Companion.NEW_MESSAGES
 import com.example.qrstockmateapp.R
-import com.example.qrstockmateapp.api.models.User
 import com.example.qrstockmateapp.api.services.RetrofitInstance
 import com.example.qrstockmateapp.navigation.logic.Navigation
 import com.example.qrstockmateapp.navigation.model.ScreenModel
@@ -99,7 +86,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 
-@RequiresApi(Build.VERSION_CODES.O)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun BottomNavigationScreen(navControllerLogin: NavController,sharedPreferences: SharedPreferences) {
@@ -129,13 +115,11 @@ fun BottomNavigationScreen(navControllerLogin: NavController,sharedPreferences: 
             coroutineScope.launch(Dispatchers.IO) {
                 while (user!=null){
                     if(navBackStackEntry?.destination?.route !in excludedRoutes){
-                        Log.d("RUTA", "${navBackStackEntry?.destination?.route}")
                         try {
                             val response = RetrofitInstance.api.getNewMessages("${user.code};${user.id}")
                             if (response.isSuccessful) {
                                 val messages = response.body()
                                 if (messages != null) {
-                                    Log.d("novo", messages.toString())
                                     DataRepository.setNewMessages(messages)
                                 }else{
                                     DataRepository.setNewMessages(0)
@@ -150,7 +134,7 @@ fun BottomNavigationScreen(navControllerLogin: NavController,sharedPreferences: 
                         new = DataRepository.getNewMessages()?.minus(
                             sharedPreferences.getInt(
                                 NEW_MESSAGES, 0)
-                        );
+                        )
                     }
 
                     // Esperar 2 segundos antes de realizar la próxima solicitud
@@ -272,7 +256,7 @@ fun BottomNavigationScreen(navControllerLogin: NavController,sharedPreferences: 
                                    if(new !=null && new!=0){
                                        Badge(
                                            content = { Text(text = "${if(new!! >0)new else 0}", color = Color.White) },
-                                           modifier = Modifier.offset(x = 12.dp, y = -8.dp)
+                                           modifier = Modifier.offset(x = 12.dp, y = (-8).dp)
                                        )
                                    }
                                }else{
@@ -358,7 +342,7 @@ fun Drawer(
 
     val deleteAccount:()->Unit = {
         GlobalScope.launch(Dispatchers.IO) {
-            var user =DataRepository.getUser()
+            val user =DataRepository.getUser()
             if(user!=null){
                 try {
                     val response = RetrofitInstance.api.deleteAccount(user)
@@ -543,7 +527,7 @@ fun Drawer(
 
         Spacer(modifier = Modifier.height(10.dp))
 
-        item.forEach() { item ->
+        item.forEach { item ->
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
@@ -653,7 +637,7 @@ fun Drawer(
                     .padding(start = 10.dp)
             ) {
                 Icon(
-                    imageVector = Icons.Filled.ExitToApp,
+                    imageVector = Icons.AutoMirrored.Filled.ExitToApp,
                     contentDescription = "",
                     tint = Color.Red
                 )

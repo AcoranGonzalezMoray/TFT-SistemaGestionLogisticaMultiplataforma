@@ -1,6 +1,5 @@
 package com.example.qrstockmateapp.screens.Home.AddWarehouse
 
-import android.location.Address
 import android.location.Geocoder
 import android.os.Build
 import android.util.Log
@@ -19,7 +18,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -27,8 +25,6 @@ import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.TopAppBar
@@ -36,9 +32,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -50,7 +46,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.qrstockmateapp.api.models.Transaction
 import com.example.qrstockmateapp.api.models.User
@@ -64,7 +59,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.time.LocalDateTime
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -103,7 +97,6 @@ fun AddWarehouseScreen(navController: NavController) {
             try {
                 val company = DataRepository.getCompany()
                 if(company!=null){
-                    Log.d("selected","${selectedOption.split(";")[1].toInt()}")
 
                     val warehouse = Warehouse(0,name,location, organization,selectedOption.split(";")[1].toInt(),"","", pinLocation!!.latitude,  pinLocation!!.longitude)
                     val response = RetrofitInstance.api.createWarehouse(company.id,warehouse)
@@ -115,7 +108,6 @@ fun AddWarehouseScreen(navController: NavController) {
                             val addTransaccion = RetrofitInstance.api.addHistory(Transaction(0,user.id.toString(),user.code, "a ${warehouse.name} warehouse has been added",
                                 formattedDate , 0))
                             if(addTransaccion.isSuccessful){
-                                Log.d("Transaccion", "OK")
                             }else{
                                 try {
                                     val errorBody = addTransaccion.errorBody()?.string()
@@ -152,7 +144,6 @@ fun AddWarehouseScreen(navController: NavController) {
                 val employeesResponse = RetrofitInstance.api.getEmployees(company)
                 if (employeesResponse.isSuccessful) {
                     val employeesIO = employeesResponse.body()
-                    Log.d("EMPLOYEE", "SI")
                     if(employeesIO!=null){
                         DataRepository.setEmployees(employeesIO)
                         employees = DataRepository.getEmployees()?.filter { it.role == 1 } ?: emptyList()
@@ -318,7 +309,6 @@ fun AddWarehouseScreen(navController: NavController) {
                         employees.forEach { employee ->
                             DropdownMenuItem(onClick = {
                                 selectedOption= "Name: ${employee.name}  Role: Administrator Code: ${employee.code};${employee.id}"
-                                Log.d("selected","${selectedOption.split(";")[1].toInt()}")
                                 isMenuExpanded = false
 
                             }, modifier = Modifier

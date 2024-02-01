@@ -157,7 +157,6 @@ fun RouteMinusScreen(navController: NavController,) {
 
     var start = DataRepository.getWarehouses()?.find { warehouse -> warehouse.id == route!!.startLocation.toInt()}
     var end  = DataRepository.getWarehouses()?.find { warehouse -> warehouse.id == route!!.endLocation.toInt()}
-    Log.d("SERA?", start!!.latitude.toString())
     val startPoint =  LatLng(start!!.latitude, start.longitude)
     val endPoint = LatLng(end!!.latitude, end.longitude)
     val launchPoint = LatLng(81.444125, 163.066796)
@@ -198,7 +197,6 @@ fun RouteMinusScreen(navController: NavController,) {
                     if (response.isSuccessful && responseRoute.isSuccessful) {
                         val res = response.body()?.location
                         val status = responseRoute.body()?.status
-                        Log.d("Cargando", "${res}")
                         if (res != null) {
                             val locationParts = res.split(";")
                             if (locationParts.size == 2) {
@@ -232,7 +230,6 @@ fun RouteMinusScreen(navController: NavController,) {
                 if(currentLocation!=null){
                     geo = Geocoder(context, Locale.getDefault()).getFromLocation(currentLocation!!.latitude, currentLocation!!.longitude, 1)?.get(0)
                 }
-                Log.d("ACTUALIACION", "${geo}")
             }catch (e: IOException) {
                 // Manejar excepciones de geocodificación (pueden ocurrir por problemas de red o límites de uso)
                 Log.d("ACTUALIACION", "${e}")
@@ -268,16 +265,12 @@ fun RouteMinusScreen(navController: NavController,) {
             bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(scaledDrawable)
             bitmapDescriptorNow = BitmapDescriptorFactory.fromBitmap(scaledDrawableNow)
         }
-
-        Log.d("CameraAnimation", "Animación de cámara iniciada")
         cameraPositionState.animate(
             update = CameraUpdateFactory.newCameraPosition(
                 CameraPosition(startPoint, 80f, 0f, 0f)
             ),
             durationMs = 2000
         )
-        Log.d("CameraAnimation", "Animación de cámara completada")
-
     }
 
     DisposableEffect(Unit) {
@@ -327,7 +320,6 @@ fun RouteMinusScreen(navController: NavController,) {
                 // Marcador para la ubicación actual
                 currentLocation?.let {
                     if(change){
-                        Log.d("CAMBIA", "CAMBIA")
                         PointMarker(it, "Ubicación Actual", "Marker en la Ubicación Actual", bitmapDescriptorNow!!, "ubi", false)
                     }
                 }

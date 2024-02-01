@@ -6,56 +6,52 @@ import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
+import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.IconButton
-import androidx.compose.material.Snackbar
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.ImeAction
-
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.qrstockmateapp.api.models.Company
 import com.example.qrstockmateapp.api.models.User
 import com.example.qrstockmateapp.api.services.RegistrationBody
 import com.example.qrstockmateapp.api.services.RetrofitInstance
+import com.example.qrstockmateapp.ui.theme.BlueSystem
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import androidx.compose.material.TextFieldDefaults
-import androidx.compose.material.TopAppBar
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.ElevatedButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SnackbarData
-import androidx.compose.ui.platform.LocalContext
-import com.example.qrstockmateapp.ui.theme.BlueSystem
 
+@OptIn(DelicateCoroutinesApi::class)
 @Composable
 fun JoinWithCodeScreen(navController: NavHostController) {
     var name by remember { mutableStateOf("") }
@@ -110,7 +106,6 @@ fun JoinWithCodeScreen(navController: NavHostController) {
 
                 // Cambiar al hilo principal para realizar operaciones en la IU
                 withContext(Dispatchers.Main) {
-                    Log.d("UIUpdate", "Updating UI after API call")
                     if (response.isSuccessful) {
                         val joinResponse = response.body()
                         if (joinResponse != null){
@@ -133,7 +128,7 @@ fun JoinWithCodeScreen(navController: NavHostController) {
                     }
                 }
             }catch (e: Exception) {
-                Log.d("excepcionUserC","${e}")
+                Log.d("excepcionUserC","$e")
 
             }
         }
@@ -146,7 +141,7 @@ fun JoinWithCodeScreen(navController: NavHostController) {
         TopAppBar(
             navigationIcon = {
                 IconButton(onClick = { navController.navigate("login") }) {
-                    Icon(Icons.Default.ArrowBack, contentDescription = "Back to Login", tint = BlueSystem)
+                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back to Login", tint = BlueSystem)
                 }
             },
             backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
@@ -263,13 +258,13 @@ fun JoinWithCodeScreen(navController: NavHostController) {
                 value = code,
                 shape = RoundedCornerShape(8.dp),
                 isError = isError,
-                onValueChange = {
+                onValueChange = { it ->
                     if (it.length <= 7 && it.matches(Regex("[A-Za-z0-9-]*"))) {
                         val sanitized = it.filter { it.isLetterOrDigit() }.uppercase()
-                        if (sanitized.length > 3) {
-                            code = "${sanitized.substring(0, 3)}-${sanitized.substring(3)}"
+                        code = if (sanitized.length > 3) {
+                            "${sanitized.substring(0, 3)}-${sanitized.substring(3)}"
                         } else {
-                            code = sanitized
+                            sanitized
                         }
                     }
                 },

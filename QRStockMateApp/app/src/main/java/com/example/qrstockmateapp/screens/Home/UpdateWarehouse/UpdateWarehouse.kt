@@ -1,14 +1,13 @@
 package com.example.qrstockmateapp.screens.Home.UpdateWarehouse
 
 
+import android.annotation.SuppressLint
 import android.location.Geocoder
 import android.net.Uri
-import android.os.Build
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -19,19 +18,14 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
@@ -41,56 +35,45 @@ import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.AddAPhoto
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Inventory
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.example.qrstockmateapp.R
-import com.example.qrstockmateapp.api.models.Item
 import com.example.qrstockmateapp.api.models.Transaction
 import com.example.qrstockmateapp.api.models.User
 import com.example.qrstockmateapp.api.services.RetrofitInstance
 import com.example.qrstockmateapp.navigation.repository.DataRepository
 import com.example.qrstockmateapp.screens.Carrier.Route.PointMarker
-import com.example.qrstockmateapp.screens.Carrier.RouteManagement.UpdateRoute.ShowListDialog
-import com.example.qrstockmateapp.screens.Carrier.RouteManagement.UpdateRoute.itemTemplate
-import com.example.qrstockmateapp.screens.Carrier.RouteManagement.UpdateRoute.myMap
 import com.example.qrstockmateapp.ui.theme.BlueSystem
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
-import com.google.maps.android.compose.Marker
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -99,12 +82,13 @@ import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
-@RequiresApi(Build.VERSION_CODES.O)
+@SuppressLint("Recycle")
+@OptIn(DelicateCoroutinesApi::class)
 @Composable
 fun UpdateWarehouseScreen(navController: NavController) {
-    var warehouse = remember { DataRepository.getWarehousePlus() }
+    val warehouse = remember { DataRepository.getWarehousePlus() }
     var selectedOption by remember { mutableStateOf("Select an existing administrator to associate with the warehouse") }
-    var isloading by remember { mutableStateOf<Boolean>(false) }
+    var isloading by remember { mutableStateOf(false) }
     var showDialog by remember { mutableStateOf(false) }
     var pinLocation by remember { mutableStateOf<LatLng?>(null) }
 
@@ -134,7 +118,6 @@ fun UpdateWarehouseScreen(navController: NavController) {
                             formattedDate , 2)
                         )
                         if(addTransaccion.isSuccessful){
-                            Log.d("Transaccion", "OK")
                         }else{
                             try {
                                 val errorBody = addTransaccion.errorBody()?.string()
@@ -158,7 +141,7 @@ fun UpdateWarehouseScreen(navController: NavController) {
                 }
                 isloading = false
             }catch (e: Exception){
-                Log.d("ExceptionImage", "${e}")
+                Log.d("ExceptionImage", "$e")
             }
         }
     }
@@ -169,7 +152,7 @@ fun UpdateWarehouseScreen(navController: NavController) {
             if (uri != null) {
                 // Haz algo con la URI de la imagen, como cargarla en tu aplicación
                 // Luego, envía la imagen a la API
-                val imageFile = uri?.let { uri ->
+                val imageFile = uri.let { uri ->
                     try {
                         val inputStream = context.contentResolver.openInputStream(uri)
                         val file = createTempFile("image", null, context.cacheDir)
@@ -194,10 +177,10 @@ fun UpdateWarehouseScreen(navController: NavController) {
 
 
     var isMenuExpanded by remember { mutableStateOf(false) }
-    var employees = remember { DataRepository.getEmployees()?.filter { it.role == 1 } ?: emptyList() }
+    val employees = remember { DataRepository.getEmployees()?.filter { it.role == 1 } ?: emptyList() }
 
     LaunchedEffect(Unit){
-        pinLocation = LatLng(warehouse!!.latitude, warehouse!!.longitude)
+        pinLocation = LatLng(warehouse!!.latitude, warehouse.longitude)
 
         if(employees!=null && warehouse!=null)selectedOption= "Name: ${employees.find { user: User ->  user.id == warehouse.idAdministrator}?.name}  Role: Administrator Code: ${employees.find { user: User ->  user.id == warehouse.idAdministrator}?.code};${employees.find { user: User ->  user.id == warehouse.idAdministrator}?.id}"
     }
@@ -216,7 +199,6 @@ fun UpdateWarehouseScreen(navController: NavController) {
         GlobalScope.launch(Dispatchers.IO) {
             try {
                 if(warehouse!=null){
-                    Log.d("excepcionWarehouseCambio","${warehouse}")
                     if(pinLocation!=null){
                         warehouse.longitude = pinLocation!!.longitude
                         warehouse.latitude = pinLocation!!.latitude
@@ -234,7 +216,6 @@ fun UpdateWarehouseScreen(navController: NavController) {
                                     formattedDate , 2)
                             )
                             if(addTransaccion.isSuccessful){
-                                Log.d("Transaccion", "OK")
                             }else{
                                 try {
                                     val errorBody = addTransaccion.errorBody()?.string()
@@ -253,7 +234,7 @@ fun UpdateWarehouseScreen(navController: NavController) {
                     }
                 }
             }catch (e: Exception) {
-                Log.d("excepcionWarehouse","${e}")
+                Log.d("excepcionWarehouse","$e")
             }
         }
 
@@ -280,7 +261,7 @@ fun UpdateWarehouseScreen(navController: NavController) {
            TopAppBar(
                navigationIcon = {
                    IconButton(onClick = { navController.popBackStack() }) {
-                       androidx.compose.material3.Icon(Icons.Default.ArrowBack, contentDescription = "Back to Login", tint = BlueSystem)
+                       androidx.compose.material3.Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back to Login", tint = BlueSystem)
                    }
                },
                backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
@@ -351,13 +332,13 @@ fun UpdateWarehouseScreen(navController: NavController) {
                        var name by remember { mutableStateOf(it.name) }
                        var location by remember { mutableStateOf(it.location) }
                        var organization by remember { mutableStateOf(it.organization) }
-                       var administratorId by remember { mutableStateOf(it.idAdministrator) }
+                       var administratorId by remember { mutableIntStateOf(it.idAdministrator) }
                        if (showDialog) {
                            ShowDialog(
                                onDismiss = { showDialog = false},
                                onSuccessfully = {
                                    showDialog = false
-                                   var geo = geocoder.getFromLocation(it.latitude, it.longitude, 1)?.get(0)
+                                   val geo = geocoder.getFromLocation(it.latitude, it.longitude, 1)?.get(0)
                                    if (geo != null) {
                                        location =  geo.getAddressLine(0)
                                    }
@@ -488,7 +469,7 @@ fun UpdateWarehouseScreen(navController: NavController) {
                                     onDismissRequest = { isMenuExpanded = false },
                                     modifier = Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.secondaryContainer)
                                 ) {
-                                    employees?.forEach { employee ->
+                                    employees.forEach { employee ->
                                         DropdownMenuItem(onClick = {
                                             selectedOption= "Name: ${employee.name}  Role: Administrator Code: ${employee.code};${employee.id}"
                                             administratorId = employee.id
@@ -632,7 +613,6 @@ fun ShowDialog(onDismiss: () -> Unit, onSuccessfully: (LatLng) -> Unit) {
                             // Al hacer clic en el mapa, actualiza la ubicación del pin
                             pinLocation = null
                             pinLocation = clickedLatLng
-                            Log.d("CLICK", clickedLatLng.toString())
                         }
                     ) {
                         pinLocation?.let { location ->

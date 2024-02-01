@@ -23,8 +23,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Send
-import androidx.compose.material3.Button
+import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
@@ -51,10 +50,10 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.qrstockmateapp.api.models.Communication
-import com.example.qrstockmateapp.api.models.Message
 import com.example.qrstockmateapp.api.services.RetrofitInstance
 import com.example.qrstockmateapp.navigation.repository.DataRepository
 import com.example.qrstockmateapp.ui.theme.BlueSystem
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.MainScope
@@ -64,6 +63,7 @@ import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 
+@OptIn(DelicateCoroutinesApi::class)
 @Composable
 fun CommunicatioScreen(navController: NavController){
     var communicationList  by remember{ mutableStateOf(emptyList<Communication>()) }
@@ -77,7 +77,7 @@ fun CommunicatioScreen(navController: NavController){
     val lazyListState = rememberLazyListState()
     val updatedLazyListState = rememberUpdatedState(lazyListState)
 
-    var currentContext = LocalContext.current
+    val currentContext = LocalContext.current
 
     val loadCommunication: ()->Unit = {
         GlobalScope.launch(Dispatchers.IO) {
@@ -252,7 +252,7 @@ fun CommunicatioScreen(navController: NavController){
                                 .padding(end = 8.dp)
                         )
                         IconButton(onClick = {postCommunication()}, modifier = Modifier.weight(1f)) {
-                            Icon(imageVector = Icons.Default.Send, contentDescription = "Send", tint = BlueSystem)
+                            Icon(imageVector = Icons.AutoMirrored.Filled.Send, contentDescription = "Send", tint = BlueSystem)
                         }
                     }
 

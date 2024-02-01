@@ -26,10 +26,9 @@ import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
-import androidx.compose.material.Text
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -49,6 +48,7 @@ import com.example.qrstockmateapp.api.models.Vehicle
 import com.example.qrstockmateapp.api.services.RetrofitInstance
 import com.example.qrstockmateapp.navigation.repository.DataRepository
 import com.example.qrstockmateapp.ui.theme.BlueSystem
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -56,6 +56,7 @@ import kotlinx.coroutines.withContext
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
+@OptIn(DelicateCoroutinesApi::class)
 @Composable
 fun AddVehicleScreen(navController: NavController){
     val vehicle = Vehicle(
@@ -71,7 +72,7 @@ fun AddVehicleScreen(navController: NavController){
     )
 
 
-    var isloading by remember { mutableStateOf<Boolean>(false) }
+    val isloading by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
 
@@ -90,7 +91,6 @@ fun AddVehicleScreen(navController: NavController){
                             val addTransaccion = RetrofitInstance.api.addHistory(Transaction(0,user.id.toString(),user.code, "a ${vehicle.licensePlate} vehicle has been added",
                                 formattedDate , 0))
                             if(addTransaccion.isSuccessful){
-                                Log.d("Transaccion", "OK")
                             }else{
                                 try {
                                     val errorBody = addTransaccion.errorBody()?.string()
@@ -110,7 +110,7 @@ fun AddVehicleScreen(navController: NavController){
                     }
                 }
             }catch (e: Exception) {
-                Log.d("excepcionVehicle","${e}")
+                Log.d("excepcionVehicle","$e")
             }
         }
 
@@ -147,7 +147,7 @@ fun AddVehicleScreen(navController: NavController){
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
-                            Icons.Default.ArrowBack,
+                            Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back to Login",
                             tint = BlueSystem
                         )
@@ -179,7 +179,7 @@ fun AddVehicleScreen(navController: NavController){
                         .fillMaxWidth()
                         .padding(top = 16.dp)
                 ) {
-                    vehicle?.let {
+                    vehicle.let {
                         var make by remember { mutableStateOf(it.make) }
                         var model by remember { mutableStateOf(it.model) }
                         var year by remember { mutableStateOf(it.year.toString()) }

@@ -11,8 +11,6 @@ import android.icu.text.SimpleDateFormat
 import android.media.MediaRecorder
 import android.net.Uri
 import android.os.Environment
-import android.provider.MediaStore
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -39,24 +37,17 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.AlertDialog
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.RadioButton
 import androidx.compose.material.RadioButtonDefaults
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Send
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.material.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.AttachFile
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.PhoneEnabled
-import androidx.compose.material.icons.filled.PictureAsPdf
 import androidx.compose.material.icons.filled.PlayCircle
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.StopCircle
@@ -65,6 +56,11 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -76,7 +72,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.ContentScale
@@ -108,6 +103,7 @@ import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ui.PlayerView
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.MainScope
@@ -134,10 +130,9 @@ private fun createImageFile(context: Context): File {
     val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
     val imageFileName = "JPEG_" + timeStamp + "_"
     val storageDir: File = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!
-    val imageFile = File.createTempFile(imageFileName, ".jpg", storageDir)
-    return imageFile
+    return File.createTempFile(imageFileName, ".jpg", storageDir)
 }
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(DelicateCoroutinesApi::class)
 @Composable
 fun ChatScreen(navController: NavController, sharedPreferences: SharedPreferences) {
 
@@ -208,7 +203,6 @@ fun ChatScreen(navController: NavController, sharedPreferences: SharedPreference
                         }
                     }
                 }
-                Log.d("sigue", "${messages}")
                 delay(500) // Espera 500 milisegundos antes de realizar la siguiente solicitud
             }
 
@@ -242,16 +236,16 @@ fun ChatScreen(navController: NavController, sharedPreferences: SharedPreference
 
                 // Configura la fuente de audio y el formato de salida
                 mediaRecorder?.setAudioSource(MediaRecorder.AudioSource.MIC)
-                mediaRecorder?.setOutputFormat(MediaRecorder.OutputFormat.AAC_ADTS);
-                mediaRecorder?.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
-                mediaRecorder?.setAudioChannels(1);
+                mediaRecorder?.setOutputFormat(MediaRecorder.OutputFormat.AAC_ADTS)
+                mediaRecorder?.setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
+                mediaRecorder?.setAudioChannels(1)
 
-                val bitDepth = 16;
-                val sampleRate = 44100;
-                val  bitRate = sampleRate * bitDepth;
+                val bitDepth = 16
+                val sampleRate = 44100
+                val  bitRate = sampleRate * bitDepth
 
-                mediaRecorder?.setAudioEncodingBitRate(bitRate);
-                mediaRecorder?.setAudioSamplingRate(sampleRate);
+                mediaRecorder?.setAudioEncodingBitRate(bitRate)
+                mediaRecorder?.setAudioSamplingRate(sampleRate)
 
                 // Especifica la ruta del archivo de salida
                 // Reemplaza "output.3gp" con el nombre y formato deseado
@@ -408,7 +402,7 @@ fun ChatScreen(navController: NavController, sharedPreferences: SharedPreference
             }
 
             val imageRequestBody = imageFile.asRequestBody("image/jpeg".toMediaTypeOrNull())
-            val imagePart = MultipartBody.Part.createFormData("file", imageFile.name, imageRequestBody)
+            MultipartBody.Part.createFormData("file", imageFile.name, imageRequestBody)
 
             val zonedDateTime = ZonedDateTime.now()
             val formattedDate = zonedDateTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
@@ -423,7 +417,7 @@ fun ChatScreen(navController: NavController, sharedPreferences: SharedPreference
             GlobalScope.launch(Dispatchers.IO) {
                 isloading = true
 
-                val uri = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", imageFile)
+                FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", imageFile)
                 val imagePartSecure = MultipartBody.Part.createFormData("file", imageFile.name, imageRequestBody)
 
                 val response = RetrofitInstance.api.uploadFile(
@@ -525,7 +519,6 @@ fun ChatScreen(navController: NavController, sharedPreferences: SharedPreference
         GlobalScope.launch(Dispatchers.IO) {
             val postResponse = RetrofitInstance.api.sendMessage(m)
             if (postResponse.isSuccessful){
-                Log.d("OK", "MESSAGE")
             }
             goBottom()
         }
@@ -598,7 +591,7 @@ fun ChatScreen(navController: NavController, sharedPreferences: SharedPreference
             navigationIcon = {
                 // Puedes personalizar el ícono de navegación según tus necesidades
                 IconButton(onClick = { navController.navigate("chats"); current = false;DataRepository.setCurrentScreenIndex(0) }) {
-                    Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = BlueSystem)
+                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = BlueSystem)
                 }
             },
             title = {
@@ -796,7 +789,7 @@ fun ChatScreen(navController: NavController, sharedPreferences: SharedPreference
                                 }
                             }
                         ) {
-                            Icon(imageVector = Icons.Default.Send, contentDescription = "Send", tint = BlueSystem)
+                            Icon(imageVector = Icons.AutoMirrored.Filled.Send, contentDescription = "Send", tint = BlueSystem)
                         }
                     }else{
                         IconButton(
@@ -805,7 +798,7 @@ fun ChatScreen(navController: NavController, sharedPreferences: SharedPreference
                                 else stopRecording()
                             }
                         ) {
-                            if(isRecording==false) Icon(imageVector = Icons.Outlined.MicNone, contentDescription = "Send", tint = BlueSystem)
+                            if(!isRecording) Icon(imageVector = Icons.Outlined.MicNone, contentDescription = "Send", tint = BlueSystem)
                             else  Icon(imageVector = Icons.Filled.Mic, contentDescription = "Send", tint = BlueSystem)
                         }
                     }
@@ -934,7 +927,6 @@ fun MessageItem(message: Message, selectedOption: OptionSize?) {
                                    override fun onPlaybackStateChanged(state: Int) {
                                        super.onPlaybackStateChanged(state)
                                        isPlaying = state == Player.STATE_READY
-                                       Log.d("AudioPlayer", "Playback state changed: $state, isPlaying: $isPlaying")
                                    }
                                })
 
@@ -1065,6 +1057,7 @@ fun MessageItem(message: Message, selectedOption: OptionSize?) {
 
 
 // Function to download and open PDF
+@OptIn(DelicateCoroutinesApi::class)
 fun downloadAndOpenPdf(context: Context, pdfUrl: String) {
     GlobalScope.launch(Dispatchers.IO) {
         try {
@@ -1111,6 +1104,7 @@ fun openPdfViewer(context: Context, uri: Uri) {
 }
 
 
+@OptIn(DelicateCoroutinesApi::class)
 fun downloadAndOpenImage(context: Context, imageUrl: String) {
     GlobalScope.launch(Dispatchers.IO) {
         try {
@@ -1159,15 +1153,15 @@ fun openImageViewer(context: Context, uri: Uri) {
 fun obtenerHoraYMinuto(fechaString: String): Pair<Int, Int>? {
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSSS")
 
-    try {
+    return try {
         val fecha = LocalDateTime.parse(fechaString, formatter)
         val hora = fecha.hour
         val minuto = fecha.minute
 
-        return Pair(hora, minuto)
+        Pair(hora, minuto)
     } catch (e: Exception) {
         // Manejar el caso en que la cadena de fecha no se pueda analizar correctamente
-        return null
+        null
     }
 }
 

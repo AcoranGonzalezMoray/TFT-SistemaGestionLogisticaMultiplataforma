@@ -56,10 +56,10 @@ import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
 import com.example.qrstockmateapp.R
 import com.example.qrstockmateapp.api.models.Transaction
-import com.example.qrstockmateapp.api.models.TransportRoute
 import com.example.qrstockmateapp.api.models.Vehicle
 import com.example.qrstockmateapp.api.services.RetrofitInstance
 import com.example.qrstockmateapp.navigation.repository.DataRepository
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -69,7 +69,7 @@ import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, DelicateCoroutinesApi::class)
 @Composable
 fun VehicleManagementScreen(navController: NavController) {
 
@@ -141,6 +141,7 @@ fun VehicleManagementScreen(navController: NavController) {
 
 }
 
+@OptIn(DelicateCoroutinesApi::class)
 @Composable
 fun VehicleItem(navController: NavController, vehicle: Vehicle, onDeleted:()->Unit) {
     val context = LocalContext.current
@@ -166,7 +167,6 @@ fun VehicleItem(navController: NavController, vehicle: Vehicle, onDeleted:()->Un
                         formattedDate , 3)
                 )
                 if(addTransaccion.isSuccessful){
-                    Log.d("Transaccion", "OK")
                     withContext(Dispatchers.Main){
                         Toast.makeText(context, "Vehicle has been deleted", Toast.LENGTH_SHORT).show()
                     }
@@ -195,7 +195,7 @@ fun VehicleItem(navController: NavController, vehicle: Vehicle, onDeleted:()->Un
             .fillMaxWidth()
             .padding(8.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 10.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer,),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer),
         shape = RoundedCornerShape(16.dp),
     ) {
         if (isloading){
@@ -293,7 +293,10 @@ fun VehicleItem(navController: NavController, vehicle: Vehicle, onDeleted:()->Un
                     // Puedes personalizar el contenido según tus necesidades
                     Text(
                         text = buildAnnotatedString {
-                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary, )) {
+                            withStyle(style = SpanStyle(
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.primary,
+                            )) {
                                 append("Make/Model:")
                             }
                             append(" ${vehicle.make} ${vehicle.model}")
@@ -378,10 +381,10 @@ fun VehicleItem(navController: NavController, vehicle: Vehicle, onDeleted:()->Un
                             onClick = {
                                 showDialog = true
                             },
-                            colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                            colors = ButtonDefaults.elevatedButtonColors(
                                 containerColor = Color(0xff5a79ba)
                             ),
-                            elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                            elevation = ButtonDefaults.elevatedButtonElevation(
                                 defaultElevation = 5.dp
                             )
                         )

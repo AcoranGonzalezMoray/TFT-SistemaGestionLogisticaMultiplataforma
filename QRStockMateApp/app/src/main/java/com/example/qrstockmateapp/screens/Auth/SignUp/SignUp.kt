@@ -20,8 +20,7 @@ import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.Button
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Icon
@@ -35,11 +34,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.qrstockmateapp.api.models.Company
 import com.example.qrstockmateapp.api.models.User
@@ -47,11 +44,13 @@ import com.example.qrstockmateapp.api.services.RegistrationBody
 import com.example.qrstockmateapp.api.services.RetrofitInstance
 import com.example.qrstockmateapp.screens.Auth.JoinWithCode.isValidEmail
 import com.example.qrstockmateapp.ui.theme.BlueSystem
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+@OptIn(DelicateCoroutinesApi::class)
 @Composable
 fun SignUpScreen(navController: NavHostController) {
     var name by remember { mutableStateOf("") }
@@ -118,7 +117,7 @@ fun SignUpScreen(navController: NavHostController) {
                     }
                 }
             } catch (e: Exception) {
-                Log.d("excepcionUserC","${e}")
+                Log.d("excepcionUserC","$e")
 
             }
         }
@@ -133,7 +132,7 @@ fun SignUpScreen(navController: NavHostController) {
        TopAppBar(
            navigationIcon = {
                IconButton(onClick = { navController.navigate("login") }) {
-                   Icon(Icons.Default.ArrowBack, contentDescription = "Back to Login", tint = BlueSystem)
+                   Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back to Login", tint = BlueSystem)
                }
            },
            backgroundColor = MaterialTheme.colorScheme.secondaryContainer,

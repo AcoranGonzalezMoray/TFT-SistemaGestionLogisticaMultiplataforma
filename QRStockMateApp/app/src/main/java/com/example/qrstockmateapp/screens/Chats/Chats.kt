@@ -1,12 +1,10 @@
 package com.example.qrstockmateapp.screens.Chats
 
 import android.content.SharedPreferences
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,24 +18,22 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.DismissDirection
+import androidx.compose.material.DismissValue
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.FractionalThreshold
 import androidx.compose.material.Icon
+import androidx.compose.material.SwipeToDismiss
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.NearMe
 import androidx.compose.material.icons.filled.Phone
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material.rememberDismissState
+import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material.SwipeToDismiss
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.Card
-import androidx.compose.material.DismissDirection
-import androidx.compose.material.DismissValue
-import androidx.compose.material.FractionalThreshold
-import androidx.compose.material.icons.filled.NearMe
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material.rememberDismissState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -62,12 +58,12 @@ import com.example.qrstockmateapp.api.models.User
 import com.example.qrstockmateapp.api.services.RetrofitInstance
 import com.example.qrstockmateapp.navigation.repository.DataRepository
 import com.example.qrstockmateapp.ui.theme.BlueSystem
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.math.abs
 
+@OptIn(DelicateCoroutinesApi::class)
 @Composable
 fun ChatsScreen(navController: NavController, sharedPreferences: SharedPreferences) {
     var employees by remember{ mutableStateOf(DataRepository.getEmployees()!!.filter { user: User -> user.id!= DataRepository.getUser()!!.id  }) }
@@ -80,15 +76,12 @@ fun ChatsScreen(navController: NavController, sharedPreferences: SharedPreferenc
             if (response.isSuccessful) {
                 var messages = response.body()
 
-                if (messages != null && messages.isNotEmpty()) {
+                if (!messages.isNullOrEmpty()) {
                     // Obtener todos los IDs de contactos involucrados en los mensajes
                     messages = messages.filter { message ->
                         (message.receiverContactId == DataRepository.getUser()?.id) || (message.senderContactId == DataRepository.getUser()?.id)
                     }
                     val allContactIds = messages.flatMap { listOf(it.senderContactId, it.receiverContactId) }.distinct()
-                    Log.d("ContactIDs", "Todos los IDs de contactos: $allContactIds")
-                    Log.d("EmployeesBeforeFilter", "Empleados antes del filtro: $employees")
-
                     // Filtrar empleados basándose en si han participado en conversaciones contigo
                     employees = employees.filter { employee ->
                         employee.id in allContactIds
@@ -133,11 +126,10 @@ fun ChatsScreen(navController: NavController, sharedPreferences: SharedPreferenc
 
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun EmployeeItem(employee: User, navController: NavController, onDelete:(user: User)->Unit) {
     val context = LocalContext.current
-    val totalDismissDistance = 300 // Ajusta según el ancho del card u otro criterio
     val dismissThreshold = 0.95f
     var visible by remember {
         mutableStateOf(true)
@@ -146,7 +138,7 @@ fun EmployeeItem(employee: User, navController: NavController, onDelete:(user: U
     if(visible){
         SwipeToDismiss(
             state = dismissState,
-            dismissThresholds = { direction ->
+            dismissThresholds = {
                 FractionalThreshold(dismissThreshold)
             },
             dismissContent = {
@@ -240,7 +232,7 @@ fun EmployeeItem(employee: User, navController: NavController, onDelete:(user: U
                         DismissValue.Default -> MaterialTheme.colorScheme.background
                         DismissValue.DismissedToEnd -> Color.Green
                         DismissValue.DismissedToStart -> Color.Red
-                    }
+                    }, label = ""
                 )
                 if (dismissState.isAnimationRunning) {
                     DisposableEffect(Unit) {

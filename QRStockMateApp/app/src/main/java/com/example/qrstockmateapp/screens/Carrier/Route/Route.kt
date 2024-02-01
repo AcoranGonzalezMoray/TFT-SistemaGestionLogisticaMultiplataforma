@@ -180,7 +180,6 @@ fun RouteScreen(navController: NavController,) {
 
     var start = DataRepository.getWarehouses()?.find { warehouse -> warehouse.id == route!!.startLocation.toInt()}
     var end  = DataRepository.getWarehouses()?.find { warehouse -> warehouse.id == route!!.endLocation.toInt()}
-    Log.d("SERA?", start!!.latitude.toString())
     val startPoint =  LatLng(start!!.latitude, start.longitude)
     val endPoint = LatLng(end!!.latitude, end.longitude)
     val launchPoint = LatLng(81.444125, 163.066796)
@@ -288,7 +287,6 @@ fun RouteScreen(navController: NavController,) {
                 // Realizar la solicitud de actualización de ubicación
                 val locationResponse = RetrofitInstance.api.updateLocationVehicle(route!!.assignedVehicleId, "${latLng.latitude};${latLng.longitude}")
                 if(locationResponse.isSuccessful){
-                    Log.d("LocationUpdates", "Ubicación actualizada con éxito: $latLng")
                 }
 
                 change = true
@@ -307,7 +305,6 @@ fun RouteScreen(navController: NavController,) {
                 // Realizar la solicitud de actualización de ubicación
                 val locationResponse = RetrofitInstance.api.putTransportRoutes(route)
                 if(locationResponse.isSuccessful){
-                    Log.d("InitRoute", "Ubicación actualizada")
                 }
                 change = true
             } catch (e: Exception) {
@@ -324,7 +321,6 @@ fun RouteScreen(navController: NavController,) {
                 // Realizar la solicitud de actualización de ubicación
                 val locationResponse = RetrofitInstance.api.initRoute(route!!.id)
                 if(locationResponse.isSuccessful){
-                    Log.d("InitRoute", "Ubicación actualizada")
                 }
                 change = true
             } catch (e: Exception) {
@@ -342,7 +338,6 @@ fun RouteScreen(navController: NavController,) {
                 // Realizar la solicitud de actualización de ubicación
                 val locationResponse = RetrofitInstance.api.finishRoute(route!!.id)
                 if(locationResponse.isSuccessful){
-                    Log.d("InitRoute", "Ubicación actualizada")
                     withContext(Dispatchers.Main){
                         Toast.makeText(context, "Finalized route", Toast.LENGTH_SHORT).show()
                         navController.popBackStack()
@@ -365,7 +360,6 @@ fun RouteScreen(navController: NavController,) {
 
                 if(isRouteStarted){
                     // Agregar un mensaje de registro para verificar las actualizaciones de ubicación
-                    Log.d("LocationUpdates", "Nueva ubicación recibida: $latLng")
                     coroutineScope.launch {
                         updateLocation(latLng)
                     }
@@ -379,12 +373,10 @@ fun RouteScreen(navController: NavController,) {
         // Solicita actualizaciones de ubicación
         if (locationPermissionGranted) {
             fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null)
-            Log.d("LocationUpdates", "Solicitadas actualizaciones de ubicación")
         }
         onDispose {
             // Elimina las actualizaciones de ubicación cuando se desecha el composable
             fusedLocationClient.removeLocationUpdates(locationCallback)
-            Log.d("LocationUpdates", "Eliminadas actualizaciones de ubicación")
         }
     }
 
@@ -396,10 +388,8 @@ fun RouteScreen(navController: NavController,) {
                 if(currentLocation!=null && isRouteStarted){
                     geo = Geocoder(context, Locale.getDefault()).getFromLocation(currentLocation!!.latitude, currentLocation!!.longitude, 1)?.get(0)
                 }
-                Log.d("ACTUALIACION", "${geo}")
             }catch (e: IOException) {
                 // Manejar excepciones de geocodificación (pueden ocurrir por problemas de red o límites de uso)
-                Log.d("ACTUALIACION", "${e}")
                 e.printStackTrace()
             }
         }
@@ -408,7 +398,6 @@ fun RouteScreen(navController: NavController,) {
 
     if (fusedLocationClient != null && fusedLocationClient.lastLocation != null) {
         // Obtener la última ubicación conocida
-        Log.d("ERROR", "Entra")
         fusedLocationClient.lastLocation
             .addOnSuccessListener { locationResult: Location? ->
                 locationResult?.let {
@@ -440,25 +429,21 @@ fun RouteScreen(navController: NavController,) {
             bitmapDescriptorNow = BitmapDescriptorFactory.fromBitmap(scaledDrawableNow)
         }
 
-        Log.d("CameraAnimation", "Animación de cámara iniciada")
         cameraPositionState.animate(
             update = CameraUpdateFactory.newCameraPosition(
                 CameraPosition(startPoint, 80f, 0f, 0f)
             ),
             durationMs = 2000
         )
-        Log.d("CameraAnimation", "Animación de cámara completada")
 
     }
     if(route!!.route!=""){
-        Log.d("QUE COJONES FUNCIONA", "FUNCIONA")
         userRoutePoints =
             com.example.qrstockmateapp.screens.Carrier.Route.RouteMinus.convertStringToLatLngList(
                 route!!.route
             )
-    }else{
-        Log.d("QUE COJONES", "COJONES")
     }
+
 
     DisposableEffect(Unit) {
         onDispose {

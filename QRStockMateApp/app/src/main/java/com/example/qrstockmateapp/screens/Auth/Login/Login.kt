@@ -22,8 +22,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -35,7 +33,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -44,22 +41,23 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.qrstockmateapp.R
 import com.example.qrstockmateapp.api.models.User
-import com.example.qrstockmateapp.api.services.ApiService
 import com.example.qrstockmateapp.api.services.RetrofitInstance
 import com.example.qrstockmateapp.screens.Auth.JoinWithCode.isValidEmail
 import com.example.qrstockmateapp.ui.theme.BlueSystem
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+@OptIn(DelicateCoroutinesApi::class)
 @Composable
 fun Login(navController: NavHostController, onLoginSuccess: (Boolean, User, String) -> Unit) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var isloading by remember {
-        mutableStateOf<Boolean>(false)
+        mutableStateOf(false)
     }
     var start by remember {
         mutableStateOf(false)
@@ -123,7 +121,7 @@ fun Login(navController: NavHostController, onLoginSuccess: (Boolean, User, Stri
                 delay(1000)
                 isloading = false
             } catch (e: Exception) {
-                Log.d("excepcionUser","${e}")
+                Log.d("excepcionUser","$e")
             }
         }
     }
