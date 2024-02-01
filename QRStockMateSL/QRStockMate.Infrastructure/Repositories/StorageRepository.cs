@@ -1,5 +1,6 @@
 ﻿using Firebase.Auth;
 using Firebase.Storage;
+using QRStockMate.AplicationCore.Entities;
 using QRStockMate.AplicationCore.Interfaces.Repositories;
 
 namespace QRStockMate.Infrastructure.Repositories
@@ -64,12 +65,32 @@ namespace QRStockMate.Infrastructure.Repositories
         }
 
 
-		public async Task DeleteAudio(string name)
+		public async Task DeleteFile(string name, TypeFile type)
 		{
 			var auth = new FirebaseAuthProvider(new FirebaseConfig(api_key));
 			var a = await auth.SignInWithEmailAndPasswordAsync(email, clave);
 
 			var cancellation = new CancellationTokenSource();
+
+			string rute = "";
+
+			switch (type)
+			{
+				case TypeFile.Audio:
+					rute = "Audios";
+					break;
+
+				case TypeFile.Image:
+					rute = "Images";
+					break;
+
+				case TypeFile.File:
+					rute = "Files";
+					break;
+				default:
+					rute = "Audios";
+					break;
+			}
 
 			// Parsear la URL
 			Uri uri = new Uri(name);
@@ -85,16 +106,37 @@ namespace QRStockMate.Infrastructure.Repositories
 					AuthTokenAsyncFactory = () => Task.FromResult(a.FirebaseToken),
 					ThrowOnCancel = true
 				})
-				.Child("Audios")
+				.Child(rute)
 				.Child(fileName)
 				.DeleteAsync();
 		}
 
 
-		public async Task<string> UploadAudio(Stream archivo, string name)
+		public async Task<string> UploadFile(Stream archivo, string name, TypeFile type)
 		{
 			var auth = new FirebaseAuthProvider(new FirebaseConfig(api_key));
 			var a = await auth.SignInWithEmailAndPasswordAsync(email, clave);
+
+
+			string rute = "";
+
+			switch (type)
+			{
+				case TypeFile.Audio:
+					rute = "Audios";
+					break;
+
+				case TypeFile.Image:
+					rute = "Images";
+					break;
+
+				case TypeFile.File:
+					rute = "Files";
+					break;
+				default:
+					rute = "Audios";
+					break;
+			}
 
 			var cancellation = new CancellationTokenSource();
 			string nameNew = DateTime.Now.ToString().Replace("/", "_").Replace(" ", "_") + "_" +name;
@@ -105,7 +147,7 @@ namespace QRStockMate.Infrastructure.Repositories
 					AuthTokenAsyncFactory = () => Task.FromResult(a.FirebaseToken),
 					ThrowOnCancel = true
 				})
-				.Child("Audios")
+				.Child(rute)
 				.Child(nameNew)
 				.PutAsync(archivo, cancellation.Token);
 

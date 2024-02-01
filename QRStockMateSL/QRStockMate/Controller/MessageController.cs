@@ -129,15 +129,15 @@ namespace QRStockMate.Controller
 		
 		}
 
-		[HttpPost("UploadAudio/")]
-		public async Task<IActionResult> UploadAudio([FromForm] IFormFile audio, [FromForm] MessageModel model)
+		[HttpPost("UploadFile/")]
+		public async Task<IActionResult> UploadFile([FromForm] IFormFile file, [FromForm] MessageModel model)
 		{
 			try
 			{
 				//var message = _mapper.Map<MessageModel, Message>(model);
 
-				Stream audio_stream = audio.OpenReadStream();
-				string urlAudio = await _context_storage.UploadAudio(audio_stream, audio.FileName);
+				Stream file_stream = file.OpenReadStream();
+				string urlAudio = await _context_storage.UploadFile(file_stream, file.FileName, model.Type);
 
 				model.SentDate = DateTime.Now;
 				model.Content = urlAudio;
@@ -177,7 +177,7 @@ namespace QRStockMate.Controller
 					if (Uri.IsWellFormedUriString(item.Content, UriKind.Absolute))
 					{
 						// Es una URL válida, puedes proceder con la eliminación
-						await _context_storage.DeleteAudio(item.Content);
+						await _context_storage.DeleteFile(item.Content, item.Type);
 					}
 				}
 

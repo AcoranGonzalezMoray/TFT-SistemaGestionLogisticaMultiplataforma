@@ -22,6 +22,8 @@ namespace QRStockMate.AplicationCore.Entities
 	public enum TypeFile
 	{
 		Text,
-		Audio
+		Audio,
+		File,
+		Image
 	}
 }

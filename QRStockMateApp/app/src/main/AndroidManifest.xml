@@ -5,6 +5,8 @@
     <uses-feature
         android:name="android.hardware.camera"
         android:required="true" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+    <uses-feature android:name="android.hardware.camera.flash" />
     <uses-feature
         android:name="android.hardware.telephony"
         android:required="false" />

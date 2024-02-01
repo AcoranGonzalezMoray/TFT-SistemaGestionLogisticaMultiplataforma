@@ -95,9 +95,9 @@ interface ApiService {
 
 
     @Multipart
-    @POST("Message/UploadAudio/")
-    suspend fun uploadAudio(
-        @Part audio: MultipartBody.Part,
+    @POST("Message/UploadFile/")
+    suspend fun uploadFile(
+        @Part file: MultipartBody.Part,
         @Part("code") code: RequestBody,
         @Part("senderContactId") senderContactId: RequestBody,
         @Part("receiverContactId") receiverContactId: RequestBody,

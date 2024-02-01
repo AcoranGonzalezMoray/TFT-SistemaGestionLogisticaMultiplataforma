@@ -2,17 +2,23 @@ package com.example.qrstockmateapp.screens.Chats.Chat
 
 import android.Manifest
 import android.app.Activity
+import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.icu.text.SimpleDateFormat
 import android.media.MediaRecorder
 import android.net.Uri
+import android.os.Environment
+import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -50,6 +56,7 @@ import androidx.compose.material.icons.filled.AttachFile
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.PhoneEnabled
+import androidx.compose.material.icons.filled.PictureAsPdf
 import androidx.compose.material.icons.filled.PlayCircle
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.StopCircle
@@ -83,6 +90,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.airbnb.lottie.compose.LottieAnimation
@@ -111,13 +119,24 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
+import java.net.URL
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import java.util.Date
+import java.util.Locale
 
-
-
-
+@Throws(IOException::class)
+private fun createImageFile(context: Context): File {
+    // Crea un archivo de imagen único
+    val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+    val imageFileName = "JPEG_" + timeStamp + "_"
+    val storageDir: File = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!
+    val imageFile = File.createTempFile(imageFileName, ".jpg", storageDir)
+    return imageFile
+}
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChatScreen(navController: NavController, sharedPreferences: SharedPreferences) {
@@ -132,7 +151,7 @@ fun ChatScreen(navController: NavController, sharedPreferences: SharedPreference
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.audio))
     val progress by animateLottieCompositionAsState(composition = composition, iterations = LottieConstants.IterateForever, speed = 1f)
 
-    //var currentDate by remember { mutableStateOf("") }
+
 
     val options = listOf(
         OptionSize("Small",  12, 0),
@@ -272,7 +291,7 @@ fun ChatScreen(navController: NavController, sharedPreferences: SharedPreference
             val audioRequestBody = audioFile.asRequestBody("audio/aac".toMediaTypeOrNull())
 
             // Convierte el objeto RequestBody a MultipartBody.Part
-            val audioPart = MultipartBody.Part.createFormData("audio", audioFile.name, audioRequestBody)
+            val audioPart = MultipartBody.Part.createFormData("file", audioFile.name, audioRequestBody)
 
             // Crea un objeto Message a ser enviado como parte del formulario
             val zonedDateTime = ZonedDateTime.now()
@@ -289,7 +308,7 @@ fun ChatScreen(navController: NavController, sharedPreferences: SharedPreference
             GlobalScope.launch(Dispatchers.IO) {
                 isloading = true
                 // Realiza la llamada a la función de Retrofit
-                val response = RetrofitInstance.api.uploadAudio(
+                val response = RetrofitInstance.api.uploadFile(
                     audioPart,
                     codeRequestBody,
                     senderContactIdRequestBody,
@@ -316,6 +335,181 @@ fun ChatScreen(navController: NavController, sharedPreferences: SharedPreference
             e.printStackTrace()
         }
     }
+
+
+
+    val uploadFile: (Uri) -> Unit = {
+        try {
+
+
+            // Obtiene la ruta del archivo PDF a partir de la Uri
+            val pdfFile = File(context.cacheDir, "output.pdf")
+
+            // Copia el contenido de la Uri al archivo PDF
+            context.contentResolver.openInputStream(it)?.use { input ->
+                pdfFile.outputStream().use { output ->
+                    input.copyTo(output)
+                }
+            }
+
+            val pdfRequestBody = pdfFile.asRequestBody("application/pdf".toMediaTypeOrNull())
+
+            val pdfPart = MultipartBody.Part.createFormData("file", pdfFile.name, pdfRequestBody)
+
+            val zonedDateTime = ZonedDateTime.now()
+            val formattedDate = zonedDateTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+
+            // Convierte el objeto Message a RequestBody
+            val codeRequestBody = DataRepository.getUser()!!.code.toRequestBody("multipart/form-data".toMediaTypeOrNull())
+            val senderContactIdRequestBody = DataRepository.getUser()!!.id.toString().toRequestBody("multipart/form-data".toMediaTypeOrNull())
+            val receiverContactIdRequestBody = DataRepository.getUserPlus()!!.id.toString().toRequestBody("multipart/form-data".toMediaTypeOrNull())
+            val contentRequestBody = "ghghgh".toRequestBody("multipart/form-data".toMediaTypeOrNull())
+            val formattedDateRequestBody = formattedDate.toRequestBody("multipart/form-data".toMediaTypeOrNull())
+            val typeRequestBody = 2.toString().toRequestBody("multipart/form-data".toMediaTypeOrNull())
+
+            GlobalScope.launch(Dispatchers.IO) {
+                isloading = true
+                // Realiza la llamada a la función de Retrofit
+                val response = RetrofitInstance.api.uploadFile(
+                    pdfPart,
+                    codeRequestBody,
+                    senderContactIdRequestBody,
+                    receiverContactIdRequestBody,
+                    contentRequestBody,
+                    formattedDateRequestBody,
+                    typeRequestBody
+                )
+
+
+                if (response.isSuccessful){
+                    withContext(Dispatchers.Main){
+                        Toast.makeText(context, "Sent file", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                isloading = false
+
+            }
+
+            current = true
+            getMessages()
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    val uploadImage: (Uri) -> Unit = { imageUri ->
+        try {
+            val imageFile = createImageFile(context)
+            context.contentResolver.openInputStream(imageUri)?.use { input ->
+                imageFile.outputStream().use { output ->
+                    input.copyTo(output)
+                }
+            }
+
+            val imageRequestBody = imageFile.asRequestBody("image/jpeg".toMediaTypeOrNull())
+            val imagePart = MultipartBody.Part.createFormData("file", imageFile.name, imageRequestBody)
+
+            val zonedDateTime = ZonedDateTime.now()
+            val formattedDate = zonedDateTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+
+            val codeRequestBody = DataRepository.getUser()!!.code.toRequestBody("multipart/form-data".toMediaTypeOrNull())
+            val senderContactIdRequestBody = DataRepository.getUser()!!.id.toString().toRequestBody("multipart/form-data".toMediaTypeOrNull())
+            val receiverContactIdRequestBody = DataRepository.getUserPlus()!!.id.toString().toRequestBody("multipart/form-data".toMediaTypeOrNull())
+            val contentRequestBody = "ghghgh".toRequestBody("multipart/form-data".toMediaTypeOrNull())
+            val formattedDateRequestBody = formattedDate.toRequestBody("multipart/form-data".toMediaTypeOrNull())
+            val typeRequestBody = 3.toString().toRequestBody("multipart/form-data".toMediaTypeOrNull())
+
+            GlobalScope.launch(Dispatchers.IO) {
+                isloading = true
+
+                val uri = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", imageFile)
+                val imagePartSecure = MultipartBody.Part.createFormData("file", imageFile.name, imageRequestBody)
+
+                val response = RetrofitInstance.api.uploadFile(
+                    imagePartSecure,
+                    codeRequestBody,
+                    senderContactIdRequestBody,
+                    receiverContactIdRequestBody,
+                    contentRequestBody,
+                    formattedDateRequestBody,
+                    typeRequestBody
+                )
+
+                if (response.isSuccessful) {
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(context, "Sent image", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                isloading = false
+            }
+
+            current = true
+            getMessages()
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+
+
+    val getContent = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
+        // Handle the selected file URI here
+        uri?.let {
+            // You can perform further actions with the selected file URI
+            // For example, you can use it to upload the file
+            uploadFile(it)
+        }
+    }
+
+
+    val currentImageUri = remember { mutableStateOf<Uri?>(null) }
+
+    val takePicture = rememberLauncherForActivityResult(contract = ActivityResultContracts.TakePicture()) { success: Boolean ->
+        if (success) {
+            // The picture was taken successfully, you can perform further actions
+            // For example, you can use the captured image URI to upload the file
+            val imageUri = currentImageUri.value
+            imageUri?.let {
+                uploadImage(it)
+            }
+        }
+    }
+
+    val openCamera: () -> Unit = {
+        try {
+            if (ContextCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.CAMERA
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions(
+                    context as Activity,
+                    arrayOf(Manifest.permission.CAMERA),
+                    REQUEST_RECORD_AUDIO_PERMISSION
+                )
+            }else{
+                // Intenta lanzar la actividad de la cámara
+                val imageFile = createImageFile(context)
+                currentImageUri.value = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", imageFile)
+
+                try {
+                    takePicture.launch(currentImageUri.value)
+                } catch (e: ActivityNotFoundException) {
+                    // Maneja la excepción si la actividad de la cámara no está disponible
+                    Toast.makeText(context, "Error: La cámara no está disponible", Toast.LENGTH_SHORT).show()
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+
+
+
+
     val postMessage:(message: String)->Unit = {
         val zonedDateTime = ZonedDateTime.now()
         val formattedDate = zonedDateTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
@@ -545,10 +739,10 @@ fun ChatScreen(navController: NavController, sharedPreferences: SharedPreference
                                 horizontalArrangement = Arrangement.End,
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-                                IconButton(onClick = { /*TODO*/ }) {
+                                IconButton(onClick = { getContent.launch("application/pdf")}) {
                                     Icon(imageVector = Icons.Filled.AttachFile, contentDescription = null, tint =  MaterialTheme.colorScheme.outlineVariant )
                                 }
-                                IconButton(onClick = { /*TODO*/ }) {
+                                IconButton(onClick = { openCamera() }) {
                                     Icon(imageVector = Icons.Filled.CameraAlt, contentDescription = null, tint = MaterialTheme.colorScheme.outlineVariant  )
                                 }
                             }
@@ -559,6 +753,9 @@ fun ChatScreen(navController: NavController, sharedPreferences: SharedPreference
                                 color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.9f), // Ajusta el nivel de opacidad aquí
                                 trackColor = BlueSystem.copy(alpha = 0.1f), // Ajusta el nivel de opacidad aquí
                             )
+                            IconButton(onClick = { /*TODO*/ }) {
+                                Icon(imageVector = Icons.Filled.CameraAlt, contentDescription = null, tint = MaterialTheme.colorScheme.secondaryContainer )
+                            }
                         }
                     }else{
                         LottieAnimation(
@@ -667,7 +864,7 @@ fun MessageItem(message: Message, selectedOption: OptionSize?) {
 
         }
 
-       if(message.type == 0){
+        if(message.type == 0){ //Texto
            Card(
                elevation = CardDefaults.cardElevation(
                    defaultElevation = 5.dp
@@ -701,7 +898,8 @@ fun MessageItem(message: Message, selectedOption: OptionSize?) {
                    }
                }
            }
-       }else {
+        }
+        if(message.type == 1){ //Audio
            Card(
                elevation = CardDefaults.cardElevation(
                    defaultElevation = 5.dp
@@ -775,8 +973,62 @@ fun MessageItem(message: Message, selectedOption: OptionSize?) {
                    }
                }
            }
-       }
+        }
+        if (message.type == 2){ //File
+            val context = LocalContext.current
 
+            Card(
+                elevation = CardDefaults.cardElevation(
+                    defaultElevation = 5.dp
+                ),
+                colors = CardDefaults.cardColors(
+                    containerColor = if (isSentByUser) BlueSystem else Color.DarkGray,
+                ),
+                shape = RoundedCornerShape(8.dp),
+                modifier = Modifier
+                    .height(150.dp)
+                    .clickable { downloadAndOpenPdf(context, message.content) }
+                    .padding(8.dp)
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.pdf_icon),
+                    contentDescription = null,
+                    modifier = Modifier
+
+                )
+            }
+        }
+        if (message.type == 3){ //File
+            val context = LocalContext.current
+
+
+            Card(
+                elevation = CardDefaults.cardElevation(
+                    defaultElevation = 5.dp
+                ),
+                colors = CardDefaults.cardColors(
+                    containerColor = if (isSentByUser) BlueSystem else Color.DarkGray,
+                ),
+                shape = RoundedCornerShape(8.dp),
+                modifier = Modifier
+                    .height(130.dp)
+                    .width(150.dp)
+                    .clickable {
+                        downloadAndOpenImage(
+                            context = context,
+                            imageUrl = message.content
+                        )
+                    }
+                    .padding(8.dp)
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.image_icon),
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize()
+
+                )
+            }
+        }
         Spacer(modifier = Modifier.width(8.dp))
 
         // Sender image
@@ -810,6 +1062,99 @@ fun MessageItem(message: Message, selectedOption: OptionSize?) {
         }
     }
 }
+
+
+// Function to download and open PDF
+fun downloadAndOpenPdf(context: Context, pdfUrl: String) {
+    GlobalScope.launch(Dispatchers.IO) {
+        try {
+            // Download the PDF file
+            val url = URL(pdfUrl)
+            val connection = url.openConnection()
+            connection.connect()
+
+            // Create a temporary file to save the PDF with a fixed name
+            val fileName = "temp_pdf.pdf" // Nombre fijo del archivo
+            val tempDir = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
+            val tempFile = File(tempDir, fileName)
+
+            // Save the PDF to the temporary file
+            val input = connection.getInputStream()
+            val output = FileOutputStream(tempFile)
+            val buffer = ByteArray(1024)
+            var bytesRead: Int
+            while (input.read(buffer).also { bytesRead = it } != -1) {
+                output.write(buffer, 0, bytesRead)
+            }
+            output.close()
+            input.close()
+
+            // Open the PDF viewer with the downloaded file
+            openPdfViewer(context, Uri.fromFile(tempFile))
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+}
+
+
+// Function to open PDF viewer with FileProvider
+fun openPdfViewer(context: Context, uri: Uri) {
+    val intent = Intent(Intent.ACTION_VIEW).apply {
+        setDataAndType(uri, "application/pdf")
+        flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+        val contentUri = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", File(uri.path!!))
+        setDataAndType(contentUri, "application/pdf")
+        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+    }
+    context.startActivity(intent)
+}
+
+
+fun downloadAndOpenImage(context: Context, imageUrl: String) {
+    GlobalScope.launch(Dispatchers.IO) {
+        try {
+            // Download the image file
+            val url = URL(imageUrl)
+            val connection = url.openConnection()
+            connection.connect()
+
+            // Create a temporary file to save the image with a fixed name
+            val fileName = "temp_image.jpg" // Nombre fijo del archivo
+            val tempDir = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
+            val tempFile = File(tempDir, fileName)
+
+            // Save the image to the temporary file
+            val input = connection.getInputStream()
+            val output = FileOutputStream(tempFile)
+            val buffer = ByteArray(1024)
+            var bytesRead: Int
+            while (input.read(buffer).also { bytesRead = it } != -1) {
+                output.write(buffer, 0, bytesRead)
+            }
+            output.close()
+            input.close()
+
+            // Open the image viewer with the downloaded file
+            openImageViewer(context, Uri.fromFile(tempFile))
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+}
+
+// Function to open an image viewer with FileProvider
+fun openImageViewer(context: Context, uri: Uri) {
+    val intent = Intent(Intent.ACTION_VIEW).apply {
+        setDataAndType(uri, "image/*")
+        flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+        val contentUri = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", File(uri.path!!))
+        setDataAndType(contentUri, "image/*")
+        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+    }
+    context.startActivity(intent)
+}
+
 
 fun obtenerHoraYMinuto(fechaString: String): Pair<Int, Int>? {
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSSS")

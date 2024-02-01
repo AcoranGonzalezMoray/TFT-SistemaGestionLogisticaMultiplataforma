@@ -1,4 +1,5 @@
-﻿using System;
+﻿using QRStockMate.AplicationCore.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,7 +11,7 @@ namespace QRStockMate.AplicationCore.Interfaces.Repositories
     {
         Task<string> UploadImage(Stream archivo, string name);
         Task DeleteImage(string url);
-		Task<string> UploadAudio(Stream archivo, string name);
-		Task DeleteAudio(string url);
+		Task<string> UploadFile(Stream archivo, string name, TypeFile type);
+		Task DeleteFile(string url, TypeFile type);
 	}
 }

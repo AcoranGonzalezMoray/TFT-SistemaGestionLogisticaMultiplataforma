@@ -1,4 +1,5 @@
-﻿using QRStockMate.AplicationCore.Interfaces.Repositories;
+﻿using QRStockMate.AplicationCore.Entities;
+using QRStockMate.AplicationCore.Interfaces.Repositories;
 using QRStockMate.AplicationCore.Interfaces.Services;
 
 
@@ -23,14 +24,14 @@ namespace QRStockMate.Services
             return await _storageRepository.UploadImage(archivo, name);
         }
 
-		public async Task DeleteAudio(string url)
+		public async Task DeleteFile(string url, TypeFile type)
 		{
-			await _storageRepository.DeleteAudio(url);
+			await _storageRepository.DeleteFile(url, type);
 		}
 
-		public async Task<string> UploadAudio(Stream archivo, string name)
+		public async Task<string> UploadFile(Stream archivo, string name, TypeFile type)
 		{
-			return await _storageRepository.UploadAudio(archivo, name);
+			return await _storageRepository.UploadFile(archivo, name,type);
 		}
 	}
 }
