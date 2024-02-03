@@ -110,7 +110,15 @@ fun BottomNavigationScreen(navControllerLogin: NavController,sharedPreferences: 
     }
     LaunchedEffect(Unit) {
         val excludedRoutes = setOf("chat","route","routeMinus", "addWarehouse")
-
+        if(DataRepository.getToken() == "null"){
+            DataRepository.LogOut()
+            sharedPreferences.edit {
+                remove("TOKEN_KEY")
+                remove("USER_KEY")
+            }
+            navControllerLogin.navigate("login")
+            scope.launch { scaffoldState.drawerState.close() }
+        }
         // Lanzar una corrutina en el alcance de la pantalla
             coroutineScope.launch(Dispatchers.IO) {
                 while (user!=null){
@@ -261,6 +269,7 @@ fun BottomNavigationScreen(navControllerLogin: NavController,sharedPreferences: 
                                    }
                                }else{
                                    Icon(imageVector = Icons.Filled.Close, contentDescription = null, tint = BlueSystem, modifier = Modifier.clickable {
+                                       DataRepository.setCurrentScreenIndex(0)
                                        navController.navigate("home")
                                    })
                                }
@@ -291,7 +300,7 @@ fun BottomNavigationScreen(navControllerLogin: NavController,sharedPreferences: 
         },
 
         bottomBar = {
-            val excludedRoutes = setOf("profile", "itemDetails", "chat","splashScreen","addVehicle","updateVehicle", "route", "routeMinus", "addWarehouse", "updateWarehouse", "updateUser", "addRoute", "updateRoute")
+            val excludedRoutes = setOf("addItem","profile", "itemDetails", "chat","splashScreen","addVehicle","updateVehicle", "route", "routeMinus", "addWarehouse", "updateWarehouse", "updateUser", "addRoute", "updateRoute")
             val screens = listOf( //Chat
                 ScreenModel.HomeScreens.Message,
                 ScreenModel.HomeScreens.Comunity,

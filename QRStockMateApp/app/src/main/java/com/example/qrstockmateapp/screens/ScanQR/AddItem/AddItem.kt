@@ -176,6 +176,7 @@ fun AddItemScreen(navController: NavController) {
             var name by remember { mutableStateOf(item?.name) }
             Text(text =  "Name: "+name.toString(),
                 fontSize = 20.sp,
+                color = MaterialTheme.colorScheme.primary,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(16.dp)
             )
@@ -204,6 +205,7 @@ fun AddItemScreen(navController: NavController) {
                 Image(
                     painter = painterResource(id = R.drawable.item), // Reemplaza con tu lógica para cargar la imagen
                     contentDescription = null,
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
                     modifier = Modifier
                         .fillMaxWidth()
                         .fillMaxHeight(0.5f) // La imagen ocupa la mitad de la pantalla
@@ -297,7 +299,7 @@ fun AddItemScreen(navController: NavController) {
                     DropdownMenu(
                         expanded = isMenuExpanded,
                         onDismissRequest = { isMenuExpanded = false },
-                        modifier = Modifier.fillMaxWidth().padding(4.dp).background(MaterialTheme.colorScheme.secondaryContainer)
+                        modifier = Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.secondaryContainer)
                     ) {
                         warehouses.forEach { warehouse ->
                             DropdownMenuItem(onClick = {
@@ -394,7 +396,7 @@ fun AddItemScreen(navController: NavController) {
                             )
 
                     )
-                    Spacer(modifier = Modifier.width(20.dp))
+                    Spacer(modifier = Modifier.width(10.dp))
                     ElevatedButton(
                         onClick = {
                             navController.popBackStack()
@@ -408,10 +410,8 @@ fun AddItemScreen(navController: NavController) {
                     ){
                         Text(text = "Cancel", color=BlueSystem)
                     }
-                    Spacer(modifier = Modifier.width(5.dp))
+                    Spacer(modifier = Modifier.width(15.dp))
                     ElevatedButton(
-                        modifier = Modifier
-                            .padding(top = 8.dp),
                         onClick = {
                             var newStock = item?.stock?.plus(countState.value)
                             var newItem = item

@@ -185,7 +185,7 @@ fun TransactionHistoryScreen(navController: NavController) {
                    item {
                        Spacer(modifier = Modifier
                            .fillMaxWidth()
-                           .height(48.dp))
+                           .height(60.dp))
                    }
                }
            }else {

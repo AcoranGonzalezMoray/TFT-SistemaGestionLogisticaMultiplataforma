@@ -4,6 +4,7 @@
     <value>
       <entry key="app">
         <State>
+          <multipleDevicesSelectedInDropDown value="true" />
           <runningDeviceTargetsSelectedWithDialog>
             <Target>
               <type value="RUNNING_DEVICE_TARGET" />

@@ -141,6 +141,7 @@ fun RouteManagementScreen(navController: NavController) {
     }
 
     filteredItems = filterOption(5)
+    val context = LocalContext.current
 
     val loadRoutes : ()->Unit = {
         GlobalScope.launch(Dispatchers.IO) {
@@ -153,6 +154,11 @@ fun RouteManagementScreen(navController: NavController) {
                 val vehiclesResponse = responseVehicle.body()
                 if(transporRoutesResponse!=null && vehiclesResponse !=null ){
                     transportRoutes = transporRoutesResponse
+                    if(transportRoutes.isEmpty()){
+                        withContext(Dispatchers.Main){
+                            Toast.makeText(context, "There are no routes available for this company", Toast.LENGTH_SHORT).show()
+                        }
+                    }
                     DataRepository.setVehicles(vehiclesResponse)
                 }
             } else{
@@ -340,34 +346,19 @@ fun RouteManagementScreen(navController: NavController) {
                     )
                 }
             }
-            if(filteredItems.isNotEmpty()){
-                LazyColumn {
-                    items(filteredItems) { route ->
-                        TransportRouteItem(route = route, navController = navController, onDeleted = {
-                            loadRoutes()
-                        })
-                    }
-                    item{
-                        Spacer(modifier = Modifier
-                            .fillMaxWidth()
-                            .height(65.dp))
-                    }
 
+            LazyColumn {
+                items(filteredItems) { route ->
+                    TransportRouteItem(route = route, navController = navController, onDeleted = {
+                        loadRoutes()
+                    })
                 }
-            }else {
-                Row(
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment =  Alignment.CenterVertically
-                ) {
-                    androidx.compose.material.Text(
-                        text = "There are no routes available for this company \n or  for the selected date",
-                        color = MaterialTheme.colorScheme.outlineVariant,
-                        style = TextStyle(
-                            fontWeight = FontWeight.Bold
-                        )
-                    )
+                item{
+                    Spacer(modifier = Modifier
+                        .fillMaxWidth()
+                        .height(65.dp))
                 }
+
             }
         }
     }

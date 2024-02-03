@@ -202,8 +202,8 @@ fun RouteMinusScreen(navController: NavController,) {
                             if (locationParts.size == 2) {
                                 if(status == 2){
                                     withContext(Dispatchers.Main){
-                                        navController.popBackStack()
                                         Toast.makeText(context, "Route Finished!", Toast.LENGTH_SHORT).show()
+                                        navController.navigate("routeManagement")
                                     }
                                 }
 
@@ -510,7 +510,7 @@ fun BottomSheetContent(
             androidx.compose.material.Text(
                 buildAnnotatedString {
                     withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                        append("${String.format("%.2f Min", (distanceRounded / 80) * 60)} Min")
+                        append("${String.format("%.2f Min", (distanceRounded / 80) * 60)}")
                     }
                 },
                 fontSize = 9.sp,

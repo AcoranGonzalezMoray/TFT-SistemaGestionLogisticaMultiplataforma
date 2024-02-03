@@ -1024,7 +1024,7 @@ fun PaletTemplate(map: Map<Int, String>, onDelete: (Double) -> Unit) {
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "Peso: ${ String.format("%.2f", Math.round(weight* 100.0) / 100.0).toDouble()} Kg",
+                    text = "Peso: ${ String.format("%.2f", Math.round(weight* 100.0) / 100.0).replace(",", ".").toDouble()} Kg",
                     color = BlueSystem,
                 )
             }

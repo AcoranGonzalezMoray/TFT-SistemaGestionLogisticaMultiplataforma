@@ -1,5 +1,6 @@
 package com.example.qrstockmateapp.screens.Chats.Contact
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -22,6 +23,11 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,12 +42,37 @@ import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.example.qrstockmateapp.R
 import com.example.qrstockmateapp.api.models.User
+import com.example.qrstockmateapp.api.services.RetrofitInstance
 import com.example.qrstockmateapp.navigation.repository.DataRepository
 import com.example.qrstockmateapp.ui.theme.BlueSystem
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun ContactScreen(navController: NavController) {
-    val employees = DataRepository.getEmployees()?.filter { user: User -> user.id!=DataRepository.getUser()?.id  }
+    var employees by remember{ mutableStateOf(DataRepository.getEmployees()?.filter { user: User -> user.id!=DataRepository.getUser()?.id  })}
+
+    val loadEmployees:()->Unit = {
+        GlobalScope.launch(Dispatchers.IO) {
+            val company = DataRepository.getCompany()
+            if(company!=null){
+                val employeesResponse = RetrofitInstance.api.getEmployees(company)
+                if (employeesResponse.isSuccessful) {
+                    val employeesIO = employeesResponse.body()
+                    if(employeesIO!=null){
+                        DataRepository.setEmployees(employeesIO)
+                        employees = DataRepository.getEmployees()?.filter { user: User -> user.id!=DataRepository.getUser()?.id  }
+                    }
+                } else Log.d("compnayError", "error")
+            }
+        }
+    }
+
+    LaunchedEffect(Unit){
+        loadEmployees()
+    }
 
     Column(
         modifier = Modifier
@@ -50,7 +81,7 @@ fun ContactScreen(navController: NavController) {
     ) {
         if(employees?.isNotEmpty() == true){
             LazyColumn {
-                items(employees) { employee ->
+                items(employees!!) { employee ->
                     EmployeeItem(employee, navController)
                     Divider(modifier = Modifier.padding(start = 16.dp, end = 16.dp))
                 }

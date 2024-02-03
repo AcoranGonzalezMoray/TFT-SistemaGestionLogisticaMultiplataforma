@@ -74,6 +74,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -122,6 +123,7 @@ fun CarrierScreen(navController: NavController) {
     }
 
     filteredItems = filterOption(5)
+    val context = LocalContext.current
 
     val loadRoutes : ()->Unit = {
         GlobalScope.launch(Dispatchers.IO) {
@@ -134,6 +136,11 @@ fun CarrierScreen(navController: NavController) {
                 val vehiclesResponse = responseVehicle.body()
                 if(transporRoutesResponse!=null && vehiclesResponse !=null ){
                     transportRoutes = transporRoutesResponse.filter { transportRoute: TransportRoute -> transportRoute.carrierId == DataRepository.getUser()!!.id }
+                    if(transportRoutes.isEmpty()){
+                        withContext(Dispatchers.Main){
+                            Toast.makeText(context, "You have not yet been assigned any route", Toast.LENGTH_SHORT).show()
+                        }
+                    }
                     DataRepository.setVehicles(vehiclesResponse)
                 }
             } else{
@@ -329,35 +336,21 @@ fun CarrierScreen(navController: NavController) {
                     }
                 }
             }
-            if(filteredItems.isNotEmpty()){
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                ) {
-                    items(filteredItems.chunked(2)) { routesPorFila ->
-                        itemRoute(routesPorFila, navController)
-                    }
-                    item{
-                        Spacer(modifier = Modifier
-                            .fillMaxWidth()
-                            .height(65.dp))
-                    }
+
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                items(filteredItems.chunked(2)) { routesPorFila ->
+                    itemRoute(routesPorFila, navController)
                 }
-            }else {
-                Row(
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment =  Alignment.CenterVertically
-                ) {
-                    androidx.compose.material.Text(
-                        text = "You have not yet been assigned any route \n  or  for the selected date",
-                        color = MaterialTheme.colorScheme.outlineVariant,
-                        style = TextStyle(
-                            fontWeight = FontWeight.Bold
-                        )
-                    )
+                item{
+                    Spacer(modifier = Modifier
+                        .fillMaxWidth()
+                        .height(65.dp))
                 }
             }
+
         }
 
     }

@@ -88,8 +88,7 @@ fun AddVehicleScreen(navController: NavController){
             vehicle.make.isNotBlank() &&
             vehicle.model.isNotBlank() &&
             vehicle.color.isNotBlank() &&
-            vehicle.licensePlate.isNotBlank() &&
-            vehicle.location.isNotBlank()) {
+            vehicle.licensePlate.isNotBlank()) {
 
             GlobalScope.launch(Dispatchers.IO) {
                 try {

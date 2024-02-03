@@ -340,7 +340,7 @@ fun RouteScreen(navController: NavController,) {
                 if(locationResponse.isSuccessful){
                     withContext(Dispatchers.Main){
                         Toast.makeText(context, "Finalized route", Toast.LENGTH_SHORT).show()
-                        navController.popBackStack()
+                        navController.navigate("carrier")
                     }
 
                 }
@@ -853,7 +853,7 @@ fun BottomSheetContent(
             androidx.compose.material.Text(
                 buildAnnotatedString {
                     withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                        append("${String.format("%.2f Min", (distanceRounded / 80) * 60)} Min")
+                        append("${String.format("%.2f Min", (distanceRounded / 80) * 60)}")
                     }
                 },
                 fontSize = 9.sp,

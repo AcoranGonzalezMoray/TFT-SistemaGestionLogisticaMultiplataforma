@@ -10,10 +10,12 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
@@ -34,6 +36,7 @@ import com.example.qrstockmateapp.ui.theme.splashScreen
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -172,6 +175,7 @@ fun navigateToBottomScreen(
     onSaveTokenAndUser: (String, User) -> Unit,
     sharedPreferences: SharedPreferences
 ) {
+    val context = LocalContext.current
     NavHost(navController = navController, startDestination = "splashScreen"){
         // Pantallas de Autenticacion
         composable("login") {
@@ -180,7 +184,7 @@ fun navigateToBottomScreen(
                     // Ejecutar la navegación en el hilo principal
                     CoroutineScope(Dispatchers.Main).launch {
                         //se guarda aqui shared prefe
-                        Initializaton(navController = navController,user = user, token=token, onError = { navController.navigate("errorApiScreen") },
+                        Initializaton(context = context, navController = navController,user = user, token=token, onError = { navController.navigate("errorApiScreen") },
                             onSuccess = {
                                 onSaveTokenAndUser(token, user)
                                 navController.navigate("bottomScreen")
@@ -214,7 +218,7 @@ fun navigateToBottomScreen(
     }
     LaunchedEffect(Unit) {
         withContext(Dispatchers.Main) {
-            Initializaton(navController = navController, user = savedUser, token = savedToken, onError = { navController.navigate("errorApiScreen") },
+            Initializaton(context = context, navController = navController, user = savedUser, token = savedToken, onError = { navController.navigate("errorApiScreen") },
                 onSuccess = {
                     DataRepository.setSplash("bottomScreen")
                     navController.navigate("splashScreen")
@@ -236,15 +240,14 @@ fun NavigationContent(
 
 @Composable
 fun Navigation(navController: NavHostController, onSaveTokenAndUser: (String, User) -> Unit,sharedPreferences: SharedPreferences) {
+    val context = LocalContext.current
     NavHost(navController = navController, startDestination = "splashScreen") {
         // Pantallas de Autenticacion
         composable("login") {
             Login(navController = navController) { loggedIn,user,token ->
                 if (loggedIn) {
-                    // Ejecutar la navegación en el hilo principal
                     CoroutineScope(Dispatchers.Main).launch {
-                        //se guarda aqui shared prefe
-                        Initializaton(navController = navController, user = user, token=token,
+                        Initializaton(context = context,navController = navController, user = user, token=token,
                             onError = { navController.navigate("errorApiScreen") },
                             onSuccess = {
                                 onSaveTokenAndUser(token, user)
@@ -278,7 +281,7 @@ fun Navigation(navController: NavHostController, onSaveTokenAndUser: (String, Us
     }
 }
 
-suspend fun Initializaton(navController: NavHostController, user: User, token:String, onError: ()-> Unit, onSuccess: ()-> Unit){
+suspend fun Initializaton(context: Context,navController: NavHostController, user: User, token:String, onError: ()-> Unit, onSuccess: ()-> Unit){
     DataRepository.setToken(token)
     RetrofitInstance.updateToken(token)
    try {
@@ -286,7 +289,13 @@ suspend fun Initializaton(navController: NavHostController, user: User, token:St
        if (companyResponse.isSuccessful) {
            val company = companyResponse.body()
            if(company!=null)DataRepository.setCompany(company)
-       } else Log.d("compnayError", "error")
+       } else {
+           withContext(Dispatchers.Main){
+               Toast.makeText(context, "Your session has expired", Toast.LENGTH_SHORT).show()
+               DataRepository.setToken("null")
+           }
+       }
+
 
        val company = DataRepository.getCompany()
        if(company!=null){
