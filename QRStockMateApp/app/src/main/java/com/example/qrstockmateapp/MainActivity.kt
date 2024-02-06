@@ -13,11 +13,16 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.material.Scaffold
+import androidx.compose.material.ScaffoldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -46,6 +51,7 @@ class MainActivity : ComponentActivity() {
     private val NOTIFICATION_PERMISSION_REQUESTED = "notification_permission_requested"
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         sharedPreferences = getPreferences(Context.MODE_PRIVATE)
 
@@ -63,6 +69,7 @@ class MainActivity : ComponentActivity() {
                 PERMISSION_CAMERA_REQUEST
             )
         }
+
         setContent {
             QRStockMateAppTheme(sharedPreferences.getInt(KEY_DARK_THEME, 2)) {
                 val navController = rememberNavController()
@@ -70,6 +77,8 @@ class MainActivity : ComponentActivity() {
                 val savedToken = sharedPreferences.getString(KEY_TOKEN, null)
                 val savedUserJson = sharedPreferences.getString(KEY_USER, null)
                 Log.d("savedToken", "$savedToken")
+                ScaffoldDefaults.contentWindowInsets
+
                 if (!savedToken.isNullOrBlank() && !savedUserJson.isNullOrBlank()) {
                     val savedUser = Gson().fromJson(savedUserJson, User::class.java)
                     navigateToBottomScreen(navController,savedUser,savedToken,::saveTokenAndUser,sharedPreferences)
@@ -176,7 +185,7 @@ fun navigateToBottomScreen(
     sharedPreferences: SharedPreferences
 ) {
     val context = LocalContext.current
-    NavHost(navController = navController, startDestination = "splashScreen"){
+    NavHost(navController = navController, startDestination = "splashScreen",enterTransition = { EnterTransition.None}, exitTransition = { ExitTransition.None}){
         // Pantallas de Autenticacion
         composable("login") {
             Login(navController = navController) { loggedIn,user,token ->
@@ -241,7 +250,7 @@ fun NavigationContent(
 @Composable
 fun Navigation(navController: NavHostController, onSaveTokenAndUser: (String, User) -> Unit,sharedPreferences: SharedPreferences) {
     val context = LocalContext.current
-    NavHost(navController = navController, startDestination = "splashScreen") {
+    NavHost(navController = navController, startDestination = "splashScreen",enterTransition = { EnterTransition.None}, exitTransition = { ExitTransition.None}) {
         // Pantallas de Autenticacion
         composable("login") {
             Login(navController = navController) { loggedIn,user,token ->

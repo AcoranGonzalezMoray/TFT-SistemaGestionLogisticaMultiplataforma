@@ -1,6 +1,8 @@
 package com.example.qrstockmateapp.navigation.logic
 
 import android.content.SharedPreferences
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
@@ -38,7 +40,7 @@ import com.example.qrstockmateapp.ui.theme.splashScreen
 @androidx.annotation.OptIn(androidx.camera.core.ExperimentalGetImage::class)
 @Composable
 fun  Navigation(navController: NavHostController, sharedPreferences: SharedPreferences) {
-    NavHost(navController = navController, startDestination = "home") {
+    NavHost(navController = navController, startDestination = "home",enterTransition = { EnterTransition.None}, exitTransition = { ExitTransition.None}, popEnterTransition = { EnterTransition.None},  popExitTransition = { ExitTransition.None}) {
         composable("home") {
             HomeScreen(navController)
         }

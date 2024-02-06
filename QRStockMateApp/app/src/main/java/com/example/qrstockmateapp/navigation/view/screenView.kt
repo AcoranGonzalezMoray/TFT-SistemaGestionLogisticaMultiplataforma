@@ -166,6 +166,7 @@ fun BottomNavigationScreen(navControllerLogin: NavController,sharedPreferences: 
 
     Scaffold(
         scaffoldState = scaffoldState,
+        backgroundColor = MaterialTheme.colorScheme.background,
         drawerGesturesEnabled = drawerGesturesEnabled ,
         floatingActionButton = {
             if(DataRepository.getUser()?.role == 1 && currentRoute == "routeManagement"){
@@ -319,12 +320,10 @@ fun BottomNavigationScreen(navControllerLogin: NavController,sharedPreferences: 
                     )
                 }
             }else {
-               if(currentRoute != "chat" && currentRoute!="route" && currentRoute !="routeMinus"){
-                   AnimatedOutBottomBar(
-                       screens = ScreenModel().screensInHomeFromBottomNav,
-                       navController = navController
-                   )
-               }
+                AnimatedOutBottomBar(
+                    screens = ScreenModel().screensInHomeFromBottomNav,
+                    navController = navController
+                )
             }
         },
     ) {

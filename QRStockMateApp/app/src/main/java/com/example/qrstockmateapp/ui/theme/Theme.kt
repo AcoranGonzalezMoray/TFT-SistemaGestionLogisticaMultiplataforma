@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+import com.example.qrstockmateapp.R
 
 
 private val DarkColorScheme = darkColorScheme(
@@ -65,9 +66,13 @@ fun QRStockMateAppTheme(
     )
 
     val view = LocalView.current
+    val window = (view.context as Activity).window
+    window.setBackgroundDrawableResource( if (darkThemeOption) R.color.modeDark else R.color.modeWhite )
+
+
+
     if (!view.isInEditMode) {
         SideEffect {
-            val window = (view.context as Activity).window
             window.statusBarColor = if(darkThemeOption) DarkColorScheme.secondaryContainer.toArgb() else LightColorScheme.secondaryContainer.toArgb()
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars =!darkThemeOption
         }

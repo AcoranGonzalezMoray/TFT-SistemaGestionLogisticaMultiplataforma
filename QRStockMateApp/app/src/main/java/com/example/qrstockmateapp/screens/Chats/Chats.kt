@@ -69,7 +69,7 @@ import kotlinx.coroutines.launch
 @OptIn(DelicateCoroutinesApi::class)
 @Composable
 fun ChatsScreen(navController: NavController, sharedPreferences: SharedPreferences) {
-    var employees by remember{ mutableStateOf(DataRepository.getEmployees()!!.filter { user: User -> user.id!= DataRepository.getUser()!!.id  }) }
+    var employees by remember{ mutableStateOf(emptyList<User>()) }
 
 
 

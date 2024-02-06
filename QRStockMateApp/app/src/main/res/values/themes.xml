@@ -3,5 +3,6 @@
 
     <style name="Theme.QRStockMateApp" parent="android:Theme.Material.Light.NoActionBar">
         <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">?attr/appBackgroundColor</item> <!-- Referencia al atributo de color de fondo de la aplicación -->
     </style>
 </resources>

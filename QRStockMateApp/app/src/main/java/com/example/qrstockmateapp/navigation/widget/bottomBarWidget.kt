@@ -80,7 +80,6 @@ fun AnimatedOutBottomBar(
     AnimatedVisibility(
         visible = visible,
         enter = slideInVertically(initialOffsetY = { it }),
-        modifier = Modifier.background(MaterialTheme.colorScheme.secondaryContainer),
         exit = slideOutVertically(targetOffsetY = { it })
     ) {
         ColorButtonNavBar(
