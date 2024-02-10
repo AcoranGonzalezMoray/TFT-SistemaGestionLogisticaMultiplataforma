@@ -66,9 +66,12 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberImagePainter
+import com.example.qrstockmateapp.MainActivity
 import com.example.qrstockmateapp.MainActivity.Companion.KEY_DARK_THEME
 import com.example.qrstockmateapp.MainActivity.Companion.NEW_MESSAGES
 import com.example.qrstockmateapp.R
+import com.example.qrstockmateapp.api.models.Message
+import com.example.qrstockmateapp.api.models.User
 import com.example.qrstockmateapp.api.services.RetrofitInstance
 import com.example.qrstockmateapp.navigation.logic.Navigation
 import com.example.qrstockmateapp.navigation.model.ScreenModel
@@ -122,13 +125,15 @@ fun BottomNavigationScreen(navControllerLogin: NavController,sharedPreferences: 
         // Lanzar una corrutina en el alcance de la pantalla
             coroutineScope.launch(Dispatchers.IO) {
                 while (user!=null){
+                    var m:List<Int>  = emptyList();
                     if(navBackStackEntry?.destination?.route !in excludedRoutes){
                         try {
                             val response = RetrofitInstance.api.getNewMessages("${user.code};${user.id}")
                             if (response.isSuccessful) {
                                 val messages = response.body()
                                 if (messages != null) {
-                                    DataRepository.setNewMessages(messages)
+                                    DataRepository.setNewMessages(messages.size)
+                                    m = messages.map {it.senderContactId}
                                 }else{
                                     DataRepository.setNewMessages(0)
                                 }
@@ -143,6 +148,10 @@ fun BottomNavigationScreen(navControllerLogin: NavController,sharedPreferences: 
                             sharedPreferences.getInt(
                                 NEW_MESSAGES, 0)
                         )
+                        if (new!! <0) new =0
+                        Log.d("PILLADOS", "${m.takeLast(new!!)}")
+                        DataRepository.setListNewMessage(m.takeLast(new!!))
+
                     }
 
                     // Esperar 2 segundos antes de realizar la próxima solicitud
@@ -162,7 +171,22 @@ fun BottomNavigationScreen(navControllerLogin: NavController,sharedPreferences: 
             navController.removeOnDestinationChangedListener(listener)
         }
     }
+    val getMessages: () -> Unit = {
+        GlobalScope.launch(Dispatchers.IO) {
+            val response = RetrofitInstance.api.getMessageByCode(DataRepository.getUser()!!.code)
+            if (response.isSuccessful) {
+                var messages = response.body()
 
+                if (!messages.isNullOrEmpty()) {
+                    DataRepository.setNewMessages(messages.size )
+                    sharedPreferences.edit().putInt(MainActivity.NEW_MESSAGES, messages.size ).apply()
+                }else {
+                    sharedPreferences.edit().putInt(MainActivity.NEW_MESSAGES, 0).apply()
+                    DataRepository.setNewMessages(0)
+                }
+            }
+        }
+    }
 
     Scaffold(
         scaffoldState = scaffoldState,
@@ -262,15 +286,16 @@ fun BottomNavigationScreen(navControllerLogin: NavController,sharedPreferences: 
                                        modifier = Modifier.size(25.dp),
                                        contentDescription = "",
                                    )
-                                   if(new !=null && new!=0){
+                                   if(new !=null && new !=0){
                                        Badge(
-                                           content = { Text(text = "${if(new!! >0)new else 0}", color = Color.White) },
+                                           content = { Text(text = "${new}", color = Color.White) },
                                            modifier = Modifier.offset(x = 12.dp, y = (-8).dp)
                                        )
                                    }
                                }else{
                                    Icon(imageVector = Icons.Filled.Close, contentDescription = null, tint = BlueSystem, modifier = Modifier.clickable {
                                        DataRepository.setCurrentScreenIndex(0)
+                                       getMessages()
                                        navController.navigate("home")
                                    })
                                }
@@ -301,7 +326,7 @@ fun BottomNavigationScreen(navControllerLogin: NavController,sharedPreferences: 
         },
 
         bottomBar = {
-            val excludedRoutes = setOf("addItem","profile", "itemDetails", "chat","splashScreen","addVehicle","updateVehicle", "route", "routeMinus", "addWarehouse", "updateWarehouse", "updateUser", "addRoute", "updateRoute")
+            val excludedRoutes = setOf("addItem","profile", "itemDetails","splashScreen","addVehicle","updateVehicle", "route", "routeMinus", "addWarehouse", "updateWarehouse", "updateUser", "addRoute", "updateRoute")
             val screens = listOf( //Chat
                 ScreenModel.HomeScreens.Message,
                 ScreenModel.HomeScreens.Comunity,
@@ -314,10 +339,17 @@ fun BottomNavigationScreen(navControllerLogin: NavController,sharedPreferences: 
                         navController = navController
                     )
                 }else{
-                    AnimatedBottomBar(
-                        screens = screens,
-                        navController = navController
-                    )
+                    if(currentRoute!= "chat"){
+                        AnimatedBottomBar(
+                            screens = screens,
+                            navController = navController
+                        )
+                    }else{
+                        AnimatedOutBottomBar(
+                            screens = screens,
+                            navController = navController
+                        )
+                    }
                 }
             }else {
                 AnimatedOutBottomBar(

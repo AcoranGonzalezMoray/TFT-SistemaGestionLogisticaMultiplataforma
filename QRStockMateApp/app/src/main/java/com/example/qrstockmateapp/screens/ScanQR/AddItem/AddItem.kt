@@ -143,6 +143,7 @@ fun AddItemScreen(navController: NavController) {
                             }
                         }
                         withContext(Dispatchers.Main) {
+                            DataRepository.setCurrentScreenIndex(0)
                             navController.navigate("home")
                         }
                     }else{
@@ -173,8 +174,7 @@ fun AddItemScreen(navController: NavController) {
                 .fillMaxWidth()
                 .wrapContentSize(Alignment.Center)
         ) {
-            var name by remember { mutableStateOf(item?.name) }
-            Text(text =  "Name: "+name.toString(),
+            Text(text = "Name: $name",
                 fontSize = 20.sp,
                 color = MaterialTheme.colorScheme.primary,
                 textAlign = TextAlign.Center,
@@ -253,8 +253,8 @@ fun AddItemScreen(navController: NavController) {
 
             TextField(
                 value = weight,
-                label = { Text("Weight Per Unit : ", color = MaterialTheme.colorScheme.outlineVariant) },
-                onValueChange = { weight = it+" Kg" },
+                label = { Text("Weight Per Unit (Kg) : ", color = MaterialTheme.colorScheme.outlineVariant) },
+                onValueChange = { weight = it},
                 colors= customTextFieldColors,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -314,7 +314,7 @@ fun AddItemScreen(navController: NavController) {
                                     shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
 
                                 )) {
-                                Text("Name : ${warehouse.name} with Id : ${warehouse.id}", color = MaterialTheme.colorScheme.primary)
+                                Text("Name : ${warehouse.name} Location: ${warehouse.location}", color = MaterialTheme.colorScheme.primary)
                             }
                         }
                     }

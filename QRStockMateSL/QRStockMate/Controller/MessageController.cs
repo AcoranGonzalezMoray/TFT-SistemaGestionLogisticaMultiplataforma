@@ -193,7 +193,7 @@ namespace QRStockMate.Controller
 
 
 		[HttpGet("NewMessage/{format}")]
-		public async Task<ActionResult<int>> GetNewMessage(string format)
+		public async Task<ActionResult<List<Message>>> GetNewMessage(string format)
 		{
 			try
 			{
@@ -209,7 +209,7 @@ namespace QRStockMate.Controller
 
 
 
-				return Ok(messagesToMe.Count); //200
+				return Ok(messagesToMe); //200
 			}
 			catch (Exception ex)
 			{

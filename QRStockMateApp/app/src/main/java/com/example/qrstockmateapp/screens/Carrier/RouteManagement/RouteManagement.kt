@@ -82,6 +82,7 @@ import com.example.qrstockmateapp.api.services.RetrofitInstance
 import com.example.qrstockmateapp.navigation.repository.DataRepository
 import com.example.qrstockmateapp.screens.Search.SortOrder
 import com.example.qrstockmateapp.screens.Search.StateFilter
+import com.example.qrstockmateapp.ui.theme.BlueSystem
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -681,7 +682,7 @@ fun DatePickerSample(onDateSelected: (Triple<Int, Int, Int>) -> Unit, onClose: (
             modifier = Modifier
                 .fillMaxWidth()
                 .heightIn(0.05f.dp)
-                .padding(16.dp),
+                .padding(horizontal = 32.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             IconButton(onClick = onReset) {
@@ -702,7 +703,9 @@ fun DatePickerSample(onDateSelected: (Triple<Int, Int, Int>) -> Unit, onClose: (
             DatePicker(datePickerState = datePickerState, modifier = Modifier.weight(1f),
                 colors = DatePickerDefaults.colors(
                     selectedDayContainerColor = Color(0xff5a79ba),
-                    disabledSelectedDayContainerColor = Color(0xff5a79ba)
+                    disabledSelectedDayContainerColor = Color(0xff5a79ba),
+                    dayContentColor = BlueSystem,
+                    weekdayContentColor = MaterialTheme.colorScheme.onTertiary
                 )
             )
         }

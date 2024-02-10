@@ -583,7 +583,7 @@ fun AddRouteScreen(navController: NavController){
                                                 shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
 
                                             )) {
-                                            Text( "Warehouse:  ${waStart!!.name} Latitude: ${waStart.latitude} Longitude: ${waStart.longitude}", color = MaterialTheme.colorScheme.primary  )
+                                            Text( "Warehouse:  ${waStart.name} Location: ${waStart.location}", color = MaterialTheme.colorScheme.primary  )
                                         }
                                     }
                                 }
@@ -710,7 +710,7 @@ fun AddRouteScreen(navController: NavController){
                                                shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
 
                                            )) {
-                                           Text( "Warehouse:  ${waEnd!!.name} Latitude: ${waEnd.latitude} Longitude: ${waEnd.longitude}", color = MaterialTheme.colorScheme.primary  )
+                                           Text( "Warehouse:  ${waEnd.name} Location: ${waEnd.location}", color = MaterialTheme.colorScheme.primary  )
                                        }
                                    }
                                }

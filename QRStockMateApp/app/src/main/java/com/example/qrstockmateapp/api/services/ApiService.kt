@@ -73,7 +73,7 @@ interface ApiService {
     @GET("Message/NewMessage/{format}")
     suspend fun getNewMessages(
         @Path("format") format: String,
-    ): Response<Int>
+    ): Response<List<Message>>
 
     @HTTP(method = "DELETE", path = "Message/DeleteConversation", hasBody = true) //Para un Delete con Body hay que hacerlo asi
     suspend fun deleteConversation(

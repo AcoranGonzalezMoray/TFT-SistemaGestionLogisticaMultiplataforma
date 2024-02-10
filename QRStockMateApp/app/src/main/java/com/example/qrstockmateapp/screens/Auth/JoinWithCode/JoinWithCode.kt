@@ -35,11 +35,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -64,6 +68,8 @@ fun JoinWithCodeScreen(navController: NavHostController) {
     var passwordMatches by remember { mutableStateOf(true) }
     var phone by remember { mutableStateOf("") }
     var code by remember { mutableStateOf("") }
+    var codeText by remember { mutableStateOf(TextFieldValue()) }
+
     var start by remember {
         mutableStateOf(false)
     }
@@ -147,6 +153,7 @@ fun JoinWithCodeScreen(navController: NavHostController) {
 
 
     }
+    var newCursorPosition by remember { mutableStateOf(0) }
 
     Column(
         modifier = Modifier.background(MaterialTheme.colorScheme.background),
@@ -285,17 +292,24 @@ fun JoinWithCodeScreen(navController: NavHostController) {
             Spacer(modifier = Modifier.height(16.dp))
 
             TextField(
-                value = code,
+                value = codeText,
                 shape = RoundedCornerShape(8.dp),
                 isError = isError,
-                onValueChange = { it ->
-                    if (it.length <= 7 && it.matches(Regex("[A-Za-z0-9-]*"))) {
-                        val sanitized = it.filter { it.isLetterOrDigit() }.uppercase()
-                        code = if (sanitized.length > 3) {
-                            "${sanitized.substring(0, 3)}-${sanitized.substring(3)}"
+                onValueChange = { newValue ->
+                    if (newValue.text.length <= 7 && newValue.text.matches(Regex("[A-Za-z0-9-]*"))) {
+                        val sanitized = newValue.text.filter { it.isLetterOrDigit() }.uppercase()
+                        val newCode = if (sanitized.length > 3) {
+                            val modifiedSanitized = buildString {
+                                append(sanitized.substring(0, 3))
+                                append("-")
+                                append(sanitized.substring(3))
+                            }
+                            TextFieldValue(text = modifiedSanitized, selection = TextRange(modifiedSanitized.length))
                         } else {
-                            sanitized
+                            TextFieldValue(text = sanitized, selection = TextRange(sanitized.length))
                         }
+                        codeText = newCode
+                        code = codeText.text
                     }
                 },
                 label = { Text("Code", color = MaterialTheme.colorScheme.outlineVariant) },
@@ -309,6 +323,7 @@ fun JoinWithCodeScreen(navController: NavHostController) {
                 ),
                 colors = customTextFieldColors
             )
+
 
             Spacer(modifier = Modifier.height(10.dp))
             Row(

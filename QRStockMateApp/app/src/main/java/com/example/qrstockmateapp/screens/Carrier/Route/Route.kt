@@ -623,7 +623,7 @@ fun RouteScreen(navController: NavController,) {
                                    // Acciones cuando el Bottom Sheet no está expandido
                                    userRoutePoints =  userRoutePoints.dropLast(1)
                                },
-                               colors = ButtonDefaults.buttonColors(Color.White),
+                               colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.secondaryContainer),
                                modifier = Modifier.padding(8.dp)
                            ) {
                                //Text("Undo", color = Color.White)
@@ -637,7 +637,7 @@ fun RouteScreen(navController: NavController,) {
                                    if(!userRoutePoints.isEmpty())userRoutePoints = userRoutePoints + endPoint
                                    saveRoute()
                                },
-                               colors = ButtonDefaults.buttonColors(Color.White),
+                               colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.secondaryContainer),
                                modifier = Modifier.padding(8.dp)
                            ) {
                                //Text("Finish", color = Color.White)
@@ -649,7 +649,7 @@ fun RouteScreen(navController: NavController,) {
                                    // Acciones cuando el Bottom Sheet no está expandido
                                          userRoutePoints = emptyList()
                                },
-                               colors = ButtonDefaults.buttonColors(Color.White),
+                               colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.secondaryContainer),
                                modifier = Modifier.padding(8.dp)
                            ) {
                                //Text("Clear", color = Color.White)
@@ -659,7 +659,7 @@ fun RouteScreen(navController: NavController,) {
                            // Botón para abrir/cerrar el menú desplegable
                            Button(
                                onClick = { isDropdownMenuExpanded = !isDropdownMenuExpanded },
-                               colors = ButtonDefaults.buttonColors(Color.White),
+                               colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.secondaryContainer),
                                modifier = Modifier
                                    .padding(top = 12.dp, start = 8.dp)
                                    .height(40.dp)
@@ -1039,73 +1039,56 @@ fun BottomSheetContent(
 
                     ) {
 
-                    Row(
+                    Column(
                         modifier = Modifier
                             .fillMaxWidth()
+                            .height(150.dp)
                             .background(MaterialTheme.colorScheme.onSurface)
                             .padding(1.dp),
-                        verticalAlignment = Alignment.CenterVertically
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Icon(imageVector = Icons.Filled.LocationOn, contentDescription = null, tint = Color.Green )
                         Spacer(modifier = Modifier.width(3.dp))
-                        Column {
-                            // Nombre del almacén
-                            androidx.compose.material.Text(
-                                buildAnnotatedString {
-                                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                                        append("Start:")
-                                    }
-                                    append(" ${start.name}")
-                                },
-                                fontSize = 12.sp,
-                                modifier = Modifier.padding(bottom = 4.dp),
-                                color = MaterialTheme.colorScheme.primary
-                            )
 
-                            // Ubicación del almacén
-                            androidx.compose.material.Text(
-                                buildAnnotatedString {
-                                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                                        append("Location:")
-                                    }
-                                    append(" ${start.location}")
-                                },
-                                fontSize = 12.sp,
-                                modifier = Modifier.padding(bottom = 4.dp),
-                                color = MaterialTheme.colorScheme.primary
+                        if (start.url.isNullOrBlank()) {
+                            Image(
+                                painter = painterResource(id = R.drawable.warehouse),
+                                contentDescription = "Default User Image",
+                                modifier = Modifier
+                                    .size(60.dp)
                             )
-
-                            // Organización del almacén
-                            androidx.compose.material.Text(
-                                buildAnnotatedString {
-                                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                                        append("Organization:")
-                                    }
-                                    append(" ${start.organization}")
-                                },
-                                fontSize = 12.sp,
-                                modifier = Modifier.padding(bottom = 4.dp),
-                                color = MaterialTheme.colorScheme.primary
+                        }else{
+                            val painter = rememberImagePainter(
+                                data = start.url,
+                                builder = {
+                                    crossfade(true)
+                                    placeholder(R.drawable.loading)
+                                }
                             )
-
-                            // Administrador
-                            androidx.compose.material.Text(
-                                buildAnnotatedString {
-                                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                                        append("Administrator:")
-                                    }
-                                    append(
-                                        " ${
-                                            DataRepository.getEmployees()
-                                                ?.find { user -> user.id == start.idAdministrator }?.name
-                                        }"
-                                    )
-                                },
-                                fontSize = 12.sp,
-                                modifier = Modifier.padding(bottom = 4.dp),
-                                color = MaterialTheme.colorScheme.primary
+                            Image(
+                                painter = painter,
+                                contentDescription = "User Image",
+                                modifier = Modifier
+                                    .size(60.dp)
+                                    .clip(CircleShape),
+                                contentScale = ContentScale.Crop
                             )
                         }
+
+                        // Ubicación del almacén
+                        androidx.compose.material.Text(
+                            buildAnnotatedString {
+                                withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                                    append("Location:")
+                                }
+                                append(" ${start.location}")
+                            },
+                            fontSize = 12.sp,
+                            modifier = Modifier.padding(4.dp),
+                            color = MaterialTheme.colorScheme.primary
+                        )
+
+
                     }
                 }
             }
@@ -1127,73 +1110,56 @@ fun BottomSheetContent(
 
                     ) {
 
-                    Row(
+                    Column(
                         modifier = Modifier
                             .fillMaxWidth()
+                            .height(150.dp)
                             .background(MaterialTheme.colorScheme.onSurface)
                             .padding(1.dp),
-                        verticalAlignment = Alignment.CenterVertically
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Icon(imageVector = Icons.Filled.LocationOn, contentDescription = null, tint = Color.Red )
                         Spacer(modifier = Modifier.width(3.dp))
-                        Column {
-                            // Nombre del almacén
-                            androidx.compose.material.Text(
-                                buildAnnotatedString {
-                                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                                        append("End:")
-                                    }
-                                    append(" ${end.name}")
-                                },
-                                fontSize = 12.sp,
-                                modifier = Modifier.padding(bottom = 4.dp),
-                                color = MaterialTheme.colorScheme.primary
-                            )
 
-                            // Ubicación del almacén
-                            androidx.compose.material.Text(
-                                buildAnnotatedString {
-                                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                                        append("Location:")
-                                    }
-                                    append(" ${end.location}")
-                                },
-                                fontSize = 12.sp,
-                                modifier = Modifier.padding(bottom = 4.dp),
-                                color = MaterialTheme.colorScheme.primary
+                        if (end.url.isNullOrBlank()) {
+                            Image(
+                                painter = painterResource(id = R.drawable.warehouse),
+                                contentDescription = "Default User Image",
+                                modifier = Modifier
+                                    .size(60.dp)
                             )
-
-                            // Organización del almacén
-                            androidx.compose.material.Text(
-                                buildAnnotatedString {
-                                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                                        append("Organization:")
-                                    }
-                                    append(" ${end.organization}")
-                                },
-                                fontSize = 12.sp,
-                                modifier = Modifier.padding(bottom = 4.dp),
-                                color = MaterialTheme.colorScheme.primary
+                        }else{
+                            val painter = rememberImagePainter(
+                                data = end.url,
+                                builder = {
+                                    crossfade(true)
+                                    placeholder(R.drawable.loading)
+                                }
                             )
-
-                            // Administrador
-                            androidx.compose.material.Text(
-                                buildAnnotatedString {
-                                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                                        append("Administrator:")
-                                    }
-                                    append(
-                                        " ${
-                                            DataRepository.getEmployees()
-                                                ?.find { user -> user.id == end.idAdministrator }?.name
-                                        }"
-                                    )
-                                },
-                                fontSize = 12.sp,
-                                modifier = Modifier.padding(bottom = 4.dp),
-                                color = MaterialTheme.colorScheme.primary
+                            Image(
+                                painter = painter,
+                                contentDescription = "User Image",
+                                modifier = Modifier
+                                    .size(60.dp)
+                                    .clip(CircleShape),
+                                contentScale = ContentScale.Crop
                             )
                         }
+
+                        // Ubicación del almacén
+                        androidx.compose.material.Text(
+                            buildAnnotatedString {
+                                withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                                    append("Location:")
+                                }
+                                append(" ${end.location}")
+                            },
+                            fontSize = 12.sp,
+                            modifier = Modifier.padding(4.dp),
+                            color = MaterialTheme.colorScheme.primary
+                        )
+
+
                     }
                 }
             }

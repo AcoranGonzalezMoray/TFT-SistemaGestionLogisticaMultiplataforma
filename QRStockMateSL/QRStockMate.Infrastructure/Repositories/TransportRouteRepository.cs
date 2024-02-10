@@ -36,10 +36,14 @@ namespace QRStockMate.Infrastructure.Repositories
 			var listItem = route.Palets.Replace("[", "").Replace("]", "").Replace("{", "").Replace("}", "").Split(";").ToList();
 			Console.WriteLine("Lista de items:");
 
-			foreach (var item in listItem)
+			for (int i = 0; i < listItem.Count; i++)
 			{
-				Console.WriteLine($"{item}");
+				var item = listItem[i];
+				Console.WriteLine($"Índice: {i}, Elemento: {item}");
+				listItem[i] = item.Replace(",", "").Trim();
+				Console.WriteLine($"Elemento actualizado: {listItem[i]}");
 			}
+
 
 			await MoveItem(listItem,int.Parse(route.StartLocation), int.Parse(route.EndLocation) );
 

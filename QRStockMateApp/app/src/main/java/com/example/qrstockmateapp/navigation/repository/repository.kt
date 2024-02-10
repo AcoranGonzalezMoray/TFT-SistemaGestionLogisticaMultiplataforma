@@ -26,9 +26,18 @@ object DataRepository {
     private var newMessages: Int? = null
     private var messages: List<Message>? = null
     private var currentScreenIndex: Int = 0
-
+    private var listNewMessage: List<Int>? = null
     private var onHideTextField : Boolean = false
 
+
+
+    fun getListNewMessage():List<Int>?{
+        return listNewMessage
+    }
+
+    fun setListNewMessage(list:List<Int>){
+        listNewMessage = list
+    }
 
     fun getOnHide():Boolean{
         return onHideTextField

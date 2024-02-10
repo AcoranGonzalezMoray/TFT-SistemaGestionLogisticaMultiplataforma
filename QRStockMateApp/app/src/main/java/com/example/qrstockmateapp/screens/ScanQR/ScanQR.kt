@@ -71,7 +71,7 @@ fun ScanScreen(navController: NavController) {
                                 if(user?.role!=3){
                                     addItem(qrCodeValue)
                                     navController.navigate("addItem")
-                                    Toast.makeText(context, "QR Code found: $qrCodeValue", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(context, "QR Code found: ${qrCodeValue.split(';')[1]}", Toast.LENGTH_SHORT).show()
                                 }else{
                                     Toast.makeText(context, "you do not have permission to scan", Toast.LENGTH_SHORT).show()
                                 }
