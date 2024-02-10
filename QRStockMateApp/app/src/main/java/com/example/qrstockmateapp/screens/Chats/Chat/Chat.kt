@@ -18,6 +18,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -37,6 +38,7 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.AlertDialog
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.RadioButton
 import androidx.compose.material.RadioButtonDefaults
@@ -147,7 +149,6 @@ fun ChatScreen(navController: NavController, sharedPreferences: SharedPreference
     val progress by animateLottieCompositionAsState(composition = composition, iterations = LottieConstants.IterateForever, speed = 1f)
 
 
-
     val options = listOf(
         OptionSize("Small",  12, 0),
         OptionSize("Medium",  17, 1),
@@ -159,7 +160,9 @@ fun ChatScreen(navController: NavController, sharedPreferences: SharedPreference
     // Variable para rastrear si el botón de grabación está presionado
     var isRecording by remember { mutableStateOf(false) }
     var mediaRecorder: MediaRecorder? = null
-
+    var isloadScreen by remember {
+        mutableStateOf(true)
+    }
     var isloading by remember{ mutableStateOf(false) }
 
     var current by remember{ mutableStateOf(true) }
@@ -527,291 +530,311 @@ fun ChatScreen(navController: NavController, sharedPreferences: SharedPreference
     }
 
     LaunchedEffect(Unit){
+        delay(1000)
+        isloadScreen = false
         goBottom()
         getMessages()
     }
 
     var showDialog by remember { mutableStateOf(false) }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-    ) {
-        if (showDialog) {
-            AlertDialog(
-                backgroundColor = MaterialTheme.colorScheme.background,
-                onDismissRequest = {
-                    // Handle dismissal if needed
-                    showDialog = false
-                },
-                title = {
-                    androidx.compose.material.Text(
-                        text = "Font Size Settings",
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                },
-                text = {
-                    FontSelectionBox(selectedOption = selectedOption) {
-                        selectedOption = it
-                    }
-                },
-                confirmButton = {
-                    ElevatedButton(
-                        onClick = {
-                            showDialog = false
-                            sharedPreferences.edit().putInt(MainActivity.FONT_SIZE_CHAT, selectedOption!!.pos).apply()
-                        },
-                        colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
-                            containerColor = Color(0xff5a79ba)
-                        ),
-                        elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
-                            defaultElevation = 5.dp
-                        )
-                    ){
-                        androidx.compose.material.Text("Confirm", color = Color.White)
-                    }
-                },
-                dismissButton = {
-                    ElevatedButton(
-                        onClick = {
-                            showDialog = false
-                        },
-                        colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
-                            containerColor = MaterialTheme.colorScheme.secondaryContainer
-                        ),
-                        elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
-                            defaultElevation = 5.dp
-                        )
-                    ){
-                        androidx.compose.material.Text("Cancel", color = Color(0xff5a79ba))
-                    }
-                }
+    if (isloading){
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+        ) {
+            // Muestra el círculo de carga
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .size(50.dp)
+                    .align(Alignment.Center),
+                color = Color.LightGray,
+                backgroundColor = BlueSystem
             )
         }
-        TopAppBar(
-            navigationIcon = {
-                // Puedes personalizar el ícono de navegación según tus necesidades
-                IconButton(onClick = { navController.navigate("chats"); current = false;DataRepository.setCurrentScreenIndex(0) }) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = BlueSystem)
-                }
-            },
-            title = {
-                // Puedes agregar más elementos como la imagen de perfil y el nombre del usuario
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    if (DataRepository.getUserPlus()?.url.isNullOrBlank()) {
-                        // Si la URL es nula o vacía, mostrar la imagen por defecto
-                        Image(
-                            painter = painterResource(id = R.drawable.user), // Reemplazar con tu recurso de imagen
-                            contentDescription = null,
-                            modifier = Modifier
-                                .size(40.dp)
-                                .clip(CircleShape)
-                        )
-                    } else {
-
-                        val painter = rememberImagePainter(
-                            data = DataRepository.getUserPlus()?.url,
-                            builder = {
-                                crossfade(true)
-                                placeholder(R.drawable.loading)
-                            }
-                        )
-                        Image(
-                            painter = painter, // Reemplazar con tu recurso de imagen
-                            contentDescription = null,
-                            modifier = Modifier
-                                .size(40.dp)
-                                .clip(CircleShape),
-                            contentScale = ContentScale.FillBounds
-                        )
-                    }
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = DataRepository.getUserPlus()!!.name, // Reemplazar con el nombre del usuario
-                        style = MaterialTheme.typography.headlineSmall,
-                        color = BlueSystem
-                    )
-                }
-            },
-            actions = {
-
-                IconButton(onClick = {
-                    if (ContextCompat.checkSelfPermission(
-                            context,
-                            Manifest.permission.CALL_PHONE
-                        ) != PackageManager.PERMISSION_GRANTED
-                    ) {
-                        ActivityCompat.requestPermissions(
-                            context as Activity,
-                            arrayOf(Manifest.permission.CALL_PHONE),
-                            REQUEST_RECORD_AUDIO_PERMISSION
-                        )
-                    }else{
-                        val callIntent = Intent(Intent.ACTION_CALL, Uri.parse("tel:600622680"))
-                        context.startActivity(callIntent)
-                    }
-
-                }) {
-                    Icon(Icons.Default.PhoneEnabled, contentDescription = "Settings", tint = BlueSystem)
-                }
-                // Puedes agregar más acciones según tus necesidades
-                IconButton(onClick = { showDialog = true}) {
-                    Icon(Icons.Default.Settings, contentDescription = "Settings", tint = BlueSystem)
-                }
-            },
-            backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
-            elevation = 4.dp
-        )
-
-
-        LazyColumn(
-            state = updatedLazyListState.value,
+    }else{
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .weight(0.6f)
-                .padding(horizontal = 10.dp)
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
         ) {
-            items(messages) { message ->
-                MessageItem(message, selectedOption)
+            if (showDialog) {
+                AlertDialog(
+                    backgroundColor = MaterialTheme.colorScheme.background,
+                    onDismissRequest = {
+                        // Handle dismissal if needed
+                        showDialog = false
+                    },
+                    title = {
+                        androidx.compose.material.Text(
+                            text = "Font Size Settings",
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    },
+                    text = {
+                        FontSelectionBox(selectedOption = selectedOption) {
+                            selectedOption = it
+                        }
+                    },
+                    confirmButton = {
+                        ElevatedButton(
+                            onClick = {
+                                showDialog = false
+                                sharedPreferences.edit().putInt(MainActivity.FONT_SIZE_CHAT, selectedOption!!.pos).apply()
+                            },
+                            colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                                containerColor = Color(0xff5a79ba)
+                            ),
+                            elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                                defaultElevation = 5.dp
+                            )
+                        ){
+                            androidx.compose.material.Text("Confirm", color = Color.White)
+                        }
+                    },
+                    dismissButton = {
+                        ElevatedButton(
+                            onClick = {
+                                showDialog = false
+                            },
+                            colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                                containerColor = MaterialTheme.colorScheme.secondaryContainer
+                            ),
+                            elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                                defaultElevation = 5.dp
+                            )
+                        ){
+                            androidx.compose.material.Text("Cancel", color = Color(0xff5a79ba))
+                        }
+                    }
+                )
             }
-        }
+            TopAppBar(
+                navigationIcon = {
+                    // Puedes personalizar el ícono de navegación según tus necesidades
+                    IconButton(onClick = { navController.navigate("chats"); current = false;DataRepository.setCurrentScreenIndex(0) }) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = BlueSystem)
+                    }
+                },
+                title = {
+                    // Puedes agregar más elementos como la imagen de perfil y el nombre del usuario
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        if (DataRepository.getUserPlus()?.url.isNullOrBlank()) {
+                            // Si la URL es nula o vacía, mostrar la imagen por defecto
+                            Image(
+                                painter = painterResource(id = R.drawable.user), // Reemplazar con tu recurso de imagen
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .size(40.dp)
+                                    .clip(CircleShape)
+                            )
+                        } else {
 
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            // Input section
-            Card(
+                            val painter = rememberImagePainter(
+                                data = DataRepository.getUserPlus()?.url,
+                                builder = {
+                                    crossfade(true)
+                                    placeholder(R.drawable.loading)
+                                }
+                            )
+                            Image(
+                                painter = painter, // Reemplazar con tu recurso de imagen
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .size(40.dp)
+                                    .clip(CircleShape),
+                                contentScale = ContentScale.FillBounds
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = DataRepository.getUserPlus()!!.name, // Reemplazar con el nombre del usuario
+                            style = MaterialTheme.typography.headlineSmall,
+                            color = BlueSystem
+                        )
+                    }
+                },
+                actions = {
+
+                    IconButton(onClick = {
+                        if (ContextCompat.checkSelfPermission(
+                                context,
+                                Manifest.permission.CALL_PHONE
+                            ) != PackageManager.PERMISSION_GRANTED
+                        ) {
+                            ActivityCompat.requestPermissions(
+                                context as Activity,
+                                arrayOf(Manifest.permission.CALL_PHONE),
+                                REQUEST_RECORD_AUDIO_PERMISSION
+                            )
+                        }else{
+                            val callIntent = Intent(Intent.ACTION_CALL, Uri.parse("tel:600622680"))
+                            context.startActivity(callIntent)
+                        }
+
+                    }) {
+                        Icon(Icons.Default.PhoneEnabled, contentDescription = "Settings", tint = BlueSystem)
+                    }
+                    // Puedes agregar más acciones según tus necesidades
+                    IconButton(onClick = { showDialog = true}) {
+                        Icon(Icons.Default.Settings, contentDescription = "Settings", tint = BlueSystem)
+                    }
+                },
+                backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
+                elevation = 4.dp
+            )
+
+
+            LazyColumn(
+                state = updatedLazyListState.value,
                 modifier = Modifier
-                    .weight(8f)
-                    .padding(start = 12.dp, bottom = 12.dp, top = 5.dp),
-                elevation = CardDefaults.cardElevation(
-                    defaultElevation = 10.dp
-                ),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                ),
+                    .fillMaxWidth()
+                    .weight(0.6f)
+                    .padding(horizontal = 10.dp)
             ) {
-                Row(
-                    modifier = Modifier.padding(5.dp),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
+                items(messages) { message ->
+                    MessageItem(message, selectedOption)
+                }
+            }
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                // Input section
+                Card(
+                    modifier = Modifier
+                        .weight(8f)
+                        .padding(start = 12.dp, bottom = 12.dp, top = 5.dp),
+                    elevation = CardDefaults.cardElevation(
+                        defaultElevation = 10.dp
+                    ),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                    ),
                 ) {
-                    if(!isRecording){
-                        if(!isloading){
-                            BasicTextField(
-                                value = newMessage,
-                                onValueChange = {
-                                    newMessage = it
-                                },
-                                textStyle = LocalTextStyle.current.copy(color = MaterialTheme.colorScheme.primary),
-                                singleLine = false,
-                                cursorBrush = SolidColor(BlueSystem), // Cambiamos el color del cursor a rojo
-                                keyboardOptions = KeyboardOptions(
-                                    imeAction = ImeAction.Send,
-                                    keyboardType = KeyboardType.Text
-                                ),
-                                keyboardActions = KeyboardActions(
-                                    onSend = {
-                                        //keyboardController?.hide()
+                    Row(
+                        modifier = Modifier.padding(5.dp),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        if(!isRecording){
+                            if(!isloading){
+                                BasicTextField(
+                                    value = newMessage,
+                                    onValueChange = {
+                                        newMessage = it
+                                    },
+                                    textStyle = LocalTextStyle.current.copy(color = MaterialTheme.colorScheme.primary),
+                                    singleLine = false,
+                                    cursorBrush = SolidColor(BlueSystem), // Cambiamos el color del cursor a rojo
+                                    keyboardOptions = KeyboardOptions(
+                                        imeAction = ImeAction.Send,
+                                        keyboardType = KeyboardType.Text
+                                    ),
+                                    keyboardActions = KeyboardActions(
+                                        onSend = {
+                                            //keyboardController?.hide()
+                                            if (newMessage.text.isNotEmpty()) {
+                                                postMessage(newMessage.text)
+                                                newMessage = TextFieldValue()
+                                            }
+
+                                        }
+                                    ),
+                                    modifier = Modifier
+                                        .weight(7f)
+                                        .padding(end = 8.dp)
+                                )
+
+                                Row(
+                                    modifier = Modifier.weight(3f),
+                                    horizontalArrangement = Arrangement.End,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    IconButton(onClick = { getContent.launch("application/pdf")}) {
+                                        Icon(imageVector = Icons.Filled.AttachFile, contentDescription = null, tint =  MaterialTheme.colorScheme.outlineVariant )
+                                    }
+                                    IconButton(onClick = { openCamera() }) {
+                                        Icon(imageVector = Icons.Filled.CameraAlt, contentDescription = null, tint = MaterialTheme.colorScheme.outlineVariant  )
+                                    }
+                                }
+                            }else{
+                                LinearProgressIndicator(
+                                    modifier = Modifier
+                                        .fillMaxWidth() ,
+                                    color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.9f), // Ajusta el nivel de opacidad aquí
+                                    trackColor = BlueSystem.copy(alpha = 0.1f), // Ajusta el nivel de opacidad aquí
+                                )
+                                IconButton(onClick = { /*TODO*/ }) {
+                                    Icon(imageVector = Icons.Filled.CameraAlt, contentDescription = null, tint = MaterialTheme.colorScheme.secondaryContainer )
+                                }
+                            }
+                        }else{
+                            LottieAnimation(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .weight(0.8f),
+                                composition = composition,
+                                progress = { progress }
+                            )
+                        }
+                    }
+                }
+                Card(
+                    modifier = Modifier
+                        .weight(2f)
+                        .padding(start = 12.dp, bottom = 12.dp, top = 5.dp, end = 12.dp),
+                    elevation = CardDefaults.cardElevation(
+                        defaultElevation = 10.dp
+                    ),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                    ),
+                ) {
+                    Row(
+                        modifier = Modifier.padding(5.dp),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        if (newMessage.text.isNotEmpty()) {
+                            IconButton(
+                                onClick = {
+                                    //keyboardController?.hide()
+                                    if (newMessage.text.isNotEmpty()) {
                                         if (newMessage.text.isNotEmpty()) {
                                             postMessage(newMessage.text)
                                             newMessage = TextFieldValue()
                                         }
-
                                     }
-                                ),
-                                modifier = Modifier
-                                    .weight(7f)
-                                    .padding(end = 8.dp)
-                            )
-
-                            Row(
-                                modifier = Modifier.weight(3f),
-                                horizontalArrangement = Arrangement.End,
-                                verticalAlignment = Alignment.CenterVertically
+                                }
                             ) {
-                                IconButton(onClick = { getContent.launch("application/pdf")}) {
-                                    Icon(imageVector = Icons.Filled.AttachFile, contentDescription = null, tint =  MaterialTheme.colorScheme.outlineVariant )
-                                }
-                                IconButton(onClick = { openCamera() }) {
-                                    Icon(imageVector = Icons.Filled.CameraAlt, contentDescription = null, tint = MaterialTheme.colorScheme.outlineVariant  )
-                                }
+                                Icon(imageVector = Icons.AutoMirrored.Filled.Send, contentDescription = "Send", tint = BlueSystem)
                             }
                         }else{
-                            LinearProgressIndicator(
-                                modifier = Modifier
-                                    .fillMaxWidth() ,
-                                color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.9f), // Ajusta el nivel de opacidad aquí
-                                trackColor = BlueSystem.copy(alpha = 0.1f), // Ajusta el nivel de opacidad aquí
-                            )
-                            IconButton(onClick = { /*TODO*/ }) {
-                                Icon(imageVector = Icons.Filled.CameraAlt, contentDescription = null, tint = MaterialTheme.colorScheme.secondaryContainer )
-                            }
-                        }
-                    }else{
-                        LottieAnimation(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .weight(0.8f),
-                            composition = composition,
-                            progress = { progress }
-                        )
-                    }
-                }
-            }
-            Card(
-                modifier = Modifier
-                    .weight(2f)
-                    .padding(start = 12.dp, bottom = 12.dp, top = 5.dp, end = 12.dp),
-                elevation = CardDefaults.cardElevation(
-                    defaultElevation = 10.dp
-                ),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                ),
-            ) {
-                Row(
-                    modifier = Modifier.padding(5.dp),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    if (newMessage.text.isNotEmpty()) {
-                        IconButton(
-                            onClick = {
-                                //keyboardController?.hide()
-                                if (newMessage.text.isNotEmpty()) {
-                                    if (newMessage.text.isNotEmpty()) {
-                                        postMessage(newMessage.text)
-                                        newMessage = TextFieldValue()
-                                    }
+                            IconButton(
+                                onClick = {
+                                    if(!isRecording) startRecording()
+                                    else stopRecording()
                                 }
+                            ) {
+                                if(!isRecording) Icon(imageVector = Icons.Outlined.MicNone, contentDescription = "Send", tint = BlueSystem)
+                                else  Icon(imageVector = Icons.Filled.Mic, contentDescription = "Send", tint = BlueSystem)
                             }
-                        ) {
-                            Icon(imageVector = Icons.AutoMirrored.Filled.Send, contentDescription = "Send", tint = BlueSystem)
-                        }
-                    }else{
-                        IconButton(
-                            onClick = {
-                                if(!isRecording) startRecording()
-                                else stopRecording()
-                            }
-                        ) {
-                            if(!isRecording) Icon(imageVector = Icons.Outlined.MicNone, contentDescription = "Send", tint = BlueSystem)
-                            else  Icon(imageVector = Icons.Filled.Mic, contentDescription = "Send", tint = BlueSystem)
                         }
                     }
+
                 }
-
             }
+
+
         }
-
-
     }
+
 }
 
 @Composable
