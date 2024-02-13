@@ -1,5 +1,5 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
-import { User } from '../interfaces/user';
+import { Data } from '../interfaces/data';
 import { UserService } from '../services/user.service';
 import { GridItemServiceService } from '../services/grid-item-service.service';
 import { Dashboard } from '../interfaces/dashboard';
@@ -12,7 +12,7 @@ import { Router } from '@angular/router';
 export class DashboardsComponent {
 
 
-  userDashboard: User| undefined;
+  userDashboard: Data| undefined;
   selectedDashboard: any; // Variable para almacenar el dashboard seleccionado
   @ViewChild('parentUl') parentUl: ElementRef | undefined;
 

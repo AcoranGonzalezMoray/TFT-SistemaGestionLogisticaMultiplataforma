@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { User } from '../interfaces/user';
+import { Data } from '../interfaces/data';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable({
@@ -19,19 +19,19 @@ export class UserService {
     }
   }
 
-  getUserDashboard(): Observable<User> {
+  getUserDashboard(): Observable<Data> {
     const storedUser = localStorage.getItem(this.jsonKey);
     if (storedUser) {
       return of(JSON.parse(storedUser));
     }
-    return this.http.get<User>(this.jsonFilePath);
+    return this.http.get<Data>(this.jsonFilePath);
   }
 
-  setUserDashboard(updatedUser: User): void {
+  setUserDashboard(updatedUser: Data): void {
     localStorage.setItem(this.jsonKey, JSON.stringify(updatedUser));
   }
 
-  getUserDashboardLocal(): Observable<User> {
-    return this.http.get<User>(this.jsonFilePath);
+  getUserDashboardLocal(): Observable<Data> {
+    return this.http.get<Data>(this.jsonFilePath);
   }
 }

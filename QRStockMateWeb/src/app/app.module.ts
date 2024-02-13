@@ -12,6 +12,16 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { HttpClientModule } from  '@angular/common/http';
 import { NgxEchartsModule } from 'ngx-echarts';
+import { UserPanelComponent } from './user-panel/user-panel.component';
+import { CompanyPanelComponent } from './company-panel/company-panel.component';
+import { ItemPanelComponent } from './item-panel/item-panel.component';
+import { VehiclePanelComponent } from './vehicle-panel/vehicle-panel.component';
+import { WarehousePanelComponent } from './warehouse-panel/warehouse-panel.component';
+import { TransportRoutePanelComponent } from './transport-route-panel/transport-route-panel.component';
+import { CommunicationPanelComponent } from './communication-panel/communication-panel.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {  MatIconModule } from '@angular/material/icon';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -19,10 +29,18 @@ import { NgxEchartsModule } from 'ngx-echarts';
     VistaComponent,
     DashboardsComponent,
     DashboardComponent,
-    NavbarComponent
+    NavbarComponent,
+    UserPanelComponent,
+    CompanyPanelComponent,
+    ItemPanelComponent,
+    VehiclePanelComponent,
+    WarehousePanelComponent,
+    TransportRoutePanelComponent,
+    CommunicationPanelComponent
   ],
   imports: [
     BrowserModule,
+    MatIconModule,
     AppRoutingModule,
     NgForOf,
     GridsterComponent,
@@ -30,7 +48,8 @@ import { NgxEchartsModule } from 'ngx-echarts';
     HttpClientModule,
     NgxEchartsModule.forRoot({
       echarts: () => import('echarts'),
-    })
+    }),
+    BrowserAnimationsModule
     
   ],
   providers: [],

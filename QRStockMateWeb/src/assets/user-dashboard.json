@@ -1,4 +1,6 @@
 {
+  "id":0,
+  "idUser":1,
   "nombre": "John",
   "apellido": "Doe",
   "data": {

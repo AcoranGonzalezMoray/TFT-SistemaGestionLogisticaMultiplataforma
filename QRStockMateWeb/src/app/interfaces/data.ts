@@ -1,6 +1,8 @@
 import { Dashboard } from "./dashboard";
 
-export interface User {
+export interface Data {
+    id: number;
+    idUser:number;
     nombre: string;
     apellido: string;
     data: {
