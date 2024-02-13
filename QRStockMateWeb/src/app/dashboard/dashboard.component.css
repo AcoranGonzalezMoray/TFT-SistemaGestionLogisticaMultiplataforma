@@ -1,0 +1,57 @@
+gridster-preview {
+    position: absolute;
+    display: none;
+    background: none !important;
+}
+
+
+.gridster-preview {
+    position: absolute;
+    display: none;
+    background: none !important;
+}
+::-webkit-scrollbar {
+    width: 5px; /* Ancho de la barra de desplazamiento */
+}
+
+::-webkit-scrollbar-track {
+    background: #222222; /* Color del fondo de la barra de desplazamiento */
+    border-radius: 5px;
+    margin-bottom: 5px;
+    margin-top: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #444444; /* Color del botón de la barra de desplazamiento */
+    border-radius: 5px; /* Radio de la esquina del botón de la barra de desplazamiento */
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #666666; /* Color del botón de la barra de desplazamiento al pasar el mouse */
+}
+
+gridster.scrollVertical {
+    overflow-x: unset;
+    overflow-y: unset;
+}
+gridster {
+    background-color: #222222;
+    height: 90% !important;
+}
+gridster-item {
+    background-color: #ffffff14;
+    border-radius: 20px;
+
+}
+
+/*    animation: fadeIn 0.5s ease !important; /* Animación de entrada al crear */
+@keyframes fadeIn {
+    from {
+        opacity: 0; /* Comienza con opacidad 0 */
+        transform: scale(0.5); /* Empieza más pequeño */
+    }
+    to {
+        opacity: 1; /* Opacidad completa */
+        transform: scale(1); /* Tamaño normal */
+    }
+}

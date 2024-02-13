@@ -1,0 +1,124 @@
+<!-- <div style="display: flex;flex-direction: column;" >
+    <div style="padding: 40px;">
+        <div style=" border-bottom: 2px solid black; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+            </div>
+            <button style="margin: 2px;" class="uk-button uk-button-primary uk-button-small" uk-toggle="target: #modal-example"><a href="#" uk-icon="icon: plus"></a> Dashboard</button>
+            <div id="modal-example" uk-modal>
+                <div class="uk-modal-dialog uk-modal-body">
+                    <h2 class="uk-modal-title">Name: </h2>
+                    <div class="uk-margin">
+                        <div class="uk-inline">
+                            <a class="uk-form-icon" href="#" uk-icon="icon: pencil"></a>
+                            <input class="uk-input" #nombre type="text" aria-label="Clickable icon">
+                        </div>
+                    </div>
+                    <p class="uk-text-right">
+                        <button class="uk-button uk-button-default uk-modal-close" type="button">Cancel</button>
+                        <button class="uk-button uk-button-primary" type="button" (click)="addDashboard(nombre.value)">Save</button>
+                    </p>
+                </div>
+            </div>
+          </div>
+    </div>
+    <div *ngIf="userDashboard" class="uk-child-width-1-4@m uk-grid-small uk-grid-match" uk-grid style="padding-inline: 40px;">
+        <div *ngFor="let dashboard of userDashboard.data.dashboards">
+            <div class="uk-card uk-card-default uk-card-body uk-box-shadow-small uk-box-shadow-hover-large uk-padding" >
+                
+
+                <button class="uk-button uk-button-default uk-float-right" type="button"><span uk-icon="more"></span></button>
+                <div uk-dropdown="pos: bottom-left; boundary: !.boundary; shift: false; flip: false">
+                    <ul class="uk-nav uk-dropdown-nav">
+                        <li class="uk-active"><a  (click)="open(dashboard)" routerLink="/dashboards/open">Open</a></li>
+                        <li><a href="#">Delete</a></li>
+                    </ul>
+                </div>
+                <h3 class="uk-card-title">{{dashboard.nombre}}</h3>
+                <p>Modified 40 seconds ago</p>
+            </div>
+
+        </div>
+    </div>
+
+
+</div> -->
+<style>
+    .uk-icon {
+        color: white;
+    }
+    .uk-nav-default>li>a {
+        color: white;
+        font-size: medium;
+    }
+    .uk-nav-item:focus::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        right: -10px; /* Ajusta la posición del pico según sea necesario */
+        border: solid transparent;
+        border-width: 10px;
+        border-right-color: #222222; /* Color del pico */
+        transform: translateY(-50%);
+    }
+    .uk-nav-item:hover {
+        background-color: #5997BA;
+        border-radius: 5px;
+    }
+    .uk-parent:hover {
+        background-color: #6F86B7;
+        border-radius: 5px;
+    }
+    .uk-nav-default{
+       padding: 10px;
+    }
+    .uk-nav-default .uk-nav-sub a:hover {
+        color: white;
+    }
+    .uk-nav-default .uk-nav-sub a {
+        color: white !important;
+    }
+    .dash {
+        padding: 5px;
+    }
+    .dash:hover a{
+        background-color: #ffffff14 !important;
+        border-radius: 10px;
+        padding: 10px;
+    }
+    .active a{
+        background-color: #ffffff14 !important;
+        border-radius: 10px;
+        padding: 10px;
+    }
+    .active span{
+        border-radius: 10px;
+       
+    }
+
+    .uk-drop.uk-open {
+        display: block;
+        border-radius: 20px;
+        max-width: 2110px;
+        top: 140px !important;
+        left: 150px !important;
+    }
+</style>
+<div *ngIf="userDashboard">
+    <div *ngFor="let dashboard of userDashboard.data.dashboards">
+         <li class="dash" [ngClass]="{ 'active': dashboard === selectedDashboard }" (mouseenter)="addHoverClass()" (mouseleave)="removeHoverClass()"><a href="#" style="color: white;" (click)="open(dashboard)" ><span class="uk-margin-small-right" uk-icon="icon:  album"></span>{{dashboard.nombre}}</a></li>
+    </div>
+    <li class="uk-button"   style="display: flex;justify-content: center;">
+    
+
+        <div>
+            <input style="border-radius: 10px;height: 30px;width: 130px; " #nombre class="uk-input" type="text" aria-label="Clickable icon">
+        </div>
+        <br>
+        <div style="margin-left: 10px;margin-right: 5px;">
+            <a style="color:white;background-color: #ffffff14;" (click)="addDashboard(nombre.value)" class="uk-icon-button" uk-icon="plus"></a>
+        </div>
+
+
+    </li>
+
+</div>

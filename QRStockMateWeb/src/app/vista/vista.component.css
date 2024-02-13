@@ -1,0 +1,17 @@
+.add{
+    height: 80%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease; /* Agrega una transición suave para que el cambio sea animado */
+
+}
+
+.add:hover{
+    transform: scale(1.1); /* Escala el elemento al 110% del tamaño original al pasar el ratón sobre él */
+
+}
+
+.echarts-container{
+
+}

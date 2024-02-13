@@ -1,0 +1,7 @@
+<div *ngIf="chartType==''" class="uk-placeholder uk-text-center add" uk-toggle="target: #modal-example2">
+    <span uk-icon="plus"></span>
+</div>
+
+<div *ngIf="chartType!=''">
+    <div *ngIf="chartType !== ''" echarts [options]="chartOptions"   [style.width.px]="width" [style.height.px]="height" class="echarts-container"></div>
+</div>

@@ -1,0 +1,93 @@
+<style>
+    .uk-icon {
+        color: white;
+    }
+    .uk-nav-default>li>a {
+        color: white;
+        font-size: medium;
+    }
+    .uk-nav-item:focus::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        right: -10px; /* Ajusta la posición del pico según sea necesario */
+        border: solid transparent;
+        border-width: 10px;
+        border-right-color: #222222; /* Color del pico */
+        transform: translateY(-50%);
+    }
+    .uk-nav-item:hover {
+        background-color: #222222;
+
+        border-radius: 5px;
+    }
+    
+    .uk-parent:hover {
+        background-color: #222222;
+        border-radius: 5px;
+    }
+    .active-list {
+        background-color: red;
+    }
+    .uk-nav-default{
+       padding: 10px;
+    }
+    .uk-nav-default .uk-nav-sub a:hover {
+        color: white;
+    }
+    .uk-nav-default .uk-nav-sub a {
+        color: white;
+    }
+    /* Estilos personalizados para la barra de desplazamiento */
+    ::-webkit-scrollbar {
+        width: 5px; /* Ancho de la barra de desplazamiento */
+    }
+
+    ::-webkit-scrollbar-track {
+        background: #222222; /* Color del fondo de la barra de desplazamiento */
+        border-radius: 5px;
+        margin-bottom: 10px;
+        margin-top: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: #444444; /* Color del botón de la barra de desplazamiento */
+        border-radius: 5px; /* Radio de la esquina del botón de la barra de desplazamiento */
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: #666666; /* Color del botón de la barra de desplazamiento al pasar el mouse */
+    }
+</style>
+
+<div style="width: 100%; height: 93.7%; background-color: #121212; display: flex; justify-content: center; align-items: center; flex-direction: column;">
+    <div class="uk-card uk-card-default" style="display: flex; background-color: #5a79ba; width: 97%; min-height: 92%;height: fit-content; border-radius: 20px;">
+        <div style="width: 250px;"> <!-- Ajusta el ancho aquí -->
+            <div class="uk-card uk-card-body">
+                <ul class="uk-nav-default " uk-nav>
+                    <li class="uk-parent uk-active uk-animation-slide-right " style="-webkit-animation-duration: 0.5s;animation-duration: 0.5s;"   #parentUl>
+                        <a href="#"><span class="uk-margin-small-right " uk-icon="icon: home"></span>Dashboard <span uk-nav-parent-icon></span></a>
+                        <ul class="uk-nav-sub " >
+                            <app-dashboards></app-dashboards>
+                        </ul>
+                    </li>
+                    <li class="uk-parent uk-animation-slide-right" style="-webkit-animation-duration: 0.6s;animation-duration: 0.5s;">
+                        <a href="#"><span class="uk-margin-small-right" uk-icon="icon: table"></span>Parent <span uk-nav-parent-icon></span></a>
+                        <ul class="uk-nav-sub">
+                            <li><a href="#">Sub item</a></li>
+                            <li><a href="#">Sub item</a></li>
+                        </ul>
+                    </li>
+                    <li class="uk-nav-divider"></li>
+                    <li class="uk-nav-item uk-animation-slide-right uk-animation-3" style="-webkit-animation-duration: 0.8s;animation-duration: 0.8s;"><a href="#"><span class="uk-margin-small-right" uk-icon="icon: table"></span> Item</a></li>
+                    <li class="uk-nav-item uk-animation-slide-right uk-animation-4" style="-webkit-animation-duration: 1.0s;animation-duration: 1.0s;"><a href="#"><span class="uk-margin-small-right" uk-icon="icon: thumbnails"></span> Item</a></li>
+                    <li class="uk-nav-divider"></li>
+                    <li class="uk-nav-item uk-animation-slide-right uk-animation-5" style="-webkit-animation-duration: 1.2s;animation-duration: 1.2s;"><a href="#"><span class="uk-margin-small-right" uk-icon="icon: trash"></span> Item</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="uk-card uk-card-default uk-card-body" style="background-color: #222222; width: 95%; height: 100%; border-radius: 20px;overflow: auto; border: 1px solid #5a79ba;"> <!-- Ajusta el ancho aquí -->
+           <app-dashboard></app-dashboard>
+        </div>
+    </div>
+</div>
