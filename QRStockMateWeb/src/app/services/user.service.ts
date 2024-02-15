@@ -32,8 +32,12 @@ export class UserService {
       );
   }
 
-  updateUser(user: User): Observable<void> {
-    return this.http.put<void>(this.apiUrl, user)
+  updateUser(user: User, token:string): Observable<void> {
+    // Configurar las cabeceras con JWT
+    let headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    return this.http.put<void>(this.apiUrl, user, {headers: headers})
       .pipe(
         catchError(error => {
           throw 'Error updating user: ' + error;

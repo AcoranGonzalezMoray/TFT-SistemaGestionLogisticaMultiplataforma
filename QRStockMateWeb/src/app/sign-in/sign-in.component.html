@@ -1,0 +1,29 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@700&family=Figtree:wght@700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="pic2"></div>
+        <img src="../../assets/images/ic_launcher.webp" alt="">
+        <h1>Log in To Continue</h1>
+        <div class="inp">
+            <input #email type="text" id="email" (input)="onInput('usr')" [(ngModel)]="username">
+            <label for="Username" [class.up]="username">Username</label>
+        </div>
+        <div class="inp">
+            <input #pass type="password" id="password" (input)="onInput('pass')" [(ngModel)]="password">
+            <label for="Password" [class.up]="password">Password</label>
+        </div>
+        <div style="display: flex;"><a href="">Forgot Password? - Support</a></div>
+        <button *ngIf="!isLoading" (click)="signIn(email.value, pass.value)">Login</button>
+        <button *ngIf="isLoading" ><div uk-spinner></div></button>
+        <a href="#">Don't have an account? Sign up</a>
+    </div>
+    <div class="pic"></div>
+    
+</body>

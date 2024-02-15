@@ -6,13 +6,13 @@ export interface User {
     phone: string;
     code: string;
     url: string;
-    role: RoleUser;
+    role: number;
   }
   
   export enum RoleUser {
     Director = 'Director',
     Administrator = 'Administrator',
-    InventoryTechnician = 'InventoryTechnician',
+    InventoryTechnician = 'InventoryTech',
     User = 'User',
     Carrier = 'Carrier'
   }

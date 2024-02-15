@@ -25,6 +25,11 @@ import { HistoryPanelComponent } from './history-panel/history-panel.component';
 import {MatPaginatorModule} from '@angular/material/paginator';
 import {MatTableModule} from '@angular/material/table';
 import {MatButtonModule} from '@angular/material/button';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
+import {MatSelectModule} from '@angular/material/select';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { SignInComponent } from './sign-in/sign-in.component';
+import { FormsModule } from '@angular/forms'; // Importa FormsModule
 @NgModule({
   declarations: [
     AppComponent,
@@ -40,12 +45,17 @@ import {MatButtonModule} from '@angular/material/button';
     WarehousePanelComponent,
     TransportRoutePanelComponent,
     CommunicationPanelComponent,
-    HistoryPanelComponent
+    HistoryPanelComponent,
+    SignInComponent
   ],
   imports: [
     BrowserModule,
+    MatProgressSpinnerModule,
+    MatSelectModule,
     MatButtonModule,
+    FormsModule,
     MatIconModule,
+    MatProgressBarModule,
     MatPaginatorModule,
     MatTableModule,
     AppRoutingModule,

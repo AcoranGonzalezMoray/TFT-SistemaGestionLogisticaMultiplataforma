@@ -22,11 +22,48 @@
     -webkit-font-smoothing: antialiased;
     color: var(--mat-paginator-container-text-color);
     background-color: #ffffff14;
+    color: white;
     font-family: var(--mat-paginator-container-text-font);
     line-height: var(--mat-paginator-container-text-line-height);
     font-size: var(--mat-paginator-container-text-size);
     font-weight: var(--mat-paginator-container-text-weight);
     letter-spacing: var(--mat-paginator-container-text-tracking);
+}
+
+.uk-open>.uk-modal-dialog {
+    opacity: 1;
+    transform: translateY(0);
+    background-color: #222;
+}
+.uk-form-custom {
+    display: inline-block;
+    position: relative;
+    max-width: 100%;
+    vertical-align: middle;
+    width: 100%;
+}
+
+[class*=uk-modal-close-] {
+    position: unset;
+    z-index: unset;
+    top: unset;
+    padding: unset !important;
+}
+
+.uk-modal-title {
+    font-size: 2rem;
+    line-height: 1.3;
+    color: white;
+}
+.uk-button-default {
+    background-color: transparent;
+    color: #333;
+    color: white;
+    border: 1px solid #e5e5e5;
+}
+.mat-mdc-icon-button[disabled] .mat-mdc-paginator-icon {
+    fill: wheat !important;
+    color: white;
 }
 thead {
     border-bottom: 1px solid #5a79ba !important;
