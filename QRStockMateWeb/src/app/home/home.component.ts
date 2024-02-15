@@ -6,7 +6,12 @@ import { Component } from '@angular/core';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent {
-  activeItem: string | null = null;
+  activeItem: string = "Dashboard";
 
   constructor() { }
+
+  setActive(item: string) {
+    this.activeItem = item
+  }
+
 }

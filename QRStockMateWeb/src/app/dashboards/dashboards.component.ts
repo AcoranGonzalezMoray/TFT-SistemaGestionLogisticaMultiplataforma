@@ -1,6 +1,6 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { Data } from '../interfaces/data';
-import { UserService } from '../services/user.service';
+import { DataService } from '../services/data.service';
 import { GridItemServiceService } from '../services/grid-item-service.service';
 import { Dashboard } from '../interfaces/dashboard';
 import { Router } from '@angular/router';
@@ -17,7 +17,7 @@ export class DashboardsComponent {
   @ViewChild('parentUl') parentUl: ElementRef | undefined;
 
 
-  constructor(private userService: UserService, private gridItemService: GridItemServiceService, private router: Router) {}
+  constructor(private userService: DataService, private gridItemService: GridItemServiceService, private router: Router) {}
   
   ngOnInit() {
     this.userService.getUserDashboard().subscribe(

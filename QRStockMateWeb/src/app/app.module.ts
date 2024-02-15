@@ -21,7 +21,10 @@ import { TransportRoutePanelComponent } from './transport-route-panel/transport-
 import { CommunicationPanelComponent } from './communication-panel/communication-panel.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {  MatIconModule } from '@angular/material/icon';
-
+import { HistoryPanelComponent } from './history-panel/history-panel.component';
+import {MatPaginatorModule} from '@angular/material/paginator';
+import {MatTableModule} from '@angular/material/table';
+import {MatButtonModule} from '@angular/material/button';
 @NgModule({
   declarations: [
     AppComponent,
@@ -36,11 +39,15 @@ import {  MatIconModule } from '@angular/material/icon';
     VehiclePanelComponent,
     WarehousePanelComponent,
     TransportRoutePanelComponent,
-    CommunicationPanelComponent
+    CommunicationPanelComponent,
+    HistoryPanelComponent
   ],
   imports: [
     BrowserModule,
+    MatButtonModule,
     MatIconModule,
+    MatPaginatorModule,
+    MatTableModule,
     AppRoutingModule,
     NgForOf,
     GridsterComponent,

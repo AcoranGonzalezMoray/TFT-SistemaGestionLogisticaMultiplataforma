@@ -1,1 +1,74 @@
-<p>user-panel works!</p>
+<div class="mat-elevation-z8">
+  <table mat-table [dataSource]="dataSource">
+
+    
+    <ng-container matColumnDef="id">
+      <th mat-header-cell *matHeaderCellDef> ID </th>
+      <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+    </ng-container>
+  
+    
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef> Name </th>
+      <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+    </ng-container>
+  
+    
+    <ng-container matColumnDef="email">
+      <th mat-header-cell *matHeaderCellDef> Email </th>
+      <td mat-cell *matCellDef="let element"> {{element.email}} </td>
+    </ng-container>
+  
+    
+    <ng-container matColumnDef="phone">
+      <th mat-header-cell *matHeaderCellDef> Phone </th>
+      <td mat-cell *matCellDef="let element"> {{element.phone}} </td>
+    </ng-container>
+  
+
+    <ng-container matColumnDef="code">
+      <th mat-header-cell *matHeaderCellDef> Code </th>
+      <td mat-cell *matCellDef="let element"> {{element.code}} </td>
+    </ng-container>
+  
+    <ng-container matColumnDef="role">
+      <th mat-header-cell *matHeaderCellDef> Role </th>
+      <td mat-cell *matCellDef="let element"> {{getRole(element.role)}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="action">
+      <th mat-header-cell *matHeaderCellDef> Action </th>
+      <td mat-cell *matCellDef="let element"> 
+        <button mat-icon-button color="primary" uk-toggle="target: #modal-example" (click)="setUser(element)">
+          <mat-icon>visibility</mat-icon>
+        </button>
+        
+        <button mat-icon-button color="warn">
+          <mat-icon>delete_sweep</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+  
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+  
+  <mat-paginator [pageSizeOptions]="[5, 10, 20]"
+                 showFirstLastButtons
+                 aria-label="Select page of employees"
+                 [pageSize]="5">
+  </mat-paginator>
+</div>
+
+
+<!-- This is the modal -->
+<div id="modal-example" class="uk-flex-top" uk-modal>
+    <div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical" >
+        <h2 class="uk-modal-title">{{user?.name}}</h2>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+        <p class="uk-text-right">
+            <button class="uk-button uk-button-default uk-modal-close" type="button">Cancel</button>
+            <button class="uk-button uk-button-primary" type="button">Save</button>
+        </p>
+    </div>
+</div>

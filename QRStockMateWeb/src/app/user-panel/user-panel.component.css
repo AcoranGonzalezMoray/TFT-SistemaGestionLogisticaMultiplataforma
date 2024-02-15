@@ -1,0 +1,43 @@
+.mat-mdc-table {
+    --mat-table-row-item-outline-width: 1px;
+    table-layout: auto;
+    white-space: normal;
+    background-color: #222;
+}
+
+.mat-mdc-table th {
+    color: white;
+    background-color: #ffffff14;
+}
+.mat-mdc-table td {
+    color: white;
+    background-color: #ffffff14;
+}
+.mat-mdc-paginator div {
+    color: white !important;
+}
+.mat-mdc-paginator {
+    display: block;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    color: var(--mat-paginator-container-text-color);
+    background-color: #ffffff14;
+    font-family: var(--mat-paginator-container-text-font);
+    line-height: var(--mat-paginator-container-text-line-height);
+    font-size: var(--mat-paginator-container-text-size);
+    font-weight: var(--mat-paginator-container-text-weight);
+    letter-spacing: var(--mat-paginator-container-text-tracking);
+}
+thead {
+    border-bottom: 1px solid #5a79ba !important;
+}
+.mat-mdc-row .mat-mdc-cell {
+    border-bottom: 1px solid transparent;
+    border-top: 1px solid transparent;
+    cursor: pointer;
+  }
+.mat-mdc-row:hover .mat-mdc-cell {
+    border-color: #5a79ba;
+    font-weight: bold;
+}
+  

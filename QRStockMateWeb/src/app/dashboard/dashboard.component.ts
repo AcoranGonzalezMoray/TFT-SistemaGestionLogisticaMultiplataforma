@@ -4,7 +4,7 @@ import { GridItemServiceService } from '../services/grid-item-service.service';
 import { VistaComponent } from '../vista/vista.component';
 import { Dashboard } from '../interfaces/dashboard';
 import { gridTypes } from 'angular-gridster2/lib/gridsterConfig.interface';
-import { UserService } from '../services/user.service';
+import { DataService } from '../services/data.service';
 import { View } from '../interfaces/view';
 
 @Component({
@@ -20,7 +20,7 @@ export class DashboardComponent{
   unitHeight: number = 0;
   
 
-  constructor(public gridItemService: GridItemServiceService, private userService:UserService) {}
+  constructor(public gridItemService: GridItemServiceService, private userService:DataService) {}
   
 
   ngOnInit() {
