@@ -29,7 +29,17 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {MatSelectModule} from '@angular/material/select';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { SignInComponent } from './sign-in/sign-in.component';
-import { FormsModule } from '@angular/forms'; // Importa FormsModule
+import { FormsModule } from '@angular/forms';
+import { LottieModule } from "ngx-lottie";
+import player from "lottie-web";
+import { MainAnimationComponent } from './main-animation/main-animation.component';
+// Note we need a separate function as it's required
+// by the AOT compiler.
+export function playerFactory() {
+  return player;
+}
+
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -46,11 +56,13 @@ import { FormsModule } from '@angular/forms'; // Importa FormsModule
     TransportRoutePanelComponent,
     CommunicationPanelComponent,
     HistoryPanelComponent,
-    SignInComponent
+    SignInComponent,
+    MainAnimationComponent
   ],
   imports: [
     BrowserModule,
     MatProgressSpinnerModule,
+    LottieModule.forRoot({ player: playerFactory }),
     MatSelectModule,
     MatButtonModule,
     FormsModule,

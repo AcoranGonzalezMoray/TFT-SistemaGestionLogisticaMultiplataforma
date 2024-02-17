@@ -4,7 +4,16 @@
     white-space: normal;
     background-color: #222;
 }
-
+.mat-mdc-icon-button.mat-ok {
+    --mdc-icon-button-icon-color: #1dda04;
+    --mat-mdc-button-persistent-ripple-color: #288d0a;
+    --mat-mdc-button-ripple-color: rgba(35, 148, 31, 0.1);
+}
+.mat-mdc-icon-button.mat-edit {
+    --mdc-icon-button-icon-color: #da8f04;
+    --mat-mdc-button-persistent-ripple-color: #8d840a;
+    --mat-mdc-button-ripple-color: rgba(35, 148, 31, 0.1);
+}
 .mat-mdc-table th {
     color: white;
     background-color: #ffffff14;
@@ -78,3 +87,14 @@ thead {
     font-weight: bold;
 }
   
+.close_modal_single {
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+    justify-content: center;
+    align-content: center;
+}
+h4 {
+    color: white;
+    margin-right: 15px;
+}

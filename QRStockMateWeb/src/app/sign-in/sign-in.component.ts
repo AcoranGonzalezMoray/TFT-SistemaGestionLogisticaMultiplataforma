@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { UserService } from '../services/user.service';
 import { CompanyService } from '../services/company.service';
-import { User } from '../interfaces/user';
+import { User, getRoleUser } from '../interfaces/user';
 import { Router } from '@angular/router';
 
 @Component({
@@ -13,7 +13,9 @@ export class SignInComponent {
   token:string = ""
   me!:User;
   isLoading:Boolean = false
-
+  @ViewChild('notifyError') notyE!: ElementRef;
+  @ViewChild('notifyOk') notyS!: ElementRef;
+  @ViewChild('notifyRole') notyR!: ElementRef;
   username: string = '';
   password: string = '';
 
@@ -36,18 +38,33 @@ export class SignInComponent {
         this.isLoading=true
 
         setTimeout(() => {
-          sessionStorage.setItem('token', response.token);
-          sessionStorage.setItem('me', JSON.stringify(response.user));
-        }, 1000);
+          var user:User = response.user
 
-        this.isLoading=false
-        this.router.navigate(['']);
+          if(user.role == 0 || user.role == 1 ){
+            sessionStorage.setItem('token', response.token);
+            sessionStorage.setItem('me', JSON.stringify(response.user));
+            this.notyS.nativeElement.click()
+            this.router.navigate(['']);
+          }else {
+            this.notyR.nativeElement.click()
+          }
+          this.isLoading=false
+        }, 2000);
+
         
       }, error => {
         // Manejar cualquier error de autenticación
         console.error('Error signing in:', error);
+        this.notyE.nativeElement.click()
+        
       });
       
   }
 
+}
+
+export function clearStorage(){
+  sessionStorage.clear()
+  localStorage.clear()
+  console.log("limpio")
 }

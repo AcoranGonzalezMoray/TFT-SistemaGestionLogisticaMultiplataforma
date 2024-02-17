@@ -20,9 +20,12 @@
     "@angular/platform-browser": "^16.2.0",
     "@angular/platform-browser-dynamic": "^16.2.0",
     "@angular/router": "^16.2.0",
+    "@types/google.maps": "^3.55.3",
     "angular-gridster2": "^16.0.0",
     "echarts": "^5.4.3",
+    "lottie-web": "^5.12.2",
     "ngx-echarts": "^17.1.0",
+    "ngx-lottie": "^10.0.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.13.0"

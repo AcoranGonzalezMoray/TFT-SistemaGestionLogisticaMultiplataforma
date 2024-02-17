@@ -9,6 +9,9 @@ import { Company } from '../interfaces/company';
   providedIn: 'root'
 })
 export class UserService {
+  static getCompanyByUser(token: string, arg1: any) {
+    throw new Error('Method not implemented.');
+  }
 
   private apiUrl: string = environment.API + '/User';
 
@@ -76,7 +79,7 @@ export class UserService {
       );
   }
 
-  getCompanyByUser(user: User, token:string): Observable<Company> {
+  public getCompanyByUser(user: User, token:string): Observable<Company> {
     // Configurar las cabeceras con JWT
     let headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`

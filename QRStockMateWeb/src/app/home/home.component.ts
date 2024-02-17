@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { clearStorage } from '../sign-in/sign-in.component';
 
 @Component({
   selector: 'app-home',
@@ -8,8 +9,14 @@ import { Router } from '@angular/router';
 })
 export class HomeComponent {
   activeItem: string = "Dashboard";
+  create: boolean = false
+  constructor( private router: Router) { 
+    this.create = true
+    setTimeout(() => {
+      this.create = false
+    }, 2000);
 
-  constructor( private router: Router) { }
+  }
 
   ngOnInit(): void {
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
@@ -19,9 +26,14 @@ export class HomeComponent {
     }
   }
 
+
+  finishAnimation() {
+    this.create = false
+  }
+
+
   logOut(){
-    sessionStorage.clear()
-    localStorage.clear()
+    clearStorage()
     this.router.navigate(['/login']);
   }
   setActive(item: string) {
@@ -29,3 +41,5 @@ export class HomeComponent {
   }
 
 }
+
+

@@ -72,12 +72,11 @@ export class CompanyService {
       );
   }
 
-  getWarehouses(company: Company): Observable<Warehouse[]> {
-    return this.http.post<Warehouse[]>(`${this.apiUrl}/Warehouse`, company)
-      .pipe(
-        catchError(error => {
-          throw 'Error getting warehouses: ' + error;
-        })
-      );
+  getWarehouses(company: Company, token:string): Observable<Warehouse[]> {
+    let headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+
+    return this.http.post<Warehouse[]>(`${this.apiUrl}/Warehouse`, company, { headers: headers });
   }
 }

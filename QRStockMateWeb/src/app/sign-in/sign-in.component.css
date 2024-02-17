@@ -3,7 +3,56 @@
     margin: 0;
     box-sizing: border-box;
 }
-
+.waves {
+    position: absolute;
+/*      left: 0;
+    right: 0;
+    height: 200px;
+    bottom: 0;*/
+    bottom: -135px;
+    height: 527px;
+    width: 100%;
+    overflow: hidden;
+  }
+  .wave {
+    position: absolute;
+    left: -180px;
+    bottom: 0;
+    /*width: 200px;*/
+    /*height: 200px;*/
+    /*width: 100%;*/
+    /*border-radius: 50%;*/
+    /*background:rgba(0,0,0, .3);*/
+    width: 2402px;
+    height: 427px;
+    background: url(https://static.platzi.com/media/files/waves_c8551f5d-ecf6-4a81-ae1d-f3a0ad55ba10.png) center bottom no-repeat;
+    animation: 5s wave ease-in-out infinite alternate;
+  }
+  .wave.a {
+    background-position: 0 -854px;
+  }
+  .wave.b {
+    background-position: 0 -427px;
+    animation-delay: .6s;
+  }
+  .wave.c {
+    background-position: 0 0;
+    animation-delay: 1.2s;
+  }
+  /*.container {
+    position: absolute;
+  }*/
+  @keyframes wave {
+    0% {
+      transform: translate(0 , 0);
+    }
+    50% {
+      transform: translate(-80px, 30px);
+    }
+    100% {
+      transform: translate(160px, -60px);
+    }
+  }
 body {
     display: flex;
     width: 100vw;
@@ -22,13 +71,12 @@ body {
     gap: 15px;
 }
 
+
 .pic {
     width: 50%;
     height: 100%;
     overflow: hidden;
-    background-image: url("https://4kwallpapers.com/images/wallpapers/dark-blue-pink-2560x2560-12661.jpg");
-    background-size: cover;
-    background-position: center;
+    background-color: white;
 }
 
 /* .pic2 {
@@ -81,7 +129,7 @@ input {
 
 input:focus {
     border: 2px solid #5a79ba;
-    box-shadow: #6767ff 0px 1px 1px, #6767ff 0px 0px 0px 1px;
+    box-shadow: #5a79ba 0px 1px 1px, #5a79ba 0px 0px 0px 1px;
 }
 
 input:focus + label {
@@ -90,7 +138,9 @@ input:focus + label {
     font-size: 12px;
     background-color: #24242c;
 }
-
+::-ms-reveal {
+    filter: invert(100%);
+}
 .up {
     left: 20px;
     transform: translateY(-22px);
@@ -173,4 +223,5 @@ img {
         overflow: scroll;
         height: 100%;
     }
+
 }

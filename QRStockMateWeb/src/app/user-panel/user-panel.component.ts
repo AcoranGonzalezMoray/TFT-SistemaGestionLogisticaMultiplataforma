@@ -1,5 +1,5 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
-import { RoleUser, User, getRoleUser } from '../interfaces/user';
+import { ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core';
+import { RoleUser, User, getRoleUser, getRoleUserString } from '../interfaces/user';
 import { CompanyService } from '../services/company.service';
 import { MatPaginator } from '@angular/material/paginator';
 import {MatTableDataSource} from '@angular/material/table';
@@ -27,8 +27,10 @@ export class UserPanelComponent {
   paginator!: MatPaginator;
   clickedRows = new Set<User>();
   @ViewChild('notify') noty!: ElementRef;
+  @ViewChild('closeModal') closeModal!: ElementRef;
+
   isLoading:Boolean = false
-  constructor(private userService: UserService, private companyService: CompanyService) { }
+  constructor(private userService: UserService, private companyService: CompanyService, private cdRef: ChangeDetectorRef) { }
 
   ngOnInit(): void {
     this.isLoading = true
@@ -39,9 +41,12 @@ export class UserPanelComponent {
     this.user = user
   }
 
+  searchByValue(element:HTMLInputElement){
+    this.dataSource.filter = element.value.trim().toLowerCase();
+  }
 
   setRole(arg0: string) {
-    this.user!.role = parseInt(arg0)
+    this.user!.role = getRoleUser(parseInt(arg0));
   }
   
 
@@ -67,6 +72,15 @@ export class UserPanelComponent {
     });
   }
 
+
+  applyFilter(event: any) {
+    const value = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = value.trim().toLowerCase();
+  }
+  
+
+  
+
   loadEmployees(): void {
     this.companyService.getEmployees(this.company, this.token)
       .subscribe(employees => {
@@ -74,6 +88,7 @@ export class UserPanelComponent {
 
         employees.forEach((user, index) => {
           setTimeout(() => {
+            user.role = getRoleUser(Number(user.role))
             users.push(user);
             this.dataSource.data = users;
           }, (index + 1) * 500); 
@@ -83,9 +98,25 @@ export class UserPanelComponent {
 
       });
   }
+  isNumber(value: any): boolean {
+    return typeof value === 'number' && isFinite(value);
+  }
+
+  getRoleUserString(value:any):boolean{
+    if(this.isNumber(value)){
+      return value!=0
+    } 
+    return getRoleUserString(String(value))!=0;
+
+  }
+
+
 
   updateUser(user:User, email:HTMLInputElement, phone:HTMLInputElement){
-   if( this.user!.role >0){
+   if(String(user.role)){
+      user.role = getRoleUserString(String(user.role));
+   }
+   if( Number(user!.role) >0){
     this.isLoading = true
     var newUser:User = user
     newUser.phone = phone.value
@@ -99,6 +130,7 @@ export class UserPanelComponent {
       })
       this.isLoading = false
       this.noty.nativeElement.click()
+      this.closeModal.nativeElement.click()
     }, 2500); 
    }
 
@@ -116,5 +148,25 @@ export class UserPanelComponent {
     }
   
     return getRoleUser(localNumber);
+  }
+
+  statusUser(state:boolean, userState:User){
+    if(state){
+      userState.email = userState.email.split(':')[1]
+    }else {
+      userState.email = "inactivo:"+userState.email
+    }
+
+    if(String(userState.role)){
+      userState.role = getRoleUserString(String(userState.role));
+    }
+
+    if( Number(userState.role) >0){
+      this.userService.updateUser(userState, this.token)
+      .subscribe(v => {
+        this.loadEmployees();
+      });
+    }
+
   }
 }

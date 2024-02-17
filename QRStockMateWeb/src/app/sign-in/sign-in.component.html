@@ -8,7 +8,6 @@
 </head>
 <body>
     <div class="container">
-        <div class="pic2"></div>
         <img src="../../assets/images/ic_launcher.webp" alt="">
         <h1>Log in To Continue</h1>
         <div class="inp">
@@ -24,6 +23,11 @@
         <button *ngIf="isLoading" ><div uk-spinner></div></button>
         <a href="#">Don't have an account? Sign up</a>
     </div>
-    <div class="pic"></div>
+    <div class="pic">
+        <app-main-animation ruta="../../assets/animations/mapWarehouse.json" [speed]="1"   ></app-main-animation>
+    </div>
     
 </body>
+<div #notifyError onclick="UIkit.notification({message: '<span uk-icon=\'icon: close\'></span> Wrong Email Or Password', status: 'danger'})"></div>
+<div #notifyOk onclick="UIkit.notification({message: '<span uk-icon=\'icon: check\'></span> Successful Login', status: 'success'})"></div>
+<div #notifyRole onclick="UIkit.notification({message: '<span uk-icon=\'icon: close\'></span> You Do Not Have Sufficient Permissions To Access', status: 'danger'})"></div>
