@@ -6,6 +6,7 @@
     "outDir": "./dist/out-tsc",
     "types": ["google.maps"],
     "forceConsistentCasingInFileNames": true,
+    "allowSyntheticDefaultImports": true,
     "strict": true,
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,

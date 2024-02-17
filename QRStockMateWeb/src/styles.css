@@ -3,10 +3,33 @@ html, body { height: 100%; }
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
-
+@import '~maplibre-gl/dist/maplibre-gl.css';
 .uk-notification-message{
     background-color: #333333 !important;
     border-radius: 20px;
     border: 1px solid #5a79ba; /* Agrega un borde azul de 2 píxeles */
 
 }
+
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 1000; /* Asegura que esté por encima del mapa */
+    border: none;
+    border-radius: 50%; /* Botón redondeado */
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    /* Estilos adicionales según tu diseño */
+  }
+  
+  /* Estilos para el icono "X" */
+  .close-button::after {
+    content: 'X';
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 30px; /* Centra verticalmente el icono */
+    text-align: center; /* Centra horizontalmente el icono */
+  }
+  

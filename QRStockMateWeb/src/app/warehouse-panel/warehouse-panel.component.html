@@ -1,4 +1,4 @@
-<div class="mat-elevation-z8">
+<div id='matelevationz8' class="mat-elevation-z8">
   <div style="background-color: #ffffff14;">
     <form class="uk-search uk-search-navbar">
       <span uk-search-icon></span>
@@ -49,6 +49,10 @@
           <button mat-icon-button color="primary" uk-toggle="target: #modal-example-see" (click)="setWarehouse(element)">
             <mat-icon>visibility</mat-icon>
           </button>
+
+          <button   mat-icon-button color="ok"  (click)="openMap(element.latitude, element.longitude, element.name)">
+            <mat-icon>map</mat-icon>
+          </button>
           
           <button   mat-icon-button color="edit" uk-toggle="target: #modal-example" (click)="setWarehouse(element)">
             <mat-icon>edit</mat-icon>
@@ -67,6 +71,13 @@
     </mat-paginator>
   </div>
 
+
+  <div id="containerMap" class="map-wrap">
+    <a href="https://www.maptiler.com" class="watermark"><img
+        src="https://api.maptiler.com/resources/logo.svg" alt="MapTiler logo"/></a>
+    <div class="map" #map></div>
+    <div class="close-button" (click)="closeMap()"></div> <!-- Aquí agregamos el botón de cierre -->
+  </div>
   
   
   <!-- This is the modal -->
