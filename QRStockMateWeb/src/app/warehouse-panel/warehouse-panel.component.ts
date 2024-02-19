@@ -101,7 +101,7 @@ export class WarehousePanelComponent {
       mapContainer.style.display = 'none';
     }
 
-    const initialState = { lng: 139.753, lat: 35.6844, zoom: 14 };
+    const initialState = { lng: 28.116924, lat: -15.449493, zoom: 14 };
 
     this.map = new Map({
       container: this.mapContainer.nativeElement,

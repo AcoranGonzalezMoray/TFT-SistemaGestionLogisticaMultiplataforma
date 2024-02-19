@@ -1,1 +1,154 @@
-<p>vehicle-panel works!</p>
+<div class="mat-elevation-z8">
+    <div style="background-color: #ffffff14;">
+      <form class="uk-search uk-search-navbar">
+        <span uk-search-icon></span>
+        <input #search class="uk-search-input" (input)="searchByValue(search)" type="search" placeholder="Search" aria-label="Search">
+      </form>
+    </div>
+    <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
+  
+    <table mat-table [dataSource]="dataSource">
+  
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef> ID </th>
+        <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+      </ng-container>
+  
+      <ng-container matColumnDef="code">
+        <th mat-header-cell *matHeaderCellDef> Code </th>
+        <td mat-cell *matCellDef="let element"> {{element.code}} </td>
+      </ng-container>
+  
+      <ng-container matColumnDef="make">
+        <th mat-header-cell *matHeaderCellDef> Make </th>
+        <td mat-cell *matCellDef="let element"> {{element.make}} </td>
+      </ng-container>
+  
+      <ng-container matColumnDef="model">
+        <th mat-header-cell *matHeaderCellDef> Model </th>
+        <td mat-cell *matCellDef="let element"> {{element.model}} </td>
+      </ng-container>
+  
+      <ng-container matColumnDef="year">
+        <th mat-header-cell *matHeaderCellDef> Year </th>
+        <td mat-cell *matCellDef="let element"> {{element.year}} </td>
+      </ng-container>
+  
+      <ng-container matColumnDef="color">
+        <th mat-header-cell *matHeaderCellDef> Color </th>
+        <td mat-cell *matCellDef="let element"> {{element.color}} </td>
+      </ng-container>
+  
+      <ng-container matColumnDef="licensePlate">
+        <th mat-header-cell *matHeaderCellDef> License Plate </th>
+        <td mat-cell *matCellDef="let element"> {{element.licensePlate}} </td>
+      </ng-container>
+  
+      <ng-container matColumnDef="maxLoad">
+        <th mat-header-cell *matHeaderCellDef> Max Load </th>
+        <td mat-cell *matCellDef="let element"> {{element.maxLoad}} </td>
+      </ng-container>
+   
+      <ng-container matColumnDef="action">
+        <th mat-header-cell *matHeaderCellDef> Action </th>
+        <td mat-cell *matCellDef="let element"> 
+          <button mat-icon-button color="primary" uk-toggle="target: #modal-example-vehicle-see" (click)="setVehicle(element)">
+            <mat-icon>visibility</mat-icon>
+          </button>
+          
+          <button   mat-icon-button color="edit" uk-toggle="target: #modal-example-vehicle" (click)="setVehicle(element)">
+            <mat-icon>edit</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+  
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr  [@rowsAnimation]="" mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  
+    <mat-paginator [pageSizeOptions]="[5, 10, 20]"
+                   showFirstLastButtons
+                   aria-label="Select page of vehicles"
+                   [pageSize]="5">
+    </mat-paginator>
+  </div>
+  
+  
+    
+<!-- Modal de edición -->
+<div id="modal-example-vehicle" class="uk-flex-top" uk-modal>
+    <div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical" >
+        <h2 class="uk-modal-title">Make: {{vehicle?.make}}, Model: {{vehicle?.model}}</h2>
+        <div style="display: flex;justify-content: center;align-items: center;">
+          <img style="height: 300px; width: 750px; margin-right: 30px;" 
+          [src]="'../../assets/images/user.png'" 
+          alt="">
+               <br>
+          <div>
+            <div class="uk-grid-small" uk-grid>
+              <div class="uk-width-1-2@s">
+                  <input readonly="true" class="uk-input" type="text" value="{{vehicle?.make}}" aria-label="Vehicle Make">
+              </div>
+              <div class="uk-width-1-2@s">
+                  <input readonly="true" class="uk-input" type="text" value="{{vehicle?.model}}" aria-label="Vehicle Model">
+              </div>
+              <div class="uk-width-1-1">
+                  <input readonly="true" class="uk-input" type="text" value="{{vehicle?.licensePlate}}" aria-label="Vehicle Location">
+              </div>
+              <div class="uk-width-1-1">
+                  <input readonly="true" class="uk-input" type="text" value="{{vehicle?.maxLoad}}" aria-label="Vehicle Max Load">
+              </div>
+            </div>
+            <div class="uk-margin">
+              <div uk-form-custom="target: > * > span:first-child">
+              </div>
+            </div>
+            <div style="display: flex; justify-content: center;align-items: center;">
+              <button  style="margin-right: 20px;width: 100px;" class="uk-button uk-button-danger uk-modal-close-default" >Close</button>
+              <button class="uk-button uk-button-primary" *ngIf="!isLoading" >Update</button>
+              <button *ngIf="isLoading" class="uk-button uk-button-primary" >
+                <div #notifyV uk-spinner onclick="UIkit.notification({message: '<span uk-icon=\'icon: check\'></span> Vehicle Successfully Updated', status: 'success'})"></div>
+              </button>
+            </div>
+          </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de vista -->
+<div id="modal-example-vehicle-see" class="uk-flex-top" uk-modal>
+  <div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical" >
+      <h2 class="uk-modal-title">Make: {{vehicle?.make}}, Model: {{vehicle?.model}}</h2>
+      <div style="display: flex;justify-content: center;align-items: center;">
+        <img style="height: 300px; width: 750px; margin-right: 30px;" 
+        [src]="'../../assets/images/user.png'" 
+        alt="">
+             <br>
+        <div style="display: flex;flex-direction: column;">
+        <div>
+          <div class="uk-grid-small" uk-grid>
+            <div class="uk-width-1-2@s">
+                <input readonly="true" class="uk-input" type="text" value="{{vehicle?.make}}" aria-label="Vehicle Make">
+            </div>
+            <div class="uk-width-1-2@s">
+                <input readonly="true" class="uk-input" type="text" value="{{vehicle?.model}}" aria-label="Vehicle Model">
+            </div>
+            <div class="uk-width-1-1">
+                <input readonly="true" class="uk-input" type="text" value="{{vehicle?.licensePlate}}" aria-label="Vehicle Location">
+            </div>
+            <div class="uk-width-1-1">
+                <input readonly="true" class="uk-input" type="text" value="{{vehicle?.maxLoad}}" aria-label="Vehicle Max Load">
+            </div>
+          </div>
+        </div>
+        <div class="close_modal_single">
+          <button  style="margin-right: 20px;width: 100px;" class="uk-button uk-button-danger uk-modal-close-default" >Close</button>
+        </div>
+      </div>
+      </div>
+  </div>
+</div>
+
+
+    <div #notifEmptyV  onclick="UIkit.notification({message: '<span uk-icon=\'icon: future\'></span> There Are No Vehicles At This Time', status: 'primary'})"></div>
+  

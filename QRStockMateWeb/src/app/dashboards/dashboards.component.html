@@ -81,3 +81,7 @@
     </li>
 
 </div>
+
+<div #notifyErrorDash onclick="UIkit.notification({message: '<span uk-icon=\'icon: close\'></span> There Is Already A Panel With That Name. ', status: 'danger'})"></div>
+<div #notifyOkDash onclick="UIkit.notification({message: '<span uk-icon=\'icon: check\'></span> Enter A Valid Name', status: 'success'})"></div>
+<div #notifyValidName onclick="UIkit.notification({message: '<span uk-icon=\'icon: close\'></span> Enter A Valid Name', status: 'danger'})"></div>

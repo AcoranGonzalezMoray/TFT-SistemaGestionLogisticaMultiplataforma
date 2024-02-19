@@ -14,7 +14,21 @@ export interface TransportRoute {
 }
 
 export enum RoleStatus {
-    Pending,
-    OnRoute,
-    Finalized
+    Pending="Pending",
+    OnRoute="On Route",
+    Finalized="Finalized"
 }
+
+export function getRoleStatus(number: number): string {
+    // Usa la sintaxis EnumName.EnumMember para acceder al valor del enumerado
+    switch (number) {
+      case 0:
+        return RoleStatus.Pending;
+      case 1:
+        return RoleStatus.OnRoute;
+      case 2:
+        return RoleStatus.Finalized;
+      default:
+        return 'Unknown'; // Opcional: devuelve un valor predeterminado para números desconocidos
+    }
+  }

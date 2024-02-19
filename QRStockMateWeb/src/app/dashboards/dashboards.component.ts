@@ -15,7 +15,9 @@ export class DashboardsComponent {
   userDashboard: Data| undefined;
   selectedDashboard: any; // Variable para almacenar el dashboard seleccionado
   @ViewChild('parentUl') parentUl: ElementRef | undefined;
-
+  @ViewChild('notifyValidName') validName!: ElementRef;
+  @ViewChild('notifyErrorDash') errorDash!: ElementRef;
+  @ViewChild('notifyOkDash') okDash!: ElementRef;
 
   constructor(private userService: DataService, private gridItemService: GridItemServiceService, private router: Router) {}
   
@@ -32,24 +34,29 @@ export class DashboardsComponent {
   }
 
   addDashboard(name: string) {
-    // Crear un nuevo dashboard con el nombre proporcionado y un array vacío para 'vista'
-    const newDashboard: Dashboard = { nombre: name, vista: [] };
-  
-    // Verificar si 'userDashboard' y 'userDashboard.data' existen
-    if (this.userDashboard && this.userDashboard.data) {
-      // Verificar si ya existe un dashboard con el mismo nombre
-      const existingDashboard = this.userDashboard.data.dashboards.find(dashboard => dashboard.nombre === name);
-  
-      if (!existingDashboard) {
-        // Si no existe, añadir el nuevo dashboard al array 'dashboards'
-        this.userDashboard.data.dashboards.push(newDashboard);
-  
-        // Aquí puedes guardar los cambios en el servicio o donde lo necesites
-        this.userService.setUserDashboard(this.userDashboard);
-        console.log('Nuevo dashboard añadido con éxito');
-      } else {
-        console.log('Ya existe un dashboard con ese nombre');
+    if(name.length != 0){
+      // Crear un nuevo dashboard con el nombre proporcionado y un array vacío para 'vista'
+      const newDashboard: Dashboard = { nombre: name, vista: [] };
+    
+      // Verificar si 'userDashboard' y 'userDashboard.data' existen
+      if (this.userDashboard && this.userDashboard.data) {
+        // Verificar si ya existe un dashboard con el mismo nombre
+        const existingDashboard = this.userDashboard.data.dashboards.find(dashboard => dashboard.nombre === name);
+    
+        if (!existingDashboard) {
+          // Si no existe, añadir el nuevo dashboard al array 'dashboards'
+          this.userDashboard.data.dashboards.push(newDashboard);
+    
+          // Aquí puedes guardar los cambios en el servicio o donde lo necesites
+          this.userService.setUserDashboard(this.userDashboard);
+          this.okDash.nativeElement.click()
+        } else {
+          this.errorDash.nativeElement.click()
+        }
       }
+    }else {
+      this.validName.nativeElement.click()
+
     }
   }
   

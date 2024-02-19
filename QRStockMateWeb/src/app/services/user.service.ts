@@ -9,13 +9,14 @@ import { Company } from '../interfaces/company';
   providedIn: 'root'
 })
 export class UserService {
-  static getCompanyByUser(token: string, arg1: any) {
-    throw new Error('Method not implemented.');
-  }
 
   private apiUrl: string = environment.API + '/User';
 
   constructor(private http: HttpClient) { }
+  
+  static getCompanyByUser(token: string, arg1: any) {
+    throw new Error('Method not implemented.');
+  }
 
   getUsers(): Observable<User[]> {
     return this.http.get<User[]>(this.apiUrl)

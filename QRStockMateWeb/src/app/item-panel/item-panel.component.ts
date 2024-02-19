@@ -22,8 +22,8 @@ export class ItemPanelComponent {
   @ViewChild(MatPaginator)
   paginator!: MatPaginator;
   clickedRows = new Set<Item>();
-  @ViewChild('notify') noty!: ElementRef;
-  @ViewChild('notifEmpty') notE!: ElementRef;
+  @ViewChild('notifyI') noty!: ElementRef;
+  @ViewChild('notifEmptyI') notE!: ElementRef;
   isLoading:Boolean = false
 
   constructor(private companyService: CompanyService, private userService:UserService, private itemService:ItemService) { }

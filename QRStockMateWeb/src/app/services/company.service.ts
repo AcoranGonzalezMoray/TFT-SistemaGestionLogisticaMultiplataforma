@@ -63,8 +63,11 @@ export class CompanyService {
       );
   }
 
-  getVehicles(code: string): Observable<Vehicle[]> {
-    return this.http.get<Vehicle[]>(`${this.apiUrl}/Vehicles/${code}`)
+  getVehicles(code: string, token:string): Observable<Vehicle[]> {
+    let headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    return this.http.get<Vehicle[]>(`${this.apiUrl}/Vehicles/${code}`, {headers: headers})
       .pipe(
         catchError(error => {
           throw 'Error getting vehicles: ' + error;

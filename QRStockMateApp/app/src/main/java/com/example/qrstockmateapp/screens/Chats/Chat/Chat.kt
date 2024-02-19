@@ -538,7 +538,7 @@ fun ChatScreen(navController: NavController, sharedPreferences: SharedPreference
 
     var showDialog by remember { mutableStateOf(false) }
 
-    if (isloading){
+    if (isloadScreen){
         Box(
             modifier = Modifier
                 .fillMaxSize()

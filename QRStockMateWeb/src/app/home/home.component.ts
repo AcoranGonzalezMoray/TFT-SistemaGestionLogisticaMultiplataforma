@@ -8,7 +8,7 @@ import { clearStorage } from '../sign-in/sign-in.component';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent {
-  activeItem: string = "Dashboard";
+  activeItem: string = "User";
   create: boolean = false
   constructor( private router: Router) { 
     this.create = true

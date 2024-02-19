@@ -54,7 +54,7 @@ export class GridItemServiceService {
 
   getDashboardObser(): Observable<Dashboard> {
     if (this.dashboard != undefined) {
-      return of(this.dashboard);
+      return this.dashboardSubject.asObservable();
     }
     return this.dashboardSubject.asObservable();
   }
