@@ -149,6 +149,7 @@ export function LineChartOptions(): EChartsOption {
         name: 'Highest',
         type: 'line',
         data: [10, 11, 13, 11, 12, 12, 9],
+        animation: true, // Animación activada
         markPoint: {
           data: [
             { type: 'max', name: 'Max' },
@@ -163,6 +164,7 @@ export function LineChartOptions(): EChartsOption {
         name: 'Lowest',
         type: 'line',
         data: [1, -2, 2, 5, 3, 2, 0],
+        animation: true, // Animación activada
         markPoint: {
           data: [{ name: '周最低', value: -2, xAxis: 1, yAxis: -1.5 }]
         },
@@ -188,9 +190,10 @@ export function LineChartOptions(): EChartsOption {
           ]
         }
       }
-    ] 
+    ], 
   }
 }
+
 
 export function BarChartOptions(): EChartsOption {
   return {

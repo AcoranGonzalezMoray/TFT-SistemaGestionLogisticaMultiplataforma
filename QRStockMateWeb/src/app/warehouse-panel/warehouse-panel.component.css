@@ -115,7 +115,12 @@ h4 {
     width: 93%;
 }
 
-
+.fab {
+    position: absolute;
+    bottom: 35px;
+    right: 35px;
+    z-index: 10000;
+}
 .map-wrap {
     position: relative;
     width: 100%;

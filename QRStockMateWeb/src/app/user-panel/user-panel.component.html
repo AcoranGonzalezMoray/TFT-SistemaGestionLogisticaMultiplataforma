@@ -1,4 +1,4 @@
-<div class="mat-elevation-z8">
+<div class="mat-elevation-z8" #TABLE>
   <div style="background-color: #ffffff14;">
     <form class="uk-search uk-search-navbar">
       <span uk-search-icon></span>
@@ -76,6 +76,13 @@
   </mat-paginator>
 </div>
 
+
+<div class="example-button-container">
+  <button (click)="export()" class="fab" mat-fab color="primary" aria-label="Example icon button with a delete icon">
+    <mat-icon *ngIf="!isLoading" fontIcon="download_2"></mat-icon>
+    <div *ngIf="isLoading"  uk-spinner></div>
+  </button>
+</div>
 
 <!-- This is the modal -->
 <div id="modal-example" class="uk-flex-top" uk-modal>

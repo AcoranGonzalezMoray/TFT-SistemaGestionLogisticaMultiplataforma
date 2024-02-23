@@ -1,12 +1,5 @@
 <div style="display: flex;height: 90%;">
-
-    <div  style="width: 5%;">
-
-    </div>
-
-
-
-    <div style="width: 95%;"> 
+    <div style="width: 100%;"> 
       
         <div>
           <div style="display: flex;padding: 20px;justify-content: space-between;">
@@ -27,15 +20,17 @@
           </div>
         </div>
 
-          <gridster [ngStyle]="{'background-color': modeEdit ? '#222222' : '#22222', 'height':'90%'}" [options]="options" >
-            <gridster-item  class="uk-box-shadow-large uk-box-shadow-hover-xlarge   " *ngFor="let item of dashboard" [item]="item" >
-              <button *ngIf="modeEdit" class="uk-button uk-button-default uk-float-right " style="position: relative;z-index: 30;" type="button" (click)="removeItem(item)"><span uk-icon="trash"></span></button>
-                <ng-container *ngIf="item['componentType']" > 
-                  <app-vista  [chartType]="item['chartType']" [item]="item"></app-vista>
-                </ng-container>
-            </gridster-item>
-
-          </gridster>
+        <gridster [ngStyle]="{'background-color': modeEdit ? '#222222' : '#22222', 'height':'90%'}" [options]="options">
+          <gridster-item class="uk-box-shadow-large uk-box-shadow-hover-large" *ngFor="let item of dashboard" [item]="item">
+            <button *ngIf="modeEdit" class="uk-button uk-button-default uk-float-right" style="position: relative;z-index: 30;" type="button" (click)="removeItem(item)">
+              <span uk-icon="trash"></span>
+            </button>
+            <ng-container *ngIf="item['componentType']">
+              <app-vista [@fadeInOut]="true" [chartType]="item['chartType']" [item]="item"></app-vista>
+            </ng-container>
+          </gridster-item>
+        </gridster>
+        
     </div>
 
     <div id="modal-example-dash" uk-modal>

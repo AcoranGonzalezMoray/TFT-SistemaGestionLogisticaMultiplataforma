@@ -72,6 +72,13 @@
   </div>
 
 
+  <div class="example-button-container">
+    <button (click)="export()" class="fab" mat-fab color="primary" aria-label="Example icon button with a delete icon">
+      <mat-icon *ngIf="!isLoading" fontIcon="download_2"></mat-icon>
+      <div *ngIf="isLoading"  uk-spinner></div>
+    </button>
+  </div>
+  
   <div id="containerMap" class="map-wrap">
     <a href="https://www.maptiler.com" class="watermark"><img
         src="https://api.maptiler.com/resources/logo.svg" alt="MapTiler logo"/></a>
@@ -92,16 +99,20 @@
             <div>
               <div class="uk-grid-small" uk-grid>
               <div class="uk-width-1-2@s">
-                  <input readonly="true" class="uk-input" type="text" value={{warehouse?.name}} aria-label="100">
+                  <input #name class="uk-input" type="text" value={{warehouse?.name}} aria-label="100">
               </div>
               <div class="uk-width-1-2@s">
-                <input readonly="true" class="uk-input" type="text"   value={{warehouse?.organization}} aria-label="100">
+                <input #or  class="uk-input" type="text"   value={{warehouse?.organization}} aria-label="100">
               </div>
               <div class="uk-width-1-1">
-                <input #email class="uk-input" type="text" value={{warehouse?.location}} aria-label="100">
+                <input #location class="uk-input" type="text" value={{warehouse?.location}} aria-label="100">
               </div>
                 <div class="uk-width-1-1">
-                    <input #phone class="uk-input" type="text" value={{warehouse?.idAdministrator}} aria-label="50">
+                    <div class="uk-form-controls">
+                      <select #selectw class="uk-select" id="form-stacked-select" (change)="updateWarehouseAd($event)">
+                          <option  *ngFor="let user of users"   [value]="user.id" value="{{user.id}}" >{{user.name}}</option>
+                      </select>
+                  </div>
                 </div>
               </div>
             <div class="uk-margin">
@@ -110,10 +121,10 @@
               </div>
             </div>
             <div style="display: flex; justify-content: center;align-items: center;">
-              <button  style="margin-right: 20px;width: 100px;" class="uk-button uk-button-danger uk-modal-close-default" >Close</button>
-              <button class="uk-button uk-button-primary" *ngIf="!isLoading" >Update</button>
+              <button #closeModal  style="margin-right: 20px;width: 100px;" class="uk-button uk-button-danger uk-modal-close-default" >Close</button>
+              <button class="uk-button uk-button-primary" (click)="updateWarehouse(name.value, location.value, or.value)" *ngIf="!isLoading" >Update</button>
               <button *ngIf="isLoading" class="uk-button uk-button-primary" >
-                <div #notify uk-spinner onclick="UIkit.notification({message: '<span uk-icon=\'icon: check\'></span> User Successfully Updated', status: 'success'})"></div>
+                <div #notify uk-spinner onclick="UIkit.notification({message: '<span uk-icon=\'icon: check\'></span> Warehouse Successfully Updated', status: 'success'})"></div>
               </button>
             </div>
             </div>

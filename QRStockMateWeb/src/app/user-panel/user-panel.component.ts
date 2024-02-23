@@ -6,6 +6,9 @@ import {MatTableDataSource} from '@angular/material/table';
 import { UserService } from '../services/user.service';
 import { Company } from '../interfaces/company';
 import { rowsAnimation } from 'src/assets/animations';
+import * as XLSX from 'xlsx';
+import * as ExcelJS from 'exceljs';
+import { baseImage } from 'src/assets/imagebase64';
 
 @Component({
   selector: 'app-user-panel',
@@ -21,6 +24,7 @@ export class UserPanelComponent {
   company!: Company;
   selected = 'option2';
   token:string = ""
+  users: User[] = [];
   me!:User;
   user:User|undefined;
   @ViewChild(MatPaginator)
@@ -38,7 +42,7 @@ export class UserPanelComponent {
   }
 
   setUser(user:User){
-    this.user = user
+    this.user = { ...user };
   }
 
   searchByValue(element:HTMLInputElement){
@@ -79,13 +83,92 @@ export class UserPanelComponent {
   }
   
 
+  async export() {
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Users');
+
+    // Definir los datos
+    const headerRow = ['ID', 'Name', 'Email', 'Phone', 'Code', 'Role'];
+
+    // Agregar el logo
+    worksheet.addRow([])
+    worksheet.addRow([]);
+    worksheet.addRow([]);
+    worksheet.addRow([]);
+    worksheet.addRow(headerRow);
+
+    worksheet.mergeCells('A1:F4');
+    // Obtener la celda fusionada
+    const mergedCell = worksheet.getCell('A1');
+    mergedCell.value  = 'QRSTOCKMATE'
+    mergedCell.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'FF5a79ba' } // Color #222222
+    };
+    // Agregar los datos de los usuarios
+    this.users.forEach((user: User) => {
+        worksheet.addRow([
+            user.id,
+            user.name,
+            user.email,
+            user.phone,
+            user.code,
+            user.role
+        ]);
+    });
+
+    // Establecer el tamaño de fuente y centrar el contenido de las celdas
+    worksheet.eachRow({ includeEmpty: true }, (row, rowNumber) => {
+        row.eachCell({ includeEmpty: true }, (cell, colNumber) => {
+            cell.font = { size: 13 };
+            cell.border = {
+              top: {style:'thin'},
+              left: {style:'thin'},
+              bottom: {style:'thin'},
+              right: {style:'thin'}
+            };
+            cell.alignment = { horizontal: 'center', vertical: 'middle' };
+        });
+    });
+    worksheet.getRow(4).eachCell({ includeEmpty: false }, (cell, colNumber) => {
+      cell.font = {bold:true}
+    });
+    worksheet.getRow(1).eachCell({ includeEmpty: false }, (cell, colNumber) => {
+      cell.font = { bold: true, color: { argb: 'FFFFFFFF' } }; // Color blanco en hexadecimal
+    });
+
+    // Agregar imagen base64 como logo
+    const base64Image = 'data:image/png;base64,' + baseImage; // Reemplaza baseImage con tu imagen base64
+    const imageId = workbook.addImage({
+        base64: base64Image,
+        extension: 'png',
+    });
+
+    worksheet.addImage(imageId, "A1:A4");
+
+    // Ajustar el ancho de las columnas según el tamaño del logo
+    worksheet.columns.forEach((column) => {
+        column.width = 20; // Ajusta el ancho de la columna según sea necesario
+    });
+
+    // Guardar el archivo
+    const buffer = await workbook.xlsx.writeBuffer();
+    const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    const fileName = 'QRSTOCKMATE_User_Report_' + new Date().toISOString() + '.xlsx';
+    const link = document.createElement('a');
+    link.href = window.URL.createObjectURL(blob);
+    link.download = fileName;
+    link.click();
+  }
+
   
 
   loadEmployees(): void {
     this.companyService.getEmployees(this.company, this.token)
       .subscribe(employees => {
         const users: User[] = [];
-
+        this.users = employees;
         employees.forEach((user, index) => {
           setTimeout(() => {
             user.role = getRoleUser(Number(user.role))
@@ -98,6 +181,7 @@ export class UserPanelComponent {
 
       });
   }
+  
   isNumber(value: any): boolean {
     return typeof value === 'number' && isFinite(value);
   }
@@ -146,7 +230,7 @@ export class UserPanelComponent {
     } else {
       localNumber = number;
     }
-  
+
     return getRoleUser(localNumber);
   }
 
@@ -170,3 +254,4 @@ export class UserPanelComponent {
 
   }
 }
+

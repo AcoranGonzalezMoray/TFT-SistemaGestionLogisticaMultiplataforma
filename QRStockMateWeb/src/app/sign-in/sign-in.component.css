@@ -57,7 +57,7 @@ body {
     display: flex;
     width: 100vw;
     height: 100vh;
-    background-color: #24242c;
+    background-color: #222222;
 }
 
 .container {
@@ -136,7 +136,7 @@ input:focus + label {
     left: 20px;
     transform: translateY(-22px);
     font-size: 12px;
-    background-color: #24242c;
+    background-color: #222222;
 }
 ::-ms-reveal {
     filter: invert(100%);
@@ -145,7 +145,7 @@ input:focus + label {
     left: 20px;
     transform: translateY(-22px);
     font-size: 12px;
-    background-color: #24242c;
+    background-color: #222222;
 }
 
 button {

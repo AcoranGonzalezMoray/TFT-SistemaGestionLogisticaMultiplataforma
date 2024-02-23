@@ -33,9 +33,10 @@ export class SignInComponent {
   }
 
   signIn(email: string, password: string): void {
+    this.isLoading=true
+
     this.userService.signIn(email, password)
       .subscribe(response => {
-        this.isLoading=true
 
         setTimeout(() => {
           var user:User = response.user

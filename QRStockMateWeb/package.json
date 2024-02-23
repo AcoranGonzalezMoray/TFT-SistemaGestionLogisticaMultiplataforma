@@ -25,12 +25,16 @@
     "@types/maplibre-gl": "^1.14.0",
     "angular-gridster2": "^16.0.0",
     "echarts": "^5.4.3",
+    "exceljs": "^4.4.0",
     "lottie-web": "^5.12.2",
     "maplibre-gl": "^4.0.1",
     "ngx-echarts": "^17.1.0",
     "ngx-lottie": "^10.0.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
+    "xlsx": "^0.18.5",
+    "xlsx-populate": "^1.21.0",
+    "xlsx-style": "^0.8.13",
     "zone.js": "~0.13.0"
   },
   "devDependencies": {

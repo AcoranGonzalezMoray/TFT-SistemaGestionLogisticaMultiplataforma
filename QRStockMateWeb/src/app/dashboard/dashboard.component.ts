@@ -6,11 +6,23 @@ import { Dashboard } from '../interfaces/dashboard';
 import { gridTypes } from 'angular-gridster2/lib/gridsterConfig.interface';
 import { DataService } from '../services/data.service';
 import { View } from '../interfaces/view';
+import { animate, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.css']
+  styleUrls: ['./dashboard.component.css'],
+  animations: [
+    trigger('fadeInOut', [
+      transition(':enter', [
+        style({ opacity: 0 }),
+        animate('1000ms', style({ opacity: 1 })),
+      ]),
+      transition(':leave', [
+        animate('1000ms', style({ opacity: 0 })),
+      ]),
+    ]),
+  ],
 })
 export class DashboardComponent{
   options!: GridsterConfig;

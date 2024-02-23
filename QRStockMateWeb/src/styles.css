@@ -10,7 +10,10 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     border: 1px solid #5a79ba; /* Agrega un borde azul de 2 píxeles */
 
 }
-
+.uk-open>.uk-modal-dialog {
+  border-radius: 20px;
+  border: 1px solid #5a79ba
+}
 .close-button {
     position: absolute;
     top: 10px;
