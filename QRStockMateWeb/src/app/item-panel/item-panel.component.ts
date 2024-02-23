@@ -190,6 +190,7 @@ export class ItemPanelComponent {
     this.isLocation= 0
 
     this.itemsExcel = []
+    this.itemsExcelError = []
 
     const file = event?.target?.files[0];
     console.log(file);
