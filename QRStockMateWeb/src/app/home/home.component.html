@@ -18,22 +18,26 @@
     }
     .uk-nav-item:hover {
         background-color: #222222;
-
-        border-radius: 5px;
+        border-radius: 26px ;
     }
+
     .active {
         background-color: #222222;
-        border-radius: 5px;
+        border-radius: 26px;
+        transition: top 0.3s ease, left 0.3s ease; /* Transición suave para top y left */
+
     }
     .uk-parent:hover {
         background-color: #222222;
-        border-radius: 5px;
+        border-radius: 26px;
     }
     .active-list {
         background-color: red;
     }
     .uk-nav-default{
        padding: 10px;
+    }
+    .uk-nav-default:hover{
     }
     .uk-nav-default .uk-nav-sub a:hover {
         color: white;
@@ -71,8 +75,33 @@
     li > ul > li:hover {
         background-color: #ffffff14 !important;
         border-radius: 10px;
-        padding: 10px;
+        
     }
+
+    #main {
+        height: 72px;
+        width: 50px;
+        top: 244px;
+        left: 204px;
+        background-color: #222222;
+        position: absolute;
+        overflow: hidden;
+        transition: top 0.3s ease, left 0.3s ease; /* Transición suave para top y left */
+
+    }
+
+    #main div {
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        border-radius: 100%;
+        background-color: #5a79ba;
+    }
+
+    .top { top: -10px; }
+    .bottom { bottom: -10px; }
+    .left { left: -10px; }
+    .right { right: -10px; }
 </style>
 <div class="create" *ngIf="create">
     <app-main-animation ruta="../../assets/animations/splash_fast.json" [speed]=2  (finishEvent)="finishAnimation()">></app-main-animation>
@@ -88,40 +117,44 @@
             </div>
             <div class="uk-card uk-card-body">
                 <ul class="uk-nav-default " uk-nav>
-                    <li [class.active]="activeItem === 'Dashboard'"  class="uk-parent uk-active uk-animation-slide-right " style="-webkit-animation-duration: 3.5s;animation-duration: 3.5s;"  #parentUl>
+                    <li #DSH [class.active]="activeItem === 'Dashboard'"  class="uk-parent uk-active uk-animation-slide-right " style="-webkit-animation-duration: 3.5s;animation-duration: 3.5s;"  #parentUl (click)="drop()">
                         <a href="#"> <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="dashboard" ></mat-icon>Dashboard <span uk-nav-parent-icon></span></a>
                         <ul class="uk-nav-sub " >
-                            <app-dashboards (click)="setActive('Dashboard')"></app-dashboards>
+                            <app-dashboards (click)="setActive('Dashboard',$event.target)"></app-dashboards>
                         </ul>
                     </li>
-                    <li [class.active]="activeItem === 'Profile'"  class="uk-parent uk-animation-slide-right" style="-webkit-animation-duration: 3.6s;animation-duration: 3.6s;">
-                        <a href="#"><mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="settings_account_box"></mat-icon> Account <span uk-nav-parent-icon></span></a>
+                    <li #DSB [class.active]="activeItem === 'Profile'"  class="uk-parent uk-animation-slide-right" style="-webkit-animation-duration: 3.6s;animation-duration: 3.6s;" (click)="drop()">
+                        <a href="#"><mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="settings"></mat-icon> Account <span uk-nav-parent-icon></span></a>
                         <ul class="uk-nav-sub">
-                            <li (click)="setActive('Profile')"><a href="#"><mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="group"></mat-icon>Profile</a></li>
+                            <li  (click)="setActive('Profile',$event.target)"><a href="#"><mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="group"></mat-icon>Profile</a></li>
                             <li (click)="logOut()"><a ><mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="logout"></mat-icon> Log out</a></li>
                         </ul>
                     </li>
                     <li class="uk-nav-divider"></li>
-                    <li  [class.active]="activeItem === 'User'" class="uk-nav-item uk-animation-slide-right uk-animation-3" style="-webkit-animation-duration: 3.8s;animation-duration: 3.8s;" (click)="setActive('User')"><a href="#">
+                    <li   [class.active]="activeItem === 'User'" class="uk-nav-item uk-animation-slide-right uk-animation-3" style="-webkit-animation-duration: 3.8s;animation-duration: 3.8s;" (click)="setActive('User',$event.target)"><a href="#">
                         <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="group"></mat-icon> Users</a></li>
-                    <li  [class.active]="activeItem === 'Warehouse'" class="uk-nav-item uk-animation-slide-right uk-animation-4" style="-webkit-animation-duration: 4.0s;animation-duration: 4.0s;" (click)="setActive('Warehouse')"><a href="#">
+                    <li  [class.active]="activeItem === 'Warehouse'" class="uk-nav-item uk-animation-slide-right uk-animation-4" style="-webkit-animation-duration: 4.0s;animation-duration: 4.0s;" (click)="setActive('Warehouse',$event.target)"><a href="#">
                         <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="warehouse"></mat-icon> Warehouses</a></li>
-                    <li  [class.active]="activeItem === 'Item'" class="uk-nav-item uk-animation-slide-right uk-animation-5" style="-webkit-animation-duration: 4.2s;animation-duration: 4.2s;" (click)="setActive('Item')"><a href="#">
+                    <li  [class.active]="activeItem === 'Item'" class="uk-nav-item uk-animation-slide-right uk-animation-5" style="-webkit-animation-duration: 4.2s;animation-duration: 4.2s;" (click)="setActive('Item',$event.target)"><a href="#">
                         <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="category"></mat-icon> Items</a></li>
-                    <li [class.active]="activeItem === 'Vehicle'" class="uk-nav-item uk-animation-slide-right uk-animation-5" style="-webkit-animation-duration: 4.2s;animation-duration: 4.2s;" (click)="setActive('Vehicle')"><a href="#">
+                    <li [class.active]="activeItem === 'Vehicle'" class="uk-nav-item uk-animation-slide-right uk-animation-5" style="-webkit-animation-duration: 4.2s;animation-duration: 4.2s;" (click)="setActive('Vehicle',$event.target)"><a href="#">
                         <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="local_shipping"></mat-icon> Vehicles</a></li>
-                    <li  [class.active]="activeItem === 'TransportRoute'" class="uk-nav-item uk-animation-slide-right uk-animation-6" style="-webkit-animation-duration: 4.4s;animation-duration: 4.4s;" (click)="setActive('TransportRoute')"><a href="#"> 
+                    <li  [class.active]="activeItem === 'TransportRoute'" class="uk-nav-item uk-animation-slide-right uk-animation-6" style="-webkit-animation-duration: 4.4s;animation-duration: 4.4s;" (click)="setActive('TransportRoute',$event.target)"><a href="#"> 
                         <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="map"></mat-icon>TransportRoutes</a></li>
-                    <li  [class.active]="activeItem === 'Company'" class="uk-nav-item uk-animation-slide-right uk-animation-7" style="-webkit-animation-duration: 4.6s;animation-duration: 4.6s;" (click)="setActive('Company')"><a href="#">
-                        <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="source_environment"></mat-icon> Company</a></li>
-                    <li  [class.active]="activeItem === 'Communication'" class="uk-nav-item uk-animation-slide-right uk-animation-8" style="-webkit-animation-duration: 4.8s;animation-duration: 4.8s;" (click)="setActive('Communication')"><a href="#">
+                    <li  [class.active]="activeItem === 'Company'" class="uk-nav-item uk-animation-slide-right uk-animation-7" style="-webkit-animation-duration: 4.6s;animation-duration: 4.6s;" (click)="setActive('Company',$event.target)"><a href="#">
+                        <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="apartment"></mat-icon> Company</a></li>
+                    <li  [class.active]="activeItem === 'Communication'" class="uk-nav-item uk-animation-slide-right uk-animation-8" style="-webkit-animation-duration: 4.8s;animation-duration: 4.8s;" (click)="setActive('Communication',$event.target)"><a href="#">
                         <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="forum"></mat-icon> Communications</a></li>
                     
                     <li class="uk-nav-divider"></li>
-                    <li  [class.active]="activeItem === 'Transaction'" class="uk-nav-item uk-animation-slide-right uk-animation-10" style="-webkit-animation-duration: 5.2s;animation-duration: 5.2s;" (click)="setActive('Transaction')"><a href="#">
+                    <li  [class.active]="activeItem === 'Transaction'" class="uk-nav-item uk-animation-slide-right uk-animation-10" style="-webkit-animation-duration: 5.2s;animation-duration: 5.2s;" (click)="setActive('Transaction',$event.target)"><a href="#">
                         <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="timeline"></mat-icon>History</a></li>
                 </ul>
             </div>
+        </div>
+        <div id="main" [style.top.px]="mainCoordinates.top" [style.height.px]="mainCoordinates.height" [style.left.px]="mainCoordinates.left">
+            <div class="top left"></div>
+            <div class="bottom left"></div>
         </div>
         <div class="uk-card uk-card-default uk-card-body" style="background-color: #222222; width: 100%;padding-top: 10px;height: 100%; border-radius: 20px;overflow: auto; border: 1px solid #5a79ba;"> <!-- Ajusta el ancho aquí -->
             <app-navbar></app-navbar>

@@ -1,0 +1,19 @@
+::-webkit-scrollbar {
+    width: 5px; /* Ancho de la barra de desplazamiento */
+}
+
+::-webkit-scrollbar-track {
+    background: #222222; /* Color del fondo de la barra de desplazamiento */
+    border-radius: 5px;
+    margin-bottom: 5px;
+    margin-top: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #444444; /* Color del botón de la barra de desplazamiento */
+    border-radius: 5px; /* Radio de la esquina del botón de la barra de desplazamiento */
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #666666; /* Color del botón de la barra de desplazamiento al pasar el mouse */
+}

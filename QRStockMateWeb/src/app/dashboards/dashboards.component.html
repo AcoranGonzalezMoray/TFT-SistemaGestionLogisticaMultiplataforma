@@ -39,14 +39,14 @@
     .dash:hover a{
         background-color: #ffffff14 !important;
         border-radius: 10px;
-        padding: 10px;
+        
     }
-    .active a{
+    .activeOver a{
         background-color: #ffffff14 !important;
         border-radius: 10px;
         padding: 10px;
     }
-    .active span{
+    .activeOver span{
         border-radius: 10px;
        
     }
@@ -59,29 +59,27 @@
         left: 150px !important;
     }
 </style>
-<div *ngIf="userDashboard">
+<div style="overflow-x: hidden;max-height: 120px;" *ngIf="userDashboard">
     <div *ngFor="let dashboard of userDashboard.data.dashboards">
-         <li class="dash" [ngClass]="{ 'active': dashboard === selectedDashboard }" (mouseenter)="addHoverClass()" (mouseleave)="removeHoverClass()"><a href="#" style="color: white;" (click)="open(dashboard)" >
+         <li class="dash" [ngClass]="{ 'activeOver': dashboard === selectedDashboard }" (mouseenter)="addHoverClass()" (mouseleave)="removeHoverClass()"><a href="#" style="color: white;" (click)="open(dashboard)" >
             <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="space_dashboard"></mat-icon>{{dashboard.nombre}}</a></li>
     </div>
-    <li class="uk-button"   style="display: flex;justify-content: center;">
+</div>
+<li class="uk-button"   style="display: flex;justify-content: center;">
     
 
-        <div>
-            <input style="border-radius: 10px;height: 30px;width: 130px; " #nombre class="uk-input" type="text" aria-label="Clickable icon">
-        </div>
-        <br>
-        <div style="margin-left: 10px;margin-right: 5px;">
-            <a style="color:white;background-color: #ffffff14;" (click)="addDashboard(nombre.value)" class="uk-icon-button">
-                <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="add"></mat-icon>
-            </a>
-        </div>
+    <div>
+        <input maxlength="11" style="border-radius: 10px;height: 30px;width: 130px; " #nombre class="uk-input" type="text" aria-label="Clickable icon">
+    </div>
+    <br>
+    <div style="margin-left: 10px;margin-right: 5px;">
+        <a style="color:white;background-color: #ffffff14;" (click)="addDashboard(nombre.value)" class="uk-icon-button">
+            <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="add"></mat-icon>
+        </a>
+    </div>
 
 
-    </li>
-
-</div>
-
+</li>
 <div #notifyErrorDash onclick="UIkit.notification({message: '<span uk-icon=\'icon: close\'></span> There Is Already A Panel With That Name. ', status: 'danger'})"></div>
 <div #notifyOkDash onclick="UIkit.notification({message: '<span uk-icon=\'icon: check\'></span> Enter A Valid Name', status: 'success'})"></div>
 <div #notifyValidName onclick="UIkit.notification({message: '<span uk-icon=\'icon: close\'></span> Enter A Valid Name', status: 'danger'})"></div>
