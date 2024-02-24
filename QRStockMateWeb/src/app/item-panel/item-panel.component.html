@@ -84,8 +84,10 @@
   <!-- This is the modal -->
   <div id="modal-example-upload" class="uk-flex-top" uk-modal>
     <div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
+      <button #closeExcel  class="uk-modal-close-default CLOSE_UP" type="button" uk-close></button>
+
       <div>
-        <p>You must keep in mind that the Excel file must contain the following columns among others (immutable name ):</p>
+        <p>You must keep in mind that the Excel file must contain the following columns among others:</p>
         <table style="width: 100%;" border="1">
           <thead>
               <tr>
@@ -126,24 +128,70 @@
           </tr>
           </tbody>
       </table>
-      <div *ngIf="(isLocation && isName && isStock && isWarehouse && isWeight) == 1">
-        <p style="color: green;">Detected items: {{itemsExcel.length}}</p>
-        <p style="color: red;">Items with wrong values: {{itemsExcelError.length}}</p>
-        <ul>
-          <li style="color: red;" *ngFor="let itemE of itemsExcelError">Name:{{itemE[0]}} in Row {{itemE[1]}} and Column {{itemE[2]}} </li>
-        </ul>
+      <div style="margin-top: 10px;" *ngIf="(isLocation && isName && isStock && isWarehouse && isWeight) == 1">
+        <div style="display: flex;align-items: center;"><mat-icon style="color: green;margin-right: 4px;" fontIcon="check_circle"></mat-icon><p style="color: green;">OK items: {{itemsExcel.length}}</p></div>
+        <div *ngIf="itemsExcelError.length>0">
+          <div style="display: flex;align-items: center;"><mat-icon style="color: red;margin-right: 4px;"   fontIcon="dangerous"></mat-icon><p style="color: red;">Items with wrong values: {{itemsExcelError.length}}</p></div>
+          <ul >
+            <li> <button (click)="generateRecord()" mat-button color="warn">Generate record with malformed elements</button></li>
+          </ul>
+        </div>
+        <div *ngIf="itemsExcelDup.length>0">
+          <div  style="display: flex;align-items: center;"><mat-icon style="color: #da8404;margin-right: 4px;" fontIcon="report"></mat-icon><p style="color: #da8404;">Existing items : {{itemsExcelDup.length}}</p>          </div>
+          <ul >
+            <li> <button (click)="generateRecordItemList()" mat-button color="dup">Generate record with existing elements</button></li>
+          </ul>
+        </div>
       </div>
     </div>
     
-      <div class="js-upload uk-placeholder uk-text-center">
-        <span uk-icon="icon: cloud-upload"></span>
-        <span class="uk-text-middle">Attach Excel files by dropping them here or</span>
-        <div uk-form-custom>
-          <input type="file" (change)="onFileChange($event, 1)" accept=".xlsx" multiple>
-          <span class="uk-link">selecting one</span>
+    <mat-stepper *ngIf="(isLocation && isName && isStock && isWarehouse && isWeight) != 1" orientation="vertical"  #stepper>
+      <mat-step [stepControl]="firstFormGroup">
+        <form [formGroup]="firstFormGroup">
+          <ng-template matStepLabel>Number of sheet in which the items are found</ng-template>
+          <mat-form-field>
+            <mat-label>Sheet</mat-label>
+            <input type="number"  #SHEET matInput placeholder="Ex. 1" formControlName="firstCtrl" required>
+          </mat-form-field>
+          <div>
+            <button mat-stroked-button color="primary" matStepperNext>Next</button>
+          </div>
+        </form>
+      </mat-step>
+      <mat-step [stepControl]="secondFormGroup">
+        <form [formGroup]="secondFormGroup">
+          <ng-template style="color: white;" matStepLabel>Number of row in which the columns are found</ng-template>
+          <mat-form-field>
+            <mat-label >Nº Row</mat-label>
+            <input type="number" #ROW matInput formControlName="secondCtrl" placeholder="Ex. 1 "
+                   required>
+          </mat-form-field>
+          <div>
+            <button mat-stroked-button color="warn" matStepperPrevious>Back</button>
+            <button style="margin-left: 15px;" mat-stroked-button color="primary" matStepperNext>Next</button>
+          </div>
+        </form>
+      </mat-step>
+      <mat-step>
+        <ng-template matStepLabel>Upload</ng-template>
+        <div  class="js-upload uk-placeholder uk-text-center">
+          <span uk-icon="icon: cloud-upload"></span>
+          <span class="uk-text-middle">Attach Excel file by dropping them here or</span>
+          <div uk-form-custom>
+            <input type="file" (change)="onFileChange($event, SHEET.value ,ROW.value)" accept=".xlsx">
+            <span class="uk-link">selecting one</span>
+          </div>
         </div>
+        <div>
+          <button mat-stroked-button color="warn" matStepperPrevious>Back</button>
+        </div>
+      </mat-step>
+    </mat-stepper>
+
+      <div *ngIf="(isLocation && isName && isStock && isWarehouse && isWeight) == 1" style="display: flex;justify-content: end;">
+        <button (click)="resetUpload()"  color="primary" mat-stroked-button>Reset</button>
+        <button (click)="continueAddItems()" style="margin-left: 15px;" mat-raised-button color="primary">Continue</button>
       </div>
-      
       <progress id="js-progressbar" class="uk-progress" value="0" max="100" hidden></progress>
     </div>
   </div>

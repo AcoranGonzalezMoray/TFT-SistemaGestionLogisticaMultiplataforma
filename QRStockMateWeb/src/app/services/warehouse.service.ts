@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, catchError } from 'rxjs';
 import { environment } from 'src/environment/environment';
 import { Warehouse } from '../interfaces/warehouse';
 
@@ -40,11 +40,13 @@ export class WarehouseService {
     return this.http.post<any>(`${this.apiUrl}/UpdateImage`, formData);
   }
 
-  // Agregar un ítem a un almacén
-  addItemToWarehouse(id: number, itemModel: any): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/AddItem/${id}`, itemModel);
-  }
 
+  addItemRange(token:string,itemModels: any[]): Observable<any> {
+    let headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    return this.http.post<any>(`${this.apiUrl}/AddItemRange/`, itemModels, {headers:headers})
+  }
   // Obtener todos los ítems de un almacén
   getItemsOfWarehouse(id: number): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/GetItems/${id}`);

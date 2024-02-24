@@ -6,7 +6,8 @@ import { ItemService } from '../services/item.service';
 import { rowsAnimation } from 'src/assets/animations';
 import * as ExcelJS from 'exceljs';
 import { baseImage } from 'src/assets/imagebase64';
-import * as XLSX from 'xlsx';
+import {FormBuilder, Validators, FormsModule, ReactiveFormsModule} from '@angular/forms';
+import { WarehouseService } from '../services/warehouse.service';
 
 @Component({
   selector: 'app-item-panel',
@@ -27,12 +28,14 @@ export class ItemPanelComponent {
   @ViewChild('notifyI') noty!: ElementRef;
   @ViewChild('notifyError') notyError!: ElementRef;
   @ViewChild('notifEmptyI') notE!: ElementRef;
+  @ViewChild('closeExcel') notExel!: ElementRef;
   isLoading:Boolean = false
   items:Item[]= []
   messages = ""
 
   itemsExcel: Item[] = []
   itemsExcelError: [String, Number, Number][] = []
+  itemsExcelDup: Item[] = []
 
   isWeight = 3
   isStock = 3
@@ -40,7 +43,13 @@ export class ItemPanelComponent {
   isWarehouse= 3
   isLocation= 3
 
-  constructor(private itemService:ItemService) { }
+  firstFormGroup = this._formBuilder.group({
+    firstCtrl: ['', Validators.required],
+  });
+  secondFormGroup = this._formBuilder.group({
+    secondCtrl: ['', Validators.required],
+  });
+  constructor(private itemService:ItemService,private warehouseService:WarehouseService,private _formBuilder: FormBuilder) { }
 
   ngOnInit(): void {
     this.isLoading = true
@@ -179,98 +188,267 @@ export class ItemPanelComponent {
   }
 
 
-
-
-  onFileChange(event: any, header:number) {
-
-    this.isWeight = 0
-    this.isStock = 0
-    this.isName = 0
-    this.isWarehouse= 0
-    this.isLocation= 0
+  resetUpload(){
+    this.isWeight = 3
+    this.isStock = 3
+    this.isName = 3
+    this.isWarehouse= 3
+    this.isLocation= 3
 
     this.itemsExcel = []
     this.itemsExcelError = []
+    this.itemsExcelDup = []
+  }
 
-    const file = event?.target?.files[0];
-    console.log(file);
-    if (file) {
-      const workbook = new ExcelJS.Workbook();
-      workbook.xlsx.load(file).then(() => {
-        const worksheet = workbook.getWorksheet(1); // Obtener la primera hoja del libro
-        const columnIndexes: { [key: string]: number } = {
-          'Name': -1,
-          'Warehouse ID': -1,
-          'Location': -1,
-          'Stock': -1,
-          'Weight Per Unit (Kg)': -1
-        };
-        let allColumnsPresent = true;
-        worksheet?.eachRow((row, rowNumber) => {
-          if (rowNumber == header) { // Identificar el índice de cada columna requerida
-            row.eachCell((cell, colNumber) => {
-              if(cell.value){
-                const columnName = cell.value.toString();
-                if (columnIndexes.hasOwnProperty(columnName)) {
-                  columnIndexes[columnName] = colNumber;
+  generateRecord() {
+    // Crear el contenido de la tabla HTML
+    let tableContent = '<table>\n'; // Iniciar la tabla
+
+    // Agregar encabezados de columna a la tabla
+    tableContent += '<tr><th>Item Name</th><th>Row</th><th>Column</th></tr>\n';
+
+    // Agregar cada error como una fila en la tabla
+    this.itemsExcelError.forEach((error, index) => {
+        tableContent += `<tr><td>${error[0]}</td><td>${error[1]}</td><td>${error[2]}</td></tr>\n`;
+    });
+
+    tableContent += '</table>'; // Cerrar la tabla
+
+    // Crear el contenido completo del archivo HTML
+    const htmlContent = `<!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Error Report</title>
+            <style>
+                table {
+                    border-collapse: collapse;
+                    width: 100%;
                 }
-              }
-            });
-            // Verificar si todas las columnas están presentes
-            let index = 0;
-            for (const column of Object.keys(columnIndexes)) {
-              setTimeout(() => {
-                if (columnIndexes[column] === -1) {
-                  if(column == 'Name')this.isName = 2
-                  if(column == 'Warehouse ID')this.isWarehouse = 2
-                  if(column == 'Location')this.isLocation = 2
-                  if(column == 'Stock')this.isStock = 2
-                  if(column == 'Weight Per Unit (Kg)') this.isWeight = 2
+                th, td {
+                    border: 1px solid black;
+                    padding: 8px;
+                    text-align: left;
+                }
+                th {
+                    background-color: #f2f2f2;
+                }
+            </style>
+        </head>
+        <body>
+            <h2>Error Report ${new Date().toISOString()}</h2>
+            ${tableContent} <!-- Insertar la tabla aquí -->
+        </body>
+        </html>`;
+
+    // Crear un Blob con el contenido HTML
+    const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+
+    // Crear un enlace para descargar el archivo
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `error_report_${new Date().toISOString()}.html`;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+  }
+
+  generateRecordItemList() {
+    // Crear el contenido de la tabla HTML
+    let tableContent = '<table>\n'; // Iniciar la tabla
   
-                  console.error(`La columna '${column}' no está presente en el archivo Excel.`);
-                  this.messages = `La columna '${column}' no está presente en el archivo Excel.`
-                  //this.notyError.nativeElement.click()
-                  allColumnsPresent = false;
-                }else {
-                  if(column == 'Name')this.isName = 1
-                  if(column == 'Warehouse ID')this.isWarehouse = 1
-                  if(column == 'Location')this.isLocation = 1
-                  if(column == 'Stock')this.isStock = 1
-                  if(column == 'Weight Per Unit (Kg)') this.isWeight = 1
+    // Agregar encabezados de columna a la tabla
+    tableContent += '<tr><th>Name</th><th>Warehouse ID</th><th>Location</th><th>Stock</th><th>Weight Per Unit</th></tr>\n';
+  
+    // Agregar cada item como una fila en la tabla
+    this.itemsExcelDup.forEach((item, index) => {
+      tableContent += `<tr><td>${item.name}</td><td>${item.warehouseId}</td><td>${item.location}</td><td>${item.stock}</td><td>${item.weightPerUnit}</td></tr>\n`;
+    });
+  
+    tableContent += '</table>'; // Cerrar la tabla
+  
+    // Crear el contenido completo del archivo HTML
+    const htmlContent = `<!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Item Table Report</title>
+            <style>
+                table {
+                    border-collapse: collapse;
+                    width: 100%;
                 }
-              },700*  ++index)
-            }
-          } else { // Crear objetos Item y agregarlos a la lista si todas las columnas están presentes
-            if (allColumnsPresent) {
-              const name = String(row.getCell(columnIndexes['Name']).value);
-              const warehouseId = Number(row.getCell(columnIndexes['Warehouse ID']).value);
-              const location = String(row.getCell(columnIndexes['Location']).value?.toString());
-              const stock = Number(row.getCell(columnIndexes['Stock']).value);
-              const weightPerUnit = Number(row.getCell(columnIndexes['Weight Per Unit (Kg)']).value);
-
-              // Verificar si algún campo es NaN
-              if (!isNaN(warehouseId) && !isNaN(stock) && !isNaN(weightPerUnit)) {
-                const newItem: Item = {
-                  id: 0,
-                  name: name,
-                  warehouseId: warehouseId,
-                  location: location,
-                  stock: stock,
-                  url: '', // Debes definir cómo obtener este valor del archivo Excel
-                  weightPerUnit: weightPerUnit
-                };
-                
-                this.itemsExcel.push(newItem);
-              } else {
-                console.error(`Valor NaN detectado en la fila ${rowNumber}, columna ${columnIndexes['Name']+1}`);
-                this.itemsExcelError.push([name,rowNumber, columnIndexes['Name']+1 ])
-              }
-            }
-          }
-        });
-      });
-    }
+                th, td {
+                    border: 1px solid black;
+                    padding: 8px;
+                    text-align: left;
+                }
+                th {
+                    background-color: #f2f2f2;
+                }
+            </style>
+        </head>
+        <body>
+            <h2> Existing Item Table Report ${new Date().toISOString()}</h2>
+            ${tableContent} <!-- Insertar la tabla aquí -->
+        </body>
+        </html>`;
+  
+    // Crear un Blob con el contenido HTML
+    const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+  
+    // Crear un enlace para descargar el archivo
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `existing_report_${new Date().toISOString()}.html`;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
   }
   
 
+  onFileChange(event: any,sheetIn:string ,headerIn:string) {
+    try {
+      var header = parseInt(headerIn)
+      var sheet = parseInt(sheetIn)
+  
+      this.isWeight = 0
+      this.isStock = 0
+      this.isName = 0
+      this.isWarehouse= 0
+      this.isLocation= 0
+  
+      this.itemsExcel = []
+      this.itemsExcelError = []
+      this.itemsExcelDup= []
+
+      var file = event?.target?.files[0];
+     
+      if (file) {
+        const workbook = new ExcelJS.Workbook();
+        workbook.xlsx.load(file).then(() => {
+          const worksheet = workbook.getWorksheet(sheet); // Obtener la primera hoja del libro
+          if (!worksheet) {
+            throw new Error("0");
+          }
+          const columnIndexes: { [key: string]: number } = {
+            'Name': -1,
+            'Warehouse ID': -1,
+            'Location': -1,
+            'Stock': -1,
+            'Weight Per Unit (Kg)': -1
+          };
+          let allColumnsPresent = true;
+          worksheet?.eachRow((row, rowNumber) => {
+            if (rowNumber == header) { // Identificar el índice de cada columna requerida
+              row.eachCell((cell, colNumber) => {
+                if(cell.value){
+                  const columnName = cell.value.toString();
+                  if (columnIndexes.hasOwnProperty(columnName)) {
+                    columnIndexes[columnName] = colNumber;
+                  }
+                }
+              });
+              // Verificar si todas las columnas están presentes
+              let index = 0;
+              for (const column of Object.keys(columnIndexes)) {
+                setTimeout(() => {
+                  if (columnIndexes[column] === -1) {
+                    if(column == 'Name')this.isName = 2
+                    if(column == 'Warehouse ID')this.isWarehouse = 2
+                    if(column == 'Location')this.isLocation = 2
+                    if(column == 'Stock')this.isStock = 2
+                    if(column == 'Weight Per Unit (Kg)') this.isWeight = 2
+    
+                    console.error(`La columna '${column}' no está presente en el archivo Excel.`);
+                    this.messages = `La columna '${column}' no está presente en el archivo Excel.`
+                    //this.notyError.nativeElement.click()
+                    allColumnsPresent = false;
+                  }else {
+                    if(column == 'Name')this.isName = 1
+                    if(column == 'Warehouse ID')this.isWarehouse = 1
+                    if(column == 'Location')this.isLocation = 1
+                    if(column == 'Stock')this.isStock = 1
+                    if(column == 'Weight Per Unit (Kg)') this.isWeight = 1
+                  }
+                },700*  ++index)
+              }
+            } else { // Crear objetos Item y agregarlos a la lista si todas las columnas están presentes
+              if (allColumnsPresent) {
+                const name = String(row.getCell(columnIndexes['Name']).value);
+                const warehouseId = Number(row.getCell(columnIndexes['Warehouse ID']).value);
+                const location = String(row.getCell(columnIndexes['Location']).value?.toString());
+                const stock = Number(row.getCell(columnIndexes['Stock']).value);
+                const weightPerUnit = Number(row.getCell(columnIndexes['Weight Per Unit (Kg)']).value);
+  
+                // Verificar si algún campo es NaN
+                if (!isNaN(warehouseId) && !isNaN(stock) && !isNaN(weightPerUnit)) {
+                  const newItem: Item = {
+                    id: 0,
+                    name: name,
+                    warehouseId: warehouseId,
+                    location: location,
+                    stock: stock,
+                    url: '', // Debes definir cómo obtener este valor del archivo Excel
+                    weightPerUnit: weightPerUnit
+                  };
+                  
+                  this.itemsExcel.push(newItem);
+                } else {
+                  console.error(`Valor NaN detectado en la fila ${rowNumber}, columna ${columnIndexes['Name']+1}`);
+                  this.itemsExcelError.push([name,rowNumber, columnIndexes['Name']+1 ])
+                }
+              }
+            }
+          });
+          this.verifyDuplicate()
+        }).catch((error) => {
+          console.log(error)
+          if(error == "Error: 0") alert("The specified sheet was not found")
+          if(error == "Error: -1 is out of bounds. Excel supports columns from 1 to 16384") alert("The requested columns were not found in the specified row")
+        });
+      }
+      file = null
+    }catch (error) {
+      // Manejar el error
+      console.error('Error:', error);
+    }
+
+  }
+  
+  continueAddItems(){
+    this.isLoading = true
+   this.warehouseService.addItemRange(this.token, this.itemsExcel).subscribe(()=>{
+      setTimeout(()=>{
+        this.resetUpload()
+        this.loadItems()
+        this.notExel.nativeElement.click()
+      }, 1200)
+   })
+  }
+
+  verifyDuplicate(){
+    // Filtrar los elementos de itemsExcel que SÍ están en items
+    this.itemsExcelDup = this.itemsExcel.filter(item =>
+      this.items.some(existingItem =>
+        existingItem.name === item.name &&
+        existingItem.warehouseId === item.warehouseId &&
+        existingItem.weightPerUnit === item.weightPerUnit
+      )
+    );
+    // Filtrar los elementos de itemsExcel que NO están en items
+    this.itemsExcel = this.itemsExcel.filter(item =>
+    !this.items.some(existingItem =>
+      existingItem.name === item.name &&
+      existingItem.warehouseId === item.warehouseId &&
+      existingItem.weightPerUnit === item.weightPerUnit
+    )
+  );    
+  }
 }

@@ -29,10 +29,13 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {MatSelectModule} from '@angular/material/select';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { SignInComponent } from './sign-in/sign-in.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LottieModule } from "ngx-lottie";
 import player from "lottie-web";
 import { MainAnimationComponent } from './main-animation/main-animation.component';
+import {MatStepperModule} from '@angular/material/stepper';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
 
 export function playerFactory() {
   return player;
@@ -64,6 +67,10 @@ export function playerFactory() {
     LottieModule.forRoot({ player: playerFactory }),
     MatSelectModule,
     MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatStepperModule,
+    ReactiveFormsModule,
     FormsModule,
     MatIconModule,
     MatProgressBarModule,

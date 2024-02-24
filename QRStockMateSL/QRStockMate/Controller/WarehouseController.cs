@@ -190,8 +190,34 @@ namespace QRStockMate.Controller
             }
         }
 
+		[HttpPost("AddItemRange/")]
+		public async Task<IActionResult> AddItemRange([FromBody] ItemModel[] itemModel)
+		{
+			try
+			{
+                foreach (var _item in itemModel)
+                {
+					var warehouse = await _warehouseService.GetById(_item.WarehouseId);
 
-        [HttpGet("GetItems/{Id}")]
+                    if (warehouse != null) {
+                        Console.WriteLine(_item);
+						var item = _mapper.Map<ItemModel, Item>(_item);
+
+						await _warehouseService.AddItem(_item.WarehouseId, item);
+					}
+
+				}
+
+				return Ok();
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(ex.Message);
+			}
+		}
+
+
+		[HttpGet("GetItems/{Id}")]
         public async Task<ActionResult<IEnumerable<ItemModel>>> GetItems(int Id)
         {
             try

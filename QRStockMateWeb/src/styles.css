@@ -35,4 +35,18 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     line-height: 30px; /* Centra verticalmente el icono */
     text-align: center; /* Centra horizontalmente el icono */
   }
-  
+  .mat-stepper-vertical-line::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    border-left-width: 1px;
+    border-left-style: solid;
+    border-left-color: white !important;
+    top: calc(8px - calc((var(--mat-stepper-header-height) - 24px) / 2));
+    bottom: calc(8px - calc((var(--mat-stepper-header-height) - 24px) / 2));
+}
+.mat-step-text-label {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  color: white;
+}

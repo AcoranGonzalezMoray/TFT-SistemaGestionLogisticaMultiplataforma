@@ -106,3 +106,43 @@ thead {
     bottom: 105px;
     right: 35px;
 }
+
+.mat-stepper-vertical {
+    margin-top: 8px;
+}
+  
+.mat-mdc-form-field {
+    margin-top: 16px;
+}
+
+.mat-stepper-vertical, .mat-stepper-horizontal {
+    background-color: #222222;
+}
+
+.mat-stepper-vertical-line::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    border-left-width: 1px;
+    border-left-style: solid;
+    border-left-color: white !important;
+    top: calc(8px - calc((var(--mat-stepper-header-height) - 24px) / 2));
+    bottom: calc(8px - calc((var(--mat-stepper-header-height) - 24px) / 2));
+}
+
+
+.mat-step-label .mat-step-label-active {
+    color: rgb(255 255 255 / 87%);
+}
+
+.mat-mdc-button.mat-dup, .mat-mdc-outlined-button.mat-dup {
+    --mat-mdc-button-persistent-ripple-color: #da8404;
+    --mat-mdc-button-ripple-color: rgba(63, 81, 181, 0.1);
+    color: #da8f04;
+}
+
+.CLOSE_UP {
+    position: absolute;
+    right: 15px;
+    top: 15px;
+}

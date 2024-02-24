@@ -330,4 +330,10 @@ export class WarehousePanelComponent {
     link.click();
   }
 
+
+  returnNumItems(element:Warehouse){
+    var num = element.idItems.split(';').length
+
+    return num-1
+  }
 }
