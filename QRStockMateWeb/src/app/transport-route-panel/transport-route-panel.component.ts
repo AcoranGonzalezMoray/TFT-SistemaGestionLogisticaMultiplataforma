@@ -1,5 +1,5 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
-import { TransportRoute, getRoleStatus } from '../interfaces/transport-route';
+import { RoleStatus, TransportRoute, getRoleStatus } from '../interfaces/transport-route';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { Company } from '../interfaces/company';
@@ -10,6 +10,7 @@ import { GetResourceResponse, LngLatLike, Map } from 'maplibre-gl';
 import { TransportRouteService } from '../services/transport-route.service';
 import { rowsAnimation } from 'src/assets/animations';
 import { Warehouse } from '../interfaces/warehouse';
+import { VehicleService } from '../services/vehicle.service';
 
 @Component({
   selector: 'app-transport-route-panel',
@@ -29,11 +30,11 @@ export class TransportRoutePanelComponent {
   @ViewChild('notifyT') noty!: ElementRef;
   @ViewChild('notifEmptyT') notE!: ElementRef;
   isLoading:Boolean = false
-
+  open:Boolean = false
   company!: Company;
   warehouses: Warehouse[] | undefined;
 
-  constructor(private companyService: CompanyService,private routeService: TransportRouteService, private userService:UserService) { }
+  constructor(private vehicleService: VehicleService, private companyService: CompanyService,private routeService: TransportRouteService, private userService:UserService) { }
 
   ngOnInit(): void {
     this.isLoading = true 
@@ -146,12 +147,11 @@ export class TransportRoutePanelComponent {
       })
   }
 
-  openMap(start:string, nameA:string, end:string, nameB:string, route:string,vehicleID:string ): void {
-
+  openMap(start:string, nameA:string, end:string, nameB:string, route:string,vehicleID:string, status:number ): void {
+    this.open  = true
     //latA: number, lonA: number,  latB: number, lonB: number
     var START:Warehouse = this.warehouses?.filter(x=> x.id == parseInt(start))[0]!
     var END = this.warehouses?.filter(x=> x.id == parseInt(end))[0]!
-
     // Mostrar el mapa
     const mapContainer = document.getElementById('containerMapRoute');
     const table = document.getElementById('matelevationz8');
@@ -164,8 +164,12 @@ export class TransportRoutePanelComponent {
     if (this.map) {
         const existingMarkersA = this.map.getLayer('marker-layer-A');
         const existingMarkersB = this.map.getLayer('marker-layer-B');
-
-        if (existingMarkersA && existingMarkersB) {
+        const existingPolyline = this.map.getLayer('polyline-layer');
+        if (existingPolyline) {
+          this.map.removeLayer('polyline-layer');
+          this.map.removeSource('polyline-layer');
+        } 
+        if (existingMarkersA && existingMarkersB ) {
             this.map.removeLayer('marker-layer-A');
             this.map.removeSource('marker-layer-A');
             this.map.removeLayer('marker-layer-B');
@@ -196,7 +200,6 @@ export class TransportRoutePanelComponent {
               console.error('No se encontraron puntos en la cadena proporcionada.');
             }
           }
-
             // Obtener la imagen cargada
             const image = response.data;
 
@@ -264,8 +267,123 @@ export class TransportRoutePanelComponent {
         }).catch((error: any) => {
             console.error('Error al cargar la imagen:', error);
         });
+
+
+        if(status == 1){
+          this.mapInRoute(parseInt(vehicleID))
+        }
     }
   }
+
+
+  mapInRoute(vehicleID: number) {
+    if(this.map){
+      const imageUrl = '../../assets/images/carrierbl.png'; // URL de tu imagen personalizada
+      var index = 0
+      this.map.loadImage(imageUrl).then((response: GetResourceResponse<HTMLImageElement | ImageBitmap>) => {
+          const data = response.data
+          this.map!.addImage('custom-marker-carrier',data) ;
+
+          const updateLocation = () => {
+            if (this.map) {
+                this.vehicleService.getLocation(vehicleID, this.token).subscribe(vehicle => {
+                    if (this.map) {
+                        var location = vehicle.location.split(";");
+                        const markerLocation: LngLatLike = [parseFloat(location[1]), parseFloat(location[0])];
+                        console.log(vehicle);
+                        if(index == 0){
+                          this.map!.setCenter(markerLocation);
+                          index++
+                        }
+
+                        // Agregar nueva capa
+                        if(this.map.getLayer('custom-layer-carrier1')){
+                          this.map!.addLayer({
+                            id: 'custom-layer-carrier',
+                            type: 'symbol',
+                            source: {
+                                type: 'geojson',
+                                data: {
+                                    type: 'FeatureCollection',
+                                    features: [{
+                                        type: 'Feature',
+                                        geometry: {
+                                            type: 'Point',
+                                            coordinates: markerLocation
+                                        },
+                                        properties: {
+                                            name: "Carrier"
+                                        }
+                                    }]
+                                }
+                            },layout: {
+                              'icon-image': 'custom-marker-carrier',
+                              'icon-size': 0.1, // Reducir el tamaño del marcador a la mitad (0.4 -> 0.2)
+                              'text-field': ['get', 'name'], // Mostrar el nombre del marcador
+                              'text-font': ['Open Sans Regular'],
+                              'text-offset': [0, 1.5],
+                              'text-anchor': 'top'
+                          }
+                        });
+                        if(this.map.getLayer('custom-layer-carrier1')){
+                          this.map.removeLayer('custom-layer-carrier1')
+                          this.map.removeSource('custom-layer-carrier1');   
+                        }
+                        
+                        }else {
+                        
+                          this.map!.addLayer({
+                            id: 'custom-layer-carrier1',
+                            type: 'symbol',
+                            source: {
+                                type: 'geojson',
+                                data: {
+                                    type: 'FeatureCollection',
+                                    features: [{
+                                        type: 'Feature',
+                                        geometry: {
+                                            type: 'Point',
+                                            coordinates: markerLocation
+                                        },
+                                        properties: {
+                                            name: "Carrier"
+                                        }
+                                    }]
+                                }
+                            },layout: {
+                              'icon-image': 'custom-marker-carrier',
+                              'icon-size': 0.1, // Reducir el tamaño del marcador a la mitad (0.4 -> 0.2)
+                              'text-field': ['get', 'name'], // Mostrar el nombre del marcador
+                              'text-font': ['Open Sans Regular'],
+                              'text-offset': [0, 1.5],
+                              'text-anchor': 'top'
+                          }
+                        });
+                          
+                         
+                        if(this.map.getLayer('custom-layer-carrier')){
+                          this.map.removeLayer('custom-layer-carrier');   
+                          this.map.removeSource('custom-layer-carrier');   
+                        }
+                        }
+                                  
+    
+                    }
+    
+                    
+                });
+            }
+            if (this.open) setTimeout(updateLocation, 4000);
+        };
+        updateLocation();
+      }).catch((error: any) => {
+        console.error('Error al cargar la imagen:', error);
+    });
+    }
+    
+}
+
+
 
   drawPolyline(coordinates: [number, number][]): void {
     if (this.map) {
@@ -322,6 +440,8 @@ export class TransportRoutePanelComponent {
       table.style.display = 'block'
       mapContainer.style.display = 'none';
     }
+
+    this.open = false
   }
   
   ngOnDestroy() {
