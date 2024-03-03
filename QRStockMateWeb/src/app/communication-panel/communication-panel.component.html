@@ -1,1 +1,59 @@
-<p>communication-panel works!</p>
+<style>
+    .contact{
+        width: 30%;
+    }
+    .selector{
+        border: 1px solid  #5a79ba;
+        border-radius: 20px;
+        display: flex;
+        width: 100%;
+    }
+
+    .chat{
+        width: 70%;
+    }
+    .com{
+        display: flex;
+    }
+    .chats{
+        border: 1px solid  #5a79ba;
+        border-radius: 20px;
+        width: 100%;
+        height: 450px;
+        margin-top: 10px;
+    }
+    .chat {
+        border: 1px solid  #5a79ba;
+        border-radius: 20px;
+        margin-left: 10px;
+    }
+    .employees{
+        border: 1px solid  #5a79ba;
+        border-radius: 20px;
+        height: 250px;
+        margin-top: 10px;
+        padding: 10px;
+    }
+    .primary {
+    background-color: #5a79ba !important; /* Cambia este color al color que desees */
+    }
+</style>
+
+<div  class="com">
+    <div class="contact">
+        <div class="selector">
+            <button style="width: 100%; margin-right: 15px; margin: 10px;" [ngClass]="{'primary': !isCommunicationClicked}" (click)="onClickCommunicationButton()" mat-raised-button>Chats</button>
+            <button style="width: 100%; margin: 10px;" mat-raised-button [ngClass]="{'primary': isCommunicationClicked}" (click)="onClickCommunicationButton()">Communication</button>            
+        </div>
+        <div class="employees">
+            <form class="uk-search uk-search-default" style="width: 100%;margin: 0px;">
+                <span class="uk-search-icon-flip" uk-search-icon></span>
+                <input class="uk-search-input" style="border-radius: 20px;" type="search" placeholder="Search" aria-label="Search">
+            </form>
+        </div>
+        <div class="chats"></div>
+    </div>
+    <div class="chat">
+
+    </div>
+</div>

@@ -1,0 +1,30 @@
+
+.bg-gradient-danger-mask {
+    background: linear-gradient(87deg, #222222 0, #5a79ba 100%) !important;
+}
+.shadow-pro {
+    /*box-shadow: 0 0 2rem 0 #5a79ba !important;*/
+}
+
+
+
+
+@import "custom/functions";
+@import "custom/variables";
+
+@import "custom/mixins";
+@import "custom/components";
+
+@import "bootstrap/scss/root";
+
+
+@import "bootstrap/scss/card";
+@import "bootstrap/scss/utilities";
+
+@import "bootstrap/scss/reboot";
+@import "bootstrap/scss/images";
+@import "bootstrap/scss/grid"; 
+@import "bootstrap/scss/tables";
+@import "bootstrap/scss/forms";
+@import "bootstrap/scss/buttons";
+

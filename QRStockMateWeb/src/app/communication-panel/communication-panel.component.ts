@@ -6,5 +6,14 @@ import { Component } from '@angular/core';
   styleUrls: ['./communication-panel.component.css']
 })
 export class CommunicationPanelComponent {
+  isCommunicationClicked: boolean = false;
 
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+  onClickCommunicationButton() {
+    this.isCommunicationClicked = !this.isCommunicationClicked;
+  }
 }

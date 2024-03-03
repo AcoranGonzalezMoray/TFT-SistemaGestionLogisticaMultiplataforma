@@ -1,4 +1,4 @@
-<div class="mat-elevation-z8" #TABLE>
+<div class="mat-elevation-z8" #TABLE class="uk-animation-slide-right">
   <div style="background-color: #ffffff14;">
     <form class="uk-search uk-search-navbar">
       <span uk-search-icon></span>
@@ -8,7 +8,7 @@
   
   <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
 
-  <table mat-table [dataSource]="dataSource">
+  <table mat-table [dataSource]="dataSource" >
 
     
     <ng-container matColumnDef="id">
