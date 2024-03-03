@@ -89,7 +89,7 @@ import java.time.format.DateTimeFormatter
 
 val myMap = mutableMapOf<Int, String>()
 
-private fun parsePalets(paletsString: String):  Pair<List<Map<Int, String>>, Double> {
+fun parsePalets(paletsString: String):  Pair<List<Map<Int, String>>, Double> {
     val mapList = mutableListOf<Map<Int, String>>()
     // [{46=46:2:201.3;, 49=49:1:1.0;}, {46=46:2:201.3;}] 1
     // [{46=46:2:201.3;}, {49=49:1:1.0;}] 2
@@ -652,6 +652,7 @@ fun UpdateRouteScreen(navController: NavController){
                        Column {
                            mapEuroPalet.forEachIndexed { index, map ->
                                PaletTemplate(
+                                   index =index,
                                    map = map,
                                    onDelete = { weight ->
                                        totalWeight -= "%.2f".format(weight).replace(",", ".").toDouble()
@@ -996,7 +997,7 @@ fun itemTemplate(item: Item, onCountStateChanged: (Double) -> Unit){
     }
 }
 @Composable
-fun PaletTemplate(map: Map<Int, String>, onDelete: (Double) -> Unit) {
+fun PaletTemplate(index:Int, map: Map<Int, String>, onDelete: (Double) -> Unit) {
     var weight by remember(map) { mutableStateOf(0.0) }
 
     // Calcular el peso cada vez que cambia el mapa
@@ -1036,7 +1037,7 @@ fun PaletTemplate(map: Map<Int, String>, onDelete: (Double) -> Unit) {
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = "Nombre: ",
+                    text = "Nº:"+index,
                     color = BlueSystem,
                     fontWeight = FontWeight.Bold
                 )

@@ -639,7 +639,7 @@ fun AddRouteScreen(navController: NavController){
                         }
                         Column {
                             mapEuroPalet.forEachIndexed { index, map ->
-                                PaletTemplate(map = map, onDelete = { weight ->
+                                PaletTemplate(index=index,map = map, onDelete = { weight ->
                                     totalWeight -= "%.2f".format(weight).replace(",", ".").toDouble()
 
                                     map.forEach{(key, value)->
@@ -978,7 +978,7 @@ fun itemTemplate(item: Item, onCountStateChanged: (Double) -> Unit){
 }
 
 @Composable
-fun PaletTemplate(map: Map<Int, String>, onDelete: (Double) -> Unit) {
+fun PaletTemplate(index: Int, map: Map<Int, String>, onDelete: (Double) -> Unit) {
     var weight by remember(map) { mutableStateOf(0.0) }
 
     // Calcular el peso cada vez que cambia el mapa
@@ -1018,7 +1018,7 @@ fun PaletTemplate(map: Map<Int, String>, onDelete: (Double) -> Unit) {
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = "Nombre: ",
+                    text = "Nº:"+index,
                     color = BlueSystem,
                     fontWeight = FontWeight.Bold
                 )

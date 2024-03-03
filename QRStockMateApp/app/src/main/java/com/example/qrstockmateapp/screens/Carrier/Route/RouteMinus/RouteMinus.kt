@@ -73,6 +73,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
@@ -93,26 +94,24 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
-
 import com.example.qrstockmateapp.R
 import com.example.qrstockmateapp.api.models.TransportRoute
 import com.example.qrstockmateapp.api.models.Warehouse
 import com.example.qrstockmateapp.api.services.RetrofitInstance
 import com.example.qrstockmateapp.navigation.repository.DataRepository
+import com.example.qrstockmateapp.screens.Carrier.RouteManagement.AddRoute.PaletTemplate
+import com.example.qrstockmateapp.screens.Carrier.RouteManagement.UpdateRoute.parsePalets
 import com.example.qrstockmateapp.ui.theme.isDarkMode
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
-
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
-
-
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.Marker
@@ -135,7 +134,6 @@ import java.lang.Math.sin
 import java.lang.Math.sqrt
 import java.util.Locale
 import kotlin.math.roundToLong
-
 
 
 @OptIn(ExperimentalMaterialApi::class, DelicateCoroutinesApi::class)
@@ -661,6 +659,20 @@ fun BottomSheetContent(
         Spacer(modifier = Modifier.height(16.dp))
         // Añadir una línea de separación gris
         Divider(color = Color.Gray, thickness = 1.dp, modifier = Modifier.fillMaxWidth())
+
+        var mapEuroPalet by rememberSaveable { mutableStateOf<List<Map<Int, String>>>(emptyList()) }
+        var totalWeight by remember { mutableStateOf(0.0) }
+
+        val (mapList, total) = parsePalets(route!!.palets)
+
+        mapEuroPalet = mapList
+        totalWeight = total
+
+        mapEuroPalet.forEachIndexed { index, map ->
+            PaletTemplate(index,map = map, onDelete = { weight ->
+
+            })
+        }
     }
 }
 

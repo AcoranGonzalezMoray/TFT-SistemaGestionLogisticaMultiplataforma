@@ -33,13 +33,60 @@ export class TransportRoutePanelComponent {
   open:Boolean = false
   company!: Company;
   warehouses: Warehouse[] | undefined;
+  palets: Palet[] = [];
+  totalWeight: number = 0;
 
   constructor(private vehicleService: VehicleService, private companyService: CompanyService,private routeService: TransportRouteService, private userService:UserService) { }
 
   ngOnInit(): void {
     this.isLoading = true 
+    
     this.getCompanyByUser()
   }
+
+  parsePalets(paletsString: string): void {
+    const [paletsArray, total] = this.parsePaletsString(paletsString);
+    this.palets = paletsArray;
+    this.totalWeight = total;
+  }
+
+  parsePaletsString(paletsString: string): [Palet[], number] {
+    const palets: Palet[] = [];
+    let totalWeight = 0;
+
+    const trimmedListString = paletsString.trim().slice(1, -1);
+    const trimmedStringComplete = trimmedListString.split("},");
+
+    for (const item of trimmedStringComplete) {
+      let trimmedString = item.replace("{", "").replace("}", "").trim(); // 46=46:2:201.3;49=49:1:1.0; | 46=46:2:201.3;
+      const mapStrings = trimmedString.split(";");
+
+      for (const mapStr of mapStrings) {
+        const [key, value] = mapStr.split("=");
+
+        if (key.trim() !== "" && value) {
+          const weight = parseFloat(value.split(":")[2]);
+          if (!isNaN(weight)) {
+            totalWeight += weight;
+          }
+
+          const palet: Palet = {
+            id: parseInt(key.trim()),
+            description: value.trim() + ";",
+            weight: weight
+          };
+
+          palets.push(palet);
+        }
+      }
+    }
+
+    return [palets, totalWeight];
+  }
+
+
+
+
 
   setRoute(TransportRoute:TransportRoute){
     this.transportRoute = TransportRoute
@@ -88,7 +135,6 @@ export class TransportRoutePanelComponent {
           }, 1000);
         }else {
           const route: TransportRoute[] = [];
-
 
           routesNew.forEach((r, index) => {
             setTimeout(() => {
@@ -147,7 +193,9 @@ export class TransportRoutePanelComponent {
       })
   }
 
-  openMap(start:string, nameA:string, end:string, nameB:string, route:string,vehicleID:string, status:number ): void {
+  openMap(start:string, nameA:string, end:string, nameB:string, route:string,vehicleID:string, status:number, palets:string ): void {
+    this.parsePalets(palets);
+
     this.open  = true
     //latA: number, lonA: number,  latB: number, lonB: number
     var START:Warehouse = this.warehouses?.filter(x=> x.id == parseInt(start))[0]!
@@ -447,4 +495,11 @@ export class TransportRoutePanelComponent {
   ngOnDestroy() {
     this.map?.remove();
   }
+}
+
+
+interface Palet {
+  id: number;
+  description: string;
+  weight: number;
 }

@@ -67,7 +67,7 @@
             <mat-icon>visibility</mat-icon>
           </button>
 
-          <button   mat-icon-button color="ok"  (click)="openMap(element.startLocation, 'INIT', element.endLocation, 'FINISH', element.route, element.assignedVehicleId, element.status)">
+          <button   mat-icon-button color="ok"  (click)="openMap(element.startLocation, 'INIT', element.endLocation, 'FINISH', element.route, element.assignedVehicleId, element.status, element.palets)">
             <mat-icon>map</mat-icon>
           </button>
           
@@ -88,8 +88,24 @@
   <div id="containerMapRoute" class="map-wrap">
     <a href="https://www.maptiler.com" class="watermark"><img src="https://api.maptiler.com/resources/logo.svg" alt="MapTiler logo"/></a>
     <div class="map" #map></div>
+    <div class="palet">
+      <div style="display: flex;justify-content: center;align-items: center;margin-top: 10px;">
+        <h3>Total: {{totalWeight}} Kg</h3>
+      </div>
+      <hr style="margin-inline: 10px !important;margin: unset;border-color: #1e87f0;">
+      <div *ngFor="let palet of palets; let i = index" >
+          <div class="uk-card uk-card-default uk-card-body uk-width-1-2@m" style="width: 90%;margin: 20px;border-radius: 25px;display: flex;justify-content: space-between;">
+            <img src="../../assets/images/pallet.png" width="100px" alt="" style="border-radius: 20px;">
+            <div>
+              <div class="uk-card-badge uk-label">{{ palet.weight.toFixed(2) }} Kg</div>
+              <h3 class="uk-card-title">Nº{{i}}</h3>
+              <p>{{ palet.description }}</p>
+            </div>
+        </div>
+      </div>
+    </div>
+
     <div class="close-button" (click)="closeMap()"></div>
-    <!-- Aquí agregamos el botón de cierre -->
   </div>
   
   <!-- Este es el modal de detalle de la ruta de transporte -->

@@ -129,7 +129,17 @@ h4 {
     height: 100%;
     border-radius: 20px
   }
-  
+  .palet {
+    position: absolute;
+    width: 350px;
+    overflow-y: scroll;
+    height: 90%;
+    right: 10px;
+    top: 50px;
+    background-color: white;
+    border-radius: 20px;
+
+  }
   .watermark {
     position: absolute;
     left: 10px;
