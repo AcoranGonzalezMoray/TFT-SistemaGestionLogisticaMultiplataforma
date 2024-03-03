@@ -1,1 +1,71 @@
-<p>history-panel works!</p>
+<div class="mat-elevation-z8" #TABLE>
+    <div style="background-color: #ffffff14;">
+      <form class="uk-search uk-search-navbar">
+        <span uk-search-icon></span>
+        <input #search class="uk-search-input" (input)="searchByValue(search)" type="search" placeholder="Search" aria-label="Search">
+      </form>
+    </div>
+    
+    <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
+  
+    <table mat-table [dataSource]="dataSource">
+      
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef> ID </th>
+        <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+      </ng-container>
+    
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef> Name </th>
+        <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+      </ng-container>
+    
+      <ng-container matColumnDef="code">
+        <th mat-header-cell *matHeaderCellDef> Code </th>
+        <td mat-cell *matCellDef="let element"> {{element.code}} </td>
+      </ng-container>
+    
+      <ng-container matColumnDef="description">
+        <th mat-header-cell *matHeaderCellDef> Description </th>
+        <td mat-cell *matCellDef="let element"> {{element.description}} </td>
+      </ng-container>
+    
+      <ng-container matColumnDef="created">
+        <th mat-header-cell *matHeaderCellDef> Created </th>
+        <td mat-cell *matCellDef="let element"> {{element.created | date}} </td>
+      </ng-container>
+  
+      <ng-container matColumnDef="operation">
+        <th mat-header-cell *matHeaderCellDef> Operation </th>
+        <td mat-cell *matCellDef="let element"> {{element.operation}} </td>
+      </ng-container>
+  
+      <ng-container matColumnDef="action">
+        <th mat-header-cell *matHeaderCellDef> Action </th>
+        <td mat-cell *matCellDef="let element"> 
+          <button mat-icon-button color="primary" uk-toggle="target: #modal-example-see" (click)="setTransaction(element)">
+            <mat-icon>visibility</mat-icon>
+          </button>
+          
+          <!-- Botones de acción adicionales aquí -->
+        </td>
+      </ng-container>
+    
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr [@rowsAnimation]="" mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+    
+    <mat-paginator [pageSizeOptions]="[5, 10, 20]"
+                   showFirstLastButtons
+                   aria-label="Select page of employees"
+                   [pageSize]="5">
+    </mat-paginator>
+  </div>
+  
+  <div class="example-button-container">
+    <button (click)="export()" class="fab" mat-fab color="primary" aria-label="Example icon button with a delete icon">
+      <mat-icon *ngIf="!isLoading" fontIcon="download_2"></mat-icon>
+      <div *ngIf="isLoading" uk-spinner></div>
+    </button>
+  </div>
+  
