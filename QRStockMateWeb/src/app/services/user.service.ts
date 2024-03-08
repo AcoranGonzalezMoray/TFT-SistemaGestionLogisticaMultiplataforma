@@ -4,6 +4,7 @@ import { Observable, catchError } from 'rxjs';
 import { environment } from 'src/environment/environment';
 import { User } from '../interfaces/user';
 import { Company } from '../interfaces/company';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,7 @@ export class UserService {
 
   private apiUrl: string = environment.API + '/User';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient,private router: Router) { }
   
   static getCompanyByUser(token: string, arg1: any) {
     throw new Error('Method not implemented.');
@@ -89,6 +90,7 @@ export class UserService {
     return this.http.post<Company>(`${this.apiUrl}/Company`, user, { headers: headers })
       .pipe(
         catchError(error => {
+          this.router.navigate(['login']);
           throw 'Error getting company by user: ' + error;
         })
       );

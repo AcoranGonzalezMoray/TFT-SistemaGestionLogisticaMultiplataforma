@@ -19,8 +19,18 @@
         border: 1px solid  #5a79ba;
         border-radius: 20px;
         width: 100%;
-        height: 450px;
-        margin-top: 10px;
+        height: 550px;
+        margin-top: 13px;
+        overflow-y: scroll;
+    }
+    .chats .uk-card-header {
+        background-color: #333333;
+        margin: 10px;
+        border-radius: 20px;
+    }
+
+    .chats .uk-card-header .uk-card-title {
+        color:white
     }
     .chat {
         border: 1px solid  #5a79ba;
@@ -30,12 +40,34 @@
     .employees{
         border: 1px solid  #5a79ba;
         border-radius: 20px;
-        height: 250px;
+        height: 150px;
         margin-top: 10px;
         padding: 10px;
     }
     .primary {
-    background-color: #5a79ba !important; /* Cambia este color al color que desees */
+        background-color: #5a79ba !important; /* Cambia este color al color que desees */
+    }
+    .users {
+        display: flex;
+        overflow-x: auto; /* Esto permite el desplazamiento horizontal */
+        width: 100%;
+    }
+
+    .users > div {
+        flex: 0 0 auto; /* Esto asegura que los elementos dentro de .users no se ajusten */
+        margin-right: 10px; /* Espacio entre los elementos */
+    }
+    .content {
+        height: 88%;
+    }
+    .uk-input.custom-border {
+        border-radius: 0 0 20px 20px; /* Aplica el radio de borde a las esquinas inferiores */
+        height: auto;
+    }
+    .profile {
+        height: 7%;
+        border-radius: 20px 20px 0 0; /* Aplica el radio de borde a las esquinas inferiores */
+        background-color: #333333;
     }
 </style>
 
@@ -48,12 +80,52 @@
         <div class="employees">
             <form class="uk-search uk-search-default" style="width: 100%;margin: 0px;">
                 <span class="uk-search-icon-flip" uk-search-icon></span>
-                <input class="uk-search-input" style="border-radius: 20px;" type="search" placeholder="Search" aria-label="Search">
+                <input class="uk-search-input" style="border-radius: 20px;margin-bottom: 10px;" type="search" placeholder="Search" aria-label="Search">
             </form>
+            <div class="users">
+                <div *ngFor="let item of users" style="display: flex;flex-direction: column;align-items: center;justify-content: center;" (click)="newMessage(item)">
+                    <img class="uk-border-circle" width="40" height="40" [src]="item.url" alt="Avatar">
+                    <p style="margin-top: 4px;">{{item.name}}</p>
+                </div>
+            </div>
         </div>
-        <div class="chats"></div>
+        <div class="chats">
+            <div  class="uk-card-header" *ngFor="let item of userMessages" (click)="openMessages(item)"> 
+                <div class="uk-grid-small uk-flex-middle" uk-grid>
+                    <div class="uk-width-auto">
+                        <img class="uk-border-circle" width="40" height="40" src={{item.url}} alt="Avatar">
+                    </div>
+                    <div class="uk-width-expand">
+                        <h3  class="uk-card-title uk-margin-remove-bottom">{{item.name}}</h3>
+                        <p class="uk-text-meta uk-margin-remove-top"><time datetime="2016-04-01T19:00">April 01, 2016</time></p>
+                    </div>
+                    <div>
+                        <span uk-icon="chevron-right"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="chat">
-
+        <div class="content">
+            <div class="uk-card-header profile">
+                <div class="uk-grid-small uk-flex-middle" uk-grid>
+                    <div class="uk-width-auto">
+                        <img class="uk-border-circle" width="40" height="40" src="{{users[0].url}}" alt="Avatar">
+                    </div>
+                    <div class="uk-width-expand">
+                        <h3 style="color: white !important;" class="uk-card-title uk-margin-remove-bottom">{{mainUserMessage?.name}}</h3>
+                        <p class="uk-text-meta uk-margin-remove-top"><time datetime="2016-04-01T19:00">{{mainUserMessage?.role}}</time></p>
+                    </div>
+                </div>
+            </div>
+            <div class="messages"></div>
+        </div>
+        <div class="uk-margin" style="display: flex;">
+            <textarea multiple="true" class="uk-input custom-border" type="text" placeholder="Type your message..." aria-label="Input"></textarea>
+            <button style="position: fixed; right: 50px;bottom: 420px;" mat-mini-fab color="primary" aria-label="Example icon button with a menu icon">
+                <mat-icon>send</mat-icon>
+            </button>
+        </div>
     </div>
 </div>
