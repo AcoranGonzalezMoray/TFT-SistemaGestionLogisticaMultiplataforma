@@ -1,28 +1,32 @@
 <style>
-    .contact{
+    .contact {
         width: 30%;
     }
-    .selector{
-        border: 1px solid  #5a79ba;
+
+    .selector {
+        border: 1px solid #5a79ba;
         border-radius: 20px;
         display: flex;
         width: 100%;
     }
 
-    .chat{
+    .chat {
         width: 70%;
     }
-    .com{
+
+    .com {
         display: flex;
     }
-    .chats{
-        border: 1px solid  #5a79ba;
+
+    .chats {
+        border: 1px solid #5a79ba;
         border-radius: 20px;
         width: 100%;
         height: 550px;
         margin-top: 13px;
         overflow-y: scroll;
     }
+
     .chats .uk-card-header {
         background-color: #333333;
         margin: 10px;
@@ -30,74 +34,200 @@
     }
 
     .chats .uk-card-header .uk-card-title {
-        color:white
+        color: white;
     }
+
     .chat {
-        border: 1px solid  #5a79ba;
+        border: 1px solid #5a79ba;
         border-radius: 20px;
         margin-left: 10px;
     }
-    .employees{
-        border: 1px solid  #5a79ba;
+
+    .employees {
+        border: 1px solid #5a79ba;
         border-radius: 20px;
         height: 150px;
         margin-top: 10px;
         padding: 10px;
     }
+
     .primary {
-        background-color: #5a79ba !important; /* Cambia este color al color que desees */
+        background-color: #5a79ba !important;
+        /* Cambia este color al color que desees */
     }
+
     .users {
         display: flex;
-        overflow-x: auto; /* Esto permite el desplazamiento horizontal */
+        overflow-x: auto;
+        /* Esto permite el desplazamiento horizontal */
         width: 100%;
     }
 
-    .users > div {
-        flex: 0 0 auto; /* Esto asegura que los elementos dentro de .users no se ajusten */
-        margin-right: 10px; /* Espacio entre los elementos */
+    .users>div {
+        flex: 0 0 auto;
+        /* Esto asegura que los elementos dentro de .users no se ajusten */
+        margin-right: 10px;
+        /* Espacio entre los elementos */
     }
+
     .content {
         height: 88%;
     }
+
     .uk-input.custom-border {
-        border-radius: 0 0 20px 20px; /* Aplica el radio de borde a las esquinas inferiores */
+        border-radius: 0 0 0 20px;
+        /* Aplica el radio de borde a las esquinas inferiores */
         height: auto;
+        border-right: 0;
     }
+
     .profile {
         height: 7%;
-        border-radius: 20px 20px 0 0; /* Aplica el radio de borde a las esquinas inferiores */
+        border-radius: 20px 20px 0 0;
+        /* Aplica el radio de borde a las esquinas inferiores */
         background-color: #333333;
+        border-right: 0;
     }
+
+    .button-space {
+        background-color: white;
+        border-radius: 0 0 20px 0;
+        display: flex;
+        align-content: center;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .messages {
+        padding: 10px;
+        overflow-y: auto;
+        /* Agrega desplazamiento vertical si los mensajes son demasiado largos */
+        display: flex;
+        /* Agrega esto para alinear los mensajes */
+        flex-direction: column;
+        max-height: 572px;
+        overflow-y: scroll;
+    }
+
+    .message {
+        position: relative;
+        padding: 10px;
+        border-radius: 10px;
+        margin-bottom: 8px;
+        max-width: 70%;
+        min-width: 13%;
+        display: flex;
+        justify-content: center;
+        margin-bottom: 34px;
+        flex-direction: column;
+    }
+
+    .sender {
+        background-color: #5a79ba;
+        /* Color de fondo para mensajes enviados por el usuario */
+        color: white;
+        /* Color del texto para mensajes enviados por el usuario */
+        align-self: flex-end;
+        /* Alinea el mensaje a la derecha */
+    }
+
+    .sender::before {
+        content: "";
+        position: absolute;
+        bottom: -10px;
+        right: 2px;
+        width: 0;
+        height: 0;
+        border-top: 0px solid transparent;
+        border-bottom: 15px solid transparent;
+        border-left: 15px solid #5a79ba;
+        transform-origin: center;
+        transform: rotate(58deg);
+    }
+
+    .receiver {
+        background-color: #333333;
+        /* Color de fondo para mensajes recibidos */
+        color: white;
+        /* Color del texto para mensajes recibidos */
+        align-self: flex-start;
+        /* Alinea el mensaje a la izquierda */
+    }
+
+    .receiver::after {
+        content: "";
+        position: absolute;
+        bottom: -10px;
+        left: 2px;
+        width: 0;
+        height: 0;
+        border-top: 15px solid transparent;
+        border-bottom: 15px solid transparent;
+        border-right: 15px solid #333333;
+        /* Color de la flecha del mensaje recibido */
+        transform-origin: center;
+        /* Establece el punto de rotación en el centro */
+        transform: rotate(58deg);
+    }
+    .message p {
+        margin:  0;
+    }
+    .message time {
+        color: darkgray;
+        font-size: smaller;
+        align-self: flex-end;
+    }
+    .scroll-to-bottom {
+        position: absolute;
+        margin-left: 31%;
+    }
+
 </style>
 
-<div  class="com">
+<div class="com">
     <div class="contact">
         <div class="selector">
-            <button style="width: 100%; margin-right: 15px; margin: 10px;" [ngClass]="{'primary': !isCommunicationClicked}" (click)="onClickCommunicationButton()" mat-raised-button>Chats</button>
-            <button style="width: 100%; margin: 10px;" mat-raised-button [ngClass]="{'primary': isCommunicationClicked}" (click)="onClickCommunicationButton()">Communication</button>            
+            <button style="width: 100%; margin-right: 15px; margin: 10px"
+                [ngClass]="{ primary: !isCommunicationClicked }" (click)="onClickCommunicationButton()"
+                mat-raised-button>
+                Chats
+            </button>
+            <button style="width: 100%; margin: 10px" mat-raised-button [ngClass]="{ primary: isCommunicationClicked }"
+                (click)="onClickCommunicationButton()">
+                Communication
+            </button>
         </div>
         <div class="employees">
-            <form class="uk-search uk-search-default" style="width: 100%;margin: 0px;">
+            <form class="uk-search uk-search-default" style="width: 100%; margin: 0px">
                 <span class="uk-search-icon-flip" uk-search-icon></span>
-                <input class="uk-search-input" style="border-radius: 20px;margin-bottom: 10px;" type="search" placeholder="Search" aria-label="Search">
+                <input class="uk-search-input" style="border-radius: 20px; margin-bottom: 10px" type="search"
+                    placeholder="Search" aria-label="Search" />
             </form>
             <div class="users">
-                <div *ngFor="let item of users" style="display: flex;flex-direction: column;align-items: center;justify-content: center;" (click)="newMessage(item)">
-                    <img class="uk-border-circle" width="40" height="40" [src]="item.url" alt="Avatar">
-                    <p style="margin-top: 4px;">{{item.name}}</p>
+                <div *ngFor="let item of users" style="
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+          " (click)="newMessage(item)">
+                    <img class="uk-border-circle" width="40" height="40" [src]="item.url" alt="Avatar" />
+                    <p style="margin-top: 4px">{{ item.name }}</p>
                 </div>
             </div>
         </div>
         <div class="chats">
-            <div  class="uk-card-header" *ngFor="let item of userMessages" (click)="openMessages(item)"> 
+            <div class="uk-card-header" *ngFor="let item of userMessages" (click)="openMessages(item)">
                 <div class="uk-grid-small uk-flex-middle" uk-grid>
                     <div class="uk-width-auto">
-                        <img class="uk-border-circle" width="40" height="40" src={{item.url}} alt="Avatar">
+                        <img class="uk-border-circle" width="40" height="40" src="{{ item.url }}" alt="Avatar" />
                     </div>
                     <div class="uk-width-expand">
-                        <h3  class="uk-card-title uk-margin-remove-bottom">{{item.name}}</h3>
-                        <p class="uk-text-meta uk-margin-remove-top"><time datetime="2016-04-01T19:00">April 01, 2016</time></p>
+                        <h3 class="uk-card-title uk-margin-remove-bottom">
+                            {{ item.name }}
+                        </h3>
+                        <p class="uk-text-meta uk-margin-remove-top">
+                            <time datetime="2016-04-01T19:00">April 01, 2016</time>
+                        </p>
                     </div>
                     <div>
                         <span uk-icon="chevron-right"></span>
@@ -111,21 +241,49 @@
             <div class="uk-card-header profile">
                 <div class="uk-grid-small uk-flex-middle" uk-grid>
                     <div class="uk-width-auto">
-                        <img class="uk-border-circle" width="40" height="40" src="{{users[0].url}}" alt="Avatar">
+                        <img class="uk-border-circle" width="40" height="40" src="{{ users[0].url }}" alt="Avatar" />
                     </div>
                     <div class="uk-width-expand">
-                        <h3 style="color: white !important;" class="uk-card-title uk-margin-remove-bottom">{{mainUserMessage?.name}}</h3>
-                        <p class="uk-text-meta uk-margin-remove-top"><time datetime="2016-04-01T19:00">{{mainUserMessage?.role}}</time></p>
+                        <h3 style="color: white !important" class="uk-card-title uk-margin-remove-bottom">
+                            {{ mainUserMessage?.name }}
+                        </h3>
+                        <p class="uk-text-meta uk-margin-remove-top">
+                            <time datetime="2016-04-01T19:00">{{
+                                mainUserMessage?.role
+                                }}</time>
+                        </p>
                     </div>
                 </div>
             </div>
-            <div class="messages"></div>
+            <div class="messages" #messagesContainer>
+                <div class="scroll-to-bottom" (click)="scrollToBottom()">          
+                    <button style="border-radius: 20px;" mat-raised-button><mat-icon>arrow_downward</mat-icon></button>
+                </div>
+                
+                <div class="message" *ngFor="let item of mainMessage" [ngClass]="{
+            sender: item.senderContactId === me.id,
+            receiver: item.senderContactId !== me.id
+          }">
+                    <!-- Contenido del mensaje aquí -->
+                    <ng-container *ngIf="item.type === TypeFile.Text">
+                        <p>{{ item.content }}</p>
+                    </ng-container>
+                    <ng-container *ngIf="item.type === TypeFile.Image">
+                        <img width="150px" height="150px" src={{item.content}} alt="">
+                    </ng-container>
+                    <time>{{ item.sentDate | date: 'dd/MM/yyyy hh:mm' }}</time>
+
+                </div>
+            </div>
         </div>
-        <div class="uk-margin" style="display: flex;">
-            <textarea multiple="true" class="uk-input custom-border" type="text" placeholder="Type your message..." aria-label="Input"></textarea>
-            <button style="position: fixed; right: 50px;bottom: 420px;" mat-mini-fab color="primary" aria-label="Example icon button with a menu icon">
-                <mat-icon>send</mat-icon>
-            </button>
+        <div class="uk-margin" style="display: flex">
+            <textarea #content multiple="true" class="uk-input custom-border" type="text" placeholder="Type your message..."
+                aria-label="Input"></textarea>
+            <div class="button-space">
+                <button (click)="sendMessage(content.value);content.value = ''" mat-mini-fab color="primary" aria-label="Example icon button with a menu icon">
+                    <mat-icon>send</mat-icon>
+                </button>
+            </div>
         </div>
     </div>
 </div>

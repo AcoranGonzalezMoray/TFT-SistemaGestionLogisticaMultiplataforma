@@ -15,11 +15,17 @@ export class MessageService {
   constructor(private http: HttpClient,private router: Router) { }
 
   getAllMessages(): Observable<Message[]> {
+    
     return this.http.get<Message[]>(`${this.apiUrl}`);
   }
 
-  createMessage(message: Message): Observable<Message> {
-    return this.http.post<Message>(`${this.apiUrl}`, message);
+  createMessage(message: Message, token:string): Observable<Message> {
+        // Configurar las cabeceras con JWT
+        let headers = new HttpHeaders({
+          'Authorization': `Bearer ${token}`
+        });
+    
+    return this.http.post<Message>(`${this.apiUrl}`, message, {headers: headers});
   }
 
   updateMessage(message: Message): Observable<void> {
