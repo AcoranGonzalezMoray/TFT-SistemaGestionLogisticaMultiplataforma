@@ -17,3 +17,56 @@
 ::-webkit-scrollbar-thumb:hover {
     background: #666666; /* Color del botón de la barra de desplazamiento al pasar el mouse */
 }
+
+
+
+
+
+
+
+/* Cambia el color del fondo y del texto de los controles de reproducción */
+audio::-webkit-media-controls-panel {
+    background-color: #333333; /* Cambia el color de fondo de los controles */
+  }
+  
+  /* Cambia el color de fondo del botón de reproducción */
+  audio::-webkit-media-controls-play-button {
+    background-color: #333333; /* Cambia el color de fondo del botón de reproducción */
+    color: #333; /* Cambia el color del ícono del botón de reproducción */
+  }
+  
+  /* Cambia el color de fondo del botón de pausa */
+  audio::-webkit-media-controls-pause-button {
+    background-color: #333333; /* Cambia el color de fondo del botón de pausa */
+    color: #5a79ba; /* Cambia el color del ícono del botón de pausa */
+  }
+  
+  /* Cambia el color de fondo del indicador de tiempo de reproducción */
+  audio::-webkit-media-controls-current-time-display,
+  audio::-webkit-media-controls-time-remaining-display {
+    color: white; /* Cambia el color del texto del indicador de tiempo de reproducción */
+  }
+  
+  /* Cambia el color de fondo de la barra de progreso */
+  audio::-webkit-media-controls-timeline {
+    background-color: #333333; /* Cambia el color de fondo de la barra de progreso */
+  }
+  
+  /* Cambia el color del indicador de progreso */
+  audio::-webkit-media-controls-timeline,
+  audio::-webkit-media-controls-current-time-display::before,
+  audio::-webkit-media-controls-time-remaining-display::before {
+    background-color: #5a79ba; /* Cambia el color del indicador de progreso */
+  }
+  /* Agrega un borde alrededor de los controles de reproducción */
+audio::-webkit-media-controls-panel {
+    border: 0px solid red; /* Define el grosor, el estilo y el color del borde */
+    border-radius: 0px; /* Redondea las esquinas del borde */
+    padding: 0px; /* Añade un espacio interior alrededor de los controles */
+  }
+  audio {
+    &:focus {
+      outline: none;
+    }
+  }
+  

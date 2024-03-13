@@ -33,8 +33,7 @@ export class CommunicationPanelComponent {
 
     setInterval(() => {
         this.loadMessages(); 
-        console.log("dsf");
-    }, 1000);
+    }, 200);
 
 }
 
@@ -43,8 +42,10 @@ export class CommunicationPanelComponent {
 // ...
 
   scrollToBottom(): void {
-      const container = this.messagesContainer.nativeElement;
-      container.scrollTop = container.scrollHeight;
+      setTimeout(()=>{
+        const container = this.messagesContainer.nativeElement;
+        container.scrollTop = container.scrollHeight;
+      }, 500)
   }
 
   openMessages(user:User) {
@@ -122,14 +123,25 @@ export class CommunicationPanelComponent {
 
   loadMessages() {
     this.messagesServices.getMessagesByCode(this.company.code, this.token)
-        .subscribe(messages => {
+        .subscribe(messagesNew => {
             this.me; // Soy el usuario
             const participantIds = new Set<number>();
 
             // Filtrar mensajes donde soy el remitente o el destinatario
-            this.messages = messages.filter(message => 
-                message.senderContactId === this.me.id || message.receiverContactId === this.me.id
+            var tmp = messagesNew.filter(message =>
+              message.senderContactId === this.me.id || message.receiverContactId === this.me.id
             );
+
+            // Filtrar mensajes que no están en this.messages y agregarlos
+            tmp.forEach(newMessage => {
+                if (!this.messages.some(existingMessage => existingMessage.id === newMessage.id)) {
+                    this.messages.push(newMessage);
+                    this.scrollToBottom()
+
+                }
+            });
+
+
 
             // Obtener los IDs de los remitentes y destinatarios que no son el tuyo
             this.messages.forEach(message => {
@@ -151,7 +163,7 @@ export class CommunicationPanelComponent {
                  }
              });
              this.mainUserMessage && this.firstTime == false?this.openMessages( this.mainUserMessage ) :null
-             this.userMessages.length > 0 && this.firstTime ? (this.openMessages(this.userMessages[0]), this.scrollToBottom()) : null;
+             this.userMessages.length > 0 && this.firstTime ? (this.openMessages(this.userMessages[0])) : null;
              this.firstTime = false
           });
   }
@@ -174,10 +186,6 @@ sendMessage(content: string): void {
       // Llamar al servicio para crear el nuevo mensaje
       this.messagesServices.createMessage(newMessage, this.token)
         .subscribe(response => {
-          // Aquí puedes manejar la respuesta del backend si es necesario
-          console.log('Mensaje enviado:', response);
-          // También puedes cargar los mensajes nuevamente después de enviar uno si es necesario
-          //this.loadMessages();
         }, error => {
           console.error('Error al enviar el mensaje:', error);
           // Aquí puedes manejar los errores si es necesario
@@ -186,8 +194,45 @@ sendMessage(content: string): void {
       console.warn('Ningún usuario seleccionado para enviar el mensaje.');
       // Aquí puedes manejar la situación donde ningún usuario está seleccionado para enviar el mensaje
     }
-    this.scrollToBottom()
   }
+
+
+  // Agrega esto en tu componente TypeScript
+  draggingOver = false;
+
+  handleDragOver(event: DragEvent) {
+      event.preventDefault();
+  }
+
+  handleDragEnter(event: DragEvent) {
+      event.preventDefault();
+      this.draggingOver = true;
+  }
+
+  handleDragLeave(event: DragEvent) {
+      event.preventDefault();
+      this.draggingOver = false;
+  }
+
+  handleDrop(event: DragEvent) {
+      event.preventDefault();
+      this.draggingOver = false;
+      const files = event.dataTransfer?.files;
+      if (files && files.length > 0) {
+          // Obtener el primer archivo (asumiendo que solo se permite arrastrar un archivo a la vez)
+          const file = files[0];
+          // Ejecutar la función de carga de archivos pasando el archivo
+          this.uploadFile(file);
+      }
+  }
+
+  uploadFile(file: File) {
+      // Aquí puedes implementar la lógica para subir el archivo
+      // Por ejemplo, puedes usar una función de servicio para subir el archivo al servidor
+      console.log('Archivo cargado:', file);
+  }
+
+
 }
 
 
