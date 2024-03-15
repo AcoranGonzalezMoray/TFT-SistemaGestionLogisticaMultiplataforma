@@ -16,29 +16,29 @@ import { rowsAnimation } from 'src/assets/animations';
 export class VehiclePanelComponent {
   displayedColumns: string[] = ['id', 'code', 'make', 'model', 'year', 'color', 'licensePlate', 'maxLoad', 'action'];
   dataSource = new MatTableDataSource<Vehicle>();
-  token:string = ""
-  vehicle:Vehicle|undefined;
+  token: string = ""
+  vehicle: Vehicle | undefined;
   @ViewChild(MatPaginator)
   paginator!: MatPaginator;
   clickedRows = new Set<Vehicle>();
   @ViewChild('notifyV') noty!: ElementRef;
   @ViewChild('notifEmptyV') notE!: ElementRef;
-  isLoading:Boolean = false
+  isLoading: Boolean = false
   code: string = "";
 
-  constructor(private companyService: CompanyService, private userService:UserService) { }
+  constructor(private companyService: CompanyService, private userService: UserService) { }
 
   ngOnInit(): void {
     this.isLoading = true
     this.loadVehicles();
-    
+
   }
 
-  setVehicle(vehicle:Vehicle){
+  setVehicle(vehicle: Vehicle) {
     this.vehicle = vehicle
   }
 
-  searchByValue(element:HTMLInputElement){
+  searchByValue(element: HTMLInputElement) {
     this.dataSource.filter = element.value.trim().toLowerCase();
 
   }
@@ -46,37 +46,37 @@ export class VehiclePanelComponent {
   loadVehicles(): void {
     var stringT = sessionStorage.getItem('token')
     var stringM = sessionStorage.getItem('me')
-    if (stringT && stringM){
+    if (stringT && stringM) {
       this.token = stringT
-      var user:User = JSON.parse(stringM)
+      var user: User = JSON.parse(stringM)
       this.code = user.code;
 
     }
-    
-    this.companyService.getVehicles(this.code,this.token)
+
+    this.companyService.getVehicles(this.code, this.token)
       .subscribe(vehicles => {
-        if(vehicles.length == 0){
+        if (vehicles.length == 0) {
           setTimeout(() => {
             this.isLoading = false
             this.notE.nativeElement.click()
           }, 1000);
-        }else {
+        } else {
           const v: Vehicle[] = [];
 
-       
+
           vehicles.forEach((i: Vehicle, index: number) => {
             setTimeout(() => {
               v.push(i);
               this.dataSource.data = v;
-            }, (index + 1) * 500); 
+            }, (index + 1) * 500);
           });
           setTimeout(() => {
             this.isLoading = false
           }, 1000);
-          this.dataSource.paginator = this.paginator; 
+          this.dataSource.paginator = this.paginator;
         }
-        
-        
+
+
       }, error => {
         setTimeout(() => {
           this.isLoading = false

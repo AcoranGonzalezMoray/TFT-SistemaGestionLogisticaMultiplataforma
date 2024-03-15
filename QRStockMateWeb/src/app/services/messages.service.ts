@@ -46,15 +46,21 @@ export class MessageService {
     return this.http.get<Message[]>(`${this.apiUrl}/MessageByCode/${code}`, {headers: headers});
   }
 
+
+
   uploadFile(file: File, model: Message): Observable<void> {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('model', JSON.stringify(model));
     return this.http.post<void>(`${this.apiUrl}/UploadFile/`, formData);
   }
+//"DeleteConversationByAngular/{param1}/{param2}"
+  deleteConversation(param1: string, param2:string, token:string): Observable<void> {
+    let headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
 
-  deleteConversation(user: string): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/DeleteConversation`, { body: user });
+    return this.http.delete<void>(`${this.apiUrl}/DeleteConversationByAngular/${param1}/${param2}`, {headers: headers});
   }
 
   getNewMessage(format: string): Observable<Message[]> {

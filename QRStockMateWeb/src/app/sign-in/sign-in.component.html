@@ -4,8 +4,10 @@
     <title>Login</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@700&family=Figtree:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@700&family=Figtree:wght@700&display=swap"
+        rel="stylesheet">
 </head>
+
 <body>
     <div class="container">
         <img src="../../assets/images/ic_launcher.webp" alt="">
@@ -20,14 +22,22 @@
         </div>
         <div style="display: flex;"><a href="">Forgot Password? - Support</a></div>
         <button *ngIf="!isLoading" (click)="signIn(email.value, pass.value)">Login</button>
-        <button *ngIf="isLoading" ><div uk-spinner></div></button>
+        <button *ngIf="isLoading">
+            <div uk-spinner></div>
+        </button>
         <a href="#">Don't have an account? Sign up</a>
     </div>
     <div class="pic">
-        <app-main-animation ruta="../../assets/animations/mapWarehouse.json" [speed]="1"   ></app-main-animation>
+        <app-main-animation ruta="../../assets/animations/mapWarehouse.json" [speed]="1"></app-main-animation>
     </div>
-    
+
 </body>
-<div #notifyError onclick="UIkit.notification({message: '<span uk-icon=\'icon: close\'></span> Wrong Email Or Password', status: 'danger'})"></div>
-<div #notifyOk onclick="UIkit.notification({message: '<span uk-icon=\'icon: check\'></span> Successful Login', status: 'success'})"></div>
-<div #notifyRole onclick="UIkit.notification({message: '<span uk-icon=\'icon: close\'></span> You Do Not Have Sufficient Permissions To Access', status: 'danger'})"></div>
+<div #notifyError
+    onclick="UIkit.notification({message: '<span uk-icon=\'icon: close\'></span> Wrong Email Or Password', status: 'danger'})">
+</div>
+<div #notifyOk
+    onclick="UIkit.notification({message: '<span uk-icon=\'icon: check\'></span> Successful Login', status: 'success'})">
+</div>
+<div #notifyRole
+    onclick="UIkit.notification({message: '<span uk-icon=\'icon: close\'></span> You Do Not Have Sufficient Permissions To Access', status: 'danger'})">
+</div>

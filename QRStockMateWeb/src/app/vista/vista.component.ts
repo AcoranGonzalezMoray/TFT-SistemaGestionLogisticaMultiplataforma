@@ -2,7 +2,7 @@ import { AfterViewInit, Component, Input, OnChanges, SimpleChanges } from '@angu
 import { EChartsOption } from 'echarts';
 import { GridsterItem } from 'angular-gridster2';
 import { GridItemServiceService } from '../services/grid-item-service.service';
-import {AreaChartOptions, BarChartOptions, LineChartOptions, PieChartOptions, RadarChartOptions } from '../interfaces/chart/DashboardView';
+import { AreaChartOptions, BarChartOptions, LineChartOptions, PieChartOptions, RadarChartOptions } from '../interfaces/chart/DashboardView';
 
 
 @Component({
@@ -10,33 +10,33 @@ import {AreaChartOptions, BarChartOptions, LineChartOptions, PieChartOptions, Ra
   templateUrl: './vista.component.html',
   styleUrls: ['./vista.component.css']
 })
-export class VistaComponent{
- 
+export class VistaComponent {
+
 
   @Input() chartType: string = '';
   @Input() item!: GridsterItem;
-  width:number = 500;
-  height:number = 500
+  width: number = 500;
+  height: number = 500
 
-  chartOptions!: EChartsOption 
-  constructor(private gridItemService: GridItemServiceService) {}
+  chartOptions!: EChartsOption
+  constructor(private gridItemService: GridItemServiceService) { }
 
   ngOnInit(): void {
     switch (this.chartType) {
       case 'A':
-        this.chartOptions =  LineChartOptions();
+        this.chartOptions = LineChartOptions();
         break;
       case 'B':
-        this.chartOptions =  AreaChartOptions();
+        this.chartOptions = AreaChartOptions();
         break;
       case 'C':
-        this.chartOptions =  BarChartOptions();
+        this.chartOptions = BarChartOptions();
         break;
       case 'D':
-        this.chartOptions =  PieChartOptions();
+        this.chartOptions = PieChartOptions();
         break;
       case 'E':
-        this.chartOptions =  RadarChartOptions();
+        this.chartOptions = RadarChartOptions();
         break;
     }
   }
@@ -52,17 +52,17 @@ export class VistaComponent{
 
 
     this.gridItemService.getSize().subscribe(size => {
-      if(size[2] == this.item){
+      if (size[2] == this.item) {
 
-      this.width = size[0] // Ajustar el ancho según el número de columnas
-      this.height = size[1] // Ajustar la altura según el número de filas
+        this.width = size[0] // Ajustar el ancho según el número de columnas
+        this.height = size[1] // Ajustar la altura según el número de filas
 
-      // Imprimir para verificar el cambio en las dimensiones
-      console.log('Nuevo tamaño del elemento:', this.width, 'x', size);
+        // Imprimir para verificar el cambio en las dimensiones
+        console.log('Nuevo tamaño del elemento:', this.width, 'x', size);
       }
     })
   }
-  
+
 }
-  
+
 

@@ -22,9 +22,9 @@ export class HistoryPanelComponent {
   displayedColumns: string[] = ['id', 'name', 'code', 'description', 'created', 'operation', 'action'];
   dataSource = new MatTableDataSource<TransactionHistory>();
   clickedRows = new Set<TransactionHistory>();
-  isLoading:Boolean = false
-  token:string = ""
-  me!:User;
+  isLoading: Boolean = false
+  token: string = ""
+  me!: User;
   company!: Company;
   transactions: TransactionHistory[] = []
   @ViewChild(MatPaginator)
@@ -38,9 +38,9 @@ export class HistoryPanelComponent {
   }
 
 
-  
-  
-  setTransaction(transaction:TransactionHistory){
+
+
+  setTransaction(transaction: TransactionHistory) {
     //this.transaction = { ...user };
   }
 
@@ -48,23 +48,23 @@ export class HistoryPanelComponent {
     var stringT = sessionStorage.getItem('token')
     var stringU = sessionStorage.getItem('me')
 
-    if(stringT && stringU){
+    if (stringT && stringU) {
       this.token = stringT;
       this.me = JSON.parse(stringU);
     }
-    
+
     this.userService.getCompanyByUser(this.me, this.token)
-    .subscribe(company => {
+      .subscribe(company => {
         this.company = company;
-        this.loadTransaction(); 
-    }, error => {
-      console.error('Error getting company by user:', error.message); // Aquí se imprime solo el mensaje de error
-    });
+        this.loadTransaction();
+      }, error => {
+        console.error('Error getting company by user:', error.message); // Aquí se imprime solo el mensaje de error
+      });
   }
 
 
-  loadTransaction(){
-    this.transactionService.getHistory(this.company.code, this.token).subscribe(t=>{
+  loadTransaction() {
+    this.transactionService.getHistory(this.company.code, this.token).subscribe(t => {
       setTimeout(() => {
         const ts: TransactionHistory[] = [];
         this.transactions = t;
@@ -72,17 +72,17 @@ export class HistoryPanelComponent {
           setTimeout(() => {
             ts.push(tr);
             this.dataSource.data = ts;
-          }, (index + 1) * 500); 
+          }, (index + 1) * 500);
         });
 
-        this.dataSource.paginator = this.paginator; 
+        this.dataSource.paginator = this.paginator;
         this.isLoading = false;
       }, 1000);
     })
   }
 
 
-  searchByValue(element:HTMLInputElement){
+  searchByValue(element: HTMLInputElement) {
     this.dataSource.filter = element.value.trim().toLowerCase();
   }
 
@@ -106,11 +106,11 @@ export class HistoryPanelComponent {
     worksheet.mergeCells('A1:F4');
     // Obtener la celda fusionada
     const mergedCell = worksheet.getCell('A1');
-    mergedCell.value  = 'QRSTOCKMATE'
+    mergedCell.value = 'QRSTOCKMATE'
     mergedCell.fill = {
-        type: 'pattern',
-        pattern: 'solid',
-        fgColor: { argb: 'FF5a79ba' } // Color #222222
+      type: 'pattern',
+      pattern: 'solid',
+      fgColor: { argb: 'FF5a79ba' } // Color #222222
     };
 
     this.transactions.forEach((transactionHistory: TransactionHistory) => {
@@ -126,19 +126,19 @@ export class HistoryPanelComponent {
 
     // Establecer el tamaño de fuente y centrar el contenido de las celdas
     worksheet.eachRow({ includeEmpty: true }, (row, rowNumber) => {
-        row.eachCell({ includeEmpty: true }, (cell, colNumber) => {
-            cell.font = { size: 13 };
-            cell.border = {
-              top: {style:'thin'},
-              left: {style:'thin'},
-              bottom: {style:'thin'},
-              right: {style:'thin'}
-            };
-            cell.alignment = { horizontal: 'center', vertical: 'middle' };
-        });
+      row.eachCell({ includeEmpty: true }, (cell, colNumber) => {
+        cell.font = { size: 13 };
+        cell.border = {
+          top: { style: 'thin' },
+          left: { style: 'thin' },
+          bottom: { style: 'thin' },
+          right: { style: 'thin' }
+        };
+        cell.alignment = { horizontal: 'center', vertical: 'middle' };
+      });
     });
     worksheet.getRow(4).eachCell({ includeEmpty: false }, (cell, colNumber) => {
-      cell.font = {bold:true}
+      cell.font = { bold: true }
     });
     worksheet.getRow(1).eachCell({ includeEmpty: false }, (cell, colNumber) => {
       cell.font = { bold: true, color: { argb: 'FFFFFFFF' } }; // Color blanco en hexadecimal
@@ -147,8 +147,8 @@ export class HistoryPanelComponent {
     // Agregar imagen base64 como logo
     const base64Image = 'data:image/png;base64,' + baseImage; // Reemplaza baseImage con tu imagen base64
     const imageId = workbook.addImage({
-        base64: base64Image,
-        extension: 'png',
+      base64: base64Image,
+      extension: 'png',
     });
 
     worksheet.addImage(imageId, "A1:A4");
@@ -157,11 +157,11 @@ export class HistoryPanelComponent {
     worksheet.columns.forEach((column, index) => {
       if (index === 3) { // Verifica si es la columna D (0-indexed)
         column.width = 90; // Ajusta el ancho de la columna D
-      }else if(index === 4){
+      } else if (index === 4) {
         column.width = 50; // Ajusta el ancho de la columna D
-      }else {
+      } else {
         column.width = 20; // Ajusta el ancho de las demás columnas
-      }    
+      }
     });
 
     // Guardar el archivo
@@ -174,7 +174,7 @@ export class HistoryPanelComponent {
     link.click();
   }
 
-  
+
 
 
 }

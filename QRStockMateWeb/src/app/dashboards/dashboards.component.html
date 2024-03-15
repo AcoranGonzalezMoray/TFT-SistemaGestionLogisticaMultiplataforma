@@ -2,53 +2,66 @@
     .uk-icon {
         color: white;
     }
+
     .uk-nav-default>li>a {
         color: white;
         font-size: medium;
     }
+
     .uk-nav-item:focus::after {
         content: '';
         position: absolute;
         top: 50%;
-        right: -10px; /* Ajusta la posición del pico según sea necesario */
+        right: -10px;
+        /* Ajusta la posición del pico según sea necesario */
         border: solid transparent;
         border-width: 10px;
-        border-right-color: #222222; /* Color del pico */
+        border-right-color: #222222;
+        /* Color del pico */
         transform: translateY(-50%);
     }
+
     .uk-nav-item:hover {
         background-color: #5997BA;
         border-radius: 5px;
     }
+
     .uk-parent:hover {
         background-color: #6F86B7;
         border-radius: 5px;
     }
-    .uk-nav-default{
-       padding: 10px;
+
+    .uk-nav-default {
+        padding: 10px;
     }
+
     .uk-nav-default .uk-nav-sub a:hover {
         color: white;
     }
+
     .uk-nav-default .uk-nav-sub a {
         color: white !important;
     }
+
     .dash {
         padding: 5px;
     }
-    .dash:hover a{
+
+    .dash:hover a {
         background-color: #ffffff14 !important;
         border-radius: 10px;
-        
+
     }
-    .activeOver a{
+
+    .activeOver a {
         background-color: #ffffff14 !important;
         border-radius: 10px;
         padding: 10px;
     }
-    .activeOver span{
+
+    .activeOver span {
         border-radius: 10px;
-       
+
     }
 
     .uk-drop.uk-open {
@@ -61,15 +74,18 @@
 </style>
 <div style="overflow-x: hidden;max-height: 120px;" *ngIf="userDashboard">
     <div *ngFor="let dashboard of userDashboard.data.dashboards">
-         <li class="dash" [ngClass]="{ 'activeOver': dashboard === selectedDashboard }" (mouseenter)="addHoverClass()" (mouseleave)="removeHoverClass()"><a href="#" style="color: white;" (click)="open(dashboard)" >
-            <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="space_dashboard"></mat-icon>{{dashboard.nombre}}</a></li>
+        <li class="dash" [ngClass]="{ 'activeOver': dashboard === selectedDashboard }" (mouseenter)="addHoverClass()"
+            (mouseleave)="removeHoverClass()"><a href="#" style="color: white;" (click)="open(dashboard)">
+                <mat-icon aria-hidden="false" aria-label="Example home icon"
+                    fontIcon="space_dashboard"></mat-icon>{{dashboard.nombre}}</a></li>
     </div>
 </div>
-<li class="uk-button"   style="display: flex;justify-content: center;">
-    
+<li class="uk-button" style="display: flex;justify-content: center;">
+
 
     <div>
-        <input maxlength="11" style="border-radius: 10px;height: 30px;width: 130px; " #nombre class="uk-input" type="text" aria-label="Clickable icon">
+        <input maxlength="11" style="border-radius: 10px;height: 30px;width: 130px; " #nombre class="uk-input"
+            type="text" aria-label="Clickable icon">
     </div>
     <br>
     <div style="margin-left: 10px;margin-right: 5px;">
@@ -80,6 +96,12 @@
 
 
 </li>
-<div #notifyErrorDash onclick="UIkit.notification({message: '<span uk-icon=\'icon: close\'></span> There Is Already A Panel With That Name. ', status: 'danger'})"></div>
-<div #notifyOkDash onclick="UIkit.notification({message: '<span uk-icon=\'icon: check\'></span> Enter A Valid Name', status: 'success'})"></div>
-<div #notifyValidName onclick="UIkit.notification({message: '<span uk-icon=\'icon: close\'></span> Enter A Valid Name', status: 'danger'})"></div>
+<div #notifyErrorDash
+    onclick="UIkit.notification({message: '<span uk-icon=\'icon: close\'></span> There Is Already A Panel With That Name. ', status: 'danger'})">
+</div>
+<div #notifyOkDash
+    onclick="UIkit.notification({message: '<span uk-icon=\'icon: check\'></span> Enter A Valid Name', status: 'success'})">
+</div>
+<div #notifyValidName
+    onclick="UIkit.notification({message: '<span uk-icon=\'icon: close\'></span> Enter A Valid Name', status: 'danger'})">
+</div>

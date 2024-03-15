@@ -191,6 +191,39 @@ namespace QRStockMate.Controller
 			}
 		}
 
+		[HttpDelete("DeleteConversationByAngular/{param1}/{param2}")]
+		public async Task<IActionResult> DeleteConversationByAngular(string param1, string param2) {
+			try {
+				var userA = await _userService.GetById(int.Parse(param1));
+				var userB = await _userService.GetById(int.Parse(param2));
+
+				if (userA == null || userB == null)
+					return NotFound();
+
+				var messages = await _messageService.GetMessageByCode(userA.Code);
+
+				var messagesToDelete = messages
+					.Where(item =>
+						(item.SenderContactId == userA.Id && item.ReceiverContactId == userB.Id) ||
+						(item.ReceiverContactId == userA.Id && item.SenderContactId == userB.Id))
+					.ToList();
+
+				foreach (var item in messagesToDelete) {
+					if (Uri.IsWellFormedUriString(item.Content, UriKind.Absolute)) {
+						// Es una URL válida, puedes proceder con la eliminación
+						await _context_storage.DeleteFile(item.Content, item.Type);
+					}
+				}
+
+				await _messageService.DeleteRange(messagesToDelete);
+				return NoContent();
+			}
+			catch (Exception ex) {
+
+				return BadRequest(ex.Message);
+			}
+		}
+
 
 		[HttpGet("NewMessage/{format}")]
 		public async Task<ActionResult<List<Message>>> GetNewMessage(string format)

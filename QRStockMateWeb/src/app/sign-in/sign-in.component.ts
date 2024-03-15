@@ -10,9 +10,9 @@ import { Router } from '@angular/router';
   styleUrls: ['./sign-in.component.css']
 })
 export class SignInComponent {
-  token:string = ""
-  me!:User;
-  isLoading:Boolean = false
+  token: string = ""
+  me!: User;
+  isLoading: Boolean = false
   @ViewChild('notifyError') notyE!: ElementRef;
   @ViewChild('notifyOk') notyS!: ElementRef;
   @ViewChild('notifyRole') notyR!: ElementRef;
@@ -33,38 +33,38 @@ export class SignInComponent {
   }
 
   signIn(email: string, password: string): void {
-    this.isLoading=true
+    this.isLoading = true
 
     this.userService.signIn(email, password)
       .subscribe(response => {
 
         setTimeout(() => {
-          var user:User = response.user
+          var user: User = response.user
 
-          if(user.role == 0 || user.role == 1 ){
+          if (user.role == 0 || user.role == 1) {
             sessionStorage.setItem('token', response.token);
             sessionStorage.setItem('me', JSON.stringify(response.user));
             this.notyS.nativeElement.click()
             this.router.navigate(['']);
-          }else {
+          } else {
             this.notyR.nativeElement.click()
           }
-          this.isLoading=false
+          this.isLoading = false
         }, 2000);
 
-        
+
       }, error => {
         // Manejar cualquier error de autenticación
         console.error('Error signing in:', error);
         this.notyE.nativeElement.click()
-        
+
       });
-      
+
   }
 
 }
 
-export function clearStorage(){
+export function clearStorage() {
   sessionStorage.clear()
   localStorage.clear()
   console.log("limpio")

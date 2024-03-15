@@ -27,10 +27,11 @@
         overflow-y: scroll;
     }
 
-    .chats .uk-card-header {
+    .header {
         background-color: #333333;
         margin: 10px;
         border-radius: 20px;
+        padding: 10px;
     }
 
     .chats .uk-card-header .uk-card-title {
@@ -169,19 +170,23 @@
         /* Establece el punto de rotación en el centro */
         transform: rotate(58deg);
     }
+
     .message p {
-        margin:  0;
+        margin: 0;
     }
+
     .message time {
         color: darkgray;
         font-size: smaller;
         align-self: flex-end;
     }
+
     .scroll-to-bottom {
         position: absolute;
-        margin-left: 31%;
+        margin-left: 45%;
     }
-    .upload{
+
+    .upload {
         position: relative;
         padding: 10px;
         border-radius: 10px;
@@ -195,11 +200,15 @@
         background-color: black;
         opacity: 0.7;
     }
+
+    #drop-area.drag-over {
+        border: 2px dashed red;
+    }
 </style>
 
 <div class="com">
     <div class="contact">
-        <div class="selector">
+        <div class="selector uk-animation-slide-left">
             <button style="width: 100%; margin-right: 15px; margin: 10px"
                 [ngClass]="{ primary: !isCommunicationClicked }" (click)="onClickCommunicationButton()"
                 mat-raised-button>
@@ -210,14 +219,15 @@
                 Communication
             </button>
         </div>
-        <div class="employees">
+        <div class="employees uk-animation-slide-top">
             <form class="uk-search uk-search-default" style="width: 100%; margin: 0px">
                 <span class="uk-search-icon-flip" uk-search-icon></span>
                 <input class="uk-search-input" style="border-radius: 20px; margin-bottom: 10px" type="search"
-                    placeholder="Search" aria-label="Search" />
+                    placeholder="Search" aria-label="Search" name="searchQuery" [(ngModel)]="searchQuery"
+                    (ngModelChange)="filterEmployee(searchQuery)" />
             </form>
             <div class="users">
-                <div *ngFor="let item of users" style="
+                <div class="uk-animation-slide-bottom" *ngFor="let item of employees" style="
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -228,59 +238,70 @@
                 </div>
             </div>
         </div>
-        <div class="chats">
-            <div class="uk-card-header" *ngFor="let item of userMessages" (click)="openMessages(item)">
-                <div class="uk-grid-small uk-flex-middle" uk-grid>
-                    <div class="uk-width-auto">
-                        <img class="uk-border-circle" width="40" height="40" src="{{ item.url }}" alt="Avatar" />
+        <div class="chats uk-animation-slide-bottom" #chats>
+            <ul class="uk-grid-small " id="uikitsorteable" style="display: flex;flex-direction: column;"
+                uk-sortable="group: sortable-group" uk-grid>
+                <li *ngFor="let item of userMessages" (click)="openMessages(item)" [attr.aria-details]="item.id"
+                    class="uk-animation-slide-right">
+                    <div class="uk-grid-small uk-card uk-flex-middle header" uk-grid>
+                        <div class="uk-width-auto">
+                            <img class="uk-border-circle" width="40" height="40" src="{{ item?.url }}" alt="Avatar" />
+                        </div>
+                        <div class="uk-width-expand">
+                            <h3 class="uk-card-title uk-margin-remove-bottom" style="color: white;">
+                                {{ item.name }}
+                            </h3>
+                            <p class="uk-text-meta uk-margin-remove-top">
+                                <time datetime="2016-04-01T19:00">April 01, 2016</time>
+                            </p>
+                        </div>
+                        <div>
+                            <span uk-icon="chevron-right"></span>
+                        </div>
                     </div>
-                    <div class="uk-width-expand">
-                        <h3 class="uk-card-title uk-margin-remove-bottom">
-                            {{ item.name }}
-                        </h3>
-                        <p class="uk-text-meta uk-margin-remove-top">
-                            <time datetime="2016-04-01T19:00">April 01, 2016</time>
-                        </p>
-                    </div>
-                    <div>
-                        <span uk-icon="chevron-right"></span>
-                    </div>
-                </div>
-            </div>
+                </li>
+            </ul>
         </div>
     </div>
-    <div class="chat">
+    <div class="chat  uk-animation-slide-right">
         <div class="content">
             <div class="uk-card-header profile">
                 <div class="uk-grid-small uk-flex-middle" uk-grid>
                     <div class="uk-width-auto">
-                        <img class="uk-border-circle" width="40" height="40" src="{{ users[0].url }}" alt="Avatar" />
+                        <img *ngIf="users[0]!=undefined" class="uk-border-circle" width="40" height="40"
+                            src="{{ users[0].url }}" alt="Avatar" />
                     </div>
-                    <div class="uk-width-expand">
+                    <div class="uk-width-expand" *ngIf="this.userMessages.length!=0">
                         <h3 style="color: white !important" class="uk-card-title uk-margin-remove-bottom">
                             {{ mainUserMessage?.name }}
                         </h3>
                         <p class="uk-text-meta uk-margin-remove-top">
-                            <time datetime="2016-04-01T19:00">{{
-                                mainUserMessage?.role
+                            <time datetime="2016-04-01T19:00">Role: {{
+                                getRoleUser(mainUserMessage?.role)
                                 }}</time>
                         </p>
                     </div>
                 </div>
             </div>
-            <div (dragover)="handleDragOver($event)" (dragenter)="handleDragEnter($event)" (dragleave)="handleDragLeave($event)" (drop)="handleDrop($event)" *ngIf="draggingOver"  class="js-upload uk-placeholder uk-text-center upload">
+            <div (dragover)="handleDragOver($event)" (dragenter)="handleDragEnter($event)"
+                (dragleave)="handleDragLeave($event)" (drop)="handleDrop($event)" *ngIf="draggingOver"
+                class="js-upload uk-placeholder uk-text-center upload">
                 <span uk-icon="icon: cloud-upload"></span>
                 <span class="uk-text-middle">Attach binaries by dropping them here or</span>
                 <div uk-form-custom>
                     <input type="file" multiple>
                     <span class="uk-link">selecting one</span>
                 </div>
-            </div>   
+            </div>
             <div *ngIf="!draggingOver" class="messages" #messagesContainer (dragenter)="handleDragEnter($event)">
-                <div class="scroll-to-bottom" (click)="scrollToBottom()">          
-                    <button style="border-radius: 20px;" mat-raised-button><mat-icon>arrow_downward</mat-icon></button>
+                <div class="scroll-to-bottom" [ngStyle]="{'margin-left': userMessages.length === 0 ? '34%' : '45%'}"
+                    (click)="scrollToBottom()">
+                    <button style="border-radius: 20px;" [ngStyle]="" mat-raised-button><mat-icon
+                            *ngIf="this.userMessages.length!=0">arrow_downward</mat-icon>
+                        <p *ngIf="this.userMessages.length==0">Start chatting to see more information</p>
+                    </button>
                 </div>
-                
+
                 <div class="message" *ngFor="let item of mainMessage" [ngClass]="{
             sender: item.senderContactId === me.id,
             receiver: item.senderContactId !== me.id
@@ -292,14 +313,14 @@
                     <ng-container *ngIf="item.type === TypeFile.File">
                         <a [href]="item.content" target="_blank">
                             <img width="150px" height="150px" src="../../assets/images/pdf_icon.png" alt="">
-                        </a>                        
+                        </a>
                     </ng-container>
                     <ng-container *ngIf="item.type === TypeFile.Audio">
                         <audio controls>
                             <source [src]="item.content" type="audio/mp3">
                         </audio>
                     </ng-container>
-                    
+
                     <ng-container *ngIf="item.type === TypeFile.Image">
                         <div uk-grid uk-lightbox="animation: scale">
                             <a class="uk-inline" href={{item.content}} data-caption="">
@@ -313,13 +334,51 @@
             </div>
         </div>
         <div class="uk-margin" style="display: flex">
-            <textarea #content multiple="true" class="uk-input custom-border" type="text" placeholder="Type your message..."
-                aria-label="Input"></textarea>
+            <textarea #content multiple="true" class="uk-input custom-border" type="text"
+                placeholder="Type your message..." aria-label="Input"></textarea>
             <div class="button-space">
-                <button (click)="sendMessage(content.value);content.value = ''" mat-mini-fab color="primary" aria-label="Example icon button with a menu icon">
+                <button (click)="sendMessage(content.value);content.value = ''" mat-mini-fab color="primary"
+                    aria-label="Example icon button with a menu icon">
                     <mat-icon>send</mat-icon>
                 </button>
             </div>
         </div>
+    </div>
+</div>
+<style>
+    .button-container {
+        position: absolute;
+        bottom: 0%;
+        right: 50%;
+        transition: bottom 0.8s ease-in-out;
+        /* Aplica la transición a la propiedad bottom */
+        width: 70px;
+        border-radius: 63%;
+        height: 70px;
+        background-color: red;
+        display: none;
+    }
+
+    .move {
+        bottom: 20%;
+        transition: bottom 0.8s ease-in-out;
+        /* Aplica la transición a la propiedad bottom */
+    }
+
+    .deleteFAB {
+        color: white;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+</style>
+
+<div #noneS>
+    <div #deleteUIKIT id="uikitsorteable2" [ngStyle]="{ 'display': dragUIKITView ? 'block' : 'none' }" mat-fab
+        color="warn" aria-label="Example icon button with a home icon" class="button-container"
+        [ngClass]="{ 'move': dragUIKIT }" (click)="toggleMove()">
+        <mat-icon class="deleteFAB" uk-sortable="group: sortable-group">delete</mat-icon>
     </div>
 </div>

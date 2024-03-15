@@ -1,62 +1,70 @@
 <div style="display: flex;height: 90%;">
-    <div style="width: 100%;"> 
-      
-        <div>
-          <div style="display: flex;padding: 20px;justify-content: space-between;">
-            <h2 class="uk-animation-slide-left " style="color: white;">Name: {{dashboardData?.nombre}}</h2>
-            <button style="color: white;" *ngIf="!modeEdit" (click)="modoEdit(true)" class="uk-button uk-button-default uk-animation-slide-right">Edit Dashboard</button>
-            <button class="uk-animation-slide-right " style="color: white;" *ngIf="modeEdit" (click)="modoEdit(false)" class="uk-button uk-button-default uk-animation-slide-right">Cancel</button>
-          </div>
-          
-          <div *ngIf="modeEdit" style="padding: 15px;display: flex;justify-content: space-evenly;">
-            <div>
-              <button style="color: white;" (click)="changeGridType('scrollVertical')" class="uk-button uk-button-default">Cambiar a Fit</button>
-              <button  style="color: white;"(click)="changeGridType('fixed')" class="uk-button uk-button-default">Cambiar a Fixed</button>
-            </div>
-            <div>
-              <button style="color: white;" class="uk-button uk-button-default" uk-toggle="target: #modal-example-dash">Add View</button>
-            <button  style="color: white;" (click)="saveItemsConfigJson()" class="uk-button uk-button-default">Save</button>
-            </div>
-          </div>
-        </div>
+  <div style="width: 100%;">
 
-        <gridster [ngStyle]="{'background-color': modeEdit ? '#222222' : '#22222', 'height':'90%'}" [options]="options">
-          <gridster-item class="uk-box-shadow-large uk-box-shadow-hover-large" *ngFor="let item of dashboard" [item]="item">
-            <button *ngIf="modeEdit" class="uk-button uk-button-default uk-float-right" style="position: relative;z-index: 30;" type="button" (click)="removeItem(item)">
-              <span uk-icon="trash"></span>
-            </button>
-            <ng-container *ngIf="item['componentType']">
-              <app-vista [@fadeInOut]="true" [chartType]="item['chartType']" [item]="item"></app-vista>
-            </ng-container>
-          </gridster-item>
-        </gridster>
-        
+    <div>
+      <div style="display: flex;padding: 20px;justify-content: space-between;">
+        <h2 class="uk-animation-slide-left " style="color: white;">Name: {{dashboardData?.nombre}}</h2>
+        <button style="color: white;" *ngIf="!modeEdit" (click)="modoEdit(true)"
+          class="uk-button uk-button-default uk-animation-slide-right">Edit Dashboard</button>
+        <button class="uk-animation-slide-right " style="color: white;" *ngIf="modeEdit" (click)="modoEdit(false)"
+          class="uk-button uk-button-default uk-animation-slide-right">Cancel</button>
+      </div>
+
+      <div *ngIf="modeEdit" style="padding: 15px;display: flex;justify-content: space-evenly;">
+        <div>
+          <button style="color: white;" (click)="changeGridType('scrollVertical')"
+            class="uk-button uk-button-default">Cambiar a Fit</button>
+          <button style="color: white;" (click)="changeGridType('fixed')" class="uk-button uk-button-default">Cambiar a
+            Fixed</button>
+        </div>
+        <div>
+          <button style="color: white;" class="uk-button uk-button-default" uk-toggle="target: #modal-example-dash">Add
+            View</button>
+          <button style="color: white;" (click)="saveItemsConfigJson()"
+            class="uk-button uk-button-default">Save</button>
+        </div>
+      </div>
     </div>
 
-    <div id="modal-example-dash" uk-modal>
-      <div class="uk-modal-dialog uk-modal-body">
-          <h2 class="uk-modal-title">TypeView</h2>
-          <div class="uk-margin">
-            <div uk-form-custom="target: > * > span:first-child">
-              <select aria-label="Custom controls" #type>
-                  <option value="">Please select...</option>
-                  <option value="1">A</option>
-                  <option value="2">B</option>
-                  <option value="3">C</option>
-                  <option value="4">D</option>
-              </select>
-              <button class="uk-button uk-button-default" type="button" tabindex="-1">
-                  <span></span>
-                  <span uk-icon="icon: chevron-down"></span>
-              </button>
-          </div>
-          </div>
-          <p class="uk-text-right">
-              <button class="uk-button uk-button-default uk-modal-close" type="button">Cancel</button>
-              <button class="uk-button uk-button-primary" type="button" (click)="addItem(2, 1, type.options[type.selectedIndex].text)" >Save</button>
-          </p>
-      </div>
+    <gridster [ngStyle]="{'background-color': modeEdit ? '#222222' : '#22222', 'height':'90%'}" [options]="options">
+      <gridster-item class="uk-box-shadow-large uk-box-shadow-hover-large" *ngFor="let item of dashboard" [item]="item">
+        <button *ngIf="modeEdit" class="uk-button uk-button-default uk-float-right"
+          style="position: relative;z-index: 30;" type="button" (click)="removeItem(item)">
+          <span uk-icon="trash"></span>
+        </button>
+        <ng-container *ngIf="item['componentType']">
+          <app-vista [@fadeInOut]="true" [chartType]="item['chartType']" [item]="item"></app-vista>
+        </ng-container>
+      </gridster-item>
+    </gridster>
+
   </div>
 
-    
+  <div id="modal-example-dash" uk-modal>
+    <div class="uk-modal-dialog uk-modal-body">
+      <h2 class="uk-modal-title">TypeView</h2>
+      <div class="uk-margin">
+        <div uk-form-custom="target: > * > span:first-child">
+          <select aria-label="Custom controls" #type>
+            <option value="">Please select...</option>
+            <option value="1">A</option>
+            <option value="2">B</option>
+            <option value="3">C</option>
+            <option value="4">D</option>
+          </select>
+          <button class="uk-button uk-button-default" type="button" tabindex="-1">
+            <span></span>
+            <span uk-icon="icon: chevron-down"></span>
+          </button>
+        </div>
+      </div>
+      <p class="uk-text-right">
+        <button class="uk-button uk-button-default uk-modal-close" type="button">Cancel</button>
+        <button class="uk-button uk-button-primary" type="button"
+          (click)="addItem(2, 1, type.options[type.selectedIndex].text)">Save</button>
+      </p>
+    </div>
+  </div>
+
+
 </div>

@@ -1,182 +1,200 @@
 <div id="matelevationz8" class="mat-elevation-z8" class="uk-animation-slide-right">
-    <div style="background-color: #ffffff14;">
-      <form class="uk-search uk-search-navbar">
-        <span uk-search-icon></span>
-        <input #search class="uk-search-input" (input)="searchByValue(search)" type="search" placeholder="Search" aria-label="Search">
-      </form>
-    </div>
-    <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
-  
-    <table mat-table [dataSource]="dataSource">
-  
-      <ng-container matColumnDef="id">
-        <th mat-header-cell *matHeaderCellDef> ID </th>
-        <td mat-cell *matCellDef="let element"> {{element.id}} </td>
-      </ng-container>
-  
-      <ng-container matColumnDef="code">
-        <th mat-header-cell *matHeaderCellDef> Code </th>
-        <td mat-cell *matCellDef="let element"> {{element.code}} </td>
-      </ng-container>
-  
-      <ng-container matColumnDef="startLocation">
-        <th mat-header-cell *matHeaderCellDef> Start Location </th>
-        <td mat-cell *matCellDef="let element"> {{getLocation(element.startLocation)}} </td>
-      </ng-container>
-  
-      <ng-container matColumnDef="endLocation">
-        <th mat-header-cell *matHeaderCellDef> End Location </th>
-        <td mat-cell *matCellDef="let element"> {{getLocation(element.endLocation)}} </td>
-      </ng-container>
-  
-      <ng-container matColumnDef="departureTime">
-        <th mat-header-cell *matHeaderCellDef> Departure Time </th>
-        <td mat-cell *matCellDef="let element"> {{element.departureTime | date}} </td>
-      </ng-container>
-  
-      <ng-container matColumnDef="arrivalTime">
-        <th mat-header-cell *matHeaderCellDef> Arrival Time </th>
-        <td mat-cell *matCellDef="let element"> {{element.arrivalTime | date}} </td>
-      </ng-container>
-  
-      <ng-container matColumnDef="assignedVehicleId">
-        <th mat-header-cell *matHeaderCellDef> Assigned Vehicle ID </th>
-        <td mat-cell *matCellDef="let element"> {{element.assignedVehicleId}} </td>
-      </ng-container>
-  
-      <ng-container matColumnDef="carrierId">
-        <th mat-header-cell *matHeaderCellDef> Carrier ID </th>
-        <td mat-cell *matCellDef="let element"> {{element.carrierId}} </td>
-      </ng-container>
-  
-      <ng-container matColumnDef="status">
-        <th mat-header-cell *matHeaderCellDef> Status </th>
-        <td mat-cell *matCellDef="let element">
-          <span *ngIf="element.status == 0" style="background-color: gray;" class="uk-badge">{{getStatus(element.status)}}</span>
-          <span *ngIf="element.status == 1"  style="background-color: green;"  class="uk-badge  blinking">{{getStatus(element.status)}}</span>
-          <span *ngIf="element.status == 2" style="background-color: red;" class="uk-badge">{{getStatus(element.status)}}</span>
-
-         </td>
-      </ng-container>
-
-  
-      <ng-container matColumnDef="action">
-        <th mat-header-cell *matHeaderCellDef> Action </th>
-        <td mat-cell *matCellDef="let element">
-          <button mat-icon-button color="primary" uk-toggle="target: #modal-example-transport-route" (click)="setRoute(element)">
-            <mat-icon>visibility</mat-icon>
-          </button>
-
-          <button   mat-icon-button color="ok"  (click)="openMap(element.startLocation, 'INIT', element.endLocation, 'FINISH', element.route, element.assignedVehicleId, element.status, element.palets)">
-            <mat-icon>map</mat-icon>
-          </button>
-          
-          <button   mat-icon-button color="edit" uk-toggle="target: #modal-example-transport-route-see" (click)="setRoute(element)">
-            <mat-icon>edit</mat-icon>
-          </button>
-        </td>
-      </ng-container>
-  
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr [@rowsAnimation]="" mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-    </table>
-  
-    <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons aria-label="Select page of employees" [pageSize]="5">
-    </mat-paginator>
+  <div style="background-color: #ffffff14;">
+    <form class="uk-search uk-search-navbar">
+      <span uk-search-icon></span>
+      <input #search class="uk-search-input" (input)="searchByValue(search)" type="search" placeholder="Search"
+        aria-label="Search">
+    </form>
   </div>
-  
-  <div id="containerMapRoute" class="map-wrap">
-    <a href="https://www.maptiler.com" class="watermark"><img src="https://api.maptiler.com/resources/logo.svg" alt="MapTiler logo"/></a>
-    <div class="map" #map></div>
-    <div class="palet">
-      <div style="display: flex;justify-content: center;align-items: center;margin-top: 10px;">
-        <h3>Total: {{totalWeight}} Kg</h3>
-      </div>
-      <hr style="margin-inline: 10px !important;margin: unset;border-color: #1e87f0;">
-      <div *ngFor="let palet of palets; let i = index" >
-          <div class="uk-card uk-card-default uk-card-body uk-width-1-2@m" style="width: 90%;margin: 20px;border-radius: 25px;display: flex;justify-content: space-between;">
-            <img src="../../assets/images/pallet.png" width="100px" alt="" style="border-radius: 20px;">
-            <div>
-              <div class="uk-card-badge uk-label">{{ palet.weight.toFixed(2) }} Kg</div>
-              <h3 class="uk-card-title">Nº{{i}}</h3>
-              <p>{{ palet.description }}</p>
-            </div>
-        </div>
-      </div>
-    </div>
+  <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
 
-    <div class="close-button" (click)="closeMap()"></div>
-  </div>
-  
-  <!-- Este es el modal de detalle de la ruta de transporte -->
-  <div id="modal-transport-route-details" class="uk-flex-top" uk-modal>
-    <div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
-      <h2 class="uk-modal-title">Transport Route Details</h2>
-      <!-- Aquí se mostrarán los detalles de la ruta seleccionada -->
+  <table mat-table [dataSource]="dataSource">
+
+    <ng-container matColumnDef="id">
+      <th mat-header-cell *matHeaderCellDef> ID </th>
+      <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="code">
+      <th mat-header-cell *matHeaderCellDef> Code </th>
+      <td mat-cell *matCellDef="let element"> {{element.code}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="startLocation">
+      <th mat-header-cell *matHeaderCellDef> Start Location </th>
+      <td mat-cell *matCellDef="let element"> {{getLocation(element.startLocation)}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="endLocation">
+      <th mat-header-cell *matHeaderCellDef> End Location </th>
+      <td mat-cell *matCellDef="let element"> {{getLocation(element.endLocation)}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="departureTime">
+      <th mat-header-cell *matHeaderCellDef> Departure Time </th>
+      <td mat-cell *matCellDef="let element"> {{element.departureTime | date}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="arrivalTime">
+      <th mat-header-cell *matHeaderCellDef> Arrival Time </th>
+      <td mat-cell *matCellDef="let element"> {{element.arrivalTime | date}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="assignedVehicleId">
+      <th mat-header-cell *matHeaderCellDef> Assigned Vehicle ID </th>
+      <td mat-cell *matCellDef="let element"> {{element.assignedVehicleId}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="carrierId">
+      <th mat-header-cell *matHeaderCellDef> Carrier ID </th>
+      <td mat-cell *matCellDef="let element"> {{element.carrierId}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="status">
+      <th mat-header-cell *matHeaderCellDef> Status </th>
+      <td mat-cell *matCellDef="let element">
+        <span *ngIf="element.status == 0" style="background-color: gray;"
+          class="uk-badge">{{getStatus(element.status)}}</span>
+        <span *ngIf="element.status == 1" style="background-color: green;"
+          class="uk-badge  blinking">{{getStatus(element.status)}}</span>
+        <span *ngIf="element.status == 2" style="background-color: red;"
+          class="uk-badge">{{getStatus(element.status)}}</span>
+
+      </td>
+    </ng-container>
+
+
+    <ng-container matColumnDef="action">
+      <th mat-header-cell *matHeaderCellDef> Action </th>
+      <td mat-cell *matCellDef="let element">
+        <button mat-icon-button color="primary" uk-toggle="target: #modal-example-transport-route"
+          (click)="setRoute(element)">
+          <mat-icon>visibility</mat-icon>
+        </button>
+
+        <button mat-icon-button color="ok"
+          (click)="openMap(element.startLocation, 'INIT', element.endLocation, 'FINISH', element.route, element.assignedVehicleId, element.status, element.palets)">
+          <mat-icon>map</mat-icon>
+        </button>
+
+        <button mat-icon-button color="edit" uk-toggle="target: #modal-example-transport-route-see"
+          (click)="setRoute(element)">
+          <mat-icon>edit</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr [@rowsAnimation]="" mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+
+  <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons aria-label="Select page of employees"
+    [pageSize]="5">
+  </mat-paginator>
+</div>
+
+<div id="containerMapRoute" class="map-wrap">
+  <a href="https://www.maptiler.com" class="watermark"><img src="https://api.maptiler.com/resources/logo.svg"
+      alt="MapTiler logo" /></a>
+  <div class="map" #map></div>
+  <div class="palet">
+    <div style="display: flex;justify-content: center;align-items: center;margin-top: 10px;">
+      <h3>Total: {{totalWeight}} Kg</h3>
     </div>
-  </div>
-  
-    
-    
-  <div id="modal-example-transport-route" class="uk-flex-top" uk-modal>
-    <div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
-      <h2 class="uk-modal-title">Route Details</h2>
-      <div style="display: flex; justify-content: center; align-items: center;">
-        <!-- Aquí puedes mostrar los detalles específicos de la ruta, por ejemplo: -->
+    <hr style="margin-inline: 10px !important;margin: unset;border-color: #1e87f0;">
+    <div *ngFor="let palet of palets; let i = index">
+      <div class="uk-card uk-card-default uk-card-body uk-width-1-2@m"
+        style="width: 90%;margin: 20px;border-radius: 25px;display: flex;justify-content: space-between;">
+        <img src="../../assets/images/pallet.png" width="100px" alt="" style="border-radius: 20px;">
         <div>
-          <div class="uk-grid-small" uk-grid>
-            <div class="uk-width-1-1">
-              <label>date:</label>
-              <input readonly="true" class="uk-input" type="text" value="{{ transportRoute?.date }}" aria-label="Name">
-            </div>
-            <div class="uk-width-1-1">
-              <label>Start Location:</label>
-              <input readonly="true" class="uk-input" type="text" value="{{ transportRoute?.startLocation }}" aria-label="Start Location">
-            </div>
-            <div class="uk-width-1-1">
-              <label>End Location:</label>
-              <input readonly="true" class="uk-input" type="text" value="{{ transportRoute?.endLocation }}" aria-label="End Location">
-            </div>
-            <!-- Agrega más campos según los atributos de la entidad TransportRoute -->
-          </div>
+          <div class="uk-card-badge uk-label">{{ palet.weight.toFixed(2) }} Kg</div>
+          <h3 class="uk-card-title">Nº{{i}}</h3>
+          <p>{{ palet.description }}</p>
         </div>
-      </div>
-      <div class="close_modal_single">
-        <button style="margin-right: 20px; width: 100px;" class="uk-button uk-button-danger uk-modal-close-default">Close</button>
       </div>
     </div>
   </div>
-  
-  <div id="modal-example-transport-route-see" class="uk-flex-top" uk-modal>
-    <div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
-      <h2 class="uk-modal-title">Route Details</h2>
-      <div style="display: flex; justify-content: center; align-items: center;">
-        <!-- Aquí puedes mostrar los detalles específicos de la ruta en modo de solo lectura, por ejemplo: -->
-        <div>
-          <div class="uk-grid-small" uk-grid>
-            <div class="uk-width-1-1">
-              <label>date:</label>
-              <input disabled class="uk-input" type="text" value="{{ transportRoute?.date }}" aria-label="Name">
-            </div>
-            <div class="uk-width-1-1">
-              <label>Start Location:</label>
-              <input disabled class="uk-input" type="text" value="{{ transportRoute?.startLocation }}" aria-label="Start Location">
-            </div>
-            <div class="uk-width-1-1">
-              <label>End Location:</label>
-              <input disabled class="uk-input" type="text" value="{{ transportRoute?.endLocation }}" aria-label="End Location">
-            </div>
-            <!-- Agrega más campos según los atributos de la entidad TransportRoute -->
+
+  <div class="close-button" (click)="closeMap()"></div>
+</div>
+
+<!-- Este es el modal de detalle de la ruta de transporte -->
+<div id="modal-transport-route-details" class="uk-flex-top" uk-modal>
+  <div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
+    <h2 class="uk-modal-title">Transport Route Details</h2>
+    <!-- Aquí se mostrarán los detalles de la ruta seleccionada -->
+  </div>
+</div>
+
+
+
+<div id="modal-example-transport-route" class="uk-flex-top" uk-modal>
+  <div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
+    <h2 class="uk-modal-title">Route Details</h2>
+    <div style="display: flex; justify-content: center; align-items: center;">
+      <!-- Aquí puedes mostrar los detalles específicos de la ruta, por ejemplo: -->
+      <div>
+        <div class="uk-grid-small" uk-grid>
+          <div class="uk-width-1-1">
+            <label>date:</label>
+            <input readonly="true" class="uk-input" type="text" value="{{ transportRoute?.date }}" aria-label="Name">
           </div>
+          <div class="uk-width-1-1">
+            <label>Start Location:</label>
+            <input readonly="true" class="uk-input" type="text" value="{{ transportRoute?.startLocation }}"
+              aria-label="Start Location">
+          </div>
+          <div class="uk-width-1-1">
+            <label>End Location:</label>
+            <input readonly="true" class="uk-input" type="text" value="{{ transportRoute?.endLocation }}"
+              aria-label="End Location">
+          </div>
+          <!-- Agrega más campos según los atributos de la entidad TransportRoute -->
         </div>
       </div>
-      <div class="close_modal_single">
-        <button style="margin-right: 20px; width: 100px;" class="uk-button uk-button-danger uk-modal-close-default">Close</button>
-      </div>
+    </div>
+    <div class="close_modal_single">
+      <button style="margin-right: 20px; width: 100px;"
+        class="uk-button uk-button-danger uk-modal-close-default">Close</button>
     </div>
   </div>
-  
-    
-  
-  
-    <div #notifEmptyT  onclick="UIkit.notification({message: '<span uk-icon=\'icon: future\'></span> There Are No Transport Routes At This Time', status: 'primary'})"></div>
+</div>
+
+<div id="modal-example-transport-route-see" class="uk-flex-top" uk-modal>
+  <div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
+    <h2 class="uk-modal-title">Route Details</h2>
+    <div style="display: flex; justify-content: center; align-items: center;">
+      <!-- Aquí puedes mostrar los detalles específicos de la ruta en modo de solo lectura, por ejemplo: -->
+      <div>
+        <div class="uk-grid-small" uk-grid>
+          <div class="uk-width-1-1">
+            <label>date:</label>
+            <input disabled class="uk-input" type="text" value="{{ transportRoute?.date }}" aria-label="Name">
+          </div>
+          <div class="uk-width-1-1">
+            <label>Start Location:</label>
+            <input disabled class="uk-input" type="text" value="{{ transportRoute?.startLocation }}"
+              aria-label="Start Location">
+          </div>
+          <div class="uk-width-1-1">
+            <label>End Location:</label>
+            <input disabled class="uk-input" type="text" value="{{ transportRoute?.endLocation }}"
+              aria-label="End Location">
+          </div>
+          <!-- Agrega más campos según los atributos de la entidad TransportRoute -->
+        </div>
+      </div>
+    </div>
+    <div class="close_modal_single">
+      <button style="margin-right: 20px; width: 100px;"
+        class="uk-button uk-button-danger uk-modal-close-default">Close</button>
+    </div>
+  </div>
+</div>
+
+
+
+
+<div #notifEmptyT
+  onclick="UIkit.notification({message: '<span uk-icon=\'icon: future\'></span> There Are No Transport Routes At This Time', status: 'primary'})">
+</div>
