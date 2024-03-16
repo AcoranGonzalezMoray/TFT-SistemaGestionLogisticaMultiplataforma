@@ -2,11 +2,13 @@ import { Component, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
 import { GridsterConfig, GridsterItem, GridsterItemComponent } from 'angular-gridster2';
 import { GridItemServiceService } from '../services/grid-item-service.service';
 import { VistaComponent } from '../vista/vista.component';
-import { Dashboard } from '../interfaces/dashboard';
+import { Count, Dashboard } from '../interfaces/dashboard';
 import { gridTypes } from 'angular-gridster2/lib/gridsterConfig.interface';
 import { DataService } from '../services/data.service';
 import { View } from '../interfaces/view';
 import { animate, style, transition, trigger } from '@angular/animations';
+import { HttpClient } from '@angular/common/http';
+import { CountComponent } from '../count/count.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -32,7 +34,7 @@ export class DashboardComponent {
   unitHeight: number = 0;
 
 
-  constructor(public gridItemService: GridItemServiceService, private userService: DataService) { }
+  constructor(private http: HttpClient, public gridItemService: GridItemServiceService, private userService: DataService) { }
 
 
   ngOnInit() {
@@ -56,17 +58,25 @@ export class DashboardComponent {
     })
   }
 
-  getGridsterItemsConfigJson(): { cols: number; rows: number; x: number; y: number; chartType: string }[] {
-    const itemsConfig = this.dashboard.map(item => ({
-      cols: item.cols,
-      rows: item.rows,
-      x: item.x,
-      y: item.y,
-      chartType: item['chartType'],
+  getGridsterItemsConfigJson(): { posicion: string }[] {
+    const itemsConfig = this.dashboard
+      .filter(item => item['chartType']) // Filtrar solo los elementos con chartType definido
+      .map(item => ({ posicion: JSON.stringify({ cols: item.cols, rows: item.rows, x: item.x, y: item.y, chartType: item['chartType'] }) }));
+  
+    return itemsConfig;
+  }
+  
+  getGridsterCountConfigJson(): { posicion: string, title:string }[] {
+    const itemsConfig = this.dashboard
+    .filter(item => item['title'])
+    .map(item => ({
+      posicion: JSON.stringify({ cols: item.cols, rows: item.rows, x: item.x, y: item.y}),
+      title: item['title'],
     }));
 
     return itemsConfig;
   }
+
 
   static itemChange(item: any, itemComponent: any) {
     console.info('itemChanged', item, itemComponent);
@@ -87,6 +97,7 @@ export class DashboardComponent {
 
   loadItemsConfigJson() {
     this.dashboardData = this.gridItemService.getDashboard();
+    console.log(this.dashboardData)
     const vistas = this.dashboardData?.vista;
 
     if (vistas) {
@@ -105,7 +116,8 @@ export class DashboardComponent {
             chartType: posicion.chartType
           };
 
-          itemConfig['componentType'] = itemConfig['componentType'] || VistaComponent;
+          itemConfig['componentType'] = VistaComponent;
+          console.log(itemConfig['componentType'])
           return [itemConfig];
         } catch (error) {
           console.error('Error al parsear la propiedad "posicion":', error);
@@ -115,8 +127,33 @@ export class DashboardComponent {
     }
 
     this.changedOptions();
+    this.loadCounts()
   }
 
+  counts: Count[] = []
+  loadCounts(): void {
+    this.dashboardData?.count?.forEach(count => {
+      const posicionString = count.posicion;
+
+      try {
+        // Intentar parsear la cadena JSON
+        const posicion = JSON.parse(posicionString);
+
+        const itemConfig: GridsterItem = {
+          cols: posicion.cols || 1,
+          rows: posicion.rows || 1,
+          x: posicion.x || 0,
+          y: posicion.y || 0,
+          title: count.title
+        };
+
+        itemConfig['componentTypeCount'] = CountComponent;
+        this.dashboard.push(itemConfig);
+      } catch (error) {
+        console.error('Error al parsear la propiedad "posicion":', error);
+      }
+    });
+  }
 
   saveItemsConfigJson() {
     // Obtener el usuario actual
@@ -128,40 +165,77 @@ export class DashboardComponent {
         if (dashboardActual?.vista) {
           // Asegurar que haya suficientes elementos en vista
           const newVista: View[] = new Array(jsonConfig.length).fill("");
-          console.log(newVista)
+          console.log("CONMFIG"+jsonConfig)
           // Actualizar las posiciones
           newVista.forEach((vistaR, index) => {
-            const vista: View = { posicion: JSON.stringify(jsonConfig[index]) }
+            const vista: View = { posicion: jsonConfig[index].posicion}
             newVista[index] = vista
           });
-          console.log(newVista)
-          console.log(user.data.dashboards[0].vista)
           dashboardActual.vista = newVista
           this.userService.setUserDashboard(user);
+          this.saveCountsConfigJson()
         }
       }
-
-      // Llamar a setUserDashboard para guardar la nueva configuración
-
       console.log('Configuración del usuario actualizada con éxito');
     });
   }
+  saveCountsConfigJson() {
+    // Obtener el usuario actual
+    this.userService.getUserDashboard().subscribe((user) => {
+      const jsonConfig = this.getGridsterCountConfigJson(); // Obtener la configuración de los counts
+  
+      if (user.data?.dashboards && user.data.dashboards.length > 0) {
+        const dashboardActual = user.data.dashboards.find((dashboard) => dashboard.nombre === this.dashboardData?.nombre);
+        if (dashboardActual) {
+          const newCount: Count[] = new Array(jsonConfig.length).fill("");
+          newCount.forEach((vistaR, index) => {
+            const count: Count = {title: jsonConfig[index].title, posicion: jsonConfig[index].posicion}
+            newCount[index] = count
+          });
+          dashboardActual.count = newCount
+          this.userService.setUserDashboard(user);
 
+          console.log('Configuración de los counts del usuario actualizada con éxito');
+        } else {
+          console.error('No se encontró el dashboard en los datos del usuario');
+        }
+      } else {
+        console.error('No se encontró el dashboard en los datos del usuario');
+      }
+    });
+  }
+  
 
   addItem(cols: number, rows: number, chartType: string) {
-    const newItem: GridsterItem = {
+    if (chartType.includes("Count:")) this.addItemCount(cols, rows, chartType);
+    else if (chartType.includes("Chart:")) {
+      const newItem: GridsterItem = {
+        x: 0,
+        y: 0,
+        cols: cols,
+        rows: rows,
+        componentType: VistaComponent,
+        chartType: chartType,
+        height: 400, // ajusta según tus necesidades
+        width: 600, // ajusta según tus necesidades
+      };
+      this.dashboard.push(newItem);
+    }
+  }
+
+  addItemCount(cols: number, rows: number, titulo: string) {
+    const newItem = {
       x: 0,
       y: 0,
       cols: cols,
       rows: rows,
-      componentType: VistaComponent,
-      chartType: chartType,
-      height: 400, // ajusta según tus necesidades
-      width: 600, // ajusta según tus necesidades
+      componentTypeCount: CountComponent,
+      title: titulo,
+      height: 100, // ajusta según tus necesidades
+      width: 100, // ajusta según tus necesidades
     };
     this.dashboard.push(newItem);
   }
-
 
   removeItem(item: any) {
     this.dashboard.splice(this.dashboard.indexOf(item), 1);

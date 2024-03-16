@@ -37,6 +37,7 @@ import {MatStepperModule} from '@angular/material/stepper';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import { ProfilePanelComponent } from './profile-panel/profile-panel.component';
+import { CountComponent } from './count/count.component';
 
 export function playerFactory() {
   return player;
@@ -61,7 +62,8 @@ export function playerFactory() {
     HistoryPanelComponent,
     SignInComponent,
     MainAnimationComponent,
-    ProfilePanelComponent
+    ProfilePanelComponent,
+    CountComponent
   ],
   imports: [
     BrowserModule,

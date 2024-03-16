@@ -1,23 +1,49 @@
 {
-  "id":0,
-  "idUser":1,
+  "id": 0,
+  "idUser": 1,
   "nombre": "John",
   "apellido": "Doe",
   "data": {
     "dashboards": [
-
-      { 
-      "nombre": "Dashboard 1", 
-      "vista": [
-        {
-          "posicion":"{\"cols\":2,\"rows\":1,\"x\":2,\"y\":1,\"chartType\":\"Chart: Trend Over Time\"}"
-        },
-        {
-          "posicion":"{\"cols\":2,\"rows\":1,\"x\":0,\"y\":2,\"chartType\":\"Chart: Entities Per Warehouse\"}"
-        }
+      {
+        "nombre": "Ex. Dashboard",
+        "count": [
+          {
+            "title": "Count: Number of Employees",
+            "posicion": "{\"cols\":2,\"rows\":1,\"x\":0,\"y\":0}"
+          },
+          {
+            "title": "Count: Number of Transport Routes",
+            "posicion": "{\"cols\":2,\"rows\":1,\"x\":2,\"y\":0}"
+          },
+          {
+            "title": "Count: Number of Communications",
+            "posicion": "{\"cols\":2,\"rows\":1,\"x\":4,\"y\":0}"
+          },
+          {
+            "title": "Count: Number of Vehicles",
+            "posicion": "{\"cols\":2,\"rows\":1,\"x\":6,\"y\":0}"
+          }
+        ],
+        "vista": [
+          {
+            "posicion": "{\"cols\":6,\"rows\":2,\"x\":2,\"y\":4,\"chartType\":\"Chart: Trend Over Time\"}"
+          },
+          {
+            "posicion": "{\"cols\":2,\"rows\":2,\"x\":0,\"y\":4,\"chartType\":\"Chart: Entities Per Warehouse\"}"
+          },
+          {
+            "posicion": "{\"cols\":2,\"rows\":3,\"x\":0,\"y\":1,\"chartType\":\"Chart: Message Trends Over Time\"}"
+          },
+          {
+            "posicion": "{\"cols\":2,\"rows\":3,\"x\":2,\"y\":1,\"chartType\":\"Chart: Departure Routes per Warehouse\"}"
+          },
+          {
+            "posicion": "{\"cols\":4,\"rows\":3,\"x\":4,\"y\":1,\"chartType\":\"Chart: Stock Quantity by Item\"}"
+          }
         ]
       }
-
     ]
   }
 }
+

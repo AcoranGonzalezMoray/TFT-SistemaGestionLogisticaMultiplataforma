@@ -22,21 +22,30 @@ export class DashboardsComponent {
   constructor(private userService: DataService, private gridItemService: GridItemServiceService, private router: Router) { }
 
   ngOnInit() {
+    this.loadDashboard()
+  }
+  loadDashboard(open? : boolean, dashboard?:Dashboard) {
     this.userService.getUserDashboard().subscribe(
       data => {
         this.userDashboard = data;
+
+        if(open){
+          var tmp = data.data.dashboards.find((d) => d.nombre == dashboard?.nombre)
+          const dash =tmp?tmp:dashboard!;
+          this.gridItemService.setDashboard(dash)
+          this.selectedDashboard = dash
+        }
+
       },
       error => {
         console.error('Error al cargar el archivo JSON', error);
       }
     );
-
   }
-
   addDashboard(name: string) {
     if (name.length != 0) {
       // Crear un nuevo dashboard con el nombre proporcionado y un array vacío para 'vista'
-      const newDashboard: Dashboard = { nombre: name, vista: [] };
+      const newDashboard: Dashboard = { nombre: name, count:[] ,vista: [] };
 
       // Verificar si 'userDashboard' y 'userDashboard.data' existen
       if (this.userDashboard && this.userDashboard.data) {
@@ -62,8 +71,7 @@ export class DashboardsComponent {
 
 
   open(dashboard: Dashboard) {
-    this.gridItemService.setDashboard(dashboard)
-    this.selectedDashboard = dashboard
+    this.loadDashboard(true,  dashboard);
   }
 
   addHoverClass() {

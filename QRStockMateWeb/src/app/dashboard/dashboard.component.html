@@ -35,6 +35,9 @@
         <ng-container *ngIf="item['componentType']">
           <app-vista [@fadeInOut]="true" [chartType]="item['chartType']" [item]="item"></app-vista>
         </ng-container>
+        <ng-container *ngIf="item['componentTypeCount']">
+          <app-count [title]="item['title']"></app-count>
+        </ng-container>
       </gridster-item>
     </gridster>
 
@@ -60,6 +63,12 @@
             <option value="11">Chart: Vehicle Distribution by Manufacturer</option>
             <option value="12">Chart: Relationship between Maximum Load and Vehicle Model</option>
             <option value="13">Chart: Number of Transportation Routes by Date</option>
+            <option value="14">Count: Number of Employees</option>
+            <option value="15">Count: Number of Vehicles</option>
+            <option value="16">Count: Number of Warehouses</option>
+            <option value="17">Count: Number of Items</option>
+            <option value="18">Count: Number of Communications</option>
+            <option value="19">Count: Number of Transport Routes</option>
           </select>
           <button class="uk-button uk-button-default" type="button" tabindex="-1">
             <span></span>
