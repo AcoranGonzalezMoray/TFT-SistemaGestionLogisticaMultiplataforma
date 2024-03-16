@@ -10,10 +10,10 @@
       "nombre": "Dashboard 1", 
       "vista": [
         {
-          "posicion":"{\"cols\":2,\"rows\":1,\"x\":2,\"y\":1,\"chartType\":\"A\"}"
+          "posicion":"{\"cols\":2,\"rows\":1,\"x\":2,\"y\":1,\"chartType\":\"Chart: Trend Over Time\"}"
         },
         {
-          "posicion":"{\"cols\":2,\"rows\":1,\"x\":0,\"y\":2,\"chartType\":\"B\"}"
+          "posicion":"{\"cols\":2,\"rows\":1,\"x\":0,\"y\":2,\"chartType\":\"Chart: Entities Per Warehouse\"}"
         }
         ]
       }
