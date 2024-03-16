@@ -94,6 +94,7 @@
         background-color: white;
         border-radius: 0 0 20px 0;
         display: flex;
+        flex-direction: column;
         align-content: center;
         justify-content: center;
         align-items: center;
@@ -204,13 +205,62 @@
     #drop-area.drag-over {
         border: 2px dashed red;
     }
+
+    .communication {
+    background-color: #333333;
+    border-radius: 20px;
+    width: 90%;
+    margin: 20px;
+    display: flex;
+    flex-direction: column;
+    padding: 10px; /* Añade espacio interno para el contenido */
+    position: relative; /* Para posicionar el badge relativo a este elemento */
+    }
+
+    .uk-badge {
+        position: absolute;
+        top: 5px;
+        left: 5px;
+        padding: 5px;
+        border-radius: 5px;
+    }
+    .yellow_C {
+        background-color: yellow;
+    }
+    .red_C {
+        background-color: red;
+    }
+    .green_C {
+        background-color: green;
+    }
+    .uk-badge.time {
+        position: absolute;
+        bottom: 5px;
+        right:  5px;
+        background-color: dimgray; /* Cambia esto al color deseado */
+        padding: 5px;
+        border-radius: 5px;
+        top: unset;
+        left: unset;
+    }
+    .contentComm {
+        flex: 1; /* Ocupa todo el espacio disponible verticalmente */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center; /* Alinea el texto al centro */
+        color: white; /* Color del texto */
+        margin-block: 25px;
+
+    }
+
 </style>
 
 <div class="com">
     <div class="contact">
         <div class="selector uk-animation-slide-left">
             <button style="width: 100%; margin-right: 15px; margin: 10px"
-                [ngClass]="{ primary: !isCommunicationClicked }" (click)="onClickCommunicationButton()"
+                [ngClass]="{ primary: !isCommunicationClicked }" (click)="onClickChatButton()"
                 mat-raised-button>
                 Chats
             </button>
@@ -266,16 +316,21 @@
     <div class="chat  uk-animation-slide-right">
         <div class="content">
             <div class="uk-card-header profile">
-                <div class="uk-grid-small uk-flex-middle" uk-grid>
+                <div class="uk-grid-small uk-flex-middle " uk-grid>
                     <div class="uk-width-auto">
-                        <img *ngIf="users[0]!=undefined" class="uk-border-circle" width="40" height="40"
+                        <img *ngIf="users[0]!=undefined && !isCommunicationClicked" class="uk-border-circle  uk-animation-slide-right" width="40" height="40"
                             src="{{ users[0].url }}" alt="Avatar" />
+                            <img *ngIf="users[0]!=undefined && isCommunicationClicked" class="uk-border-circle  uk-animation-slide-right" width="40" height="40"
+                            src="../../assets/images/message_icon.png" alt="Avatar" />
                     </div>
-                    <div class="uk-width-expand" *ngIf="this.userMessages.length!=0">
-                        <h3 style="color: white !important" class="uk-card-title uk-margin-remove-bottom">
+                    <div class="uk-width-expand" *ngIf="this.userMessages.length!=0 || isCommunicationClicked">
+                        <h3 *ngIf="!isCommunicationClicked" style="color: white !important" class="uk-card-title uk-margin-remove-bottom">
                             {{ mainUserMessage?.name }}
                         </h3>
-                        <p class="uk-text-meta uk-margin-remove-top">
+                        <h3 *ngIf="isCommunicationClicked" style="color: white !important" class="uk-card-title uk-margin-remove-bottom">
+                            Communications
+                        </h3>
+                        <p *ngIf="!isCommunicationClicked" class="uk-text-meta uk-margin-remove-top">
                             <time datetime="2016-04-01T19:00">Role: {{
                                 getRoleUser(mainUserMessage?.role)
                                 }}</time>
@@ -293,7 +348,7 @@
                     <span class="uk-link">selecting one</span>
                 </div>
             </div>
-            <div *ngIf="!draggingOver" class="messages" #messagesContainer (dragenter)="handleDragEnter($event)">
+            <div *ngIf="!draggingOver && !isCommunicationClicked" class="messages" #messagesContainer (dragenter)="handleDragEnter($event)">
                 <div class="scroll-to-bottom" [ngStyle]="{'margin-left': userMessages.length === 0 ? '34%' : '45%'}"
                     (click)="scrollToBottom()">
                     <button style="border-radius: 20px;" [ngStyle]="" mat-raised-button><mat-icon
@@ -302,10 +357,10 @@
                     </button>
                 </div>
 
-                <div class="message" *ngFor="let item of mainMessage" [ngClass]="{
-            sender: item.senderContactId === me.id,
-            receiver: item.senderContactId !== me.id
-          }">
+                <div class="message"  *ngFor="let item of mainMessage" [ngClass]="{
+                    sender: item.senderContactId === me.id,
+                    receiver: item.senderContactId !== me.id
+                }">
                     <!-- Contenido del mensaje aquí -->
                     <ng-container *ngIf="item.type === TypeFile.Text">
                         <p>{{ item.content }}</p>
@@ -332,11 +387,36 @@
 
                 </div>
             </div>
+            <div *ngIf="isCommunicationClicked" class="messages">
+                <div class="communication" *ngFor="let item of communication">
+                    <span [ngClass]="{'uk-badge': true, 'green_C': item.content.split(';')[0] === '0',
+                                    'yellow_C': item.content.split(';')[0] === '1', 'red_C': item.content.split(';')[0] === '2'}" ></span>
+                    <div class="contentComm">{{ item.content.split(";")[1]}}</div>
+                    <span class="uk-badge time">{{ item.sentDate | date: 'dd/MM/yyyy hh:mm' }}</span>
+                </div>
+            </div>
+            
         </div>
         <div class="uk-margin" style="display: flex">
             <textarea #content multiple="true" class="uk-input custom-border" type="text"
                 placeholder="Type your message..." aria-label="Input"></textarea>
             <div class="button-space">
+                <mat-form-field *ngIf="isCommunicationClicked" appearance="fill" style="width: 152px;">
+                    <mat-label>Seleccionar Priority</mat-label>
+                    <mat-select [(value)]="selectedColor">
+                        <mat-option  *ngFor="let color of colorOptions" [value]="color">
+                            <div style="display: flex;align-items: center;">
+                                <span style="
+                                margin-right: 10px;
+                                width: 15px;
+                                height: 15px;
+                                display: block;
+                                border-radius: 10px;" [ngClass]="{'green_C': color=='Low','yellow_C': color=='Medium','red_C': color=='High'}"></span>
+                                {{ color }}
+                            </div>
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
                 <button (click)="sendMessage(content.value);content.value = ''" mat-mini-fab color="primary"
                     aria-label="Example icon button with a menu icon">
                     <mat-icon>send</mat-icon>

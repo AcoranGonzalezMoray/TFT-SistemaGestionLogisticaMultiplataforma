@@ -6,6 +6,8 @@ import { Company } from '../interfaces/company';
 import { MessageService } from '../services/messages.service';
 import { Message, TypeFile } from '../interfaces/message';
 import { RoleStatus } from '../interfaces/transport-route';
+import { CommunicationService } from '../services/communication.service';
+import { Communication } from '../interfaces/communication';
 declare var UIkit: any; // Importa UIKit
 
 @Component({
@@ -23,6 +25,10 @@ export class CommunicationPanelComponent {
   users: User[] = [];
   employees: User[] = [];
   messages: Message[] = [];
+  communication: Communication[] = [];
+  selectedColor: string = 'Low'; // Color predeterminado seleccionado
+  colorOptions: string[] = ['Low', 'Medium', 'High'];
+
   Role = RoleStatus
   me!: User;
   company!: Company;
@@ -39,12 +45,16 @@ export class CommunicationPanelComponent {
   dragUIKIT: boolean = false;
   buttonRight: any;
 
-  constructor(private changeDetectorRef: ChangeDetectorRef, private messagesServices: MessageService, private userService: UserService, private companyService: CompanyService) { }
+  constructor(private changeDetectorRef: ChangeDetectorRef,
+    private messagesServices: MessageService, private userService: UserService,
+    private communicationServices: CommunicationService, private companyService: CompanyService) { }
 
   ngOnInit(): void {
     this.getCompanyByUser();
     setInterval(() => {
-      this.loadMessages();
+      if (!this.isCommunicationClicked) this.loadMessages();
+      if (this.isCommunicationClicked) this.loadCommunications();
+
     }, 200);
   }
   dragUIKITView: boolean = false;
@@ -137,19 +147,23 @@ export class CommunicationPanelComponent {
   }
 
   openMessages(user: User) {
-    this.mainUserMessage = user;
-    //this.messages filtra esos mensajes
-    this.mainMessage = this.messages.filter(x =>
-      x.receiverContactId == user.id && x.senderContactId == this.me.id
-      ||
-      x.receiverContactId == this.me.id && x.senderContactId == user.id
-    );
-    this.firstTime = false
-
+    if (!this.isCommunicationClicked) {
+      this.mainUserMessage = user;
+      //this.messages filtra esos mensajes
+      this.mainMessage = this.messages.filter(x =>
+        x.receiverContactId == user.id && x.senderContactId == this.me.id
+        ||
+        x.receiverContactId == this.me.id && x.senderContactId == user.id
+      );
+      this.firstTime = false
+    }
   }
 
+  onClickChatButton() {
+    this.isCommunicationClicked = false
+  }
   onClickCommunicationButton() {
-    this.isCommunicationClicked = !this.isCommunicationClicked;
+    this.isCommunicationClicked = true
   }
   verificarYAgregarSufijo(cadena: string): string {
     // Expresión regular para verificar si la cadena es una URL
@@ -187,6 +201,19 @@ export class CommunicationPanelComponent {
 
   }
 
+  loadCommunications() {
+    this.communicationServices.getCommunicationsByCode(this.company.code, this.token).subscribe(comm => {
+      // Filtrar mensajes que no están en this.messages y agregarlos
+      comm.forEach(newMessage => {
+        if (!this.communication.some(existingMessage => existingMessage.id === newMessage.id)) {
+          this.communication.push(newMessage);
+          this.scrollToBottom()
+        }
+      });
+    })
+
+  }
+
   loadEmployees(): void {
     this.companyService.getEmployees(this.company, this.token)
       .subscribe(employees => {
@@ -194,7 +221,7 @@ export class CommunicationPanelComponent {
           employee.url = this.verificarYAgregarSufijo(employee.url); // Ajusta la asignación correctamente
           return employee;
         });
-        this.users = this.users.concat(this.users);
+        //this.users = this.users.concat(this.users);
         this.employees = this.users;
         this.userMessages = employees
 
@@ -262,29 +289,44 @@ export class CommunicationPanelComponent {
 
   // Método para enviar un nuevo mensaje con el contenido proporcionado
   sendMessage(content: string): void {
-    // Verificar si hay un usuario seleccionado al que enviar el mensaje
-    if (this.mainUserMessage != undefined) {
-      // Crear un nuevo objeto Message con el contenido y los IDs de remitente y destinatario
-      const newMessage: Message = {
-        id: 0, // Esto se asignará en el backend
-        code: this.company.code, // Esto se asignará en el backend
-        senderContactId: this.me.id,
-        receiverContactId: this.mainUserMessage.id,
-        content: content,
-        sentDate: new Date(),
-        type: TypeFile.Text // Tipo de archivo de texto
+    if (!this.isCommunicationClicked) {
+      // Verificar si hay un usuario seleccionado al que enviar el mensaje
+      if (this.mainUserMessage != undefined) {
+        // Crear un nuevo objeto Message con el contenido y los IDs de remitente y destinatario
+        const newMessage: Message = {
+          id: 0, // Esto se asignará en el backend
+          code: this.company.code, // Esto se asignará en el backend
+          senderContactId: this.me.id,
+          receiverContactId: this.mainUserMessage.id,
+          content: content,
+          sentDate: new Date(),
+          type: TypeFile.Text // Tipo de archivo de texto
+        };
+        this.tmpUserMessage = this.tmpUserMessage.filter(x => x.id != this.mainUserMessage!.id,)
+        // Llamar al servicio para crear el nuevo mensaje
+        this.messagesServices.createMessage(newMessage, this.token)
+          .subscribe(response => {
+          }, error => {
+            console.error('Error al enviar el mensaje:', error);
+            // Aquí puedes manejar los errores si es necesario
+          });
+      } else {
+        console.warn('Ningún usuario seleccionado para enviar el mensaje.');
+        // Aquí puedes manejar la situación donde ningún usuario está seleccionado para enviar el mensaje
+      }
+    }else if(this.isCommunicationClicked){
+      const index = this.colorOptions.indexOf(this.selectedColor);
+
+      const communication: Communication = {
+        id: 0,
+        code: this.company.code,
+        content: index+';'+content,
+        sentDate: new Date() // Esto asignará la fecha y hora actual
       };
-      this.tmpUserMessage = this.tmpUserMessage.filter(x => x.id != this.mainUserMessage!.id,)
-      // Llamar al servicio para crear el nuevo mensaje
-      this.messagesServices.createMessage(newMessage, this.token)
-        .subscribe(response => {
-        }, error => {
-          console.error('Error al enviar el mensaje:', error);
-          // Aquí puedes manejar los errores si es necesario
-        });
-    } else {
-      console.warn('Ningún usuario seleccionado para enviar el mensaje.');
-      // Aquí puedes manejar la situación donde ningún usuario está seleccionado para enviar el mensaje
+
+      this.communicationServices.createCommunication(communication,this.token).subscribe(C=>{
+
+      })
     }
   }
 
