@@ -39,6 +39,7 @@ import {MatInputModule} from '@angular/material/input';
 import { ProfilePanelComponent } from './profile-panel/profile-panel.component';
 import { CountComponent } from './count/count.component';
 import { MapComponent } from './map/map.component';
+import { WidgetTaskListComponent } from './widget-task-list/widget-task-list.component';
 
 export function playerFactory() {
   return player;
@@ -65,7 +66,8 @@ export function playerFactory() {
     MainAnimationComponent,
     ProfilePanelComponent,
     CountComponent,
-    MapComponent
+    MapComponent,
+    WidgetTaskListComponent
   ],
   imports: [
     BrowserModule,

@@ -29,7 +29,7 @@
     <gridster [ngStyle]="{'background-color': modeEdit ? '#222222' : '#22222', 'height':'90%'}" [options]="options">
       <gridster-item class="uk-box-shadow-large uk-box-shadow-hover-large" *ngFor="let item of dashboard" [item]="item">
         <button *ngIf="modeEdit" class="uk-button uk-button-default uk-float-right"
-          style="position: relative;z-index: 30;" type="button" (click)="removeItem(item)">
+          style="color: red;border-radius: 50px;position: relative;z-index: 30;" type="button" (click)="removeItem(item)">
           <span uk-icon="trash"></span>
         </button>
         <ng-container *ngIf="item['componentType']">
@@ -40,6 +40,9 @@
         </ng-container>
         <ng-container *ngIf="item['componentTypeMap']">
           <app-map></app-map>
+        </ng-container>
+        <ng-container *ngIf="item['componentTypeWidget']">
+          <app-widget-task-list [objectT]="item['objectT']" [item]="item"></app-widget-task-list>
         </ng-container>
       </gridster-item>
     </gridster>
@@ -73,7 +76,7 @@
             <option value="18">Count: Number of Communications</option>
             <option value="19">Count: Number of Transport Routes</option>
             <option value="20">Map: Company Warehouses</option>
-
+            <option value="20">Widget: Task List</option>
           </select>
           <button class="uk-button uk-button-default" type="button" tabindex="-1">
             <span></span>

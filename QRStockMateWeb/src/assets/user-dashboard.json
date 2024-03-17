@@ -1,54 +1,97 @@
 {
-  "id": 0,
-  "idUser": 1,
-  "nombre": "John",
-  "apellido": "Doe",
-  "data": {
+    "id": 0,
+    "idUser": 1,
+    "nombre": "John",
+    "apellido": "Doe",
+    "data": {
       "dashboards": [
-          {
-              "nombre": "Ex. Dashboard",
-              "map": [
-                  {
-                      "map": "Map: Company Warehouses",
-                      "posicion": "{\"cols\":3,\"rows\":3,\"x\":0,\"y\":3}"
-                  }
+        {
+          "nombre": "Ex. Dashboard",
+          "widget": [
+            {
+              "name": "Widget: Task List",
+              "objectT": [
+                {
+                  "name": "Tarea 1",
+                  "completed": "false"
+                },
+                {
+                  "name": "Tarea 2",
+                  "completed": "true"
+                },
+                {
+                  "name": "fghfgh",
+                  "completed": true
+                },
+                {
+                  "name": "thfgh",
+                  "completed": false
+                },
+                {
+                  "name": "hfhdfh",
+                  "completed": true
+                },
+                {
+                  "name": "dfgh",
+                  "completed": false
+                }
               ],
-              "count": [
-                  {
-                      "title": "Count: Number of Employees",
-                      "posicion": "{\"cols\":2,\"rows\":1,\"x\":0,\"y\":0}"
-                  },
-                  {
-                      "title": "Count: Number of Transport Routes",
-                      "posicion": "{\"cols\":2,\"rows\":1,\"x\":2,\"y\":0}"
-                  },
-                  {
-                      "title": "Count: Number of Communications",
-                      "posicion": "{\"cols\":2,\"rows\":1,\"x\":4,\"y\":0}"
-                  },
-                  {
-                      "title": "Count: Number of Vehicles",
-                      "posicion": "{\"cols\":2,\"rows\":1,\"x\":6,\"y\":0}"
-                  }
-              ],
-              "vista": [
-                  {
-                      "posicion": "{\"cols\":3,\"rows\":2,\"x\":5,\"y\":4,\"chartType\":\"Chart: Trend Over Time\"}"
-                  },
-                  {
-                      "posicion": "{\"cols\":4,\"rows\":2,\"x\":0,\"y\":6,\"chartType\":\"Chart: Entities Per Warehouse\"}"
-                  },
-                  {
-                      "posicion": "{\"cols\":2,\"rows\":2,\"x\":0,\"y\":1,\"chartType\":\"Chart: Message Trends Over Time\"}"
-                  },
-                  {
-                      "posicion": "{\"cols\":2,\"rows\":2,\"x\":2,\"y\":1,\"chartType\":\"Chart: Departure Routes per Warehouse\"}"
-                  },
-                  {
-                      "posicion": "{\"cols\":4,\"rows\":3,\"x\":4,\"y\":1,\"chartType\":\"Chart: Stock Quantity by Item\"}"
-                  }
-              ]
-          }
+              "posicion": "{\"cols\":2,\"rows\":4,\"x\":6,\"y\":1}"
+            }
+          ],
+          "map": [
+            {
+              "map": "Map: Company Warehouses",
+              "posicion": "{\"cols\":3,\"rows\":3,\"x\":0,\"y\":3}"
+            }
+          ],
+          "count": [
+            {
+              "title": "Count: Number of Employees",
+              "posicion": "{\"cols\":2,\"rows\":1,\"x\":0,\"y\":0}"
+            },
+            {
+              "title": "Count: Number of Transport Routes",
+              "posicion": "{\"cols\":2,\"rows\":1,\"x\":2,\"y\":0}"
+            },
+            {
+              "title": "Count: Number of Communications",
+              "posicion": "{\"cols\":2,\"rows\":1,\"x\":4,\"y\":0}"
+            },
+            {
+              "title": "Count: Number of Vehicles",
+              "posicion": "{\"cols\":2,\"rows\":1,\"x\":6,\"y\":0}"
+            },
+            {
+              "title": "Count: Number of Warehouses",
+              "posicion": "{\"cols\":2,\"rows\":1,\"x\":4,\"y\":6}"
+            },
+            {
+              "title": "Count: Number of Items",
+              "posicion": "{\"cols\":2,\"rows\":1,\"x\":4,\"y\":7}"
+            }
+          ],
+          "vista": [
+            {
+              "posicion": "{\"cols\":2,\"rows\":2,\"x\":4,\"y\":1,\"chartType\":\"Chart: Trend Over Time\"}"
+            },
+            {
+              "posicion": "{\"cols\":4,\"rows\":2,\"x\":0,\"y\":6,\"chartType\":\"Chart: Entities Per Warehouse\"}"
+            },
+            {
+              "posicion": "{\"cols\":2,\"rows\":2,\"x\":0,\"y\":1,\"chartType\":\"Chart: Message Trends Over Time\"}"
+            },
+            {
+              "posicion": "{\"cols\":2,\"rows\":2,\"x\":2,\"y\":1,\"chartType\":\"Chart: Departure Routes per Warehouse\"}"
+            },
+            {
+              "posicion": "{\"cols\":3,\"rows\":3,\"x\":3,\"y\":3,\"chartType\":\"Chart: Stock Quantity by Item\"}"
+            },
+            {
+              "posicion": "{\"cols\":2,\"rows\":3,\"x\":6,\"y\":5,\"chartType\":\"Chart: Radar Chart of Transport Route Characteristics\"}"
+            }
+          ]
+        }
       ]
+    }
   }
-}

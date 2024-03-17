@@ -1,0 +1,17 @@
+<!-- task-list.component.html -->
+<div class="task-list-container" [style.width.px]="width" [style.height.px]="height">
+    <h3 style="color: white;">Task List</h3>
+    <div class="task-input">
+      <input type="text" placeholder="Agregar nueva tarea..." [(ngModel)]="newTask" (keyup.enter)="addTask()">
+      <button (click)="addTask()">Add</button>
+    </div>
+    <div class="cn">
+      <ul class="task-list">
+        <li *ngFor="let task of tasks; let i = index" [ngClass]="{ 'completed': task.completed }">
+          <input type="checkbox" [checked]="task.completed" (change)="toggleTaskCompletion(i)">
+          <span style="font-size: x-large;" [class.completed]="task.completed">{{ task.name }}</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+  

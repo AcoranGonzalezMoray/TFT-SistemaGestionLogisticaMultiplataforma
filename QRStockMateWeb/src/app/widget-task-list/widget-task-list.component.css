@@ -1,0 +1,80 @@
+/* task-list.component.css */
+.task-list-container {
+    width: 100%;
+    height: 100%;
+    margin: 0 auto;
+    overflow-y: scroll;
+
+    padding: 5px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .task-input {
+    display: flex;
+    margin-bottom: 10px;
+  }
+  ::-webkit-scrollbar {
+    width: 5px; /* Ancho de la barra de desplazamiento */
+}
+
+::-webkit-scrollbar-track {
+    background: #222222; /* Color del fondo de la barra de desplazamiento */
+    border-radius: 5px;
+    margin-bottom: 5px;
+    margin-top: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #444444; /* Color del botón de la barra de desplazamiento */
+    border-radius: 5px; /* Radio de la esquina del botón de la barra de desplazamiento */
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #666666; /* Color del botón de la barra de desplazamiento al pasar el mouse */
+}
+
+
+  .task-input input {
+    flex: 1;
+    padding: 8px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-right: 10px;
+  }
+  
+  .task-input button {
+    padding: 8px 15px;
+    font-size: 16px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  .cn{
+
+  }
+  .task-list {
+    list-style-type: none;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+  }
+  
+  .task-list li {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+  }
+  
+  .task-list li input[type="checkbox"] {
+    margin-right: 10px;
+  }
+  
+  .completed {
+    text-decoration: line-through;
+    color: #888;
+  }
+  

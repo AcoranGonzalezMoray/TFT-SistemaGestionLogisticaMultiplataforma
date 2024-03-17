@@ -66,7 +66,7 @@ export class CountComponent {
           case "Count: Number of Vehicles":
             this.loadVehicles()
             break;
-          case "CCount: Number of Warehouses":
+          case "Count: Number of Warehouses":
             this.loadWarehouse()
             break;
           case "Count: Number of Items":
@@ -90,7 +90,7 @@ export class CountComponent {
         console.error('Error getting company by user:', error.message); // Aquí se imprime solo el mensaje de error
       });
   }
-    loadEmployees(): void {
+  loadEmployees(): void {
     this.companyService.getEmployees(this.company, this.token)
       .subscribe(employees => {
         this.users = employees;
@@ -167,19 +167,19 @@ export class CountComponent {
   animateCount() {
     const steps = 50; // Número de pasos de la animación
     const increment = this.count / steps; // Valor de incremento en cada paso
-  
+
     let currentStep = 0;
     const timerInterval = 1000 / steps; // Intervalo de tiempo entre cada paso (en milisegundos)
-  
+
     const timer = setInterval(() => {
       this.currentCount = Math.round(increment * currentStep); // Redondear el valor para evitar decimales
       currentStep++;
-  
+
       if (currentStep >= steps) {
         clearInterval(timer);
         this.currentCount = this.count; // Asegúrate de que el conteo final sea exactamente el valor de `count`
       }
     }, timerInterval);
   }
-  
+
 }

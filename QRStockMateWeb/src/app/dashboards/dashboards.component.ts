@@ -45,7 +45,7 @@ export class DashboardsComponent {
   addDashboard(name: string) {
     if (name.length != 0) {
       // Crear un nuevo dashboard con el nombre proporcionado y un array vacío para 'vista'
-      const newDashboard: Dashboard = { nombre: name,count:[], map: [],vista: [] };
+      const newDashboard: Dashboard = { nombre: name, widget:[],  count:[], map: [],vista: [] };
 
       // Verificar si 'userDashboard' y 'userDashboard.data' existen
       if (this.userDashboard && this.userDashboard.data) {

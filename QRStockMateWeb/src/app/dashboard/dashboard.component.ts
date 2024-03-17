@@ -2,7 +2,7 @@ import { Component, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
 import { GridsterConfig, GridsterItem, GridsterItemComponent } from 'angular-gridster2';
 import { GridItemServiceService } from '../services/grid-item-service.service';
 import { VistaComponent } from '../vista/vista.component';
-import { Count, Dashboard, MapDash } from '../interfaces/dashboard';
+import { Count, Dashboard, MapDash, Widget } from '../interfaces/dashboard';
 import { gridTypes } from 'angular-gridster2/lib/gridsterConfig.interface';
 import { DataService } from '../services/data.service';
 import { View } from '../interfaces/view';
@@ -10,6 +10,7 @@ import { animate, style, transition, trigger } from '@angular/animations';
 import { HttpClient } from '@angular/common/http';
 import { CountComponent } from '../count/count.component';
 import { MapComponent } from '../map/map.component';
+import { WidgetTaskListComponent } from '../widget-task-list/widget-task-list.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -87,7 +88,17 @@ export class DashboardComponent {
 
     return itemsConfig;
   }
+  getGridsterWidgetConfigJson(): { posicion: string, name:string, objectT:[] }[] {
+    const itemsConfig = this.dashboard
+    .filter(item => item['name'])
+    .map(item => ({
+      posicion: JSON.stringify({ cols: item.cols, rows: item.rows, x: item.x, y: item.y}),
+      name: item['name'],
+      objectT: item['objectT'],
+    }));
 
+    return itemsConfig;
+  }
 
   static itemChange(item: any, itemComponent: any) {
     console.info('itemChanged', item, itemComponent);
@@ -188,6 +199,32 @@ export class DashboardComponent {
         console.error('Error al parsear la propiedad "posicion":', error);
       }
     });
+    this.loadWidget();
+  }
+
+  loadWidget(): void {
+    var local:any = []
+    this.dashboardData?.widget?.forEach(widget => {
+      const posicionString = widget.posicion;
+
+      try {
+        // Intentar parsear la cadena JSON
+        const posicion = JSON.parse(posicionString);
+
+        const itemConfig: GridsterItem = {
+          cols: posicion.cols || 1,
+          rows: posicion.rows || 1,
+          x: posicion.x || 0,
+          y: posicion.y || 0,
+          componentTypeWidget: WidgetTaskListComponent,
+          name: widget.name,
+          objectT: widget.objectT
+        };
+        this.dashboard.push(itemConfig);
+      } catch (error) {
+        console.error('Error al parsear la propiedad "posicion":', error);
+      }
+    });
   }
 
   saveItemsConfigJson() {
@@ -254,7 +291,7 @@ export class DashboardComponent {
           });
           dashboardActual.map = newCount
           this.userService.setUserDashboard(user);
-
+          this.saveWidgetConfigJson()
           console.log('Configuración de los maps del usuario actualizada con éxito');
         } else {
           console.error('No se encontró el dashboard en los datos del usuario');
@@ -264,11 +301,36 @@ export class DashboardComponent {
       }
     });
   }
-  
+  saveWidgetConfigJson() {
+    // Obtener el usuario actual
+    this.userService.getUserDashboard().subscribe((user) => {
+      const jsonConfig = this.getGridsterWidgetConfigJson(); // Obtener la configuración de los counts
+      console.log("WIDGEET", JSON.stringify(jsonConfig));
+      if (user.data?.dashboards && user.data.dashboards.length > 0) {
+        const dashboardActual = user.data.dashboards.find((dashboard) => dashboard.nombre === this.dashboardData?.nombre);
+        if (dashboardActual) {
+          const newCount: Widget[] = new Array(jsonConfig.length).fill("");
+          newCount.forEach((vistaR, index) => {
+            const count: Widget = {name: jsonConfig[index].name, objectT: jsonConfig[index].objectT, posicion: jsonConfig[index].posicion}
+            newCount[index] = count
+          });
+          dashboardActual.widget = newCount
+          this.userService.setUserDashboard(user);
+
+          console.log('Configuración de los WIDGET del usuario actualizada con éxito');
+        } else {
+          console.error('No se encontró el dashboard en los datos del usuario');
+        }
+      } else {
+        console.error('No se encontró el dashboard en los datos del usuario');
+      }
+    });
+  }
 
   addItem(cols: number, rows: number, chartType: string) {
     if (chartType.includes("Count:")) this.addItemCount(cols, rows, chartType);
     else if(chartType.includes("Map:"))  this.addItemMap(cols, rows, chartType);
+    else if(chartType.includes("Widget:"))  this.addItemWidget(cols, rows, chartType);
     else if (chartType.includes("Chart:")) {
       const newItem: GridsterItem = {
         x: 0,
@@ -312,7 +374,21 @@ export class DashboardComponent {
     console.log("MAAAAP")
     this.dashboard.push(newItem);
   }
-
+  addItemWidget(cols: number, rows: number, titulo: string) {
+    const newItem = {
+      x: 0,
+      y: 0,
+      cols: cols,
+      rows: rows,
+      componentTypeWidget: WidgetTaskListComponent,
+      name: titulo,
+      objectT: [],
+      height: 300, // ajusta según tus necesidades
+      width: 300, // ajusta según tus necesidades
+    };
+    console.log("MAAAAP")
+    this.dashboard.push(newItem);
+  }
   removeItem(item: any) {
     this.dashboard.splice(this.dashboard.indexOf(item), 1);
   }
