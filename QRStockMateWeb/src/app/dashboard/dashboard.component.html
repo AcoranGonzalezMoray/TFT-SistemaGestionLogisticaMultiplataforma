@@ -38,6 +38,9 @@
         <ng-container *ngIf="item['componentTypeCount']">
           <app-count [title]="item['title']"></app-count>
         </ng-container>
+        <ng-container *ngIf="item['componentTypeMap']">
+          <app-map></app-map>
+        </ng-container>
       </gridster-item>
     </gridster>
 
@@ -69,6 +72,8 @@
             <option value="17">Count: Number of Items</option>
             <option value="18">Count: Number of Communications</option>
             <option value="19">Count: Number of Transport Routes</option>
+            <option value="20">Map: Company Warehouses</option>
+
           </select>
           <button class="uk-button uk-button-default" type="button" tabindex="-1">
             <span></span>

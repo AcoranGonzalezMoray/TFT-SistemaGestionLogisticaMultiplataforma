@@ -38,6 +38,7 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import { ProfilePanelComponent } from './profile-panel/profile-panel.component';
 import { CountComponent } from './count/count.component';
+import { MapComponent } from './map/map.component';
 
 export function playerFactory() {
   return player;
@@ -63,7 +64,8 @@ export function playerFactory() {
     SignInComponent,
     MainAnimationComponent,
     ProfilePanelComponent,
-    CountComponent
+    CountComponent,
+    MapComponent
   ],
   imports: [
     BrowserModule,

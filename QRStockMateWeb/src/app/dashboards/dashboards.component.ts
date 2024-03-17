@@ -2,7 +2,7 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import { Data } from '../interfaces/data';
 import { DataService } from '../services/data.service';
 import { GridItemServiceService } from '../services/grid-item-service.service';
-import { Dashboard } from '../interfaces/dashboard';
+import { Dashboard, MapDash } from '../interfaces/dashboard';
 import { Router } from '@angular/router';
 @Component({
   selector: 'app-dashboards',
@@ -45,7 +45,7 @@ export class DashboardsComponent {
   addDashboard(name: string) {
     if (name.length != 0) {
       // Crear un nuevo dashboard con el nombre proporcionado y un array vacío para 'vista'
-      const newDashboard: Dashboard = { nombre: name, count:[] ,vista: [] };
+      const newDashboard: Dashboard = { nombre: name,count:[], map: [],vista: [] };
 
       // Verificar si 'userDashboard' y 'userDashboard.data' existen
       if (this.userDashboard && this.userDashboard.data) {
