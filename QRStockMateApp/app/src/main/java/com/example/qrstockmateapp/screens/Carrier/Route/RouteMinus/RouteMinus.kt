@@ -44,6 +44,7 @@ import androidx.compose.material.Button
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.DeleteSweep
 import androidx.compose.material.icons.filled.DesignServices
 import androidx.compose.material.icons.filled.Directions
 import androidx.compose.material.icons.filled.DirectionsCar
@@ -101,6 +102,7 @@ import com.example.qrstockmateapp.api.services.RetrofitInstance
 import com.example.qrstockmateapp.navigation.repository.DataRepository
 import com.example.qrstockmateapp.screens.Carrier.RouteManagement.AddRoute.PaletTemplate
 import com.example.qrstockmateapp.screens.Carrier.RouteManagement.UpdateRoute.parsePalets
+import com.example.qrstockmateapp.ui.theme.BlueSystem
 import com.example.qrstockmateapp.ui.theme.isDarkMode
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -669,13 +671,64 @@ fun BottomSheetContent(
         totalWeight = total
 
         mapEuroPalet.forEachIndexed { index, map ->
-            PaletTemplate(index,map = map, onDelete = { weight ->
-
-            })
+            LocalPaletTemplate(index,map = map, onDelete = { weight -> })
         }
     }
 }
+@Composable
+fun LocalPaletTemplate(index: Int, map: Map<Int, String>, onDelete: (Double) -> Unit) {
+    var weight by remember(map) { mutableStateOf(0.0) }
 
+    // Calcular el peso cada vez que cambia el mapa
+    LaunchedEffect(map) {
+        weight = map.values.sumByDouble {
+            "%.2f".format(it.split(":")[2].replace(";", "").toDouble()).replace(",", ".").toDouble()
+        }
+    }
+
+    Spacer(modifier = Modifier.padding(top = 15.dp))
+    ElevatedButton(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 25.dp, end = 25.dp),
+        onClick = { /* Acción al hacer clic en el botón */ },
+        colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+            containerColor = MaterialTheme.colorScheme.secondaryContainer
+        ),
+        elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+            defaultElevation = 5.dp
+        )
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.pallet),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(60.dp)
+                    .clip(CircleShape)
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+
+            // Texto a la derecha
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
+                Text(
+                    text = "Nº:"+index,
+                    color = BlueSystem,
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = "Peso: ${ String.format("%.2f", Math.round(weight* 100.0) / 100.0).replace(",", ".").toDouble()} Kg",
+                    color = BlueSystem,
+                )
+            }
+        }
+    }
+}
 fun convertStringToLatLngList(input: String): List<LatLng> {
     val regex = Regex("""\(([-+]?\d+\.\d+),([-+]?\d+\.\d+)\)""")
     val matches = regex.findAll(input)

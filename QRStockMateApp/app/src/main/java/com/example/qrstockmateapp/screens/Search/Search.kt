@@ -77,7 +77,7 @@ enum class StateFilter {
 @Composable
 fun SearchScreen(navController: NavController) {
     val context = LocalContext.current;
-    val listaAlmacenes = DataRepository.getWarehouses();
+    var listaAlmacenes = DataRepository.getWarehouses();
     var listaItems by remember { mutableStateOf( mutableListOf<Item>()) };
     var searchQuery by remember { mutableStateOf("") };
 
@@ -96,14 +96,15 @@ fun SearchScreen(navController: NavController) {
     LaunchedEffect(Unit) {
         GlobalScope.launch(Dispatchers.IO) {
             if (listaAlmacenes != null) {
-                for(warehouse in listaAlmacenes) {
+                listaAlmacenes = DataRepository.getWarehouses();
+                for(warehouse in listaAlmacenes!!) {
                     if (warehouse != null) {
                         try {
                             val itemResponse = RetrofitInstance.api.getItems(warehouse.id);
                             if (itemResponse.isSuccessful) {
                                 val item = itemResponse.body()
                                 if (item != null) listaItems.addAll(item.toMutableList());
-
+                                Log.d("ItemsNotSuccessful", item?.count().toString())
                             } else {
                                 Log.d("ItemsNotSuccessful", "NO")
                             }
