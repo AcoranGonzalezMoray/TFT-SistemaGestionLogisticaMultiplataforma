@@ -57,7 +57,7 @@ export class SignInComponent {
         // Manejar cualquier error de autenticación
         console.error('Error signing in:', error);
         this.notyE.nativeElement.click()
-
+        this.isLoading = false;
       });
 
   }
