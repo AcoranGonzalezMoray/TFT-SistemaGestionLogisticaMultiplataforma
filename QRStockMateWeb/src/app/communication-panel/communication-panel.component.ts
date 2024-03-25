@@ -20,6 +20,7 @@ declare var UIkit: any; // Importa UIKit
 export class CommunicationPanelComponent {
 
 
+
   isCommunicationClicked: boolean = false;
   token: string = ""
   users: User[] = [];
@@ -159,6 +160,24 @@ export class CommunicationPanelComponent {
     }
   }
 
+
+  getNameByFirebase(url:string) {
+    // Crear un objeto URL para facilitar el manejo de la URL
+    const urlObj = new URL(url);
+
+    // Obtener el pathname de la URL, que incluye la ruta del archivo y el nombre del archivo
+    const pathname = urlObj.pathname;
+
+    // Dividir el pathname usando el carácter '/' como separador y obtener el último elemento, que será el nombre del archivo
+    const filename = pathname.split('/').pop();
+    const decodedFilename = filename?decodeURIComponent(filename):'';
+
+    return decodedFilename.split("_").pop();
+  }
+
+
+
+
   onClickChatButton() {
     this.isCommunicationClicked = false
   }
@@ -222,7 +241,7 @@ export class CommunicationPanelComponent {
           return employee;
         });
         //this.users = this.users.concat(this.users);
-        this.employees = this.users.filter(user=> user.id != this.me.id);
+        this.employees = this.users.filter(user => user.id != this.me.id);
         this.userMessages = employees
 
         this.loadMessages()
@@ -378,11 +397,11 @@ export class CommunicationPanelComponent {
         receiverContactId: this.mainUserMessage.id,
         content: 'content',
         sentDate: new Date(),
-        type: file.type === 'application/pdf'?TypeFile.File:TypeFile.Image // Tipo de archivo de texto
+        type: file.type === 'application/pdf' ? TypeFile.File : TypeFile.Image // Tipo de archivo de texto
       };
       this.tmpUserMessage = this.tmpUserMessage.filter(x => x.id != this.mainUserMessage!.id,)
       // Llamar al servicio para crear el nuevo mensaje
-      this.messagesServices.uploadFile(file,newMessage ,this.token)
+      this.messagesServices.uploadFile(file, newMessage, this.token)
         .subscribe(response => {
           console.error('Exitoso');
         }, error => {

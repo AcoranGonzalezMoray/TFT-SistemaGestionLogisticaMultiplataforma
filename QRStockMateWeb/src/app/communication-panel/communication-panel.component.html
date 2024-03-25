@@ -108,9 +108,10 @@
                         <p>{{ item.content }}</p>
                     </ng-container>
                     <ng-container *ngIf="item.type === TypeFile.File">
-                        <a [href]="item.content" target="_blank">
+                        <a style="align-self: center;" [href]="item.content" target="_blank">
                             <img width="150px" height="150px" src="../../assets/images/pdf_icon.png" alt="">
                         </a>
+                        <p style="align-self: center;">{{getNameByFirebase(item.content)}}</p>
                     </ng-container>
                     <ng-container *ngIf="item.type === TypeFile.Audio">
                         <audio controls>
