@@ -7,7 +7,6 @@ export interface Message {
     sentDate: Date;
     type: TypeFile;
   }
-  
   export enum TypeFile {
     Text,
     Audio,

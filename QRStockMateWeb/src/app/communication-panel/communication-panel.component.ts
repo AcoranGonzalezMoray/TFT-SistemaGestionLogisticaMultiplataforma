@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, Type, ViewChild } from '@angular/core';
 import { CompanyService } from '../services/company.service';
 import { UserService } from '../services/user.service';
 import { User, getRoleUser } from '../interfaces/user';
@@ -222,7 +222,7 @@ export class CommunicationPanelComponent {
           return employee;
         });
         //this.users = this.users.concat(this.users);
-        this.employees = this.users;
+        this.employees = this.users.filter(user=> user.id != this.me.id);
         this.userMessages = employees
 
         this.loadMessages()
@@ -288,7 +288,7 @@ export class CommunicationPanelComponent {
   }
 
   // Método para enviar un nuevo mensaje con el contenido proporcionado
-  sendMessage(content: string): void {
+  sendMessage(content: string, type?: TypeFile): void {
     if (!this.isCommunicationClicked) {
       // Verificar si hay un usuario seleccionado al que enviar el mensaje
       if (this.mainUserMessage != undefined) {
@@ -300,7 +300,7 @@ export class CommunicationPanelComponent {
           receiverContactId: this.mainUserMessage.id,
           content: content,
           sentDate: new Date(),
-          type: TypeFile.Text // Tipo de archivo de texto
+          type: type ? type : TypeFile.Text // Tipo de archivo de texto
         };
         this.tmpUserMessage = this.tmpUserMessage.filter(x => x.id != this.mainUserMessage!.id,)
         // Llamar al servicio para crear el nuevo mensaje
@@ -314,17 +314,17 @@ export class CommunicationPanelComponent {
         console.warn('Ningún usuario seleccionado para enviar el mensaje.');
         // Aquí puedes manejar la situación donde ningún usuario está seleccionado para enviar el mensaje
       }
-    }else if(this.isCommunicationClicked){
+    } else if (this.isCommunicationClicked) {
       const index = this.colorOptions.indexOf(this.selectedColor);
 
       const communication: Communication = {
         id: 0,
         code: this.company.code,
-        content: index+';'+content,
+        content: index + ';' + content,
         sentDate: new Date() // Esto asignará la fecha y hora actual
       };
 
-      this.communicationServices.createCommunication(communication,this.token).subscribe(C=>{
+      this.communicationServices.createCommunication(communication, this.token).subscribe(C => {
 
       })
     }
@@ -356,14 +356,41 @@ export class CommunicationPanelComponent {
       // Obtener el primer archivo (asumiendo que solo se permite arrastrar un archivo a la vez)
       const file = files[0];
       // Ejecutar la función de carga de archivos pasando el archivo
-      this.uploadFile(file);
+      if (file.type === 'application/pdf' || file.type === 'image/jpeg' || file.type === 'image/png') {
+        // Ejecutar la función de carga de archivos pasando el archivo
+        this.uploadFile(file);
+      } else {
+        // Mostrar alerta si el archivo no es un PDF
+        alert('Documento no permitido. Por favor, asegúrate de arrastrar un archivo PDF.');
+      }
     }
   }
 
   uploadFile(file: File) {
-    // Aquí puedes implementar la lógica para subir el archivo
-    // Por ejemplo, puedes usar una función de servicio para subir el archivo al servidor
     console.log('Archivo cargado:', file);
+
+    if (this.mainUserMessage != undefined) {
+      // Crear un nuevo objeto Message con el contenido y los IDs de remitente y destinatario
+      const newMessage: Message = {
+        id: 0, // Esto se asignará en el backend
+        code: this.company.code, // Esto se asignará en el backend
+        senderContactId: this.me.id,
+        receiverContactId: this.mainUserMessage.id,
+        content: 'content',
+        sentDate: new Date(),
+        type: file.type === 'application/pdf'?TypeFile.File:TypeFile.Image // Tipo de archivo de texto
+      };
+      this.tmpUserMessage = this.tmpUserMessage.filter(x => x.id != this.mainUserMessage!.id,)
+      // Llamar al servicio para crear el nuevo mensaje
+      this.messagesServices.uploadFile(file,newMessage ,this.token)
+        .subscribe(response => {
+          console.error('Exitoso');
+        }, error => {
+          console.error('Error al enviar el mensaje:', error);
+          // Aquí puedes manejar los errores si es necesario
+        });
+    }
+
   }
 
 

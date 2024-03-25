@@ -202,12 +202,12 @@
                         (click)="setActive('TransportRoute',$event.target)"><a href="#">
                             <mat-icon aria-hidden="false" aria-label="Example home icon"
                                 fontIcon="map"></mat-icon>TransportRoutes</a></li>
-                    <li [class.active]="activeItem === 'Company'"
+                    <!-- <li [class.active]="activeItem === 'Company'"
                         class="uk-nav-item uk-animation-slide-right uk-animation-7"
                         style="-webkit-animation-duration: 4.6s;animation-duration: 4.6s;"
                         (click)="setActive('Company',$event.target)"><a href="#">
                             <mat-icon aria-hidden="false" aria-label="Example home icon"
-                                fontIcon="apartment"></mat-icon> Company</a></li>
+                                fontIcon="apartment"></mat-icon> Company</a></li> -->
                     <li [class.active]="activeItem === 'Communication'"
                         class="uk-nav-item uk-animation-slide-right uk-animation-8"
                         style="-webkit-animation-duration: 4.8s;animation-duration: 4.8s;"
@@ -238,7 +238,7 @@
             <app-dashboard *ngIf="activeItem=='Dashboard'"></app-dashboard>
             <app-user-panel *ngIf="activeItem=='User'"></app-user-panel>
             <app-communication-panel *ngIf="activeItem=='Communication'"></app-communication-panel>
-            <app-widget-task-list *ngIf="activeItem=='Company'"></app-widget-task-list>
+            <!-- <app-widget-task-list *ngIf="activeItem=='Company'"></app-widget-task-list> -->
             <app-item-panel *ngIf="activeItem=='Item'"></app-item-panel>
             <app-transport-route-panel *ngIf="activeItem=='TransportRoute'"></app-transport-route-panel>
             <app-vehicle-panel *ngIf="activeItem=='Vehicle'"></app-vehicle-panel>
