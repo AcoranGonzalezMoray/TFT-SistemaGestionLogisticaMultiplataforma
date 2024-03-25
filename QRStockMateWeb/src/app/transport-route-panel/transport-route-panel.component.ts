@@ -99,6 +99,14 @@ export class TransportRoutePanelComponent {
   getStatus(status: string) {
     return getRoleStatus(parseInt(status));
   }
+
+  getStatusUnde(status: string|undefined) {
+    if(status!=undefined){
+      return getRoleStatus(parseInt(status));
+    }
+    return ;
+  }
+
   getCompanyByUser(): void {
     var stringT = sessionStorage.getItem('token')
     var stringU = sessionStorage.getItem('me')
@@ -192,7 +200,12 @@ export class TransportRoutePanelComponent {
 
       })
   }
+  getLocationWarehouse(id: string | undefined) {
+    var value;
+    if (id!=undefined) value = this.warehouses?.find(elemet => elemet.id == parseInt(id))?.location;
 
+    return value;
+  }
   openMap(start: string, nameA: string, end: string, nameB: string, route: string, vehicleID: string, status: number, palets: string): void {
     this.parsePalets(palets);
 

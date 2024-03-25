@@ -78,9 +78,9 @@
 <!-- Modal de edición -->
 <div id="modal-example-vehicle" class="uk-flex-top" uk-modal>
   <div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
-    <h2 class="uk-modal-title">Make: {{vehicle?.make}}, Model: {{vehicle?.model}}</h2>
+    <h2 class="uk-modal-title">Vehicle Make: {{vehicle?.make}}, Model: {{vehicle?.model}}</h2>
     <div style="display: flex;justify-content: center;align-items: center;">
-      <img style="height: 300px; width: 750px; margin-right: 30px;" [src]="'../../assets/images/user.png'" alt="">
+      <img style="height: 300px; width: 750px; margin-right: 30px;" [src]="'../../assets/images/carrier_white.png'" alt="">
       <br>
       <div>
         <div class="uk-grid-small" uk-grid>
@@ -121,25 +121,25 @@
 <!-- Modal de vista -->
 <div id="modal-example-vehicle-see" class="uk-flex-top" uk-modal>
   <div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
-    <h2 class="uk-modal-title">Make: {{vehicle?.make}}, Model: {{vehicle?.model}}</h2>
+    <h2 class="uk-modal-title">Vehicle Make: {{vehicle?.make}}, Model: {{vehicle?.model}}</h2>
     <div style="display: flex;justify-content: center;align-items: center;">
-      <img style="height: 300px; width: 750px; margin-right: 30px;" [src]="'../../assets/images/user.png'" alt="">
+      <img style="height: 300px; width: 750px; margin-right: 30px;" [src]="'../../assets/images/carrier_white.png'" alt="">
       <br>
       <div style="display: flex;flex-direction: column;">
         <div>
           <div class="uk-grid-small" uk-grid>
-            <div class="uk-width-1-2@s">
-              <input readonly="true" class="uk-input" type="text" value="{{vehicle?.make}}" aria-label="Vehicle Make">
+            <div class="uk-width-1-1@s">
+              <h4>Vehicle Make:</h4><input readonly="true" class="uk-input" type="text" value="{{vehicle?.make}}" aria-label="Vehicle Make">
             </div>
-            <div class="uk-width-1-2@s">
-              <input readonly="true" class="uk-input" type="text" value="{{vehicle?.model}}" aria-label="Vehicle Model">
+            <div class="uk-width-1-1@s">
+              <h4>Vehicle Make:</h4><input readonly="true" class="uk-input" type="text" value="{{vehicle?.model}}" aria-label="Vehicle Model">
             </div>
             <div class="uk-width-1-1">
-              <input readonly="true" class="uk-input" type="text" value="{{vehicle?.licensePlate}}"
+              <h4>License Plate</h4><input readonly="true" class="uk-input" type="text" value="{{vehicle?.licensePlate}}"
                 aria-label="Vehicle Location">
             </div>
             <div class="uk-width-1-1">
-              <input readonly="true" class="uk-input" type="text" value="{{vehicle?.maxLoad}}"
+              <h4>Max Load:</h4><input readonly="true" class="uk-input" type="text" value="{{vehicle?.maxLoad}}"
                 aria-label="Vehicle Max Load">
             </div>
           </div>

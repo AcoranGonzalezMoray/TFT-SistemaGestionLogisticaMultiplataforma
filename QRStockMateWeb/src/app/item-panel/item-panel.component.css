@@ -14,6 +14,10 @@
     --mat-mdc-button-persistent-ripple-color: #8d840a;
     --mat-mdc-button-ripple-color: rgba(35, 148, 31, 0.1);
 }
+h4 {
+    color: white;
+    margin-right: 15px;
+}
 .mat-mdc-table th {
     color: white;
     background-color: #ffffff14;

@@ -18,6 +18,10 @@
     color: white;
     background-color: #ffffff14;
 }
+h4 {
+    color: white;
+    margin-right: 15px;
+}
 .mat-mdc-table td {
     color: white;
     background-color: #ffffff14;

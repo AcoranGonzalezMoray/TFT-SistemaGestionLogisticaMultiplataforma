@@ -77,10 +77,10 @@
           <mat-icon>map</mat-icon>
         </button>
 
-        <button mat-icon-button color="edit" uk-toggle="target: #modal-example-transport-route-see"
+        <!-- <button mat-icon-button color="edit" uk-toggle="target: #modal-example-transport-route-see"
           (click)="setRoute(element)">
           <mat-icon>edit</mat-icon>
-        </button>
+        </button> -->
       </td>
     </ng-container>
 
@@ -136,18 +136,23 @@
       <div>
         <div class="uk-grid-small" uk-grid>
           <div class="uk-width-1-1">
-            <label>date:</label>
-            <input readonly="true" class="uk-input" type="text" value="{{ transportRoute?.date }}" aria-label="Name">
+            <label>Date:</label>
+            <input readonly="true" class="uk-input" type="text" value="{{ transportRoute?.departureTime }}" aria-label="Name">
           </div>
           <div class="uk-width-1-1">
-            <label>Start Location:</label>
-            <input readonly="true" class="uk-input" type="text" value="{{ transportRoute?.startLocation }}"
+            <label>Start Location (Warehouse):</label>
+            <input readonly="true" class="uk-input" type="text" value="{{ getLocationWarehouse(transportRoute?.startLocation )}}"
               aria-label="Start Location">
           </div>
           <div class="uk-width-1-1">
-            <label>End Location:</label>
-            <input readonly="true" class="uk-input" type="text" value="{{ transportRoute?.endLocation }}"
+            <label>End Location (Warehouse):</label>
+            <input readonly="true" class="uk-input" type="text" value="{{ getLocationWarehouse(transportRoute?.endLocation )}}"
               aria-label="End Location">
+          </div>
+          <div class="uk-width-1-1">
+            <label>Status:</label>
+            <input readonly="true" class="uk-input" type="text" value="{{ getStatusUnde(transportRoute?.status) }}"
+              aria-label="Start Location">
           </div>
           <!-- Agrega más campos según los atributos de la entidad TransportRoute -->
         </div>

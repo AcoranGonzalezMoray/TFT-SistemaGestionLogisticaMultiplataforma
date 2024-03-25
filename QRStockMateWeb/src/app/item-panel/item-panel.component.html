@@ -215,31 +215,34 @@
   <div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
     <h2 class="uk-modal-title">Name: {{item?.name}}</h2>
     <div style="display: flex;justify-content: center;align-items: center;">
-      <img style="height: 300px; width: 750px; margin-right: 30px;"
-        [src]="item?.url ? item?.url : '../../assets/images/user.png'" alt="">
+      <img style="height: 300px; width: 750px; margin-right: 30px; filter: brightness(200%);"
+      [src]="item?.url ? item?.url : '../../assets/images/item_white.png'" alt="">
+ 
       <br>
-      <div>
-        <div class="uk-grid-small" uk-grid>
-          <div class="uk-width-1-2@s">
-            <input readonly="true" class="uk-input" type="text" value={{item?.name}} aria-label="100">
-          </div>
-          <div class="uk-width-1-2@s">
-            <input readonly="true" class="uk-input" type="text" value={{item?.warehouseId}} aria-label="100">
-          </div>
-          <div class="uk-width-1-1">
-            <input readonly="true" class="uk-input" type="text" value={{item?.location}} aria-label="100">
-          </div>
-          <div class="uk-width-1-1">
-            <input readonly="true" class="uk-input" type="text" value={{item?.stock}} aria-label="50">
-          </div>
-          <div class="uk-width-1-1">
-            <input readonly="true" class="uk-input" type="text" value={{item?.weightPerUnit}} aria-label="50">
+      <div style="display: flex;flex-direction: column;">
+        <div>
+          <div class="uk-grid-small" uk-grid>
+            <div class="uk-width-1-1@s">
+              <h4>Name:</h4><input readonly="true" class="uk-input" type="text" value={{item?.name}} aria-label="100">
+            </div>
+            <div class="uk-width-1-1@s">
+              <h4>Warehouse Id:</h4><input readonly="true" class="uk-input" type="text" value={{item?.warehouseId}} aria-label="100">
+            </div>
+            <div class="uk-width-1-1">
+              <h4>Location:</h4><input readonly="true" class="uk-input" type="text" value={{item?.location}} aria-label="100">
+            </div>
+            <div class="uk-width-1-1">
+              <h4>Stock:</h4><input readonly="true" class="uk-input" type="text" value={{item?.stock}} aria-label="50">
+            </div>
+            <div class="uk-width-1-1">
+              <h4>Weight Per Unit:</h4> <input readonly="true" class="uk-input" type="text" value={{item?.weightPerUnit}} aria-label="50">
+            </div>
           </div>
         </div>
-      </div>
-      <div class="close_modal_single">
-        <button style="margin-right: 20px;width: 100px;"
-          class="uk-button uk-button-danger uk-modal-close-default">Close</button>
+        <div class="close_modal_single">
+          <button style="margin-right: 20px;width: 100px;"
+            class="uk-button uk-button-danger uk-modal-close-default">Close</button>
+        </div>
       </div>
     </div>
   </div>
