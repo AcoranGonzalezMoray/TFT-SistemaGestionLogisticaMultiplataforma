@@ -34,7 +34,7 @@ export class ItemPanelComponent {
   messages = ""
 
   itemsExcel: Item[] = []
-  itemsExcelError: [String, Number, Number][] = []
+  itemsExcelError: [String, Number, String][] = []
   itemsExcelDup: Item[] = []
 
   isWeight = 3
@@ -205,11 +205,11 @@ export class ItemPanelComponent {
     let tableContent = '<table>\n'; // Iniciar la tabla
 
     // Agregar encabezados de columna a la tabla
-    tableContent += '<tr><th>Item Name</th><th>Row</th><th>Column</th></tr>\n';
+    tableContent += '<tr><th>Item Name</th><th>Row</th></tr>\n';
 
     // Agregar cada error como una fila en la tabla
     this.itemsExcelError.forEach((error, index) => {
-      tableContent += `<tr><td>${error[0]}</td><td>${error[1]}</td><td>${error[2]}</td></tr>\n`;
+      tableContent += `<tr><td>${error[0]}</td><td>${error[1]}</td></tr>\n`;
     });
 
     tableContent += '</table>'; // Cerrar la tabla
@@ -317,7 +317,7 @@ export class ItemPanelComponent {
     try {
       var header = parseInt(headerIn)
       var sheet = parseInt(sheetIn)
-
+      console.log("entra")
       this.isWeight = 0
       this.isStock = 0
       this.isName = 0
@@ -401,8 +401,17 @@ export class ItemPanelComponent {
 
                   this.itemsExcel.push(newItem);
                 } else {
-                  console.error(`Valor NaN detectado en la fila ${rowNumber}, columna ${columnIndexes['Name'] + 1}`);
-                  this.itemsExcelError.push([name, rowNumber, columnIndexes['Name'] + 1])
+                  if(!isNaN(weightPerUnit)) {
+                    console.error(`Valor NaN detectado en la fila ${rowNumber}, columna ${columnIndexes['Weight Per Unit (Kg)']}`);
+                    this.itemsExcelError.push([name, rowNumber, weightPerUnit.toString()])
+                  }else if(!isNaN(stock)) {
+                    console.error(`Valor NaN detectado en la fila ${rowNumber}, columna ${columnIndexes['Stock']}`);
+                    this.itemsExcelError.push([name, rowNumber,  stock.toString()])
+                  }else if(!isNaN(warehouseId)) {
+                    console.error(`Valor NaN detectado en la fila ${rowNumber}, columna ${columnIndexes['Warehouse ID']}`);
+                    this.itemsExcelError.push([name, rowNumber,  warehouseId.toString()])
+                  }
+                  
                 }
               }
             }
@@ -412,6 +421,17 @@ export class ItemPanelComponent {
           console.log(error)
           if (error == "Error: 0") alert("The specified sheet was not found")
           if (error == "Error: -1 is out of bounds. Excel supports columns from 1 to 16384") alert("The requested columns were not found in the specified row")
+          this.isWeight = 3
+          this.isStock = 3
+          this.isName = 3
+          this.isWarehouse = 3
+          this.isLocation = 3
+
+          this.itemsExcel = []
+          this.itemsExcelError = []
+          this.itemsExcelDup = []
+
+          event.target.value = '';
         });
       }
       file = null
