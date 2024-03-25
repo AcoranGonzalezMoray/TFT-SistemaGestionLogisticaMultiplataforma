@@ -17,3 +17,19 @@
 ::-webkit-scrollbar-thumb:hover {
     background: #666666; /* Color del botón de la barra de desplazamiento al pasar el mouse */
 }
+.uk-open>.uk-modal-dialog {
+    opacity: 1;
+    transform: translateY(0);
+    background-color: #222;
+}
+.uk-modal-title {
+    font-size: 2rem;
+    line-height: 1.3;
+    color: white;
+}
+.uk-button-default {
+    background-color: transparent;
+    color: #333;
+    color: white;
+    border: 1px solid #e5e5e5;
+}

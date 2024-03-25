@@ -63,7 +63,13 @@
         border-radius: 10px;
 
     }
-
+    .activeOver >  a >  span {
+        display: block !important;
+    }
+    .activeOver >  a >  span:hover {
+        display: block !important;
+        color: red;
+    }
     .uk-drop.uk-open {
         display: block;
         border-radius: 20px;
@@ -71,11 +77,13 @@
         top: 140px !important;
         left: 150px !important;
     }
+
 </style>
 <div style="overflow-x: hidden;max-height: 120px;" *ngIf="userDashboard">
     <div *ngFor="let dashboard of userDashboard.data.dashboards">
         <li class="dash" [ngClass]="{ 'activeOver': dashboard === selectedDashboard }" (mouseenter)="addHoverClass()"
             (mouseleave)="removeHoverClass()"><a href="#" style="color: white;" (click)="open(dashboard)">
+                <span uk-icon="trash" style="display: none;"  uk-toggle="target: #modal-remove-dash" (click)="deleteDashboardInit(dashboard.nombre)"></span>
                 <mat-icon aria-hidden="false" aria-label="Example home icon"
                     fontIcon="space_dashboard"></mat-icon>{{dashboard.nombre}}</a></li>
     </div>
@@ -84,12 +92,12 @@
 
 
     <div>
-        <input maxlength="11" style="border-radius: 10px;height: 30px;width: 130px; " #nombre class="uk-input"
+        <input #name maxlength="11" style="border-radius: 10px;height: 30px;width: 130px; " #nombre class="uk-input"
             type="text" aria-label="Clickable icon">
     </div>
     <br>
     <div style="margin-left: 10px;margin-right: 5px;">
-        <a style="color:white;background-color: #ffffff14;" (click)="addDashboard(nombre.value)" class="uk-icon-button">
+        <a style="color:white;background-color: #ffffff14;" (click)="addDashboard(nombre.value, name)" class="uk-icon-button">
             <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="add"></mat-icon>
         </a>
     </div>
@@ -100,8 +108,21 @@
     onclick="UIkit.notification({message: '<span uk-icon=\'icon: close\'></span> There Is Already A Panel With That Name. ', status: 'danger'})">
 </div>
 <div #notifyOkDash
-    onclick="UIkit.notification({message: '<span uk-icon=\'icon: check\'></span> Enter A Valid Name', status: 'success'})">
+    onclick="UIkit.notification({message: '<span uk-icon=\'icon: check\'></span> Dashboard Added', status: 'success'})">
 </div>
 <div #notifyValidName
     onclick="UIkit.notification({message: '<span uk-icon=\'icon: close\'></span> Enter A Valid Name', status: 'danger'})">
+</div>
+
+
+<!-- This is the modal -->
+<div id="modal-remove-dash" uk-modal>
+    <div class="uk-modal-dialog uk-modal-body">
+        <h2 class="uk-modal-title">Delete Dashboard</h2>
+        <p>Are you sure you want to delete {{NameDashboardToDelete}} dashboard?</p>
+        <p class="uk-text-right">
+            <button #cancelbuttondash class="uk-button uk-button-default uk-modal-close" type="button">Cancel</button>
+            <button style="background-color: red;margin-left: 20px;" class="uk-button uk-button-primary" type="button" (click)="deleteDashboard()">Delete</button>
+        </p>
+    </div>
 </div>

@@ -11,7 +11,6 @@ import { Router } from '@angular/router';
 })
 export class DashboardsComponent {
 
-
   userDashboard: Data | undefined;
   selectedDashboard: any; // Variable para almacenar el dashboard seleccionado
   @ViewChild('parentUl') parentUl: ElementRef | undefined;
@@ -24,14 +23,14 @@ export class DashboardsComponent {
   ngOnInit() {
     this.loadDashboard()
   }
-  loadDashboard(open? : boolean, dashboard?:Dashboard) {
+  loadDashboard(open?: boolean, dashboard?: Dashboard) {
     this.userService.getUserDashboard().subscribe(
       data => {
         this.userDashboard = data;
 
-        if(open){
+        if (open) {
           var tmp = data.data.dashboards.find((d) => d.nombre == dashboard?.nombre)
-          const dash =tmp?tmp:dashboard!;
+          const dash = tmp ? tmp : dashboard!;
           this.gridItemService.setDashboard(dash)
           this.selectedDashboard = dash
         }
@@ -42,10 +41,11 @@ export class DashboardsComponent {
       }
     );
   }
-  addDashboard(name: string) {
+  addDashboard(name: string, event: HTMLInputElement) {
+    event.value = '';
     if (name.length != 0) {
       // Crear un nuevo dashboard con el nombre proporcionado y un array vacío para 'vista'
-      const newDashboard: Dashboard = { nombre: name, widget:[],  count:[], map: [],vista: [] };
+      const newDashboard: Dashboard = { nombre: name, widget: [], count: [], map: [], vista: [] };
 
       // Verificar si 'userDashboard' y 'userDashboard.data' existen
       if (this.userDashboard && this.userDashboard.data) {
@@ -68,10 +68,38 @@ export class DashboardsComponent {
 
     }
   }
+  NameDashboardToDelete: String = "";
+  @ViewChild("cancelbuttondash") dashcancel!: ElementRef;
+
+  deleteDashboardInit(name: string) {
+    this.NameDashboardToDelete = name;
+  }
+  deleteDashboard() {
+    var name = this.NameDashboardToDelete;
+    // Verificar si 'userDashboard' y 'userDashboard.data' existen
+    if (this.userDashboard && this.userDashboard.data) {
+      // Buscar el índice del dashboard con el nombre proporcionado
+      const index = this.userDashboard.data.dashboards.findIndex(dashboard => dashboard.nombre === name);
+
+      if (index !== -1) {
+        // Eliminar el dashboard del array 'dashboards' utilizando el índice
+        this.userDashboard.data.dashboards.splice(index, 1);
+
+        // Aquí puedes guardar los cambios en el servicio o donde lo necesites
+        this.userService.setUserDashboard(this.userDashboard);
+        this.dashcancel.nativeElement.click();
+        // Indica que la eliminación fue exitosa (puedes agregar una lógica de manejo de éxito aquí)
+        console.log(`Dashboard "${name}" eliminado exitosamente.`);
+      } else {
+        // No se encontró ningún dashboard con el nombre proporcionado
+        console.error(`No se encontró ningún dashboard con el nombre "${name}".`);
+      }
+    }
+  }
 
 
   open(dashboard: Dashboard) {
-    this.loadDashboard(true,  dashboard);
+    this.loadDashboard(true, dashboard);
   }
 
   addHoverClass() {
