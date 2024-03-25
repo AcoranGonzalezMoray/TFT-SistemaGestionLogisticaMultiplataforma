@@ -101,12 +101,10 @@ export class DashboardComponent {
   }
 
   static itemChange(item: any, itemComponent: any) {
-    console.info('itemChanged', item, itemComponent);
 
   }
 
   itemResize(item: any, itemComponent: any) {
-    console.info('itemResized', item, itemComponent);
     this.gridItemService.setSize([itemComponent.width, itemComponent.height, item])
   }
 
@@ -119,7 +117,6 @@ export class DashboardComponent {
 
   loadItemsConfigJson() {
     this.dashboardData = this.gridItemService.getDashboard();
-    console.log(this.dashboardData)
     const vistas = this.dashboardData?.vista;
 
     if (vistas) {
@@ -139,7 +136,6 @@ export class DashboardComponent {
           };
 
           itemConfig['componentType'] = VistaComponent;
-          console.log(itemConfig['componentType'])
           return [itemConfig];
         } catch (error) {
           console.error('Error al parsear la propiedad "posicion":', error);
@@ -237,7 +233,6 @@ export class DashboardComponent {
         if (dashboardActual?.vista) {
           // Asegurar que haya suficientes elementos en vista
           const newVista: View[] = new Array(jsonConfig.length).fill("");
-          console.log("CONMFIG"+jsonConfig)
           // Actualizar las posiciones
           newVista.forEach((vistaR, index) => {
             const vista: View = { posicion: jsonConfig[index].posicion}
@@ -305,7 +300,6 @@ export class DashboardComponent {
     // Obtener el usuario actual
     this.userService.getUserDashboard().subscribe((user) => {
       const jsonConfig = this.getGridsterWidgetConfigJson(); // Obtener la configuración de los counts
-      console.log("WIDGEET", JSON.stringify(jsonConfig));
       if (user.data?.dashboards && user.data.dashboards.length > 0) {
         const dashboardActual = user.data.dashboards.find((dashboard) => dashboard.nombre === this.dashboardData?.nombre);
         if (dashboardActual) {
@@ -371,7 +365,6 @@ export class DashboardComponent {
       height: 300, // ajusta según tus necesidades
       width: 300, // ajusta según tus necesidades
     };
-    console.log("MAAAAP")
     this.dashboard.push(newItem);
   }
   addItemWidget(cols: number, rows: number, titulo: string) {
@@ -386,7 +379,6 @@ export class DashboardComponent {
       height: 300, // ajusta según tus necesidades
       width: 300, // ajusta según tus necesidades
     };
-    console.log("MAAAAP")
     this.dashboard.push(newItem);
   }
   removeItem(item: any) {

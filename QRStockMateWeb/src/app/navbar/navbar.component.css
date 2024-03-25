@@ -1,0 +1,67 @@
+.uk-navbar-container {}
+
+.uk-navbar-divider {}
+
+.uk-container {
+    display: flow-root;
+    box-sizing: content-box;
+    max-width: unset;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.navbar-content {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.uk-logo {
+    padding: 20px;
+}
+
+.navbar-content .uk-navbar-item:not(:last-child) {
+    margin-right: 10px;
+    /* Ajusta el espacio entre los elementos de navegación */
+}
+
+.uk-search-input {
+    width: 150px;
+    /* Establece un ancho inicial para el campo de búsqueda */
+    transition: width 0.4s;
+    /* Agrega una transición suave al ancho */
+    border-radius: 15px;
+    /* Añade bordes redondos al formulario cuando está en foco */
+
+}
+
+.uk-search-default {
+    width: 150px;
+    /* Ancho inicial para el formulario */
+    transition: width 0.4s;
+    /* Agrega una transición suave al ancho */
+    border-radius: 15px;
+    /* Añade bordes redondos al formulario cuando está en foco */
+
+}
+
+.uk-search-default:focus-within {
+    width: 250px;
+    /* Ancho aumentado cuando el formulario o alguno de sus elementos recibe foco */
+    background-color: white;
+
+}
+
+.uk-search-default:focus-within .uk-search-input {
+    width: 250px;
+    /* Ancho del input cuando el formulario recibe foco */
+}
+
+.uk-comment-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    /* Hace que la imagen tenga una forma redonda */
+}

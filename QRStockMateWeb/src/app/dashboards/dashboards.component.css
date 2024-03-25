@@ -1,35 +1,125 @@
 ::-webkit-scrollbar {
-    width: 5px; /* Ancho de la barra de desplazamiento */
+    width: 5px;
+    /* Ancho de la barra de desplazamiento */
 }
 
 ::-webkit-scrollbar-track {
-    background: #222222; /* Color del fondo de la barra de desplazamiento */
+    background: #222222;
+    /* Color del fondo de la barra de desplazamiento */
     border-radius: 5px;
     margin-bottom: 5px;
     margin-top: 5px;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #444444; /* Color del botón de la barra de desplazamiento */
-    border-radius: 5px; /* Radio de la esquina del botón de la barra de desplazamiento */
+    background: #444444;
+    /* Color del botón de la barra de desplazamiento */
+    border-radius: 5px;
+    /* Radio de la esquina del botón de la barra de desplazamiento */
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #666666; /* Color del botón de la barra de desplazamiento al pasar el mouse */
+    background: #666666;
+    /* Color del botón de la barra de desplazamiento al pasar el mouse */
 }
+
 .uk-open>.uk-modal-dialog {
     opacity: 1;
     transform: translateY(0);
     background-color: #222;
 }
+
 .uk-modal-title {
     font-size: 2rem;
     line-height: 1.3;
     color: white;
 }
+
 .uk-button-default {
     background-color: transparent;
     color: #333;
     color: white;
     border: 1px solid #e5e5e5;
+}
+
+.uk-icon {
+    color: white;
+}
+
+.uk-nav-default>li>a {
+    color: white;
+    font-size: medium;
+}
+
+.uk-nav-item:focus::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: -10px;
+    /* Ajusta la posición del pico según sea necesario */
+    border: solid transparent;
+    border-width: 10px;
+    border-right-color: #222222;
+    /* Color del pico */
+    transform: translateY(-50%);
+}
+
+.uk-nav-item:hover {
+    background-color: #5997BA;
+    border-radius: 5px;
+}
+
+.uk-parent:hover {
+    background-color: #6F86B7;
+    border-radius: 5px;
+}
+
+.uk-nav-default {
+    padding: 10px;
+}
+
+.uk-nav-default .uk-nav-sub a:hover {
+    color: white;
+}
+
+.uk-nav-default .uk-nav-sub a {
+    color: white !important;
+}
+
+.dash {
+    padding: 5px;
+}
+
+.dash:hover a {
+    background-color: #ffffff14 !important;
+    border-radius: 10px;
+
+}
+
+.activeOver a {
+    background-color: #ffffff14 !important;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.activeOver span {
+    border-radius: 10px;
+
+}
+
+.activeOver>a>span {
+    display: block !important;
+}
+
+.activeOver>a>span:hover {
+    display: block !important;
+    color: red;
+}
+
+.uk-drop.uk-open {
+    display: block;
+    border-radius: 20px;
+    max-width: 2110px;
+    top: 140px !important;
+    left: 150px !important;
 }

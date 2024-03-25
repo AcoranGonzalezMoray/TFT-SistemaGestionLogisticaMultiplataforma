@@ -1,21 +1,26 @@
 ::-webkit-scrollbar {
-    width: 5px; /* Ancho de la barra de desplazamiento */
+  width: 5px;
+  /* Ancho de la barra de desplazamiento */
 }
 
 ::-webkit-scrollbar-track {
-    background: #222222; /* Color del fondo de la barra de desplazamiento */
-    border-radius: 5px;
-    margin-bottom: 5px;
-    margin-top: 5px;
+  background: #222222;
+  /* Color del fondo de la barra de desplazamiento */
+  border-radius: 5px;
+  margin-bottom: 5px;
+  margin-top: 5px;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #444444; /* Color del botón de la barra de desplazamiento */
-    border-radius: 5px; /* Radio de la esquina del botón de la barra de desplazamiento */
+  background: #444444;
+  /* Color del botón de la barra de desplazamiento */
+  border-radius: 5px;
+  /* Radio de la esquina del botón de la barra de desplazamiento */
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #666666; /* Color del botón de la barra de desplazamiento al pasar el mouse */
+  background: #666666;
+  /* Color del botón de la barra de desplazamiento al pasar el mouse */
 }
 
 
@@ -26,47 +31,355 @@
 
 /* Cambia el color del fondo y del texto de los controles de reproducción */
 audio::-webkit-media-controls-panel {
-    background-color: #333333; /* Cambia el color de fondo de los controles */
-  }
-  
+  background-color: #333333;
+  /* Cambia el color de fondo de los controles */
+}
+
+/* Cambia el color de fondo del botón de reproducción */
+audio::-webkit-media-controls-play-button {
+  background-color: #333333;
   /* Cambia el color de fondo del botón de reproducción */
-  audio::-webkit-media-controls-play-button {
-    background-color: #333333; /* Cambia el color de fondo del botón de reproducción */
-    color: #333; /* Cambia el color del ícono del botón de reproducción */
-  }
-  
+  color: #333;
+  /* Cambia el color del ícono del botón de reproducción */
+}
+
+/* Cambia el color de fondo del botón de pausa */
+audio::-webkit-media-controls-pause-button {
+  background-color: #333333;
   /* Cambia el color de fondo del botón de pausa */
-  audio::-webkit-media-controls-pause-button {
-    background-color: #333333; /* Cambia el color de fondo del botón de pausa */
-    color: #5a79ba; /* Cambia el color del ícono del botón de pausa */
-  }
-  
-  /* Cambia el color de fondo del indicador de tiempo de reproducción */
-  audio::-webkit-media-controls-current-time-display,
-  audio::-webkit-media-controls-time-remaining-display {
-    color: white; /* Cambia el color del texto del indicador de tiempo de reproducción */
-  }
-  
+  color: #5a79ba;
+  /* Cambia el color del ícono del botón de pausa */
+}
+
+/* Cambia el color de fondo del indicador de tiempo de reproducción */
+audio::-webkit-media-controls-current-time-display,
+audio::-webkit-media-controls-time-remaining-display {
+  color: white;
+  /* Cambia el color del texto del indicador de tiempo de reproducción */
+}
+
+/* Cambia el color de fondo de la barra de progreso */
+audio::-webkit-media-controls-timeline {
+  background-color: #333333;
   /* Cambia el color de fondo de la barra de progreso */
-  audio::-webkit-media-controls-timeline {
-    background-color: #333333; /* Cambia el color de fondo de la barra de progreso */
-  }
-  
+}
+
+/* Cambia el color del indicador de progreso */
+audio::-webkit-media-controls-timeline,
+audio::-webkit-media-controls-current-time-display::before,
+audio::-webkit-media-controls-time-remaining-display::before {
+  background-color: #5a79ba;
   /* Cambia el color del indicador de progreso */
-  audio::-webkit-media-controls-timeline,
-  audio::-webkit-media-controls-current-time-display::before,
-  audio::-webkit-media-controls-time-remaining-display::before {
-    background-color: #5a79ba; /* Cambia el color del indicador de progreso */
-  }
-  /* Agrega un borde alrededor de los controles de reproducción */
+}
+
+/* Agrega un borde alrededor de los controles de reproducción */
 audio::-webkit-media-controls-panel {
-    border: 0px solid red; /* Define el grosor, el estilo y el color del borde */
-    border-radius: 0px; /* Redondea las esquinas del borde */
-    padding: 0px; /* Añade un espacio interior alrededor de los controles */
+  border: 0px solid red;
+  /* Define el grosor, el estilo y el color del borde */
+  border-radius: 0px;
+  /* Redondea las esquinas del borde */
+  padding: 0px;
+  /* Añade un espacio interior alrededor de los controles */
+}
+
+audio {
+  &:focus {
+    outline: none;
   }
-  audio {
-    &:focus {
-      outline: none;
-    }
-  }
-  
+}
+
+
+
+.contact {
+  width: 30%;
+}
+
+.selector {
+  border: 1px solid #5a79ba;
+  border-radius: 20px;
+  display: flex;
+  width: 100%;
+}
+
+.chat {
+  width: 70%;
+}
+
+.com {
+  display: flex;
+}
+
+.chats {
+  border: 1px solid #5a79ba;
+  border-radius: 20px;
+  width: 100%;
+  height: 550px;
+  margin-top: 13px;
+  overflow-y: scroll;
+}
+
+.header {
+  background-color: #333333;
+  margin: 10px;
+  border-radius: 20px;
+  padding: 10px;
+}
+
+.chats .uk-card-header .uk-card-title {
+  color: white;
+}
+
+.chat {
+  border: 1px solid #5a79ba;
+  border-radius: 20px;
+  margin-left: 10px;
+}
+
+.employees {
+  border: 1px solid #5a79ba;
+  border-radius: 20px;
+  height: 150px;
+  margin-top: 10px;
+  padding: 10px;
+}
+
+.primary {
+  background-color: #5a79ba !important;
+  color: white !important;
+}
+
+.users {
+  display: flex;
+  overflow-x: auto;
+  /* Esto permite el desplazamiento horizontal */
+  width: 100%;
+}
+
+.users>div {
+  flex: 0 0 auto;
+  /* Esto asegura que los elementos dentro de .users no se ajusten */
+  margin-right: 10px;
+  /* Espacio entre los elementos */
+}
+
+.content {
+  height: 88%;
+}
+
+.uk-input.custom-border {
+  border-radius: 0 0 0 20px;
+  /* Aplica el radio de borde a las esquinas inferiores */
+  height: auto;
+  border-right: 0;
+}
+
+.profile {
+  height: 7%;
+  border-radius: 20px 20px 0 0;
+  /* Aplica el radio de borde a las esquinas inferiores */
+  background-color: #333333;
+  border-right: 0;
+}
+
+.button-space {
+  background-color: white;
+  border-radius: 0 0 20px 0;
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+}
+
+.messages {
+  padding: 10px;
+  overflow-y: auto;
+  /* Agrega desplazamiento vertical si los mensajes son demasiado largos */
+  display: flex;
+  /* Agrega esto para alinear los mensajes */
+  flex-direction: column;
+  max-height: 572px;
+  overflow-y: scroll;
+}
+
+.message {
+  position: relative;
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 8px;
+  max-width: 70%;
+  min-width: 13%;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 34px;
+  flex-direction: column;
+}
+
+.sender {
+  background-color: #5a79ba;
+  /* Color de fondo para mensajes enviados por el usuario */
+  color: white;
+  /* Color del texto para mensajes enviados por el usuario */
+  align-self: flex-end;
+  /* Alinea el mensaje a la derecha */
+}
+
+.sender::before {
+  content: "";
+  position: absolute;
+  bottom: -10px;
+  right: 2px;
+  width: 0;
+  height: 0;
+  border-top: 0px solid transparent;
+  border-bottom: 15px solid transparent;
+  border-left: 15px solid #5a79ba;
+  transform-origin: center;
+  transform: rotate(58deg);
+}
+
+.receiver {
+  background-color: #333333;
+  /* Color de fondo para mensajes recibidos */
+  color: white;
+  /* Color del texto para mensajes recibidos */
+  align-self: flex-start;
+  /* Alinea el mensaje a la izquierda */
+}
+
+.receiver::after {
+  content: "";
+  position: absolute;
+  bottom: -10px;
+  left: 2px;
+  width: 0;
+  height: 0;
+  border-top: 15px solid transparent;
+  border-bottom: 15px solid transparent;
+  border-right: 15px solid #333333;
+  /* Color de la flecha del mensaje recibido */
+  transform-origin: center;
+  /* Establece el punto de rotación en el centro */
+  transform: rotate(58deg);
+}
+
+.message p {
+  margin: 0;
+}
+
+.message time {
+  color: darkgray;
+  font-size: smaller;
+  align-self: flex-end;
+}
+
+.scroll-to-bottom {
+  position: absolute;
+  margin-left: 45%;
+}
+
+.upload {
+  position: relative;
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 34px;
+  flex-direction: column;
+  height: 80%;
+  margin: 20px;
+  background-color: black;
+  opacity: 0.7;
+}
+
+#drop-area.drag-over {
+  border: 2px dashed red;
+}
+
+.communication {
+  background-color: #333333;
+  border-radius: 20px;
+  width: 90%;
+  margin: 20px;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  /* Añade espacio interno para el contenido */
+  position: relative;
+  /* Para posicionar el badge relativo a este elemento */
+}
+
+.uk-badge {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.yellow_C {
+  background-color: yellow;
+}
+
+.red_C {
+  background-color: red;
+}
+
+.green_C {
+  background-color: green;
+}
+
+.uk-badge.time {
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  background-color: dimgray;
+  /* Cambia esto al color deseado */
+  padding: 5px;
+  border-radius: 5px;
+  top: unset;
+  left: unset;
+}
+
+.button-container {
+  position: absolute;
+  bottom: 0%;
+  right: 50%;
+  transition: bottom 0.8s ease-in-out;
+  /* Aplica la transición a la propiedad bottom */
+  width: 70px;
+  border-radius: 63%;
+  height: 70px;
+  background-color: red;
+  display: none;
+}
+
+.move {
+  bottom: 20%;
+  transition: bottom 0.8s ease-in-out;
+  /* Aplica la transición a la propiedad bottom */
+}
+
+.deleteFAB {
+  color: white;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.contentComm {
+  flex: 1;
+  /* Ocupa todo el espacio disponible verticalmente */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  /* Alinea el texto al centro */
+  color: white;
+  /* Color del texto */
+  margin-block: 25px;
+
+}

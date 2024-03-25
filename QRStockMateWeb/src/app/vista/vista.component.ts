@@ -61,7 +61,6 @@ export class VistaComponent {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['item']) {
-      console.log('Nuevo tamaño del elemento:', this.width, 'x', this.height);
       this.handleItemChange();
     }
   }
@@ -74,9 +73,6 @@ export class VistaComponent {
 
         this.width = size[0] // Ajustar el ancho según el número de columnas
         this.height = size[1] // Ajustar la altura según el número de filas
-
-        // Imprimir para verificar el cambio en las dimensiones
-        console.log('Nuevo tamaño del elemento:', this.width, 'x', size);
       }
     })
   }
