@@ -3,12 +3,14 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using QRStockMate.AplicationCore.Entities;
 using QRStockMate.AplicationCore.Interfaces.Services;
-using QRStockMate.Model;
+using QRStockMate.DTOs;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace QRStockMate.Controller
 {
 	[Route("api/[controller]")]
 	[ApiController]
+	[SwaggerTag("Endpoints related to transport route management.")]
 	public class TransportRouteController : ControllerBase
 	{
 		private readonly IMapper _mapper;
@@ -20,8 +22,10 @@ namespace QRStockMate.Controller
 			_TransportRouteService = TransportRouteService;
 		}
 
-		//------------------------ Sentencias ------------------------------
-
+		[SwaggerOperation(Summary = "Get all transport routes", Description = "Retrieves all transport routes.")]
+		[SwaggerResponse(StatusCodes.Status200OK, "OK", typeof(IEnumerable<TransportRouteModel>))]
+		[SwaggerResponse(StatusCodes.Status404NotFound, "Not Found", typeof(void))]
+		[SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request", typeof(void))]
 		[HttpGet]
 		public async Task<ActionResult<IEnumerable<TransportRouteModel>>> Get()
 		{
@@ -40,6 +44,9 @@ namespace QRStockMate.Controller
 			}
 		}
 
+		[SwaggerOperation(Summary = "Create transport route", Description = "Creates a new transport route.")]
+		[SwaggerResponse(StatusCodes.Status201Created, "Created", typeof(TransportRoute))]
+		[SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request", typeof(void))]
 		[HttpPost]
 		public async Task<IActionResult> Post([FromBody] TransportRouteModel value)
 		{
@@ -58,6 +65,10 @@ namespace QRStockMate.Controller
 			}
 		}
 
+		[SwaggerOperation(Summary = "Update transport route", Description = "Updates an existing transport route.")]
+		[SwaggerResponse(StatusCodes.Status204NoContent, "No Content", typeof(void))]
+		[SwaggerResponse(StatusCodes.Status404NotFound, "Not Found", typeof(void))]
+		[SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request", typeof(void))]
 		[HttpPut]
 		public async Task<ActionResult<TransportRouteModel>> Put([FromBody] TransportRouteModel model)
 		{
@@ -78,6 +89,10 @@ namespace QRStockMate.Controller
 			}
 		}
 
+		[SwaggerOperation(Summary = "Delete transport route", Description = "Deletes an existing transport route.")]
+		[SwaggerResponse(StatusCodes.Status204NoContent, "No Content", typeof(void))]
+		[SwaggerResponse(StatusCodes.Status404NotFound, "Not Found", typeof(void))]
+		[SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request", typeof(void))]
 		[HttpDelete]
 		public async Task<IActionResult> Delete([FromBody] TransportRouteModel model)
 		{
@@ -97,6 +112,10 @@ namespace QRStockMate.Controller
 			}
 		}
 
+		[SwaggerOperation(Summary = "Get transport routes by code", Description = "Retrieves transport routes by code.")]
+		[SwaggerResponse(StatusCodes.Status200OK, "OK", typeof(IEnumerable<TransportRouteModel>))]
+		[SwaggerResponse(StatusCodes.Status404NotFound, "Not Found", typeof(void))]
+		[SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request", typeof(void))]
 		[HttpGet("TransportRoutes/{code}")]
 		public async Task<ActionResult<IEnumerable<TransportRouteModel>>> GetTransportRoutes(string code)
 		{
@@ -115,6 +134,10 @@ namespace QRStockMate.Controller
 			}
 		}
 
+		[SwaggerOperation(Summary = "Get transport route by id", Description = "Retrieves transport route by id.")]
+		[SwaggerResponse(StatusCodes.Status200OK, "OK", typeof(TransportRouteModel))]
+		[SwaggerResponse(StatusCodes.Status404NotFound, "Not Found", typeof(void))]
+		[SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request", typeof(void))]
 		[HttpGet("TransportRouteById/{id}")]
 		public async Task<ActionResult<IEnumerable<TransportRouteModel>>> GetTransportRouteById(int id)
 		{
@@ -133,6 +156,10 @@ namespace QRStockMate.Controller
 			}
 		}
 
+		[SwaggerOperation(Summary = "Initialize transport route", Description = "Initializes a transport route.")]
+		[SwaggerResponse(StatusCodes.Status200OK, "OK", typeof(DateTime))]
+		[SwaggerResponse(StatusCodes.Status404NotFound, "Not Found", typeof(void))]
+		[SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request", typeof(void))]
 		[HttpPut("InitRoute/{id}")]
 		public async Task<ActionResult<DateTime>> InitRoute(int id)
 		{
@@ -152,6 +179,10 @@ namespace QRStockMate.Controller
 			}
 		}
 
+		[SwaggerOperation(Summary = "Finish transport route", Description = "Finishes a transport route.")]
+		[SwaggerResponse(StatusCodes.Status200OK, "OK", typeof(DateTime))]
+		[SwaggerResponse(StatusCodes.Status404NotFound, "Not Found", typeof(void))]
+		[SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request", typeof(void))]
 		[HttpPut("FinishRoute/{id}")]
 		public async Task<ActionResult<DateTime>> FinishRoute(int id)
 		{

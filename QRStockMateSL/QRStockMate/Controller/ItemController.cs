@@ -4,14 +4,16 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using QRStockMate.AplicationCore.Entities;
 using QRStockMate.AplicationCore.Interfaces.Services;
-using QRStockMate.Model;
+using QRStockMate.DTOs;
 using QRStockMate.Services;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace QRStockMate.Controller
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ItemController : ControllerBase
+	[SwaggerTag("Endpoints related to item management.")]
+	public class ItemController : ControllerBase
     {
         private readonly IItemService _itemService;
         private readonly IWarehouseService _warehouseService;
@@ -26,9 +28,12 @@ namespace QRStockMate.Controller
             _context_storage = context_storage;
         }
 
-        //------------------------ Sentencias ------------------------------
-
-        [HttpGet]
+		//------------------------ Sentencias ------------------------------
+		[SwaggerOperation(Summary = "Get all items", Description = "Retrieve all items.")]
+		[SwaggerResponse(200, "OK", typeof(IEnumerable<ItemModel>))]
+		[SwaggerResponse(404, "Not Found", typeof(string))]
+		[SwaggerResponse(400, "Bad Request", typeof(string))]
+		[HttpGet]
         public async Task<ActionResult<IEnumerable<ItemModel>>> Get()
         {
             try
@@ -46,7 +51,10 @@ namespace QRStockMate.Controller
             }
         }
 
-        [HttpPost]
+		[SwaggerOperation(Summary = "Create a new item", Description = "Create a new item.")]
+		[SwaggerResponse(201, "Created", typeof(ItemModel))]
+		[SwaggerResponse(400, "Bad Request", typeof(string))]
+		[HttpPost]
         public async Task<IActionResult> Post([FromBody] ItemModel value)
         {
             try
@@ -64,7 +72,11 @@ namespace QRStockMate.Controller
             }
         }
 
-        [HttpPut]
+		[SwaggerOperation(Summary = "Update an existing item", Description = "Update an existing item.")]
+		[SwaggerResponse(204, "No Content")]
+		[SwaggerResponse(404, "Not Found", typeof(string))]
+		[SwaggerResponse(400, "Bad Request", typeof(string))]
+		[HttpPut]
         public async Task<ActionResult<ItemModel>> Put([FromBody] ItemModel model)
         {
             try
@@ -84,7 +96,11 @@ namespace QRStockMate.Controller
             }
         }
 
-        [HttpDelete] 
+		[SwaggerOperation(Summary = "Delete an existing item", Description = "Delete an existing item.")]
+		[SwaggerResponse(204, "No Content")]
+		[SwaggerResponse(404, "Not Found", typeof(string))]
+		[SwaggerResponse(400, "Bad Request", typeof(string))]
+		[HttpDelete] 
         public async Task<IActionResult> Delete([FromBody] ItemModel model)
         {
             try
@@ -118,8 +134,11 @@ namespace QRStockMate.Controller
             }
         }
 
-        //Obtener Items por nombre
-        [HttpGet("Search/{name}")]
+		[SwaggerOperation(Summary = "Search items by name", Description = "Retrieve items by name.")]
+		[SwaggerResponse(200, "OK", typeof(IEnumerable<ItemModel>))]
+		[SwaggerResponse(404, "Not Found", typeof(string))]
+		[SwaggerResponse(400, "Bad Request", typeof(string))]
+		[HttpGet("Search/{name}")]
         public async Task<ActionResult<IEnumerable<ItemModel>>> GetItemsByName(string name)
         {
             try
@@ -137,7 +156,11 @@ namespace QRStockMate.Controller
             }
         }
 
-        [HttpPost("UpdateImage")]
+		[SwaggerOperation(Summary = "Update item image", Description = "Update item image.")]
+		[SwaggerResponse(200, "OK")]
+		[SwaggerResponse(404, "Not Found", typeof(string))]
+		[SwaggerResponse(400, "Bad Request", typeof(string))]
+		[HttpPost("UpdateImage")]
         public async Task<IActionResult> UpdateImage([FromForm] int itemId, [FromForm] IFormFile image)
         {
             try

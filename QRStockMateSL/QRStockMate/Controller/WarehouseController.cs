@@ -3,123 +3,123 @@ using Microsoft.AspNetCore.Mvc;
 using QRStockMate.AplicationCore.Entities;
 using QRStockMate.AplicationCore.Interfaces.Repositories;
 using QRStockMate.AplicationCore.Interfaces.Services;
-using QRStockMate.Model;
+using QRStockMate.DTOs;
 using QRStockMate.Services;
+using Swashbuckle.AspNetCore.Annotations;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
-namespace QRStockMate.Controller
-{
-    [Route("api/[controller]")]
-    [ApiController]
-    public class WarehouseController : ControllerBase
-    {
-        private readonly IWarehouseService _warehouseService;
-        private readonly ICompanyService _companyService;
-        private readonly IItemService _itemService;
-        private readonly IStorageService _context_storage;
-        private readonly IMapper _mapper;
+namespace QRStockMate.Controller {
+	[Route("api/[controller]")]
+	[ApiController]
+	[SwaggerTag("Endpoints related to warehouse management.")]
+	public class WarehouseController : ControllerBase {
+		private readonly IWarehouseService _warehouseService;
+		private readonly ICompanyService _companyService;
+		private readonly IItemService _itemService;
+		private readonly IStorageService _context_storage;
+		private readonly IMapper _mapper;
 
-        public WarehouseController(IWarehouseService warehouseService, IMapper mapper, IStorageService context_storage, ICompanyService companyService, IItemService itemService)
-        {
-            _warehouseService = warehouseService;
-            _itemService = itemService;
-            _context_storage = context_storage;
-            _mapper = mapper;
-            _companyService= companyService;
-        }
+		public WarehouseController(IWarehouseService warehouseService, IMapper mapper, IStorageService context_storage, ICompanyService companyService, IItemService itemService) {
+			_warehouseService = warehouseService;
+			_itemService = itemService;
+			_context_storage = context_storage;
+			_mapper = mapper;
+			_companyService = companyService;
+		}
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<WarehouseModel>>> Get()
-        {
-            try
-            {
-                var warehouses = await _warehouseService.GetAll();
+		[SwaggerOperation(Summary = "Get all warehouses", Description = "Retrieves all warehouses.")]
+		[SwaggerResponse(200, "OK", typeof(IEnumerable<WarehouseModel>))]
+		[SwaggerResponse(404, "Not Found", typeof(void))]
+		[SwaggerResponse(400, "Bad Request", typeof(void))]
+		[HttpGet]
+		public async Task<ActionResult<IEnumerable<WarehouseModel>>> Get() {
+			try {
+				var warehouses = await _warehouseService.GetAll();
 
-                if (warehouses is null) return NotFound();//404
+				if (warehouses is null) return NotFound();//404
 
-                return Ok(_mapper.Map<IEnumerable<Warehouse>, IEnumerable<WarehouseModel>>(warehouses)); //200
-            }
-            catch (Exception ex)
-            {
+				return Ok(_mapper.Map<IEnumerable<Warehouse>, IEnumerable<WarehouseModel>>(warehouses)); //200
+			}
+			catch (Exception ex) {
 
-                return BadRequest(ex.Message);//400
-            }
-        }
+				return BadRequest(ex.Message);//400
+			}
+		}
 
-        [HttpPost("{Id}")]
-        public async Task<IActionResult> Post(int Id, [FromBody] WarehouseModel value)
-        {
+		[SwaggerOperation(Summary = "Create warehouse", Description = "Creates a new warehouse.")]
+		[SwaggerResponse(201, "Created", typeof(WarehouseModel))]
+		[SwaggerResponse(400, "Bad Request", typeof(void))]
+		[HttpPost("{Id}")]
+		public async Task<IActionResult> Post(int Id, [FromBody] WarehouseModel value) {
 
-            try
-            {
-                var company = await _companyService.GetById(Id);
-                if (company is null) return NotFound();
-
-
-                var warehouse = _mapper.Map<WarehouseModel, Warehouse>(value);
-                await _warehouseService.Create(warehouse);
-
-                company.WarehouseId += $"{warehouse.Id};";
-                await _companyService.Update(company);
+			try {
+				var company = await _companyService.GetById(Id);
+				if (company is null) return NotFound();
 
 
-                return CreatedAtAction("Get", new { id = value.Id }, value);
-            }
-            catch (Exception e)
-            {
+				var warehouse = _mapper.Map<WarehouseModel, Warehouse>(value);
+				await _warehouseService.Create(warehouse);
 
-                return BadRequest(e.Message);//400
-            }
-        }
+				company.WarehouseId += $"{warehouse.Id};";
+				await _companyService.Update(company);
 
-        [HttpPut]
-        public async Task<ActionResult<UserModel>> Put([FromBody] WarehouseModel model)
-        {
-            try
-            {
-                var warehouse = _mapper.Map<WarehouseModel, Warehouse>(model);
 
-                if (warehouse is null) return NotFound();//404
+				return CreatedAtAction("Get", new { id = value.Id }, value);
+			}
+			catch (Exception e) {
 
-                await _warehouseService.Update(warehouse);
+				return BadRequest(e.Message);//400
+			}
+		}
 
-                return NoContent(); //204
-            }
-            catch (Exception ex)
-            {
+		[SwaggerOperation(Summary = "Update warehouse", Description = "Updates an existing warehouse.")]
+		[SwaggerResponse(204, "No Content", typeof(void))]
+		[SwaggerResponse(404, "Not Found", typeof(void))]
+		[SwaggerResponse(400, "Bad Request", typeof(void))]
+		[HttpPut]
+		public async Task<ActionResult<UserModel>> Put([FromBody] WarehouseModel model) {
+			try {
+				var warehouse = _mapper.Map<WarehouseModel, Warehouse>(model);
 
-                return BadRequest(ex.Message);//400
-            }
-        }
-        
-        [HttpDelete("{idCompany}")]
-        public async Task<IActionResult> Delete(int idCompany, [FromBody] WarehouseModel model)
-        {
-            try
-            {
-                var warehouse = _mapper.Map<WarehouseModel, Warehouse>(model);
+				if (warehouse is null) return NotFound();//404
 
-                var company = await _companyService.GetById(idCompany);
+				await _warehouseService.Update(warehouse);
 
-                company.WarehouseId = Utility.Utility.RemoveSpecificId(company.WarehouseId, warehouse.Id);
+				return NoContent(); //204
+			}
+			catch (Exception ex) {
 
-                if (warehouse is null) return NotFound();//404
+				return BadRequest(ex.Message);//400
+			}
+		}
 
-                if (Uri.IsWellFormedUriString(warehouse.Url, UriKind.Absolute))
-                {
-                    // Es una URL válida, puedes proceder con la eliminación
-                    await _context_storage.DeleteImage(warehouse.Url);
-                }
-                var idItems = warehouse.IdItems;
-				if (idItems != ""){
+		[SwaggerOperation(Summary = "Delete warehouse", Description = "Deletes an existing warehouse.")]
+		[SwaggerResponse(204, "No Content", typeof(void))]
+		[SwaggerResponse(404, "Not Found", typeof(void))]
+		[SwaggerResponse(400, "Bad Request", typeof(void))]
+		[HttpDelete("{idCompany}")]
+		public async Task<IActionResult> Delete(int idCompany, [FromBody] WarehouseModel model) {
+			try {
+				var warehouse = _mapper.Map<WarehouseModel, Warehouse>(model);
+
+				var company = await _companyService.GetById(idCompany);
+
+				company.WarehouseId = Utility.Utility.RemoveSpecificId(company.WarehouseId, warehouse.Id);
+
+				if (warehouse is null) return NotFound();//404
+
+				if (Uri.IsWellFormedUriString(warehouse.Url, UriKind.Absolute)) {
+					// Es una URL válida, puedes proceder con la eliminación
+					await _context_storage.DeleteImage(warehouse.Url);
+				}
+				var idItems = warehouse.IdItems;
+				if (idItems != "") {
 					idItems = idItems.TrimEnd(';'); // Elimina el último punto y coma
 					List<int> idList = idItems.Split(';').Select(int.Parse).ToList();
 					List<Item> itemList = new List<Item>();
-					foreach (int b in idList)
-					{
+					foreach (int b in idList) {
 						Item item = await _itemService.GetById(b);
-						if (item != null)
-						{
+						if (item != null) {
 							itemList.Add(item);
 						}
 					}
@@ -127,80 +127,78 @@ namespace QRStockMate.Controller
 				}
 
 				await _warehouseService.Delete(warehouse);
-                await _companyService.Update(company);
+				await _companyService.Update(company);
 
-                return NoContent(); //204
-            }
-            catch (Exception ex)
-            {
+				return NoContent(); //204
+			}
+			catch (Exception ex) {
 
-                return BadRequest(ex.Message);//400
-            }
-        }
+				return BadRequest(ex.Message);//400
+			}
+		}
 
-        //Funciones Especiales
+		[SwaggerOperation(Summary = "Update warehouse image", Description = "Updates the profile image of a warehouse.")]
+		[SwaggerResponse(200, "OK", typeof(void))]
+		[SwaggerResponse(404, "Not Found", typeof(void))]
+		[SwaggerResponse(400, "Bad Request", typeof(void))]
+		[HttpPost("UpdateImage")]
+		public async Task<IActionResult> UpdateImage([FromForm] int warehouseId, [FromForm] IFormFile image) {
+			try {
 
-        [HttpPost("UpdateImage")]
-        public async Task<IActionResult> UpdateImage([FromForm] int warehouseId, [FromForm] IFormFile image)
-        {
-            try
-            {
+				var warehouse = await _warehouseService.GetById(warehouseId);
+				if (warehouse == null) return NotFound();
 
-                var warehouse = await _warehouseService.GetById(warehouseId);
-                if (warehouse == null) return NotFound();
+				if (Uri.IsWellFormedUriString(warehouse.Url, UriKind.Absolute)) {
+					// Es una URL válida, puedes proceder con la eliminación
+					await _context_storage.DeleteImage(warehouse.Url);
+				}
 
-                if (Uri.IsWellFormedUriString(warehouse.Url, UriKind.Absolute))
-                {
-                    // Es una URL válida, puedes proceder con la eliminación
-                    await _context_storage.DeleteImage(warehouse.Url);
-                }
+				Stream image_stream = image.OpenReadStream();
+				string urlimagen = await _context_storage.UploadImage(image_stream, image.FileName);
 
-                Stream image_stream = image.OpenReadStream();
-                string urlimagen = await _context_storage.UploadImage(image_stream, image.FileName);
+				warehouse.Url = urlimagen;
 
-                warehouse.Url = urlimagen;
+				await _warehouseService.Update(warehouse);
+				return Ok();
+			}
+			catch (Exception ex) {
 
-                await _warehouseService.Update(warehouse);
-                return Ok();
-            }
-            catch (Exception ex)
-            {
+				return BadRequest(ex.Message);
+			}
+		}
 
-                return BadRequest(ex.Message);
-            }
-        }
+		[SwaggerOperation(Summary = "Add item to warehouse", Description = "Adds an item to the warehouse.")]
+		[SwaggerResponse(201, "Created", typeof(Item))]
+		[SwaggerResponse(400, "Bad Request", typeof(void))]
+		[HttpPost("AddItem/{Id}")]
+		public async Task<IActionResult> AddItem(int Id, [FromBody] ItemModel itemModel) {
+			try {
+				var warehouse = await _warehouseService.GetById(Id);
 
-        [HttpPost("AddItem/{Id}")]
-        public async Task<IActionResult> AddItem(int Id, [FromBody] ItemModel itemModel) {
-            try
-            {
-                var warehouse = await _warehouseService.GetById(Id);
+				if (warehouse == null) return NotFound();
 
-                if (warehouse == null) return NotFound();
+				var item = _mapper.Map<ItemModel, Item>(itemModel);
 
-                var item = _mapper.Map<ItemModel, Item>(itemModel);
+				await _warehouseService.AddItem(Id, item);
 
-                await _warehouseService.AddItem(Id, item);
+				return CreatedAtAction("Get", new { id = item.Id }, item);
+			}
+			catch (Exception ex) {
+				return BadRequest(ex.Message);
+			}
+		}
 
-                return CreatedAtAction("Get", new { id = item.Id }, item);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
+		[SwaggerOperation(Summary = "Add item range to warehouses", Description = "Adds multiple items to the warehouses.")]
+		[SwaggerResponse(200, "OK", typeof(void))]
+		[SwaggerResponse(400, "Bad Request", typeof(void))]
 		[HttpPost("AddItemRange/")]
-		public async Task<IActionResult> AddItemRange([FromBody] ItemModel[] itemModel)
-		{
-			try
-			{
-                foreach (var _item in itemModel)
-                {
+		public async Task<IActionResult> AddItemRange([FromBody] ItemModel[] itemModel) {
+			try {
+				foreach (var _item in itemModel) {
 					var warehouse = await _warehouseService.GetById(_item.WarehouseId);
 
-                    if (warehouse != null) {
-                        Console.WriteLine(_item);
+					if (warehouse != null) {
+						Console.WriteLine(_item);
 						var item = _mapper.Map<ItemModel, Item>(_item);
 
 						await _warehouseService.AddItem(_item.WarehouseId, item);
@@ -210,34 +208,33 @@ namespace QRStockMate.Controller
 
 				return Ok();
 			}
-			catch (Exception ex)
-			{
+			catch (Exception ex) {
 				return BadRequest(ex.Message);
 			}
 		}
 
-
+		[SwaggerOperation(Summary = "Get items in warehouse", Description = "Retrieves all items in a warehouse.")]
+		[SwaggerResponse(200, "OK", typeof(IEnumerable<ItemModel>))]
+		[SwaggerResponse(404, "Not Found", typeof(void))]
+		[SwaggerResponse(400, "Bad Request", typeof(void))]
 		[HttpGet("GetItems/{Id}")]
-        public async Task<ActionResult<IEnumerable<ItemModel>>> GetItems(int Id)
-        {
-            try
-            {
-                
-                var warehouse = await _warehouseService.GetById(Id);
+		public async Task<ActionResult<IEnumerable<ItemModel>>> GetItems(int Id) {
+			try {
 
-                if (warehouse == null) return NotFound();
+				var warehouse = await _warehouseService.GetById(Id);
 
-                if (String.IsNullOrEmpty(warehouse.IdItems)) return BadRequest("This warehouse don't have item yet.");
+				if (warehouse == null) return NotFound();
 
-                var Items = await _warehouseService.GetItems(warehouse.Id);
+				if (String.IsNullOrEmpty(warehouse.IdItems)) return BadRequest("This warehouse don't have item yet.");
 
-                return Ok(_mapper.Map<IEnumerable<Item>, IEnumerable<ItemModel>>(Items));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-    }
+				var Items = await _warehouseService.GetItems(warehouse.Id);
+
+				return Ok(_mapper.Map<IEnumerable<Item>, IEnumerable<ItemModel>>(Items));
+			}
+			catch (Exception ex) {
+				return BadRequest(ex.Message);
+			}
+		}
+	}
 }
 

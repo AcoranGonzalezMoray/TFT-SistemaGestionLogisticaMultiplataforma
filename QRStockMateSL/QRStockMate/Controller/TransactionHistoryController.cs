@@ -3,15 +3,17 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using QRStockMate.AplicationCore.Entities;
 using QRStockMate.AplicationCore.Interfaces.Services;
-using QRStockMate.Model;
+using QRStockMate.DTOs;
 using QRStockMate.Services;
+using Swashbuckle.AspNetCore.Annotations;
 using System.Transactions;
 
 namespace QRStockMate.Controller
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TransactionHistoryController : ControllerBase
+	[SwaggerTag("Endpoints related to transactions management.")]
+	public class TransactionHistoryController : ControllerBase
     {
         private readonly ITransactionHistoryService _transactionHistoryService;
         private readonly IMapper _mapper;
@@ -23,11 +25,11 @@ namespace QRStockMate.Controller
         }
 
 
-
-
-        //FUNCIONES BASICAS
-
-        [HttpGet]
+		[SwaggerOperation(Summary = "Get all transaction history", Description = "Retrieves all transaction history.")]
+		[SwaggerResponse(StatusCodes.Status200OK, "OK", typeof(IEnumerable<TransactionHistoryModel>))]
+		[SwaggerResponse(StatusCodes.Status404NotFound, "Not Found", typeof(void))]
+		[SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request", typeof(void))]
+		[HttpGet]
         public async Task<ActionResult<IEnumerable<TransactionHistoryModel>>> Get()
         {
             try
@@ -45,7 +47,10 @@ namespace QRStockMate.Controller
             }
         }
 
-        [HttpPost]
+		[SwaggerOperation(Summary = "Create transaction history", Description = "Creates a new transaction history.")]
+		[SwaggerResponse(StatusCodes.Status201Created, "Created", typeof(TransactionHistory))]
+		[SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request", typeof(void))]
+		[HttpPost]
         public async Task<IActionResult> Post([FromBody] TransactionHistoryModel value)
         {
 
@@ -66,7 +71,11 @@ namespace QRStockMate.Controller
             }
         }
 
-        [HttpPut]
+		[SwaggerOperation(Summary = "Update transaction history", Description = "Updates an existing transaction history.")]
+		[SwaggerResponse(StatusCodes.Status204NoContent, "No Content", typeof(void))]
+		[SwaggerResponse(StatusCodes.Status404NotFound, "Not Found", typeof(void))]
+		[SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request", typeof(void))]
+		[HttpPut]
         public async Task<ActionResult<TransactionHistoryModel>> Put([FromBody] TransactionHistoryModel model)
         {
             try
@@ -88,7 +97,11 @@ namespace QRStockMate.Controller
             }
         }
 
-        [HttpDelete]
+		[SwaggerOperation(Summary = "Delete transaction history", Description = "Deletes an existing transaction history.")]
+		[SwaggerResponse(StatusCodes.Status204NoContent, "No Content", typeof(void))]
+		[SwaggerResponse(StatusCodes.Status404NotFound, "Not Found", typeof(void))]
+		[SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request", typeof(void))]
+		[HttpDelete]
         public async Task<IActionResult> Delete([FromBody] TransactionHistoryModel model)
         {
             try
@@ -109,10 +122,10 @@ namespace QRStockMate.Controller
             }
         }
 
-
-
-
-
+		[SwaggerOperation(Summary = "Get transaction history by code", Description = "Retrieves transaction history by code.")]
+		[SwaggerResponse(StatusCodes.Status200OK, "OK", typeof(IEnumerable<TransactionHistoryModel>))]
+		[SwaggerResponse(StatusCodes.Status404NotFound, "Not Found", typeof(void))]
+		[SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request", typeof(void))]
 		[HttpGet("History/{code}")]
 		public async Task<ActionResult<IEnumerable<TransactionHistoryModel>>> GetHistory(string code)
 		{

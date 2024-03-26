@@ -1,22 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Swashbuckle.AspNetCore.Annotations;
 
-namespace QRStockMate.AplicationCore.Entities
-{
-    public class Company
-    {
+namespace QRStockMate.AplicationCore.Entities {
+	[SwaggerSchema("Company entity")]
+	public class Company {
+		[SwaggerSchema("ID of the company")]
+		public int Id { get; set; }
 
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string Director { get; set; }
-        public string Location { get; set; }
-        public string Code { get; set; }    //XXX-XXX
-        public string WarehouseId { get; set; }   //algo;otro...
-        public string EmployeeId { get; set; }   //algo;otro...
+		[SwaggerSchema("Name of the company")]
+		public string Name { get; set; }
 
-    }
+		[SwaggerSchema("Director of the company")]
+		public string Director { get; set; }
 
+		[SwaggerSchema("Location of the company")]
+		public string Location { get; set; }
+
+		[SwaggerSchema("Code associated with the company in the format XXX-XXX")]
+		public string Code { get; set; }
+
+		[SwaggerSchema("Warehouse ID associated with the company (semicolon-separated if multiple)")]
+		public string WarehouseId { get; set; }
+
+		[SwaggerSchema("Employee ID associated with the company (semicolon-separated if multiple)")]
+		public string EmployeeId { get; set; }
+	}
 }

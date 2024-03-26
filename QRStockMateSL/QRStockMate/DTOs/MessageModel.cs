@@ -1,14 +1,15 @@
-﻿using Swashbuckle.AspNetCore.Annotations;
-using System;
+﻿using System;
+using Swashbuckle.AspNetCore.Annotations;
+using QRStockMate.AplicationCore.Entities;
 
-namespace QRStockMate.AplicationCore.Entities {
-	[SwaggerSchema("Message entity")]
-	public class Message {
-		[SwaggerSchema("ID of the message")]
+namespace QRStockMate.DTOs {
+	[SwaggerSchema("Message model")]
+	public class MessageModel {
+		[SwaggerSchema("Message ID")]
 		public int Id { get; set; }
 
 		[SwaggerSchema("Code associated with the message")]
-		public string code { get; set; }
+		public string Code { get; set; }
 
 		[SwaggerSchema("ID of the sender contact")]
 		public int SenderContactId { get; set; }
@@ -22,18 +23,7 @@ namespace QRStockMate.AplicationCore.Entities {
 		[SwaggerSchema("Date and time when the message was sent")]
 		public DateTime SentDate { get; set; }
 
-		[SwaggerSchema("Type of file attached with the message")]
+		[SwaggerSchema("Type of the message")]
 		public TypeFile Type { get; set; }
-	}
-
-	[SwaggerSchema("0:Text, 1: Audio, 2:File, 3:Image")]
-	public enum TypeFile {
-		Text,
-
-		Audio,
-
-		File,
-
-		Image
 	}
 }

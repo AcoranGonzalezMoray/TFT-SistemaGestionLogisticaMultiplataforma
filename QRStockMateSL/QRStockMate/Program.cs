@@ -1,14 +1,19 @@
+using Asp.Versioning.ApiExplorer;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using QRStockMate.AplicationCore.Interfaces.Repositories;
 using QRStockMate.AplicationCore.Interfaces.Services;
 using QRStockMate.Infrastructure.Data;
 using QRStockMate.Infrastructure.Repositories;
 using QRStockMate.Services;
+using QRStockMate.SwaggerConfig;
 using QRStockMate.Utility;
+using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
 using System.Text;
 
@@ -124,13 +129,37 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
+
+//builder.Services.AddApiVersioning()
+//	.AddMvc()
+//	.AddApiExplorer(
+//    options => {
+//        options.GroupNameFormat = "'v'VVV";
+//        options.SubstituteApiVersionInUrl = true;
+//    });
+
+builder.Services.AddSwaggerGen(c => { 
+    c.EnableAnnotations();
+});
+
+//builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>,ConfigureSwaggerOptions>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+	//var descriptions = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
+	app.UseSwagger();
+	app.UseSwaggerUI();
+	//app.UseSwaggerUI(
+	//    options => {
+	//	    foreach (var description in descriptions.ApiVersionDescriptions) {
+	//		    var url = $"/swagger/{description.GroupName}/swagger.json";
+	//		    var name = description.GroupName.ToUpperInvariant();
+	//		    options.SwaggerEndpoint(url, name);
+	//	    }
+	//    });
 }
 
 app.UseHttpsRedirection();

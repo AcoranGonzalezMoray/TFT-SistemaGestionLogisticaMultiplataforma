@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Swashbuckle.AspNetCore.Annotations;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,7 +20,8 @@ namespace QRStockMate.AplicationCore.Entities
 
     }
 
-    public enum RoleUser
+	[SwaggerSchema("0: Director, 1: Administrator, 2: InventoryTechnician, 3: User, 4: Carrier")]
+	public enum RoleUser
     { 
         Director,
         Administrator,

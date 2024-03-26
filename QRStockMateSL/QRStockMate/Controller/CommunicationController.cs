@@ -3,15 +3,16 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using QRStockMate.AplicationCore.Entities;
 using QRStockMate.AplicationCore.Interfaces.Services;
-using QRStockMate.Model;
+using QRStockMate.DTOs;
 using QRStockMate.Services;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace QRStockMate.Controller
 {
 	[Route("api/[controller]")]
 	[ApiController]
-	public class CommunicationController : ControllerBase
-	{
+	[SwaggerTag("Endpoints related to communication management.")]
+	public class CommunicationController : ControllerBase {
 
 
 		private readonly IMapper _mapper;
@@ -26,7 +27,10 @@ namespace QRStockMate.Controller
 
 
 		//------------------------ Sentencias ------------------------------
-
+		[SwaggerOperation(Summary = "Get all communications", Description = "Retrieve all communications.")]
+		[SwaggerResponse(StatusCodes.Status200OK, "OK", typeof(IEnumerable<CommunicationModel>))]
+		[SwaggerResponse(StatusCodes.Status404NotFound, "Not Found", typeof(string))]
+		[SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request", typeof(string))]
 		[HttpGet]
 		public async Task<ActionResult<IEnumerable<CommunicationModel>>> Get()
 		{
@@ -45,6 +49,10 @@ namespace QRStockMate.Controller
 			}
 		}
 
+		[SwaggerOperation(Summary = "Create a new communication", Description = "Create a new communication.")]
+		[SwaggerResponse(StatusCodes.Status201Created, "Created", typeof(CommunicationModel))]
+		[SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request", typeof(string))]
+		[HttpPost]
 		[HttpPost]
 		public async Task<IActionResult> Post([FromBody] CommunicationModel value)
 		{
@@ -63,6 +71,10 @@ namespace QRStockMate.Controller
 			}
 		}
 
+		[SwaggerOperation(Summary = "Update an existing communication", Description = "Update an existing communication.")]
+		[SwaggerResponse(StatusCodes.Status204NoContent, "No Content")]
+		[SwaggerResponse(StatusCodes.Status404NotFound, "Not Found", typeof(string))]
+		[SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request", typeof(string))]
 		[HttpPut]
 		public async Task<ActionResult<CommunicationModel>> Put([FromBody] CommunicationModel model)
 		{
@@ -85,6 +97,10 @@ namespace QRStockMate.Controller
 
 
 
+		[SwaggerOperation(Summary = "Delete an existing communication", Description = "Delete an existing communication.")]
+		[SwaggerResponse(StatusCodes.Status204NoContent, "No Content")]
+		[SwaggerResponse(StatusCodes.Status404NotFound, "Not Found", typeof(string))]
+		[SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request", typeof(string))]
 		[HttpDelete]
 		public async Task<IActionResult> Delete([FromBody] CommunicationModel model)
 		{
@@ -105,6 +121,10 @@ namespace QRStockMate.Controller
 		}
 
 
+		[SwaggerOperation(Summary = "Get communications by code", Description = "Retrieve communications by code.")]
+		[SwaggerResponse(StatusCodes.Status200OK, "OK", typeof(IEnumerable<CommunicationModel>))]
+		[SwaggerResponse(StatusCodes.Status404NotFound, "Not Found", typeof(string))]
+		[SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request", typeof(string))]
 		[HttpGet("GetByCode/{code}")]
 		public async Task<ActionResult<IEnumerable<CommunicationModel>>> GetByCode(string code)
 		{

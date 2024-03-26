@@ -3,13 +3,15 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using QRStockMate.AplicationCore.Entities;
 using QRStockMate.AplicationCore.Interfaces.Services;
-using QRStockMate.Model;
+using QRStockMate.DTOs;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace QRStockMate.Controller
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CompanyController : ControllerBase
+	[SwaggerTag("Endpoints related to company management.")]
+	public class CompanyController : ControllerBase
     {
         private readonly ICompanyService _companyService;
 		private readonly IVehicleService _vehicleService;
@@ -22,6 +24,10 @@ namespace QRStockMate.Controller
 			_mapper = mapper;
 		}
 
+		[SwaggerOperation(Summary = "Get all companies", Description = "Retrieve all companies.")]
+		[SwaggerResponse(200, "OK", typeof(IEnumerable<CompanyModel>))]
+		[SwaggerResponse(404, "Not Found", typeof(string))]
+		[SwaggerResponse(400, "Bad Request", typeof(string))]
 		[HttpGet]
         public async Task<ActionResult<IEnumerable<CompanyModel>>> Get()
         {
@@ -40,7 +46,10 @@ namespace QRStockMate.Controller
             }
         }
 
-        [HttpPost]
+		[SwaggerOperation(Summary = "Create a new company", Description = "Create a new company.")]
+		[SwaggerResponse(201, "Created", typeof(CompanyModel))]
+		[SwaggerResponse(400, "Bad Request", typeof(string))]
+		[HttpPost]
         public async Task<IActionResult> Post([FromBody] CompanyModel value)
         {
 
@@ -59,7 +68,11 @@ namespace QRStockMate.Controller
             }
         }
 
-        [HttpPut]
+		[SwaggerOperation(Summary = "Update an existing company", Description = "Update an existing company.")]
+		[SwaggerResponse(204, "No Content")]
+		[SwaggerResponse(404, "Not Found", typeof(string))]
+		[SwaggerResponse(400, "Bad Request", typeof(string))]
+		[HttpPut]
         public async Task<ActionResult<CompanyModel>> Put([FromBody] CompanyModel model)
         {
             try
@@ -79,7 +92,11 @@ namespace QRStockMate.Controller
             }
         }
 
-        [HttpDelete]
+		[SwaggerOperation(Summary = "Delete an existing company", Description = "Delete an existing company.")]
+		[SwaggerResponse(204, "No Content")]
+		[SwaggerResponse(404, "Not Found", typeof(string))]
+		[SwaggerResponse(400, "Bad Request", typeof(string))]
+		[HttpDelete]
         public async Task<IActionResult> Delete([FromBody] CompanyModel model)
         {
             try
@@ -98,8 +115,11 @@ namespace QRStockMate.Controller
                 return BadRequest(ex.Message);//400
             }
         }
-
-        [HttpPost("Employees")]
+		[SwaggerOperation(Summary = "Get employees of a company", Description = "Retrieve employees of a company.")]
+		[SwaggerResponse(200, "OK", typeof(IEnumerable<UserModel>))]
+		[SwaggerResponse(404, "Not Found", typeof(string))]
+		[SwaggerResponse(400, "Bad Request", typeof(string))]
+		[HttpPost("Employees")]
         public async Task<ActionResult<IEnumerable<UserModel>>> GetEmployees([FromBody]Company company)
         {
             try
@@ -118,6 +138,10 @@ namespace QRStockMate.Controller
             }
         }
 
+		[SwaggerOperation(Summary = "Get vehicles of a company", Description = "Retrieve vehicles of a company.")]
+		[SwaggerResponse(200, "OK", typeof(IEnumerable<VehicleModel>))]
+		[SwaggerResponse(404, "Not Found", typeof(string))]
+		[SwaggerResponse(400, "Bad Request", typeof(string))]
 		[HttpGet("Vehicles/{code}")]
 		public async Task<ActionResult<IEnumerable<VehicleModel>>> GetVehicles( string code)
 		{
@@ -137,6 +161,10 @@ namespace QRStockMate.Controller
 			}
 		}
 
+		[SwaggerOperation(Summary = "Get warehouses of a company", Description = "Retrieve warehouses of a company.")]
+		[SwaggerResponse(200, "OK", typeof(IEnumerable<WarehouseModel>))]
+		[SwaggerResponse(404, "Not Found", typeof(string))]
+		[SwaggerResponse(400, "Bad Request", typeof(string))]
 		[HttpPost("Warehouse")]
         public async Task<ActionResult<IEnumerable<WarehouseModel>>> GetWarehouses([FromBody] Company company)
         {

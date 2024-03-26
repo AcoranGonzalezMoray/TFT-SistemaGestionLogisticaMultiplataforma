@@ -8,7 +8,7 @@ using Moq;
 using QRStockMate.AplicationCore.Entities;
 using QRStockMate.AplicationCore.Interfaces.Services;
 using QRStockMate.Controller;
-using QRStockMate.Model;
+using QRStockMate.DTOs;
 
 namespace QRStockMate.Test
 {
@@ -74,7 +74,7 @@ namespace QRStockMate.Test
             response.Should().BeOfType<OkResult>();
         }
 
-        // Otros tests similares para cubrir otros casos de éxito y de error en el método UploadFile
+        // Otros tests similares para cubrir otros casos de ï¿½xito y de error en el mï¿½todo UploadFile
 
         [Test]
         public async Task DeleteConversation_Returns_NoContent_If_Deletion_Succeeds()
@@ -96,7 +96,7 @@ namespace QRStockMate.Test
             response.Should().BeOfType<NoContentResult>();
         }
 
-        // Otros tests similares para cubrir otros casos de éxito y de error en el método DeleteConversation
+        // Otros tests similares para cubrir otros casos de ï¿½xito y de error en el mï¿½todo DeleteConversation
 
         [Test]
         public async Task GetNewMessage_Returns_OkResult_If_Messages_Found()

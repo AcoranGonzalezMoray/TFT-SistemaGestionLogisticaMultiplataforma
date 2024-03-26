@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Swashbuckle.AspNetCore.Annotations;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,7 +18,8 @@ namespace QRStockMate.AplicationCore.Entities
 
     }
 
-    public enum OperationHistory { 
+	[SwaggerSchema("0: Add, 1: Post, 2: Put, 3: Delete")]
+	public enum OperationHistory { 
         Add,
         Post,
         Put,

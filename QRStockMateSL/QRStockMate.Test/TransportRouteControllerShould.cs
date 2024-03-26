@@ -8,7 +8,7 @@ using Moq;
 using QRStockMate.AplicationCore.Entities;
 using QRStockMate.AplicationCore.Interfaces.Services;
 using QRStockMate.Controller;
-using QRStockMate.Model;
+using QRStockMate.DTOs;
 
 namespace QRStockMate.Test
 {
@@ -68,7 +68,7 @@ namespace QRStockMate.Test
             response.Should().BeOfType<CreatedAtActionResult>();
         }
 
-        // Otros tests similares para cubrir otros casos de éxito y de error en el método CreateTransportRoute
+        // Otros tests similares para cubrir otros casos de ï¿½xito y de error en el mï¿½todo CreateTransportRoute
 
         [Test]
         public async Task UpdateTransportRoute_Returns_NoContent_If_Update_Succeeds()
@@ -85,7 +85,7 @@ namespace QRStockMate.Test
             response.Should().BeOfType<ActionResult<TransportRouteModel>>();
         }
 
-        // Otros tests similares para cubrir otros casos de éxito y de error en el método UpdateTransportRoute
+        // Otros tests similares para cubrir otros casos de ï¿½xito y de error en el mï¿½todo UpdateTransportRoute
 
         [Test]
         public async Task DeleteTransportRoute_Returns_NoContent_If_Deletion_Succeeds()
@@ -134,7 +134,7 @@ namespace QRStockMate.Test
             response.Result.Should().BeOfType<OkObjectResult>();
         }
 
-        // Otros tests similares para cubrir otros casos de éxito y de error en el método GetTransportRouteById
+        // Otros tests similares para cubrir otros casos de ï¿½xito y de error en el mï¿½todo GetTransportRouteById
 
         [Test]
         public async Task InitRoute_Returns_OkResult_If_Init_Succeeds()
@@ -151,7 +151,7 @@ namespace QRStockMate.Test
             response.Result.Should().BeOfType<OkObjectResult>();
         }
 
-        // Otros tests similares para cubrir otros casos de éxito y de error en el método InitRoute
+        // Otros tests similares para cubrir otros casos de ï¿½xito y de error en el mï¿½todo InitRoute
 
         [Test]
         public async Task FinishRoute_Returns_OkResult_If_Finish_Succeeds()

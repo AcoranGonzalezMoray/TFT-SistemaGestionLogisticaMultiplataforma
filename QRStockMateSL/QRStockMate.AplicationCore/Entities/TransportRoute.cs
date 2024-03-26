@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Swashbuckle.AspNetCore.Annotations;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,6 +23,7 @@ namespace QRStockMate.AplicationCore.Entities
 		public string Route { get; set; }
 	}
 
+	[SwaggerSchema("0: Pending, 1: OnRoute, 2: Finalized")]
 	public enum RoleStatus
 	{
 		Pending,

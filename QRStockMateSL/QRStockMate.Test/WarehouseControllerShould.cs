@@ -7,7 +7,7 @@ using QRStockMate.AplicationCore.Entities;
 using QRStockMate.AplicationCore.Interfaces.Repositories;
 using QRStockMate.AplicationCore.Interfaces.Services;
 using QRStockMate.Controller;
-using QRStockMate.Model;
+using QRStockMate.DTOs;
 using QRStockMate.Services;
 using System.Dynamic;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;

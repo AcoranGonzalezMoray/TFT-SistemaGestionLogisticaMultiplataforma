@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using QRStockMate.AplicationCore.Entities;
-using QRStockMate.Model;
+using QRStockMate.DTOs;
 
 namespace CleanArquitecture.Api.Mapping
 {
