@@ -1,5 +1,4 @@
-﻿using System;
-using Swashbuckle.AspNetCore.Annotations;
+﻿using Swashbuckle.AspNetCore.Annotations;
 
 namespace QRStockMate.DTOs {
 	[SwaggerSchema("Communication model")]

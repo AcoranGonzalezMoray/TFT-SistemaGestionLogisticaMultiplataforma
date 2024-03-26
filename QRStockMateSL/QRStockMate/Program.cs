@@ -14,7 +14,6 @@ using QRStockMate.Services;
 using QRStockMate.SwaggerConfig;
 using QRStockMate.Utility;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using System;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,10 +22,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Se le agrega la seguridad a los controladores para que se le envie el token valido
 
-builder.Services.AddControllers(opt =>
-{
-    var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
-    opt.Filters.Add(new AuthorizeFilter(policy));
+builder.Services.AddControllers(opt => {
+	var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+	opt.Filters.Add(new AuthorizeFilter(policy));
 
 });
 
@@ -39,56 +37,58 @@ builder.Services.AddSwaggerGen();
 
 //SQL-SERVER
 builder.Services.AddDbContext<ApplicationDbContext>(opt =>
-    opt.UseSqlServer(
-        builder.Configuration.GetConnectionString("Conexion")
-        )
-    );
+	opt.UseSqlServer(
+		builder.Configuration.GetConnectionString("Conexion")
+		)
+	);
 
 //Service
-    //Base
+//Base
 builder.Services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
 builder.Services.AddScoped(typeof(IBaseService<>), typeof(BaseService<>));
 
-    //User
+//User
 builder.Services.AddScoped(typeof(IUserService), typeof(UserService));
 builder.Services.AddScoped(typeof(IUserRepository), typeof(UserRepository));
 
-    //Company
+//Company
 builder.Services.AddScoped(typeof(ICompanyService), typeof(CompanyService));
 builder.Services.AddScoped(typeof(ICompanyRepository), typeof(CompanyRepository));
-    
-    //Item
+
+//Item
 builder.Services.AddScoped(typeof(IItemService), typeof(ItemService));
 builder.Services.AddScoped(typeof(IItemRepository), typeof(ItemRepository));
 
-    //TransactionHistory
+//TransactionHistory
 builder.Services.AddScoped(typeof(ITransactionHistoryService), typeof(TransactionHistoryService));
 builder.Services.AddScoped(typeof(ITransactionHistoryRepository), typeof(TransactionHistoryRepository));
 
-    //Warehouse
+//Warehouse
 builder.Services.AddScoped(typeof(IWarehouseService), typeof(WarehouseService));
 builder.Services.AddScoped(typeof(IWarehouseRepository), typeof(WarehouseRepository));
 
-    //Vehicle
+//Vehicle
 builder.Services.AddScoped(typeof(IVehicleService), typeof(VehicleService));
 builder.Services.AddScoped(typeof(IVehicleRepository), typeof(VehicleRepository));
 
-    //TransportRoute
+//TransportRoute
 builder.Services.AddScoped(typeof(ITransportRouteService), typeof(TransportRouteService));
 builder.Services.AddScoped(typeof(ITransportRouteRepository), typeof(TransportRouteRepository));
 
-    //StorageFirebase
+//StorageFirebase
 builder.Services.AddScoped(typeof(IStorageService), typeof(StorageService));
 builder.Services.AddScoped(typeof(IStorageRepository), typeof(StorageRepository));
 
-    //Message
+//Message
 builder.Services.AddScoped(typeof(IMessageService), typeof(MessageService));
 builder.Services.AddScoped(typeof(IMessageRepository), typeof(MessageRepository));
 
-    //Communication
+//Communication
 builder.Services.AddScoped(typeof(ICommunicationService), typeof(CommunicationService));
 builder.Services.AddScoped(typeof(ICommunicationRepository), typeof(CommunicationRepository));
 
+//SwaggerOptions
+builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
 
 //AutoMapper
 builder.Services.AddAutoMapper(typeof(Program));
@@ -102,64 +102,58 @@ builder.Services.AddScoped<IJwtTokenRepository, JwtTokenRepository>();
 
 //CORS
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy(name: MyAllowSpecificOrigins,
-                      policy =>
-                      {
-                          policy.AllowAnyOrigin()
-                          .AllowAnyHeader()
-                          .AllowAnyMethod();
-                      });
+builder.Services.AddCors(options => {
+	options.AddPolicy(name: MyAllowSpecificOrigins,
+					  policy => {
+						  policy.AllowAnyOrigin()
+						  .AllowAnyHeader()
+						  .AllowAnyMethod();
+					  });
 });
 
 
 //Json Web Token (JWT)
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters()
-        {
-            ValidateIssuer = false,
-            ValidateAudience = false,
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(builder.Configuration["ConfigJwt:Key"] ?? string.Empty)
-            )
-        };
-    });
+	.AddJwtBearer(options => {
+		options.TokenValidationParameters = new TokenValidationParameters() {
+			ValidateIssuer = false,
+			ValidateAudience = false,
+			ValidateIssuerSigningKey = true,
+			IssuerSigningKey = new SymmetricSecurityKey(
+				Encoding.UTF8.GetBytes(builder.Configuration["ConfigJwt:Key"] ?? string.Empty)
+			)
+		};
+	});
 
 
-//builder.Services.AddApiVersioning()
-//	.AddMvc()
-//	.AddApiExplorer(
-//    options => {
-//        options.GroupNameFormat = "'v'VVV";
-//        options.SubstituteApiVersionInUrl = true;
-//    });
+builder.Services.AddApiVersioning()
+	.AddMvc()
+	.AddApiExplorer(
+	options => {
+		options.GroupNameFormat = "'v'VVV";
+		options.SubstituteApiVersionInUrl = true;
+	});
 
-builder.Services.AddSwaggerGen(c => { 
-    c.EnableAnnotations();
+builder.Services.AddSwaggerGen(c => {
+	c.EnableAnnotations();
 });
 
-//builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>,ConfigureSwaggerOptions>();
+
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-	//var descriptions = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
+if (app.Environment.IsDevelopment()) {
+	var descriptions = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
 	app.UseSwagger();
-	app.UseSwaggerUI();
-	//app.UseSwaggerUI(
-	//    options => {
-	//	    foreach (var description in descriptions.ApiVersionDescriptions) {
-	//		    var url = $"/swagger/{description.GroupName}/swagger.json";
-	//		    var name = description.GroupName.ToUpperInvariant();
-	//		    options.SwaggerEndpoint(url, name);
-	//	    }
-	//    });
+	app.UseSwaggerUI(
+		options => {
+			foreach (var description in descriptions.ApiVersionDescriptions) {
+				var url = $"/swagger/{description.GroupName}/swagger.json";
+				var name = description.GroupName.ToUpperInvariant();
+				options.SwaggerEndpoint(url, name);
+			}
+		});
 }
 
 app.UseHttpsRedirection();

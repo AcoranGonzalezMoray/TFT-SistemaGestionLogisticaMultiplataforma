@@ -2,31 +2,28 @@
 using QRStockMate.AplicationCore.Entities;
 using QRStockMate.DTOs;
 
-namespace CleanArquitecture.Api.Mapping
-{
-    public class MappingProfile : Profile
-    {
-        public MappingProfile()
-        {
-            //User
-            CreateMap<User, UserModel>();
-            CreateMap<UserModel, User>();
+namespace CleanArquitecture.Api.Mapping {
+	public class MappingProfile : Profile {
+		public MappingProfile() {
+			//User
+			CreateMap<User, UserModel>();
+			CreateMap<UserModel, User>();
 
-            //Company
-            CreateMap<Company, CompanyModel>();
-            CreateMap<CompanyModel, Company>();
+			//Company
+			CreateMap<Company, CompanyModel>();
+			CreateMap<CompanyModel, Company>();
 
-            //Item
-            CreateMap<Item, ItemModel>();
-            CreateMap<ItemModel, Item>();
+			//Item
+			CreateMap<Item, ItemModel>();
+			CreateMap<ItemModel, Item>();
 
-            //TransactionHistory
-            CreateMap<TransactionHistory, TransactionHistoryModel>();
-            CreateMap<TransactionHistoryModel, TransactionHistory>();
+			//TransactionHistory
+			CreateMap<TransactionHistory, TransactionHistoryModel>();
+			CreateMap<TransactionHistoryModel, TransactionHistory>();
 
-            //Warehouse
-            CreateMap<Warehouse, WarehouseModel>();
-            CreateMap<WarehouseModel, Warehouse>();
+			//Warehouse
+			CreateMap<Warehouse, WarehouseModel>();
+			CreateMap<WarehouseModel, Warehouse>();
 
 			//Vehicle
 			CreateMap<Vehicle, VehicleModel>();
@@ -36,13 +33,13 @@ namespace CleanArquitecture.Api.Mapping
 			CreateMap<TransportRoute, TransportRouteModel>();
 			CreateMap<TransportRouteModel, TransportRoute>();
 
-            //Message
-            CreateMap<Message, MessageModel>();
+			//Message
+			CreateMap<Message, MessageModel>();
 			CreateMap<MessageModel, Message>();
 
-            //Communication
-            CreateMap<Communication, CommunicationModel>();
-            CreateMap<CommunicationModel, Communication>();
+			//Communication
+			CreateMap<Communication, CommunicationModel>();
+			CreateMap<CommunicationModel, Communication>();
 		}
-    }
+	}
 }

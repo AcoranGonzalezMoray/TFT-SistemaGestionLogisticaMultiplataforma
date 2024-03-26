@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace QRStockMate.AplicationCore.Entities
-{
-	public class Vehicle
-	{
+namespace QRStockMate.AplicationCore.Entities {
+	public class Vehicle {
 		public int Id { get; set; }
 		public string Code { get; set; }
 		public string Make { get; set; }  // Fabricante (por ejemplo, Toyota, Ford, etc.)
@@ -19,7 +12,7 @@ namespace QRStockMate.AplicationCore.Entities
 		[Column(TypeName = "decimal(8,2)")]
 		public decimal MaxLoad { get; set; }  // Carga máxima del vehículo	
 		public string Location { get; set; }  // Ubicacion cada cierto tiempo
-					  
+
 	}
 
 }

@@ -1,23 +1,23 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
+﻿using Asp.Versioning;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using QRStockMate.AplicationCore.Entities;
 using QRStockMate.AplicationCore.Interfaces.Services;
 using QRStockMate.DTOs;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace QRStockMate.Controller
-{
+namespace QRStockMate.Controller {
 	[Route("api/[controller]")]
 	[ApiController]
+	[ApiVersion("1.0")]
+	[ApiVersion("2.0")]
+	[Route("api/v{version:apiVersion}/[controller]")]
 	[SwaggerTag("Endpoints related to transport route management.")]
-	public class TransportRouteController : ControllerBase
-	{
+	public class TransportRouteController : ControllerBase {
 		private readonly IMapper _mapper;
 		private readonly ITransportRouteService _TransportRouteService;
 
-		public TransportRouteController(IMapper mapper, ITransportRouteService TransportRouteService)
-		{
+		public TransportRouteController(IMapper mapper, ITransportRouteService TransportRouteService) {
 			_mapper = mapper;
 			_TransportRouteService = TransportRouteService;
 		}
@@ -26,19 +26,16 @@ namespace QRStockMate.Controller
 		[SwaggerResponse(StatusCodes.Status200OK, "OK", typeof(IEnumerable<TransportRouteModel>))]
 		[SwaggerResponse(StatusCodes.Status404NotFound, "Not Found", typeof(void))]
 		[SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request", typeof(void))]
-		[HttpGet]
-		public async Task<ActionResult<IEnumerable<TransportRouteModel>>> Get()
-		{
-			try
-			{
+		[HttpGet, MapToApiVersion("1.0")]
+		public async Task<ActionResult<IEnumerable<TransportRouteModel>>> Get() {
+			try {
 				var TransportRoutes = await _TransportRouteService.GetAll();
 
 				if (TransportRoutes is null) return NotFound();//404
 
 				return Ok(_mapper.Map<IEnumerable<TransportRoute>, IEnumerable<TransportRouteModel>>(TransportRoutes)); //200
 			}
-			catch (Exception ex)
-			{
+			catch (Exception ex) {
 
 				return BadRequest(ex.Message);//400
 			}
@@ -47,19 +44,16 @@ namespace QRStockMate.Controller
 		[SwaggerOperation(Summary = "Create transport route", Description = "Creates a new transport route.")]
 		[SwaggerResponse(StatusCodes.Status201Created, "Created", typeof(TransportRoute))]
 		[SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request", typeof(void))]
-		[HttpPost]
-		public async Task<IActionResult> Post([FromBody] TransportRouteModel value)
-		{
-			try
-			{
+		[HttpPost, MapToApiVersion("1.0")]
+		public async Task<IActionResult> Post([FromBody] TransportRouteModel value) {
+			try {
 				var TransportRoute = _mapper.Map<TransportRouteModel, TransportRoute>(value);
 
 				await _TransportRouteService.Create(TransportRoute);
 
 				return CreatedAtAction("Get", new { id = TransportRoute.Id }, TransportRoute);
 			}
-			catch (Exception e)
-			{
+			catch (Exception e) {
 
 				return BadRequest(e.Message);//400
 			}
@@ -69,11 +63,9 @@ namespace QRStockMate.Controller
 		[SwaggerResponse(StatusCodes.Status204NoContent, "No Content", typeof(void))]
 		[SwaggerResponse(StatusCodes.Status404NotFound, "Not Found", typeof(void))]
 		[SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request", typeof(void))]
-		[HttpPut]
-		public async Task<ActionResult<TransportRouteModel>> Put([FromBody] TransportRouteModel model)
-		{
-			try
-			{
+		[HttpPut, MapToApiVersion("1.0")]
+		public async Task<ActionResult<TransportRouteModel>> Put([FromBody] TransportRouteModel model) {
+			try {
 				var TransportRoute = _mapper.Map<TransportRouteModel, TransportRoute>(model);
 
 				if (TransportRoute is null) return NotFound();//404
@@ -82,8 +74,7 @@ namespace QRStockMate.Controller
 
 				return NoContent(); //202
 			}
-			catch (Exception ex)
-			{
+			catch (Exception ex) {
 
 				return BadRequest(ex.Message);//400
 			}
@@ -93,11 +84,9 @@ namespace QRStockMate.Controller
 		[SwaggerResponse(StatusCodes.Status204NoContent, "No Content", typeof(void))]
 		[SwaggerResponse(StatusCodes.Status404NotFound, "Not Found", typeof(void))]
 		[SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request", typeof(void))]
-		[HttpDelete]
-		public async Task<IActionResult> Delete([FromBody] TransportRouteModel model)
-		{
-			try
-			{
+		[HttpDelete, MapToApiVersion("1.0")]
+		public async Task<IActionResult> Delete([FromBody] TransportRouteModel model) {
+			try {
 				var TransportRoute = _mapper.Map<TransportRouteModel, TransportRoute>(model);
 				if (TransportRoute is null) return NotFound(); //404
 
@@ -105,8 +94,7 @@ namespace QRStockMate.Controller
 
 				return NoContent(); //202
 			}
-			catch (Exception ex)
-			{
+			catch (Exception ex) {
 
 				return BadRequest(ex.Message);//400
 			}
@@ -116,19 +104,16 @@ namespace QRStockMate.Controller
 		[SwaggerResponse(StatusCodes.Status200OK, "OK", typeof(IEnumerable<TransportRouteModel>))]
 		[SwaggerResponse(StatusCodes.Status404NotFound, "Not Found", typeof(void))]
 		[SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request", typeof(void))]
-		[HttpGet("TransportRoutes/{code}")]
-		public async Task<ActionResult<IEnumerable<TransportRouteModel>>> GetTransportRoutes(string code)
-		{
-			try
-			{
+		[HttpGet("TransportRoutes/{code}"), MapToApiVersion("1.0")]
+		public async Task<ActionResult<IEnumerable<TransportRouteModel>>> GetTransportRoutes(string code) {
+			try {
 				var TransportRoutes = await _TransportRouteService.GetTransportRoutesByCode(code);
 
 				if (TransportRoutes is null) return NotFound();//404
 
 				return Ok(_mapper.Map<IEnumerable<TransportRoute>, IEnumerable<TransportRouteModel>>(TransportRoutes)); //200
 			}
-			catch (Exception ex)
-			{
+			catch (Exception ex) {
 
 				return BadRequest(ex.Message);//400
 			}
@@ -138,19 +123,16 @@ namespace QRStockMate.Controller
 		[SwaggerResponse(StatusCodes.Status200OK, "OK", typeof(TransportRouteModel))]
 		[SwaggerResponse(StatusCodes.Status404NotFound, "Not Found", typeof(void))]
 		[SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request", typeof(void))]
-		[HttpGet("TransportRouteById/{id}")]
-		public async Task<ActionResult<IEnumerable<TransportRouteModel>>> GetTransportRouteById(int id)
-		{
-			try
-			{
+		[HttpGet("TransportRouteById/{id}"), MapToApiVersion("1.0")]
+		public async Task<ActionResult<IEnumerable<TransportRouteModel>>> GetTransportRouteById(int id) {
+			try {
 				var TransportRoutes = await _TransportRouteService.GetById(id);
 
 				if (TransportRoutes is null) return NotFound();//404
 
 				return Ok(_mapper.Map<TransportRoute, TransportRouteModel>(TransportRoutes)); //200
 			}
-			catch (Exception ex)
-			{
+			catch (Exception ex) {
 
 				return BadRequest(ex.Message);//400
 			}
@@ -160,11 +142,9 @@ namespace QRStockMate.Controller
 		[SwaggerResponse(StatusCodes.Status200OK, "OK", typeof(DateTime))]
 		[SwaggerResponse(StatusCodes.Status404NotFound, "Not Found", typeof(void))]
 		[SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request", typeof(void))]
-		[HttpPut("InitRoute/{id}")]
-		public async Task<ActionResult<DateTime>> InitRoute(int id)
-		{
-			try
-			{
+		[HttpPut("InitRoute/{id}"), MapToApiVersion("1.0")]
+		public async Task<ActionResult<DateTime>> InitRoute(int id) {
+			try {
 				var transportRoute = await _TransportRouteService.GetById(id);
 				if (transportRoute is null) return NotFound();//404
 
@@ -172,8 +152,7 @@ namespace QRStockMate.Controller
 
 				return Ok(date); //200
 			}
-			catch (Exception ex)
-			{
+			catch (Exception ex) {
 
 				return BadRequest(ex.Message);//400
 			}
@@ -183,11 +162,9 @@ namespace QRStockMate.Controller
 		[SwaggerResponse(StatusCodes.Status200OK, "OK", typeof(DateTime))]
 		[SwaggerResponse(StatusCodes.Status404NotFound, "Not Found", typeof(void))]
 		[SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request", typeof(void))]
-		[HttpPut("FinishRoute/{id}")]
-		public async Task<ActionResult<DateTime>> FinishRoute(int id)
-		{
-			try
-			{
+		[HttpPut("FinishRoute/{id}"), MapToApiVersion("1.0")]
+		public async Task<ActionResult<DateTime>> FinishRoute(int id) {
+			try {
 				var transportRoute = await _TransportRouteService.GetById(id);
 				if (transportRoute is null) return NotFound();//404
 
@@ -195,8 +172,7 @@ namespace QRStockMate.Controller
 
 				return Ok(date); //200
 			}
-			catch (Exception ex)
-			{
+			catch (Exception ex) {
 
 				return BadRequest(ex.Message);//400
 			}

@@ -1,5 +1,5 @@
-﻿using Swashbuckle.AspNetCore.Annotations;
-using QRStockMate.AplicationCore.Entities;
+﻿using QRStockMate.AplicationCore.Entities;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace QRStockMate.DTOs {
 	[SwaggerSchema("User model")]

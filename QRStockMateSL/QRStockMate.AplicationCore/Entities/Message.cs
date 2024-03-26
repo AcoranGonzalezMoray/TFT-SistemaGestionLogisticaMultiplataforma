@@ -1,5 +1,4 @@
 ﻿using Swashbuckle.AspNetCore.Annotations;
-using System;
 
 namespace QRStockMate.AplicationCore.Entities {
 	[SwaggerSchema("Message entity")]

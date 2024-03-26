@@ -1,14 +1,7 @@
 ﻿using Swashbuckle.AspNetCore.Annotations;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace QRStockMate.AplicationCore.Entities
-{
-	public class TransportRoute
-	{
+namespace QRStockMate.AplicationCore.Entities {
+	public class TransportRoute {
 		public int Id { get; set; }
 		public string Code { get; set; }
 		public string StartLocation { get; set; }  // Ubicación de inicio de la ruta
@@ -24,8 +17,7 @@ namespace QRStockMate.AplicationCore.Entities
 	}
 
 	[SwaggerSchema("0: Pending, 1: OnRoute, 2: Finalized")]
-	public enum RoleStatus
-	{
+	public enum RoleStatus {
 		Pending,
 		OnRoute,
 		Finalized

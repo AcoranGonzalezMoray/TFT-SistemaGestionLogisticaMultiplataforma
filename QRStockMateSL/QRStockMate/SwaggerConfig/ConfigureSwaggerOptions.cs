@@ -1,5 +1,4 @@
 ﻿using Asp.Versioning.ApiExplorer;
-using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
@@ -18,11 +17,11 @@ namespace QRStockMate.SwaggerConfig {
 		}
 
 		private static OpenApiInfo CreateInfoForApiVersion(ApiVersionDescription description) {
-			var text = new StringBuilder("An example application with OpenAPI, Swashbuckle, and API versioning.");
+			var text = new StringBuilder("An application made with OpenAPI, Swashbuckle, and API versioning.");
 			var info = new OpenApiInfo() {
-				Title = "Example API",
+				Title = "QRStockMate API",
 				Version = description.ApiVersion.ToString(),
-				Contact = new OpenApiContact() { Name = "Bill Mei", Email = "bill.mei@somewhere.com" },
+				Contact = new OpenApiContact() { Name = "Acorán González Moray", Email = "acorangonzalezmoray@gmail.com", Url = new Uri("https://github.com/AcoranGonzalezMoray") },
 				License = new OpenApiLicense() { Name = "MIT", Url = new Uri("https://opensource.org/licenses/MIT") }
 			};
 

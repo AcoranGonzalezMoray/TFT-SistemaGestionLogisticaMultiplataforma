@@ -1,28 +1,25 @@
-﻿using AutoMapper;
-using Firebase.Auth;
-using Microsoft.AspNetCore.Http;
+﻿using Asp.Versioning;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using QRStockMate.AplicationCore.Entities;
 using QRStockMate.AplicationCore.Interfaces.Services;
 using QRStockMate.DTOs;
-using QRStockMate.Services;
 using Swashbuckle.AspNetCore.Annotations;
-using static System.Net.Mime.MediaTypeNames;
 
-namespace QRStockMate.Controller
-{
+namespace QRStockMate.Controller {
 	[Route("api/[controller]")]
 	[ApiController]
+	[ApiVersion("1.0")]
+	[ApiVersion("2.0")]
+	[Route("api/v{version:apiVersion}/[controller]")]
 	[SwaggerTag("Endpoints related to message management.")]
-	public class MessageController : ControllerBase
-	{
-		private readonly IMessageService _messageService ;
+	public class MessageController : ControllerBase {
+		private readonly IMessageService _messageService;
 		private readonly IStorageService _context_storage;
 		private readonly IUserService _userService;
 		private readonly IMapper _mapper;
 
-		public MessageController(IMessageService messageService, IStorageService context_storage, IUserService userService, IMapper mapper)
-		{
+		public MessageController(IMessageService messageService, IStorageService context_storage, IUserService userService, IMapper mapper) {
 			_messageService = messageService;
 			_context_storage = context_storage;
 			_userService = userService;
@@ -35,19 +32,16 @@ namespace QRStockMate.Controller
 		[SwaggerResponse(StatusCodes.Status200OK, "OK", typeof(IEnumerable<MessageModel>))]
 		[SwaggerResponse(StatusCodes.Status404NotFound, "Not Found", typeof(void))]
 		[SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request", typeof(void))]
-		[HttpGet]
-		public async Task<ActionResult<IEnumerable<MessageModel>>> Get()
-		{
-			try
-			{
+		[HttpGet, MapToApiVersion("1.0")]
+		public async Task<ActionResult<IEnumerable<MessageModel>>> Get() {
+			try {
 				var message = await _messageService.GetAll();
 
 				if (message is null) return NotFound();//404
 
 				return Ok(_mapper.Map<IEnumerable<Message>, IEnumerable<MessageModel>>(message)); //200
 			}
-			catch (Exception ex)
-			{
+			catch (Exception ex) {
 
 				return BadRequest(ex.Message);//400
 			}
@@ -56,12 +50,10 @@ namespace QRStockMate.Controller
 		[SwaggerOperation(Summary = "Create a new message", Description = "Creates a new message.")]
 		[SwaggerResponse(StatusCodes.Status201Created, "Created", typeof(MessageModel))]
 		[SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request", typeof(void))]
-		[HttpPost]
-		public async Task<IActionResult> Post([FromBody] MessageModel value)
-		{
+		[HttpPost, MapToApiVersion("1.0")]
+		public async Task<IActionResult> Post([FromBody] MessageModel value) {
 
-			try
-			{
+			try {
 				var message = _mapper.Map<MessageModel, Message>(value);
 
 				message.SentDate = DateTime.Now;
@@ -70,8 +62,7 @@ namespace QRStockMate.Controller
 
 				return CreatedAtAction("Get", new { id = message.Id }, message);
 			}
-			catch (Exception e)
-			{
+			catch (Exception e) {
 
 				return BadRequest(e.Message);//400
 			}
@@ -80,11 +71,9 @@ namespace QRStockMate.Controller
 		[SwaggerOperation(Summary = "Update an existing message", Description = "Updates an existing message.")]
 		[SwaggerResponse(StatusCodes.Status204NoContent, "No Content", typeof(void))]
 		[SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request", typeof(void))]
-		[HttpPut]
-		public async Task<ActionResult<MessageModel>> Put([FromBody] MessageModel model)
-		{
-			try
-			{
+		[HttpPut, MapToApiVersion("1.0")]
+		public async Task<ActionResult<MessageModel>> Put([FromBody] MessageModel model) {
+			try {
 				var message = _mapper.Map<MessageModel, Message>(model);
 
 				message.SentDate = DateTime.Now;
@@ -95,8 +84,7 @@ namespace QRStockMate.Controller
 
 				return NoContent(); //202
 			}
-			catch (Exception ex)
-			{
+			catch (Exception ex) {
 
 				return BadRequest(ex.Message);//400
 			}
@@ -106,11 +94,9 @@ namespace QRStockMate.Controller
 		[SwaggerResponse(StatusCodes.Status204NoContent, "No Content", typeof(void))]
 		[SwaggerResponse(StatusCodes.Status404NotFound, "Not Found", typeof(void))]
 		[SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request", typeof(void))]
-		[HttpDelete]
-		public async Task<IActionResult> Delete([FromBody] MessageModel model)
-		{
-			try
-			{
+		[HttpDelete, MapToApiVersion("1.0")]
+		public async Task<IActionResult> Delete([FromBody] MessageModel model) {
+			try {
 				var message = _mapper.Map<MessageModel, Message>(model);
 
 				if (message is null) return NotFound();//404
@@ -120,8 +106,7 @@ namespace QRStockMate.Controller
 
 				return NoContent(); //202
 			}
-			catch (Exception ex)
-			{
+			catch (Exception ex) {
 
 				return BadRequest(ex.Message);//400
 			}
@@ -130,31 +115,27 @@ namespace QRStockMate.Controller
 		[SwaggerOperation(Summary = "Get messages by code", Description = "Retrieves messages by code.")]
 		[SwaggerResponse(StatusCodes.Status200OK, "OK", typeof(IEnumerable<Message>))]
 		[SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request", typeof(void))]
-		[HttpGet("MessageByCode/{code}")]
+		[HttpGet("MessageByCode/{code}"), MapToApiVersion("1.0")]
 		public async Task<ActionResult<IEnumerable<Message>>> GetMessagesByCode(string code) {
-			try
-			{
+			try {
 				var messages = await _messageService.GetMessageByCode(code);
 
 
 				return Ok(_mapper.Map<IEnumerable<Message>, IEnumerable<MessageModel>>(messages)); //200
 			}
-			catch (Exception ex)
-			{
-				return  BadRequest(ex.Message); //400
+			catch (Exception ex) {
+				return BadRequest(ex.Message); //400
 			}
-		
-		
+
+
 		}
 
 		[SwaggerOperation(Summary = "Upload a file", Description = "Uploads a file.")]
 		[SwaggerResponse(StatusCodes.Status200OK, "OK", typeof(void))]
 		[SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request", typeof(void))]
-		[HttpPost("UploadFile/")]
-		public async Task<IActionResult> UploadFile([FromForm] IFormFile file, [FromForm] MessageModel model)
-		{
-			try
-			{
+		[HttpPost("UploadFile/"), MapToApiVersion("1.0")]
+		public async Task<IActionResult> UploadFile([FromForm] IFormFile file, [FromForm] MessageModel model) {
+			try {
 				//var message = _mapper.Map<MessageModel, Message>(model);
 
 				Stream file_stream = file.OpenReadStream();
@@ -166,8 +147,7 @@ namespace QRStockMate.Controller
 				await _messageService.Create(message);
 				return Ok();
 			}
-			catch (Exception e)
-			{
+			catch (Exception e) {
 
 				return BadRequest(e.Message);//400
 			}
@@ -177,11 +157,9 @@ namespace QRStockMate.Controller
 		[SwaggerResponse(StatusCodes.Status204NoContent, "No Content", typeof(void))]
 		[SwaggerResponse(StatusCodes.Status404NotFound, "Not Found", typeof(void))]
 		[SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request", typeof(void))]
-		[HttpDelete("DeleteConversation")]
-		public async Task<IActionResult> DeleteConversation([FromBody] string user)
-		{
-			try
-			{
+		[HttpDelete("DeleteConversation"), MapToApiVersion("1.0")]
+		public async Task<IActionResult> DeleteConversation([FromBody] string user) {
+			try {
 				var userA = await _userService.GetById(int.Parse(user.Split(";")[0]));
 				var userB = await _userService.GetById(int.Parse(user.Split(";")[1]));
 
@@ -196,10 +174,8 @@ namespace QRStockMate.Controller
 						(item.ReceiverContactId == userA.Id && item.SenderContactId == userB.Id))
 					.ToList();
 
-				foreach (var item in messagesToDelete)
-				{
-					if (Uri.IsWellFormedUriString(item.Content, UriKind.Absolute))
-					{
+				foreach (var item in messagesToDelete) {
+					if (Uri.IsWellFormedUriString(item.Content, UriKind.Absolute)) {
 						// Es una URL válida, puedes proceder con la eliminación
 						await _context_storage.DeleteFile(item.Content, item.Type);
 					}
@@ -208,8 +184,7 @@ namespace QRStockMate.Controller
 				await _messageService.DeleteRange(messagesToDelete);
 				return NoContent();
 			}
-			catch (Exception ex)
-			{
+			catch (Exception ex) {
 
 				return BadRequest(ex.Message);
 			}
@@ -219,7 +194,7 @@ namespace QRStockMate.Controller
 		[SwaggerResponse(StatusCodes.Status204NoContent, "No Content", typeof(void))]
 		[SwaggerResponse(StatusCodes.Status404NotFound, "Not Found", typeof(void))]
 		[SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request", typeof(void))]
-		[HttpDelete("DeleteConversationByAngular/{param1}/{param2}")]
+		[HttpDelete("DeleteConversationByAngular/{param1}/{param2}"), MapToApiVersion("1.0")]
 		public async Task<IActionResult> DeleteConversationByAngular(string param1, string param2) {
 			try {
 				var userA = await _userService.GetById(int.Parse(param1));
@@ -255,16 +230,14 @@ namespace QRStockMate.Controller
 		[SwaggerOperation(Summary = "Get new messages", Description = "Retrieves new messages for the specified user.")]
 		[SwaggerResponse(StatusCodes.Status200OK, "OK", typeof(List<Message>))]
 		[SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request", typeof(void))]
-		[HttpGet("NewMessage/{format}")]
-		public async Task<ActionResult<List<Message>>> GetNewMessage(string format)
-		{
-			try
-			{
+		[HttpGet("NewMessage/{format}"), MapToApiVersion("1.0")]
+		public async Task<ActionResult<List<Message>>> GetNewMessage(string format) {
+			try {
 				var messages = await _messageService.GetMessageByCode(format.Split(";")[0]);
 				Console.WriteLine(format.Split(";")[0]);
 
 				if (messages is null) return NotFound();//404
-				var messagesToMe= messages
+				var messagesToMe = messages
 					.Where(item =>
 						(item.SenderContactId == int.Parse(format.Split(";")[1])) ||
 						(item.ReceiverContactId == int.Parse(format.Split(";")[1])))
@@ -274,8 +247,7 @@ namespace QRStockMate.Controller
 
 				return Ok(messagesToMe); //200
 			}
-			catch (Exception ex)
-			{
+			catch (Exception ex) {
 
 				return BadRequest(ex.Message);//400
 			}

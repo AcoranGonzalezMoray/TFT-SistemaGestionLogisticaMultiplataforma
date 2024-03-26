@@ -1,5 +1,4 @@
 using AutoMapper;
-using Azure;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -8,14 +7,9 @@ using QRStockMate.AplicationCore.Interfaces.Repositories;
 using QRStockMate.AplicationCore.Interfaces.Services;
 using QRStockMate.Controller;
 using QRStockMate.DTOs;
-using QRStockMate.Services;
-using System.Dynamic;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
-namespace QRStockMate.Test
-{
-	public class UserControllerShould
-	{
+namespace QRStockMate.Test {
+	public class UserControllerShould {
 		private UserController _controller;
 		private Mock<IUserService> _userServiceMock;
 		private Mock<IStorageService> _storageServiceMock;
@@ -24,8 +18,7 @@ namespace QRStockMate.Test
 		private Mock<IJwtTokenRepository> _jwtTokenUtilityMock;
 
 		[SetUp]
-		public void Setup()
-		{
+		public void Setup() {
 			_userServiceMock = new Mock<IUserService>();
 			_storageServiceMock = new Mock<IStorageService>();
 			_mapperMock = new Mock<IMapper>();
@@ -42,8 +35,7 @@ namespace QRStockMate.Test
 
 
 		[Test]
-		public async Task IniciarSesion_Returns_NotFound_If_User_Not_Found()
-		{
+		public async Task IniciarSesion_Returns_NotFound_If_User_Not_Found() {
 			// Arrange
 			var email = "nonexistent@example.com";
 			var password = "password";
@@ -57,8 +49,7 @@ namespace QRStockMate.Test
 		}
 
 		[Test]
-		public async Task IniciarSesion_Returns_OkResult_With_User_And_Token_If_User_Found()
-		{
+		public async Task IniciarSesion_Returns_OkResult_With_User_And_Token_If_User_Found() {
 			// Arrange
 			var email = "existing@example.com";
 			var password = "password";
@@ -79,11 +70,9 @@ namespace QRStockMate.Test
 
 
 		[Test]
-		public async Task Registro_Returns_Conflict_If_User_Already_Exists()
-		{
+		public async Task Registro_Returns_Conflict_If_User_Already_Exists() {
 			// Arrange
-			var model = new RegistrationModel
-			{
+			var model = new RegistrationModel {
 				User = new UserModel { Email = "existing@example.com", Password = "password" },
 				Company = new CompanyModel { /* Crear una instancia de CompanyModel */ }
 			};
@@ -97,11 +86,9 @@ namespace QRStockMate.Test
 		}
 
 		[Test]
-		public async Task Registro_Returns_BadRequest_If_No_Director_With_Associated_Code()
-		{
+		public async Task Registro_Returns_BadRequest_If_No_Director_With_Associated_Code() {
 			// Arrange
-			var model = new RegistrationModel
-			{
+			var model = new RegistrationModel {
 				User = new UserModel { Code = "nonexistentCode", Email = "user@example.com", Password = "password" },
 				Company = new CompanyModel { /* Crear una instancia de CompanyModel */ }
 			};
@@ -117,22 +104,18 @@ namespace QRStockMate.Test
 		}
 
 		[Test]
-		public async Task Registro_Creates_User_And_Company_With_Generated_Code_Rol_Director()
-		{
+		public async Task Registro_Creates_User_And_Company_With_Generated_Code_Rol_Director() {
 			// Arrange
-			var model = new RegistrationModel
-			{
+			var model = new RegistrationModel {
 				User = new UserModel { Email = "newuser@example.com", Password = "password", Code = "" },
 				Company = new CompanyModel { /* Crear una instancia de CompanyModel */ }
 			};
 
-			var user = new User
-            {
+			var user = new User {
 				// Configura los campos del usuario según sea necesario para la prueba
 			};
 
-			var company = new Company
-			{
+			var company = new Company {
 				// Configura los campos de la empresa según sea necesario para la prueba
 			};
 
@@ -152,13 +135,12 @@ namespace QRStockMate.Test
 		}
 
 		[Test]
-		public async Task GetCompanyByUser_Returns_OkObjectResult_With_CompanyModel()
-		{
+		public async Task GetCompanyByUser_Returns_OkObjectResult_With_CompanyModel() {
 			// Arrange
 			var userModel = new UserModel { Code = "userCode" }; // Usar UserModel en lugar de User
 			var company = new Company { Code = "userCode" };
 			_userServiceMock.Setup(x => x.getCompany(userModel.Code)).ReturnsAsync(company);
-			
+
 			// Act
 			var response = await _controller.GetCompanyByUser(userModel); // Pasar userModel en lugar de user
 
@@ -169,8 +151,7 @@ namespace QRStockMate.Test
 
 
 		[Test]
-		public async Task GetCompanyByUser_Returns_BadRequest_If_Exception_Occurs()
-		{
+		public async Task GetCompanyByUser_Returns_BadRequest_If_Exception_Occurs() {
 			// Arrange
 			var user = new User { Code = "userCode" };
 			var errorMessage = "Error message";

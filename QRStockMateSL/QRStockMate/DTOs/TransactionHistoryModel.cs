@@ -1,6 +1,5 @@
-﻿using System;
+﻿using QRStockMate.AplicationCore.Entities;
 using Swashbuckle.AspNetCore.Annotations;
-using QRStockMate.AplicationCore.Entities;
 
 namespace QRStockMate.DTOs {
 	[SwaggerSchema("Transaction history model")]

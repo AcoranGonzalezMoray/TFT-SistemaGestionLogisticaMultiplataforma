@@ -2,28 +2,24 @@
 
 #nullable disable
 
-namespace QRStockMate.Infrastructure.Migrations
-{
-    /// <inheritdoc />
-    public partial class init_v9 : Migration
-    {
-        /// <inheritdoc />
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.AddColumn<int>(
-                name: "Status",
-                table: "TransportRoutes",
-                type: "int",
-                nullable: false,
-                defaultValue: 0);
-        }
+namespace QRStockMate.Infrastructure.Migrations {
+	/// <inheritdoc />
+	public partial class init_v9 : Migration {
+		/// <inheritdoc />
+		protected override void Up(MigrationBuilder migrationBuilder) {
+			migrationBuilder.AddColumn<int>(
+				name: "Status",
+				table: "TransportRoutes",
+				type: "int",
+				nullable: false,
+				defaultValue: 0);
+		}
 
-        /// <inheritdoc />
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.DropColumn(
-                name: "Status",
-                table: "TransportRoutes");
-        }
-    }
+		/// <inheritdoc />
+		protected override void Down(MigrationBuilder migrationBuilder) {
+			migrationBuilder.DropColumn(
+				name: "Status",
+				table: "TransportRoutes");
+		}
+	}
 }
