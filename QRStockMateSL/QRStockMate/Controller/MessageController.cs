@@ -194,7 +194,7 @@ namespace QRStockMate.Controller {
 		[SwaggerResponse(StatusCodes.Status204NoContent, "No Content", typeof(void))]
 		[SwaggerResponse(StatusCodes.Status404NotFound, "Not Found", typeof(void))]
 		[SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request", typeof(void))]
-		[HttpDelete("DeleteConversationByAngular/{param1}/{param2}"), MapToApiVersion("1.0")]
+		[HttpDelete("DeleteConversation/{param1}/{param2}"), MapToApiVersion("2.0")]
 		public async Task<IActionResult> DeleteConversationByAngular(string param1, string param2) {
 			try {
 				var userA = await _userService.GetById(int.Parse(param1));
