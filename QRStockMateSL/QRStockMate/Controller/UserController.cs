@@ -9,10 +9,8 @@ using QRStockMate.DTOs;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace QRStockMate.Controller {
-	[Route("api/[controller]")]
 	[ApiController]
-	[ApiVersion("1.0")]
-	[ApiVersion("2.0")]
+	[ApiVersion(1.0)]
 	[Route("api/v{version:apiVersion}/[controller]")]
 	[SwaggerTag("Endpoints related to user management.")]
 
@@ -34,7 +32,7 @@ namespace QRStockMate.Controller {
 		[SwaggerResponse(StatusCodes.Status200OK, "OK", typeof(IEnumerable<UserModel>))]
 		[SwaggerResponse(StatusCodes.Status404NotFound, "Not Found", typeof(void))]
 		[SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request", typeof(void))]
-		[HttpGet, MapToApiVersion("1.0")]
+		[HttpGet, MapToApiVersion(1.0)]
 		public async Task<ActionResult<IEnumerable<UserModel>>> Get() {
 			try {
 				var users = await _userService.GetAll();
@@ -52,7 +50,7 @@ namespace QRStockMate.Controller {
 		[SwaggerOperation(Summary = "Create user", Description = "Creates a new user.")]
 		[SwaggerResponse(StatusCodes.Status201Created, "Created", typeof(UserModel))]
 		[SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request", typeof(void))]
-		[HttpPost, MapToApiVersion("1.0")]
+		[HttpPost, MapToApiVersion(1.0)]
 		public async Task<IActionResult> Post([FromBody] UserModel value) {
 
 			try {
@@ -72,7 +70,7 @@ namespace QRStockMate.Controller {
 		[SwaggerResponse(StatusCodes.Status204NoContent, "No Content", typeof(void))]
 		[SwaggerResponse(StatusCodes.Status404NotFound, "Not Found", typeof(void))]
 		[SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request", typeof(void))]
-		[HttpPut, MapToApiVersion("1.0")]
+		[HttpPut, MapToApiVersion(1.0)]
 		public async Task<ActionResult<UserModel>> Put([FromBody] UserModel model) {
 			try {
 				var user = _mapper.Map<UserModel, User>(model);
@@ -93,7 +91,7 @@ namespace QRStockMate.Controller {
 		[SwaggerResponse(StatusCodes.Status204NoContent, "No Content", typeof(void))]
 		[SwaggerResponse(StatusCodes.Status404NotFound, "Not Found", typeof(void))]
 		[SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request", typeof(void))]
-		[HttpDelete, MapToApiVersion("1.0")]
+		[HttpDelete, MapToApiVersion(1.0)]
 		public async Task<IActionResult> Delete([FromBody] UserModel model) {
 			try {
 				var user = _mapper.Map<UserModel, User>(model);
@@ -119,7 +117,7 @@ namespace QRStockMate.Controller {
 		[SwaggerResponse(StatusCodes.Status404NotFound, "Not Found", typeof(void))]
 		[SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request", typeof(void))]
 		[AllowAnonymous]
-		[HttpPost("SignIn"), MapToApiVersion("1.0")]
+		[HttpPost("SignIn"), MapToApiVersion(1.0)]
 		public async Task<IActionResult> IniciarSesion([FromForm] string email, [FromForm] string password) {
 			try {
 				var user = await _userService.getUserByEmailPassword(email, Utility.Utility.EncriptarClave(password));
@@ -144,7 +142,7 @@ namespace QRStockMate.Controller {
 		[SwaggerResponse(StatusCodes.Status201Created, "Created", typeof(object))]
 		[SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request", typeof(void))]
 		[AllowAnonymous]
-		[HttpPost("SignUp"), MapToApiVersion("1.0")]
+		[HttpPost("SignUp"), MapToApiVersion(1.0)]
 		public async Task<IActionResult> Registro([FromBody] RegistrationModel model) {
 			try {
 				var user = model.User;
@@ -186,7 +184,7 @@ namespace QRStockMate.Controller {
 		[SwaggerOperation(Summary = "Get company by user", Description = "Retrieves company by user.")]
 		[SwaggerResponse(StatusCodes.Status200OK, "OK", typeof(Company))]
 		[SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request", typeof(void))]
-		[HttpPost("Company"), MapToApiVersion("1.0")]
+		[HttpPost("Company"), MapToApiVersion(1.0)]
 		public async Task<ActionResult<Company>> GetCompanyByUser([FromBody] UserModel user) {
 			try {
 				var company = await _userService.getCompany(user.Code);
@@ -201,7 +199,7 @@ namespace QRStockMate.Controller {
 		[SwaggerOperation(Summary = "Delete account", Description = "Deletes a user's account.")]
 		[SwaggerResponse(StatusCodes.Status204NoContent, "No Content", typeof(void))]
 		[SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request", typeof(void))]
-		[HttpDelete("DeleteAccount"), MapToApiVersion("1.0")]
+		[HttpDelete("DeleteAccount"), MapToApiVersion(1.0)]
 		public async Task<IActionResult> DeleteAccount([FromBody] UserModel user) {
 			try {
 
@@ -225,7 +223,7 @@ namespace QRStockMate.Controller {
 		[SwaggerResponse(StatusCodes.Status200OK, "OK", typeof(void))]
 		[SwaggerResponse(StatusCodes.Status404NotFound, "Not Found", typeof(void))]
 		[SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request", typeof(void))]
-		[HttpPost("UpdateImage"), MapToApiVersion("1.0")]
+		[HttpPost("UpdateImage"), MapToApiVersion(1.0)]
 		public async Task<IActionResult> UpdateImage([FromForm] int userId, [FromForm] IFormFile image) {
 			try {
 

@@ -1,4 +1,24 @@
 ﻿{
+  "HealthChecks-UI": {
+    "DisableMigrations": true,
+    "HealthChecks": [
+      {
+        "Name": "PollManager",
+        "Uri": "/healthcheck"
+      }
+    ],
+    "Webhooks": [
+      {
+        "Name": "",
+        "Uri": "",
+        "Payload": "",
+        "RestoredPayload": ""
+      }
+    ],
+    "EvaluationTimeOnSeconds": 10,
+    "MinimumSecondsBetweenFailureNotifications": 60,
+    "MaximumExecutionHistoriesPerEndpoint": 15
+  },
   "$schema": "https://json.schemastore.org/launchsettings.json",
   "iisSettings": {
     "windowsAuthentication": false,

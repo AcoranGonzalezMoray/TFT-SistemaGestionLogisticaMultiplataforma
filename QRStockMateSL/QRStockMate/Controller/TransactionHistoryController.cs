@@ -7,10 +7,8 @@ using QRStockMate.DTOs;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace QRStockMate.Controller {
-	[Route("api/[controller]")]
 	[ApiController]
-	[ApiVersion("1.0")]
-	[ApiVersion("2.0")]
+	[ApiVersion(1.0)]
 	[Route("api/v{version:apiVersion}/[controller]")]
 	[SwaggerTag("Endpoints related to transactions management.")]
 	public class TransactionHistoryController : ControllerBase {
@@ -27,7 +25,7 @@ namespace QRStockMate.Controller {
 		[SwaggerResponse(StatusCodes.Status200OK, "OK", typeof(IEnumerable<TransactionHistoryModel>))]
 		[SwaggerResponse(StatusCodes.Status404NotFound, "Not Found", typeof(void))]
 		[SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request", typeof(void))]
-		[HttpGet, MapToApiVersion("1.0")]
+		[HttpGet, MapToApiVersion(1.0)]
 		public async Task<ActionResult<IEnumerable<TransactionHistoryModel>>> Get() {
 			try {
 				var th = await _transactionHistoryService.GetAll();
@@ -45,7 +43,7 @@ namespace QRStockMate.Controller {
 		[SwaggerOperation(Summary = "Create transaction history", Description = "Creates a new transaction history.")]
 		[SwaggerResponse(StatusCodes.Status201Created, "Created", typeof(TransactionHistory))]
 		[SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request", typeof(void))]
-		[HttpPost, MapToApiVersion("1.0")]
+		[HttpPost, MapToApiVersion(1.0)]
 		public async Task<IActionResult> Post([FromBody] TransactionHistoryModel value) {
 
 			try {
@@ -67,7 +65,7 @@ namespace QRStockMate.Controller {
 		[SwaggerResponse(StatusCodes.Status204NoContent, "No Content", typeof(void))]
 		[SwaggerResponse(StatusCodes.Status404NotFound, "Not Found", typeof(void))]
 		[SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request", typeof(void))]
-		[HttpPut, MapToApiVersion("1.0")]
+		[HttpPut, MapToApiVersion(1.0)]
 		public async Task<ActionResult<TransactionHistoryModel>> Put([FromBody] TransactionHistoryModel model) {
 			try {
 				var th = _mapper.Map<TransactionHistoryModel, TransactionHistory>(model);
@@ -90,7 +88,7 @@ namespace QRStockMate.Controller {
 		[SwaggerResponse(StatusCodes.Status204NoContent, "No Content", typeof(void))]
 		[SwaggerResponse(StatusCodes.Status404NotFound, "Not Found", typeof(void))]
 		[SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request", typeof(void))]
-		[HttpDelete, MapToApiVersion("1.0")]
+		[HttpDelete, MapToApiVersion(1.0)]
 		public async Task<IActionResult> Delete([FromBody] TransactionHistoryModel model) {
 			try {
 				var th = _mapper.Map<TransactionHistoryModel, TransactionHistory>(model);
@@ -112,7 +110,7 @@ namespace QRStockMate.Controller {
 		[SwaggerResponse(StatusCodes.Status200OK, "OK", typeof(IEnumerable<TransactionHistoryModel>))]
 		[SwaggerResponse(StatusCodes.Status404NotFound, "Not Found", typeof(void))]
 		[SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request", typeof(void))]
-		[HttpGet("History/{code}"), MapToApiVersion("1.0")]
+		[HttpGet("History/{code}"), MapToApiVersion(1.0)]
 		public async Task<ActionResult<IEnumerable<TransactionHistoryModel>>> GetHistory(string code) {
 			try {
 				var th = await _transactionHistoryService.GetTransactionHistoryByCode(code);

@@ -7,10 +7,8 @@ using QRStockMate.DTOs;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace QRStockMate.Controller {
-	[Route("api/[controller]")]
 	[ApiController]
-	[ApiVersion("1.0")]
-	[ApiVersion("2.0")]
+	[ApiVersion(1.0)]
 	[Route("api/v{version:apiVersion}/[controller]")]
 	[SwaggerTag("Endpoints related to warehouse management.")]
 	public class WarehouseController : ControllerBase {
@@ -32,7 +30,7 @@ namespace QRStockMate.Controller {
 		[SwaggerResponse(200, "OK", typeof(IEnumerable<WarehouseModel>))]
 		[SwaggerResponse(404, "Not Found", typeof(void))]
 		[SwaggerResponse(400, "Bad Request", typeof(void))]
-		[HttpGet, MapToApiVersion("1.0")]
+		[HttpGet, MapToApiVersion(1.0)]
 		public async Task<ActionResult<IEnumerable<WarehouseModel>>> Get() {
 			try {
 				var warehouses = await _warehouseService.GetAll();
@@ -50,7 +48,7 @@ namespace QRStockMate.Controller {
 		[SwaggerOperation(Summary = "Create warehouse", Description = "Creates a new warehouse.")]
 		[SwaggerResponse(201, "Created", typeof(WarehouseModel))]
 		[SwaggerResponse(400, "Bad Request", typeof(void))]
-		[HttpPost("{Id}"), MapToApiVersion("1.0")]
+		[HttpPost("{Id}"), MapToApiVersion(1.0)]
 		public async Task<IActionResult> Post(int Id, [FromBody] WarehouseModel value) {
 
 			try {
@@ -77,7 +75,7 @@ namespace QRStockMate.Controller {
 		[SwaggerResponse(204, "No Content", typeof(void))]
 		[SwaggerResponse(404, "Not Found", typeof(void))]
 		[SwaggerResponse(400, "Bad Request", typeof(void))]
-		[HttpPut, MapToApiVersion("1.0")]
+		[HttpPut, MapToApiVersion(1.0)]
 		public async Task<ActionResult<UserModel>> Put([FromBody] WarehouseModel model) {
 			try {
 				var warehouse = _mapper.Map<WarehouseModel, Warehouse>(model);
@@ -98,7 +96,7 @@ namespace QRStockMate.Controller {
 		[SwaggerResponse(204, "No Content", typeof(void))]
 		[SwaggerResponse(404, "Not Found", typeof(void))]
 		[SwaggerResponse(400, "Bad Request", typeof(void))]
-		[HttpDelete("{idCompany}"), MapToApiVersion("1.0")]
+		[HttpDelete("{idCompany}"), MapToApiVersion(1.0)]
 		public async Task<IActionResult> Delete(int idCompany, [FromBody] WarehouseModel model) {
 			try {
 				var warehouse = _mapper.Map<WarehouseModel, Warehouse>(model);
@@ -142,7 +140,7 @@ namespace QRStockMate.Controller {
 		[SwaggerResponse(200, "OK", typeof(void))]
 		[SwaggerResponse(404, "Not Found", typeof(void))]
 		[SwaggerResponse(400, "Bad Request", typeof(void))]
-		[HttpPost("UpdateImage"), MapToApiVersion("1.0")]
+		[HttpPost("UpdateImage"), MapToApiVersion(1.0)]
 		public async Task<IActionResult> UpdateImage([FromForm] int warehouseId, [FromForm] IFormFile image) {
 			try {
 
@@ -171,7 +169,7 @@ namespace QRStockMate.Controller {
 		[SwaggerOperation(Summary = "Add item to warehouse", Description = "Adds an item to the warehouse.")]
 		[SwaggerResponse(201, "Created", typeof(Item))]
 		[SwaggerResponse(400, "Bad Request", typeof(void))]
-		[HttpPost("AddItem/{Id}"), MapToApiVersion("1.0")]
+		[HttpPost("AddItem/{Id}"), MapToApiVersion(1.0)]
 		public async Task<IActionResult> AddItem(int Id, [FromBody] ItemModel itemModel) {
 			try {
 				var warehouse = await _warehouseService.GetById(Id);
@@ -192,7 +190,7 @@ namespace QRStockMate.Controller {
 		[SwaggerOperation(Summary = "Add item range to warehouses", Description = "Adds multiple items to the warehouses.")]
 		[SwaggerResponse(200, "OK", typeof(void))]
 		[SwaggerResponse(400, "Bad Request", typeof(void))]
-		[HttpPost("AddItemRange/"), MapToApiVersion("1.0")]
+		[HttpPost("AddItemRange/"), MapToApiVersion(1.0)]
 		public async Task<IActionResult> AddItemRange([FromBody] ItemModel[] itemModel) {
 			try {
 				foreach (var _item in itemModel) {
@@ -218,7 +216,7 @@ namespace QRStockMate.Controller {
 		[SwaggerResponse(200, "OK", typeof(IEnumerable<ItemModel>))]
 		[SwaggerResponse(404, "Not Found", typeof(void))]
 		[SwaggerResponse(400, "Bad Request", typeof(void))]
-		[HttpGet("GetItems/{Id}"), MapToApiVersion("1.0")]
+		[HttpGet("GetItems/{Id}"), MapToApiVersion(1.0)]
 		public async Task<ActionResult<IEnumerable<ItemModel>>> GetItems(int Id) {
 			try {
 

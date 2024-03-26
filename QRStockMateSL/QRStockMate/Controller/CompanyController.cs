@@ -7,10 +7,8 @@ using QRStockMate.DTOs;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace QRStockMate.Controller {
-	[Route("api/[controller]")]
 	[ApiController]
-	[ApiVersion("1.0")]
-	[ApiVersion("2.0")]
+	[ApiVersion(1.0)]
 	[Route("api/v{version:apiVersion}/[controller]")]
 	[SwaggerTag("Endpoints related to company management.")]
 	public class CompanyController : ControllerBase {
@@ -28,7 +26,7 @@ namespace QRStockMate.Controller {
 		[SwaggerResponse(200, "OK", typeof(IEnumerable<CompanyModel>))]
 		[SwaggerResponse(404, "Not Found", typeof(string))]
 		[SwaggerResponse(400, "Bad Request", typeof(string))]
-		[HttpGet, MapToApiVersion("1.0")]
+		[HttpGet, MapToApiVersion(1.0)]
 		public async Task<ActionResult<IEnumerable<CompanyModel>>> Get() {
 			try {
 				var companies = await _companyService.GetAll();
@@ -46,7 +44,7 @@ namespace QRStockMate.Controller {
 		[SwaggerOperation(Summary = "Create a new company", Description = "Create a new company.")]
 		[SwaggerResponse(201, "Created", typeof(CompanyModel))]
 		[SwaggerResponse(400, "Bad Request", typeof(string))]
-		[HttpPost, MapToApiVersion("1.0")]
+		[HttpPost, MapToApiVersion(1.0)]
 		public async Task<IActionResult> Post([FromBody] CompanyModel value) {
 
 			try {
@@ -66,7 +64,7 @@ namespace QRStockMate.Controller {
 		[SwaggerResponse(204, "No Content")]
 		[SwaggerResponse(404, "Not Found", typeof(string))]
 		[SwaggerResponse(400, "Bad Request", typeof(string))]
-		[HttpPut, MapToApiVersion("1.0")]
+		[HttpPut, MapToApiVersion(1.0)]
 		public async Task<ActionResult<CompanyModel>> Put([FromBody] CompanyModel model) {
 			try {
 				var company = _mapper.Map<CompanyModel, Company>(model);
@@ -87,7 +85,7 @@ namespace QRStockMate.Controller {
 		[SwaggerResponse(204, "No Content")]
 		[SwaggerResponse(404, "Not Found", typeof(string))]
 		[SwaggerResponse(400, "Bad Request", typeof(string))]
-		[HttpDelete, MapToApiVersion("1.0")]
+		[HttpDelete, MapToApiVersion(1.0)]
 		public async Task<IActionResult> Delete([FromBody] CompanyModel model) {
 			try {
 				var company = _mapper.Map<CompanyModel, Company>(model);
@@ -107,7 +105,7 @@ namespace QRStockMate.Controller {
 		[SwaggerResponse(200, "OK", typeof(IEnumerable<UserModel>))]
 		[SwaggerResponse(404, "Not Found", typeof(string))]
 		[SwaggerResponse(400, "Bad Request", typeof(string))]
-		[HttpPost("Employees"), MapToApiVersion("1.0")]
+		[HttpPost("Employees"), MapToApiVersion(1.0)]
 		public async Task<ActionResult<IEnumerable<UserModel>>> GetEmployees([FromBody] Company company) {
 			try {
 
@@ -127,7 +125,7 @@ namespace QRStockMate.Controller {
 		[SwaggerResponse(200, "OK", typeof(IEnumerable<VehicleModel>))]
 		[SwaggerResponse(404, "Not Found", typeof(string))]
 		[SwaggerResponse(400, "Bad Request", typeof(string))]
-		[HttpGet("Vehicles/{code}"), MapToApiVersion("1.0")]
+		[HttpGet("Vehicles/{code}"), MapToApiVersion(1.0)]
 		public async Task<ActionResult<IEnumerable<VehicleModel>>> GetVehicles(string code) {
 			try {
 
@@ -147,7 +145,7 @@ namespace QRStockMate.Controller {
 		[SwaggerResponse(200, "OK", typeof(IEnumerable<WarehouseModel>))]
 		[SwaggerResponse(404, "Not Found", typeof(string))]
 		[SwaggerResponse(400, "Bad Request", typeof(string))]
-		[HttpPost("Warehouse"), MapToApiVersion("1.0")]
+		[HttpPost("Warehouse"), MapToApiVersion(1.0)]
 		public async Task<ActionResult<IEnumerable<WarehouseModel>>> GetWarehouses([FromBody] Company company) {
 			try {
 				if (String.IsNullOrEmpty(company.WarehouseId)) return BadRequest("This company don't have Warehouse yet.");

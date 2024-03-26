@@ -7,10 +7,8 @@ using QRStockMate.DTOs;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace QRStockMate.Controller {
-	[Route("api/[controller]")]
 	[ApiController]
-	[ApiVersion("1.0")]
-	[ApiVersion("2.0")]
+	[ApiVersion(1.0)]
 	[Route("api/v{version:apiVersion}/[controller]")]
 	[SwaggerTag("Endpoints related to item management.")]
 	public class ItemController : ControllerBase {
@@ -30,7 +28,7 @@ namespace QRStockMate.Controller {
 		[SwaggerResponse(200, "OK", typeof(IEnumerable<ItemModel>))]
 		[SwaggerResponse(404, "Not Found", typeof(string))]
 		[SwaggerResponse(400, "Bad Request", typeof(string))]
-		[HttpGet, MapToApiVersion("1.0")]
+		[HttpGet, MapToApiVersion(1.0)]
 		public async Task<ActionResult<IEnumerable<ItemModel>>> Get() {
 			try {
 				var items = await _itemService.GetAll();
@@ -48,7 +46,7 @@ namespace QRStockMate.Controller {
 		[SwaggerOperation(Summary = "Create a new item", Description = "Create a new item.")]
 		[SwaggerResponse(201, "Created", typeof(ItemModel))]
 		[SwaggerResponse(400, "Bad Request", typeof(string))]
-		[HttpPost, MapToApiVersion("1.0")]
+		[HttpPost, MapToApiVersion(1.0)]
 		public async Task<IActionResult> Post([FromBody] ItemModel value) {
 			try {
 				var item = _mapper.Map<ItemModel, Item>(value);
@@ -67,7 +65,7 @@ namespace QRStockMate.Controller {
 		[SwaggerResponse(204, "No Content")]
 		[SwaggerResponse(404, "Not Found", typeof(string))]
 		[SwaggerResponse(400, "Bad Request", typeof(string))]
-		[HttpPut, MapToApiVersion("1.0")]
+		[HttpPut, MapToApiVersion(1.0)]
 		public async Task<ActionResult<ItemModel>> Put([FromBody] ItemModel model) {
 			try {
 				var item = _mapper.Map<ItemModel, Item>(model);
@@ -88,7 +86,7 @@ namespace QRStockMate.Controller {
 		[SwaggerResponse(204, "No Content")]
 		[SwaggerResponse(404, "Not Found", typeof(string))]
 		[SwaggerResponse(400, "Bad Request", typeof(string))]
-		[HttpDelete, MapToApiVersion("1.0")]
+		[HttpDelete, MapToApiVersion(1.0)]
 		public async Task<IActionResult> Delete([FromBody] ItemModel model) {
 			try {
 				var item = _mapper.Map<ItemModel, Item>(model);
@@ -122,7 +120,7 @@ namespace QRStockMate.Controller {
 		[SwaggerResponse(200, "OK", typeof(IEnumerable<ItemModel>))]
 		[SwaggerResponse(404, "Not Found", typeof(string))]
 		[SwaggerResponse(400, "Bad Request", typeof(string))]
-		[HttpGet("Search/{name}"), MapToApiVersion("1.0")]
+		[HttpGet("Search/{name}"), MapToApiVersion(1.0)]
 		public async Task<ActionResult<IEnumerable<ItemModel>>> GetItemsByName(string name) {
 			try {
 				var items = await _itemService.getItems(name);
@@ -141,7 +139,7 @@ namespace QRStockMate.Controller {
 		[SwaggerResponse(200, "OK")]
 		[SwaggerResponse(404, "Not Found", typeof(string))]
 		[SwaggerResponse(400, "Bad Request", typeof(string))]
-		[HttpPost("UpdateImage"), MapToApiVersion("1.0")]
+		[HttpPost("UpdateImage"), MapToApiVersion(1.0)]
 		public async Task<IActionResult> UpdateImage([FromForm] int itemId, [FromForm] IFormFile image) {
 			try {
 

@@ -18,6 +18,8 @@ namespace QRStockMate.SwaggerConfig {
 
 		private static OpenApiInfo CreateInfoForApiVersion(ApiVersionDescription description) {
 			var text = new StringBuilder("An application made with OpenAPI, Swashbuckle, and API versioning.");
+			text.AppendLine();
+			text.Append("\n<a href=\"https://localhost:7220/healthchecks-ui\">HealthChecks</a>"); // Appending a simple HTML link
 			var info = new OpenApiInfo() {
 				Title = "QRStockMate API",
 				Version = description.ApiVersion.ToString(),

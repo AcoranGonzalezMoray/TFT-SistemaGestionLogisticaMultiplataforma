@@ -7,10 +7,8 @@ using QRStockMate.DTOs;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace QRStockMate.Controller {
-	[Route("api/[controller]")]
 	[ApiController]
-	[ApiVersion("1.0")]
-	[ApiVersion("2.0")]
+	[ApiVersion(1.0)]
 	[Route("api/v{version:apiVersion}/[controller]")]
 	[SwaggerTag("Endpoints related to vehicle management.")]
 	public class VehicleController : ControllerBase {
@@ -26,7 +24,7 @@ namespace QRStockMate.Controller {
 		[SwaggerResponse(StatusCodes.Status200OK, "OK", typeof(IEnumerable<VehicleModel>))]
 		[SwaggerResponse(StatusCodes.Status404NotFound, "Not Found", typeof(void))]
 		[SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request", typeof(void))]
-		[HttpGet, MapToApiVersion("1.0")]
+		[HttpGet, MapToApiVersion(1.0)]
 		public async Task<ActionResult<IEnumerable<VehicleModel>>> Get() {
 			try {
 				var Vehicles = await _vehicleService.GetAll();
@@ -44,7 +42,7 @@ namespace QRStockMate.Controller {
 		[SwaggerOperation(Summary = "Create vehicle", Description = "Creates a new vehicle.")]
 		[SwaggerResponse(StatusCodes.Status201Created, "Created", typeof(Vehicle))]
 		[SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request", typeof(void))]
-		[HttpPost, MapToApiVersion("1.0")]
+		[HttpPost, MapToApiVersion(1.0)]
 		public async Task<IActionResult> Post([FromBody] VehicleModel value) {
 			try {
 				var Vehicle = _mapper.Map<VehicleModel, Vehicle>(value);
@@ -63,7 +61,7 @@ namespace QRStockMate.Controller {
 		[SwaggerResponse(StatusCodes.Status204NoContent, "No Content", typeof(void))]
 		[SwaggerResponse(StatusCodes.Status404NotFound, "Not Found", typeof(void))]
 		[SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request", typeof(void))]
-		[HttpPut, MapToApiVersion("1.0")]
+		[HttpPut, MapToApiVersion(1.0)]
 		public async Task<ActionResult<VehicleModel>> Put([FromBody] VehicleModel model) {
 			try {
 				var Vehicle = _mapper.Map<VehicleModel, Vehicle>(model);
@@ -84,7 +82,7 @@ namespace QRStockMate.Controller {
 		[SwaggerResponse(StatusCodes.Status204NoContent, "No Content", typeof(void))]
 		[SwaggerResponse(StatusCodes.Status404NotFound, "Not Found", typeof(void))]
 		[SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request", typeof(void))]
-		[HttpDelete, MapToApiVersion("1.0")]
+		[HttpDelete, MapToApiVersion(1.0)]
 		public async Task<IActionResult> Delete([FromBody] VehicleModel model) {
 			try {
 				var Vehicle = _mapper.Map<VehicleModel, Vehicle>(model);
@@ -104,7 +102,7 @@ namespace QRStockMate.Controller {
 		[SwaggerResponse(StatusCodes.Status204NoContent, "No Content", typeof(void))]
 		[SwaggerResponse(StatusCodes.Status404NotFound, "Not Found", typeof(void))]
 		[SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request", typeof(void))]
-		[HttpPut("UpdateLocation/{Id}"), MapToApiVersion("1.0")]
+		[HttpPut("UpdateLocation/{Id}"), MapToApiVersion(1.0)]
 		public async Task<ActionResult> UpdateLocation(int Id, [FromBody] string location) {
 			try {
 				var Vehicle = await _vehicleService.GetById(Id);
@@ -126,7 +124,7 @@ namespace QRStockMate.Controller {
 		[SwaggerResponse(StatusCodes.Status200OK, "OK", typeof(Vehicle))]
 		[SwaggerResponse(StatusCodes.Status404NotFound, "Not Found", typeof(void))]
 		[SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request", typeof(void))]
-		[HttpGet("GetLocation/{Id}"), MapToApiVersion("1.0")]
+		[HttpGet("GetLocation/{Id}"), MapToApiVersion(1.0)]
 		public async Task<ActionResult<VehicleModel>> GetLocation(int Id) {
 			try {
 				var Vehicle = await _vehicleService.GetById(Id);

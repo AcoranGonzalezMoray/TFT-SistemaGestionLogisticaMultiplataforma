@@ -1,13 +1,18 @@
 using Asp.Versioning.ApiExplorer;
+using CoffeeMachine.Api.HealthCheck;
+using HealthChecks.ApplicationStatus.DependencyInjection;
+using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using QRStockMate.AplicationCore.Interfaces.Repositories;
 using QRStockMate.AplicationCore.Interfaces.Services;
+using QRStockMate.HealthCheck;
 using QRStockMate.Infrastructure.Data;
 using QRStockMate.Infrastructure.Repositories;
 using QRStockMate.Services;
@@ -15,21 +20,15 @@ using QRStockMate.SwaggerConfig;
 using QRStockMate.Utility;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Text;
+using static System.Net.WebRequestMethods;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
-
-// Se le agrega la seguridad a los controladores para que se le envie el token valido
 
 builder.Services.AddControllers(opt => {
 	var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
 	opt.Filters.Add(new AuthorizeFilter(policy));
 
 });
-
-
-//builder.Services.AddControllers();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -93,10 +92,6 @@ builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwa
 //AutoMapper
 builder.Services.AddAutoMapper(typeof(Program));
 
-
-
-
-
 //JWT
 builder.Services.AddScoped<IJwtTokenRepository, JwtTokenRepository>();
 
@@ -110,7 +105,28 @@ builder.Services.AddCors(options => {
 						  .AllowAnyMethod();
 					  });
 });
+var urlPathToData = Path.Combine(Environment.CurrentDirectory, "appsettings.json");
 
+builder.Services.AddHealthChecks()
+	.AddApplicationStatus(name: "API status", tags: new[] { "api" })
+	.AddDiskStorageHealthCheck(
+		setup: diskOptions => diskOptions.AddDrive(driveName: "D:\\", 500),
+		name: "Diskstorage " + "D:\\  over of 500MB", tags: new[] { "storage", "memory" })
+	.AddProcessAllocatedMemoryHealthCheck(maximumMegabytesAllocated: 400, name: "Process Allocated Memory", tags: new[] { "storage", "process", "memory" })
+	.AddSqlServer(builder.Configuration.GetConnectionString("Conexion"), name: "SQL Server", tags: new[] { "sql server", "api" })
+	.AddCheck<FirebaseHealthCheck>("Firebase status", tags: new[] { "firebase", "api" })
+	.AddCheck("Appsettings file exist", new FileExistenceHealthCheck(urlPathToData), tags: new[] { "file", "persistence", "api" })
+	.AddCheck<EndPointHealthCheck>("Endpoint versioning status", tags: new[] { "endpoint", "api" })
+	.AddCheck<UrlHealthCheck>("Endpoint code status", tags: new[] { "endpoint", "api" });
+
+
+builder.Services.AddHealthChecksUI(setupSettings: opt => {
+	opt.SetEvaluationTimeInSeconds(15);
+	opt.MaximumHistoryEntriesPerEndpoint(60);
+	opt.SetApiMaxActiveRequests(1);
+	opt.AddHealthCheckEndpoint("HealthCheck API", "/healthcheck");
+
+}).AddInMemoryStorage();
 
 //Json Web Token (JWT)
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -160,6 +176,17 @@ app.UseHttpsRedirection();
 
 app.UseCors(MyAllowSpecificOrigins);
 
+app.UseRouting().UseEndpoints(config => config.MapHealthChecksUI());
+
+app.UseHealthChecks("/healthcheck", new HealthCheckOptions {
+	Predicate = _ => true,
+	ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+});
+
+app.UseHealthChecksUI(options => {
+	options.UIPath = "/healthchecks-ui";
+	options.ApiPath = "/health-ui-api";
+});
 
 app.UseAuthorization();
 

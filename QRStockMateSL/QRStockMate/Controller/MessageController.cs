@@ -7,10 +7,9 @@ using QRStockMate.DTOs;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace QRStockMate.Controller {
-	[Route("api/[controller]")]
 	[ApiController]
-	[ApiVersion("1.0")]
-	[ApiVersion("2.0")]
+	[ApiVersion(1.0)]
+	[ApiVersion(2.0)]
 	[Route("api/v{version:apiVersion}/[controller]")]
 	[SwaggerTag("Endpoints related to message management.")]
 	public class MessageController : ControllerBase {
@@ -32,7 +31,7 @@ namespace QRStockMate.Controller {
 		[SwaggerResponse(StatusCodes.Status200OK, "OK", typeof(IEnumerable<MessageModel>))]
 		[SwaggerResponse(StatusCodes.Status404NotFound, "Not Found", typeof(void))]
 		[SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request", typeof(void))]
-		[HttpGet, MapToApiVersion("1.0")]
+		[HttpGet, MapToApiVersion(1.0)]
 		public async Task<ActionResult<IEnumerable<MessageModel>>> Get() {
 			try {
 				var message = await _messageService.GetAll();
@@ -50,7 +49,7 @@ namespace QRStockMate.Controller {
 		[SwaggerOperation(Summary = "Create a new message", Description = "Creates a new message.")]
 		[SwaggerResponse(StatusCodes.Status201Created, "Created", typeof(MessageModel))]
 		[SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request", typeof(void))]
-		[HttpPost, MapToApiVersion("1.0")]
+		[HttpPost, MapToApiVersion(1.0)]
 		public async Task<IActionResult> Post([FromBody] MessageModel value) {
 
 			try {
@@ -71,7 +70,7 @@ namespace QRStockMate.Controller {
 		[SwaggerOperation(Summary = "Update an existing message", Description = "Updates an existing message.")]
 		[SwaggerResponse(StatusCodes.Status204NoContent, "No Content", typeof(void))]
 		[SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request", typeof(void))]
-		[HttpPut, MapToApiVersion("1.0")]
+		[HttpPut, MapToApiVersion(1.0)]
 		public async Task<ActionResult<MessageModel>> Put([FromBody] MessageModel model) {
 			try {
 				var message = _mapper.Map<MessageModel, Message>(model);
@@ -94,7 +93,7 @@ namespace QRStockMate.Controller {
 		[SwaggerResponse(StatusCodes.Status204NoContent, "No Content", typeof(void))]
 		[SwaggerResponse(StatusCodes.Status404NotFound, "Not Found", typeof(void))]
 		[SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request", typeof(void))]
-		[HttpDelete, MapToApiVersion("1.0")]
+		[HttpDelete, MapToApiVersion(1.0)]
 		public async Task<IActionResult> Delete([FromBody] MessageModel model) {
 			try {
 				var message = _mapper.Map<MessageModel, Message>(model);
@@ -115,7 +114,7 @@ namespace QRStockMate.Controller {
 		[SwaggerOperation(Summary = "Get messages by code", Description = "Retrieves messages by code.")]
 		[SwaggerResponse(StatusCodes.Status200OK, "OK", typeof(IEnumerable<Message>))]
 		[SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request", typeof(void))]
-		[HttpGet("MessageByCode/{code}"), MapToApiVersion("1.0")]
+		[HttpGet("MessageByCode/{code}"), MapToApiVersion(1.0)]
 		public async Task<ActionResult<IEnumerable<Message>>> GetMessagesByCode(string code) {
 			try {
 				var messages = await _messageService.GetMessageByCode(code);
@@ -133,7 +132,7 @@ namespace QRStockMate.Controller {
 		[SwaggerOperation(Summary = "Upload a file", Description = "Uploads a file.")]
 		[SwaggerResponse(StatusCodes.Status200OK, "OK", typeof(void))]
 		[SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request", typeof(void))]
-		[HttpPost("UploadFile/"), MapToApiVersion("1.0")]
+		[HttpPost("UploadFile/"), MapToApiVersion(1.0)]
 		public async Task<IActionResult> UploadFile([FromForm] IFormFile file, [FromForm] MessageModel model) {
 			try {
 				//var message = _mapper.Map<MessageModel, Message>(model);
@@ -157,7 +156,7 @@ namespace QRStockMate.Controller {
 		[SwaggerResponse(StatusCodes.Status204NoContent, "No Content", typeof(void))]
 		[SwaggerResponse(StatusCodes.Status404NotFound, "Not Found", typeof(void))]
 		[SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request", typeof(void))]
-		[HttpDelete("DeleteConversation"), MapToApiVersion("1.0")]
+		[HttpDelete("DeleteConversation"), MapToApiVersion(1.0)]
 		public async Task<IActionResult> DeleteConversation([FromBody] string user) {
 			try {
 				var userA = await _userService.GetById(int.Parse(user.Split(";")[0]));
@@ -230,7 +229,7 @@ namespace QRStockMate.Controller {
 		[SwaggerOperation(Summary = "Get new messages", Description = "Retrieves new messages for the specified user.")]
 		[SwaggerResponse(StatusCodes.Status200OK, "OK", typeof(List<Message>))]
 		[SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request", typeof(void))]
-		[HttpGet("NewMessage/{format}"), MapToApiVersion("1.0")]
+		[HttpGet("NewMessage/{format}"), MapToApiVersion(1.0)]
 		public async Task<ActionResult<List<Message>>> GetNewMessage(string format) {
 			try {
 				var messages = await _messageService.GetMessageByCode(format.Split(";")[0]);

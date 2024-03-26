@@ -7,12 +7,10 @@ using QRStockMate.DTOs;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace QRStockMate.Controller {
-	[Route("api/[controller]")]
-	[ApiController]
-	[ApiVersion("1.0")]
-	[ApiVersion("2.0")]
+	[ApiVersion(1.0)]
 	[Route("api/v{version:apiVersion}/[controller]")]
 	[SwaggerTag("Endpoints related to communication management.")]
+	[ApiController]
 	public class CommunicationController : ControllerBase {
 
 
@@ -28,7 +26,7 @@ namespace QRStockMate.Controller {
 		[SwaggerResponse(StatusCodes.Status200OK, "OK", typeof(IEnumerable<CommunicationModel>))]
 		[SwaggerResponse(StatusCodes.Status404NotFound, "Not Found", typeof(string))]
 		[SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request", typeof(string))]
-		[HttpGet, MapToApiVersion("1.0")]
+		[HttpGet, MapToApiVersion(1.0)]
 		public async Task<ActionResult<IEnumerable<CommunicationModel>>> Get() {
 			try {
 				var communications = await _communicationService.GetAll();
@@ -46,7 +44,7 @@ namespace QRStockMate.Controller {
 		[SwaggerOperation(Summary = "Create a new communication", Description = "Create a new communication.")]
 		[SwaggerResponse(StatusCodes.Status201Created, "Created", typeof(CommunicationModel))]
 		[SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request", typeof(string))]
-		[HttpPost, MapToApiVersion("1.0")]
+		[HttpPost, MapToApiVersion(1.0)]
 		public async Task<IActionResult> Post([FromBody] CommunicationModel value) {
 			try {
 				var communication = _mapper.Map<CommunicationModel, Communication>(value);
@@ -65,7 +63,7 @@ namespace QRStockMate.Controller {
 		[SwaggerResponse(StatusCodes.Status204NoContent, "No Content")]
 		[SwaggerResponse(StatusCodes.Status404NotFound, "Not Found", typeof(string))]
 		[SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request", typeof(string))]
-		[HttpPut, MapToApiVersion("1.0")]
+		[HttpPut, MapToApiVersion(1.0)]
 		public async Task<ActionResult<CommunicationModel>> Put([FromBody] CommunicationModel model) {
 			try {
 				var communication = _mapper.Map<CommunicationModel, Communication>(model);
@@ -88,7 +86,7 @@ namespace QRStockMate.Controller {
 		[SwaggerResponse(StatusCodes.Status204NoContent, "No Content")]
 		[SwaggerResponse(StatusCodes.Status404NotFound, "Not Found", typeof(string))]
 		[SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request", typeof(string))]
-		[HttpDelete, MapToApiVersion("1.0")]
+		[HttpDelete, MapToApiVersion(1.0)]
 		public async Task<IActionResult> Delete([FromBody] CommunicationModel model) {
 			try {
 				var communication = _mapper.Map<CommunicationModel, Communication>(model);
@@ -109,7 +107,7 @@ namespace QRStockMate.Controller {
 		[SwaggerResponse(StatusCodes.Status200OK, "OK", typeof(IEnumerable<CommunicationModel>))]
 		[SwaggerResponse(StatusCodes.Status404NotFound, "Not Found", typeof(string))]
 		[SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request", typeof(string))]
-		[HttpGet("GetByCode/{code}"), MapToApiVersion("1.0")]
+		[HttpGet("GetByCode/{code}"), MapToApiVersion(1.0)]
 		public async Task<ActionResult<IEnumerable<CommunicationModel>>> GetByCode(string code) {
 			try {
 				var communications = await _communicationService.GetCommunicationsByCode(code);
