@@ -5,6 +5,7 @@ import { User } from '../interfaces/user';
 import { Warehouse } from '../interfaces/warehouse';
 import { CompanyService } from '../services/company.service';
 import { UserService } from '../services/user.service';
+import { key } from '../../environment/keys';
 
 @Component({
   selector: 'app-map',
@@ -61,7 +62,7 @@ export class MapComponent {
 
     this.map = new Map({
       container: this.mapContainer.nativeElement,
-      style: `https://api.maptiler.com/maps/streets-v2/style.json?key=UJ8HxUte4EhYzt4gJPBK`,
+      style: `https://api.maptiler.com/maps/streets-v2/style.json?key=`+key.MAP,
       center: [initialState.lng, initialState.lat],
       zoom: initialState.zoom
     });

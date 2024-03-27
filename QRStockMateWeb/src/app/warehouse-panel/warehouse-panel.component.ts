@@ -11,6 +11,7 @@ import { GetResourceResponse, LngLatLike, Map, Marker } from 'maplibre-gl';
 import * as ExcelJS from 'exceljs';
 import { baseImage } from 'src/assets/imagebase64';
 import { WarehouseService } from '../services/warehouse.service';
+import { key } from '../../environment/keys';
 @Component({
   selector: 'app-warehouse-panel',
   templateUrl: './warehouse-panel.component.html',
@@ -145,7 +146,7 @@ export class WarehousePanelComponent {
 
     this.map = new Map({
       container: this.mapContainer.nativeElement,
-      style: `https://api.maptiler.com/maps/streets-v2/style.json?key=UJ8HxUte4EhYzt4gJPBK`,
+      style: `https://api.maptiler.com/maps/streets-v2/style.json?key=`+key.MAP,
       center: [initialState.lng, initialState.lat],
       zoom: initialState.zoom
     });

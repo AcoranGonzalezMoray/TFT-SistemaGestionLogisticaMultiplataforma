@@ -366,3 +366,4 @@ MigrationBackup/
 FodyWeavers.xsd
 /QRStockMateSL/QRStockMate/Properties/keySMPT.cs
 /QRStockMateSL/QRStockMate.AplicationCore/Entities/keySMPT.cs
+/QRStockMateWeb/src/environment/keys.ts

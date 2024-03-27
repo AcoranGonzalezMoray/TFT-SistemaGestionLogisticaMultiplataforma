@@ -11,6 +11,7 @@ import { TransportRouteService } from '../services/transport-route.service';
 import { rowsAnimation } from 'src/assets/animations';
 import { Warehouse } from '../interfaces/warehouse';
 import { VehicleService } from '../services/vehicle.service';
+import { key } from '../../environment/keys';
 
 @Component({
   selector: 'app-transport-route-panel',
@@ -179,7 +180,7 @@ export class TransportRoutePanelComponent {
 
     this.map = new Map({
       container: this.mapContainer.nativeElement,
-      style: `https://api.maptiler.com/maps/streets-v2/style.json?key=UJ8HxUte4EhYzt4gJPBK`,
+      style: `https://api.maptiler.com/maps/streets-v2/style.json?key=`+key.MAP,
       center: [initialState.lng, initialState.lat],
       zoom: initialState.zoom
     });

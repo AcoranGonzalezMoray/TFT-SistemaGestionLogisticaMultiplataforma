@@ -52,7 +52,8 @@ namespace QRStockMate.Controller {
 		}
 
 		private string GenerarCuerpoHTML(DefaultNotification notification) {
-			var ruta = "https://cdn-icons-png.flaticon.com/512/5220/5220262.png";
+			var ruta = notification.Message.Contains("life") ? "https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Yes_Check_Circle.svg/1200px-Yes_Check_Circle.svg.png" : "https://cdn-icons-png.flaticon.com/512/5220/5220262.png";
+
 			var cuerpoHTML = $"<!DOCTYPE html>\r\n<html lang=\"en\">\r\n<head>\r\n    <meta charset=\"UTF-8\">\r\n    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\r\n    <title>Notificación de QRStockMate</title>\r\n</head>\r\n<body style=\"font-family: Arial, sans-serif;\">\r\n    <div style=\"max-width: 600px; margin: 0 auto; padding: 20px;\">\r\n        <table style=\"width: 100%;\">\r\n            <tr>\r\n                <td style=\"text-align: center;\">\r\n                    <img src={ruta} alt=\"Logo qrstockmate\" style=\"max-width: 200px;\">\r\n                </td>\r\n            </tr>\r\n            <tr>\r\n                <td style=\"text-align: center;\">\r\n                    <h1 style=\"margin-top: 20px;\">¡Notificación de QRStockMate recibida!</h1>\r\n                    <p style=\"font-size: 16px;\">Mensaje: {notification.Message}</p>\r\n                    <p style=\"font-size: 14px; color: #666;\">Enviado desde la API de qrstockmate {new DateTime()}</p>\r\n                </td>\r\n            </tr>\r\n        </table>\r\n    </div>\r\n</body>\r\n</html>\r\n";
 			return cuerpoHTML;
 		}
