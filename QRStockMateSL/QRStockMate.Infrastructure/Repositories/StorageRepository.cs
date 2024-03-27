@@ -8,7 +8,7 @@ namespace QRStockMate.Infrastructure.Repositories {
 		private readonly string email = "qrstockmate@gmail.com";
 		private readonly string clave = "qrstockmate";
 		private readonly string ruta = "qrstockmate.appspot.com";
-		private readonly string api_key = "AIzaSyBvcdWM5BeNdj9GWtZUV-iRPKmiRRQNNn0";
+		private readonly string api_key = Key.ApiKeyFirebase;
 
 		public async Task DeleteImage(string name) {
 			var auth = new FirebaseAuthProvider(new FirebaseConfig(api_key));
