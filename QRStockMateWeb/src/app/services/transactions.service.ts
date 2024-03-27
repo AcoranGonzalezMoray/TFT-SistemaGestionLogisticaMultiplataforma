@@ -19,8 +19,12 @@ export class TransactionsService {
       );
   }
 
-  create(transactionHistory: TransactionHistory): Observable<TransactionHistory> {
-    return this.http.post<TransactionHistory>(this.apiUrl, transactionHistory)
+  create(transactionHistory: TransactionHistory, token:string): Observable<TransactionHistory> {
+    let headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+
+    return this.http.post<TransactionHistory>(this.apiUrl, transactionHistory, {headers: headers})
       .pipe(
         catchError(this.handleError)
       );

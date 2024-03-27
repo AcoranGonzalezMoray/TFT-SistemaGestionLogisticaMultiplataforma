@@ -3,6 +3,8 @@ import { Injectable } from '@angular/core';
 import { Observable, catchError, throwError } from 'rxjs';
 import { environment } from 'src/environment/environment';
 import { Communication } from '../interfaces/communication';
+import { TransactionsService } from './transactions.service';
+import { OperationHistory, TransactionHistory, getIndexFromOperation, me } from '../interfaces/transaction-history';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +12,7 @@ import { Communication } from '../interfaces/communication';
 export class CommunicationService {
   private baseUrl: string = environment.API + '/Communication';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private transaction: TransactionsService) { }
 
   getAllCommunications(): Observable<Communication[]> {
     return this.http.get<Communication[]>(this.baseUrl)
@@ -33,6 +35,20 @@ export class CommunicationService {
     let headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
+
+    var transa:TransactionHistory = {
+      id: 0,
+      name: me()?.name ?? "Anonymous",
+      code: communication.code,
+      description: `The communication has been added`,
+      created: new Date(),
+      operation: 0
+    }
+
+    this.transaction.create(transa,token).subscribe(()=>{
+      console.log("buen")
+    });
+
     return this.http.post<Communication>(this.baseUrl, communication, {headers:headers})
       .pipe(
         catchError(this.handleError)

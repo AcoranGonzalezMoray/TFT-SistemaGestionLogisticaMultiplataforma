@@ -3,6 +3,8 @@ import { Injectable } from '@angular/core';
 import { Observable, catchError } from 'rxjs';
 import { environment } from 'src/environment/environment';
 import { Warehouse } from '../interfaces/warehouse';
+import { TransactionHistory, me } from '../interfaces/transaction-history';
+import { TransactionsService } from './transactions.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +13,7 @@ export class WarehouseService {
 
   private apiUrl: string = environment.API + '/Warehouse';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private transaction: TransactionsService) { }
 
   // Obtener todos los almacenes
   getAllWarehouses(): Observable<Warehouse[]> {
@@ -28,6 +30,21 @@ export class WarehouseService {
     let headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
+
+    var transa:TransactionHistory = {
+      id: 0,
+      name: me()?.name ?? "Anonymous",
+      code: me()?.code?? "000-000",
+      description: `The ${warehouse.name} warehouse  has been deleted`,
+      created: new Date(),
+      operation: 2
+    }
+
+    this.transaction.create(transa,token).subscribe(()=>{
+      console.log("buen")
+    });
+
+
     return this.http.put<any>(this.apiUrl, warehouse,{headers: headers});
   }
 
@@ -45,6 +62,20 @@ export class WarehouseService {
     let headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
+
+    var transa:TransactionHistory = {
+      id: 0,
+      name: me()?.name ?? "Anonymous",
+      code: me()?.code?? "000-000",
+      description: `an item set with a total of ${itemModels.length} items has been added`,
+      created: new Date(),
+      operation: 0
+    }
+
+    this.transaction.create(transa,token).subscribe(()=>{
+      console.log("buen")
+    });
+
     return this.http.post<any>(`${this.apiUrl}/AddItemRange/`, itemModels, {headers:headers})
   }
   // Obtener todos los ítems de un almacén

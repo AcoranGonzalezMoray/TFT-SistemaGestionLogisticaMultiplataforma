@@ -3,6 +3,8 @@ import { Injectable } from '@angular/core';
 import { Observable, catchError } from 'rxjs';
 import { environment } from 'src/environment/environment';
 import { Item } from '../interfaces/item';
+import { TransactionHistory, me, token } from '../interfaces/transaction-history';
+import { TransactionsService } from './transactions.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +13,7 @@ export class ItemService {
 
   private apiUrl: string = environment.API + '/Item';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private transaction: TransactionsService) { }
 
   // Obtener todos los items
   getAllItems(token:string): Observable<Item[]> {
@@ -66,6 +68,18 @@ export class ItemService {
     const formData: FormData = new FormData();
     formData.append('itemId', itemId.toString());
     formData.append('image', image, image.name);
+    var transa:TransactionHistory = {
+      id: 0,
+      name: me()?.name ?? "Anonymous",
+      code: me()?.code?? "000-000",
+      description: `The image of item with ID ${itemId} has been modified`,
+      created: new Date(),
+      operation: 2
+    }
+
+    this.transaction.create(transa,token()).subscribe(()=>{
+      console.log("buen")
+    });
 
     return this.http.post<any>(`${this.apiUrl}/UpdateImage`, formData).pipe(
       catchError(error => {

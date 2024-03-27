@@ -5,6 +5,8 @@ import { environment } from 'src/environment/environment';
 import { User } from '../interfaces/user';
 import { Company } from '../interfaces/company';
 import { Router } from '@angular/router';
+import { TransactionHistory, me, token } from '../interfaces/transaction-history';
+import { TransactionsService } from './transactions.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,8 +15,8 @@ export class UserService {
 
   private apiUrl: string = environment.API + '/User';
 
-  constructor(private http: HttpClient,private router: Router) { }
-  
+  constructor(private http: HttpClient,private router: Router, private transaction: TransactionsService) { }
+
   static getCompanyByUser(token: string, arg1: any) {
     throw new Error('Method not implemented.');
   }
@@ -42,6 +44,20 @@ export class UserService {
     let headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
+
+    var transa:TransactionHistory = {
+      id: 0,
+      name: me()?.name ?? "Anonymous",
+      code: me()?.code?? "000-000",
+      description: `The user ${user.name} with ID ${user.id} has been modified`,
+      created: new Date(),
+      operation: 2
+    }
+
+    this.transaction.create(transa,token).subscribe(()=>{
+      console.log("buen")
+    });
+
     return this.http.put<void>(this.apiUrl, user, {headers: headers})
       .pipe(
         catchError(error => {
