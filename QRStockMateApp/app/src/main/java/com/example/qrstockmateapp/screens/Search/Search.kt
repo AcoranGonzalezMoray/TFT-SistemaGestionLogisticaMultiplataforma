@@ -104,6 +104,15 @@ fun SearchScreen(navController: NavController) {
                             if (itemResponse.isSuccessful) {
                                 val item = itemResponse.body()
                                 if (item != null) listaItems.addAll(item.toMutableList());
+                                filteredItems = if (searchQuery.isEmpty()) {
+                                    listaItems
+                                } else {
+                                    listaItems.filter { item->
+                                        item.name.contains(searchQuery, ignoreCase = true) ||
+                                                item.location.contains(searchQuery, ignoreCase = true) ||
+                                                item.stock.toString().contains(searchQuery, ignoreCase = true)
+                                    }
+                                }
                                 Log.d("ItemsNotSuccessful", item?.count().toString())
                             } else {
                                 Log.d("ItemsNotSuccessful", "NO")
