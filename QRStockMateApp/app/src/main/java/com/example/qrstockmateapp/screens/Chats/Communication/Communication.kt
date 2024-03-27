@@ -1,5 +1,6 @@
 package com.example.qrstockmateapp.screens.Chats.Communication
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -50,6 +51,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.qrstockmateapp.api.models.Communication
+import com.example.qrstockmateapp.api.models.Transaction
 import com.example.qrstockmateapp.api.services.RetrofitInstance
 import com.example.qrstockmateapp.navigation.repository.DataRepository
 import com.example.qrstockmateapp.ui.theme.BlueSystem
@@ -108,7 +110,26 @@ fun CommunicatioScreen(navController: NavController){
             )
             GlobalScope.launch(Dispatchers.IO) {
                 val response = RetrofitInstance.api.postCommunication(communication)
+                var user = DataRepository.getUser()
                 if (response.isSuccessful) {
+                    if(user!=null){
+                        val zonedDateTime = ZonedDateTime.now()
+                        val formattedDate = zonedDateTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+                        val addTransaccion = RetrofitInstance.api.addHistory(
+                            Transaction(0,user.name,user.code, "The communication has been added",
+                                formattedDate , 0)
+                        )
+                        if(addTransaccion.isSuccessful){
+                        }else{
+                            try {
+                                val errorBody = addTransaccion.errorBody()?.string()
+                                Log.d("Transaccion", errorBody ?: "Error body is null")
+                            } catch (e: Exception) {
+                                Log.e("Transaccion", "Error al obtener el cuerpo del error: $e")
+                            }
+                        }
+                    }
+
                     withContext(Dispatchers.Main){
                         Toast.makeText(currentContext, "Sent communication", Toast.LENGTH_SHORT).show()
                     }

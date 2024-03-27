@@ -43,9 +43,11 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.qrstockmateapp.api.models.Company
+import com.example.qrstockmateapp.api.models.Transaction
 import com.example.qrstockmateapp.api.models.User
 import com.example.qrstockmateapp.api.services.RegistrationBody
 import com.example.qrstockmateapp.api.services.RetrofitInstance
+import com.example.qrstockmateapp.navigation.repository.DataRepository
 import com.example.qrstockmateapp.screens.Auth.JoinWithCode.isValidEmail
 import com.example.qrstockmateapp.ui.theme.BlueSystem
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -53,6 +55,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
 @OptIn(DelicateCoroutinesApi::class)
 @Composable
@@ -107,6 +111,23 @@ fun SignUpScreen(navController: NavHostController) {
                     val response = RetrofitInstance.api.signUp(model)
                     withContext(Dispatchers.Main) {
                         if (response.isSuccessful) {
+                            if(user!=null){
+                                val zonedDateTime = ZonedDateTime.now()
+                                val formattedDate = zonedDateTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+                                val addTransaccion = RetrofitInstance.api.addHistory(
+                                    Transaction(0,user.name,user.code, "The user with name ${user.name} has been sign up",
+                                        formattedDate , 0)
+                                )
+                                if(addTransaccion.isSuccessful){
+                                }else{
+                                    try {
+                                        val errorBody = addTransaccion.errorBody()?.string()
+                                        Log.d("Transaccion", errorBody ?: "Error body is null")
+                                    } catch (e: Exception) {
+                                        Log.e("Transaccion", "Error al obtener el cuerpo del error: $e")
+                                    }
+                                }
+                            }
                             val joinResponse = response.body()
                             if (joinResponse != null){
                                 Toast.makeText(context, "Successful Registration", Toast.LENGTH_SHORT).show()

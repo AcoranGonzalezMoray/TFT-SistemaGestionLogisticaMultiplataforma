@@ -55,6 +55,7 @@ import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.example.qrstockmateapp.R
+import com.example.qrstockmateapp.api.models.Transaction
 import com.example.qrstockmateapp.api.models.User
 import com.example.qrstockmateapp.api.models.userRoleToString
 import com.example.qrstockmateapp.api.services.RetrofitInstance
@@ -64,6 +65,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -201,6 +204,24 @@ fun UserListItem(user: User, navController: NavController,loadEmployees: () -> U
             if(user!=null){
                 user.email = "inactivo:" + user.email
                 val updateUser = RetrofitInstance.api.updateUser(user)
+                var me = DataRepository.getUser()
+                if(me!=null){
+                    val zonedDateTime = ZonedDateTime.now()
+                    val formattedDate = zonedDateTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+                    val addTransaccion = RetrofitInstance.api.addHistory(
+                        Transaction(0,me.name,me.code, "The user with name ${user.name} and ID ${user.id} has been suspended",
+                            formattedDate , 2)
+                    )
+                    if(addTransaccion.isSuccessful){
+                    }else{
+                        try {
+                            val errorBody = addTransaccion.errorBody()?.string()
+                            Log.d("Transaccion", errorBody ?: "Error body is null")
+                        } catch (e: Exception) {
+                            Log.e("Transaccion", "Error al obtener el cuerpo del error: $e")
+                        }
+                    }
+                }
                 if (updateUser.isSuccessful) {
                     loadEmployees()
                     disabled = true
@@ -215,6 +236,24 @@ fun UserListItem(user: User, navController: NavController,loadEmployees: () -> U
             if(user!=null){
                 user.email = user.email.split(':')[1]
                 val updateUser = RetrofitInstance.api.updateUser(user)
+                var me = DataRepository.getUser()
+                if(me!=null){
+                    val zonedDateTime = ZonedDateTime.now()
+                    val formattedDate = zonedDateTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+                    val addTransaccion = RetrofitInstance.api.addHistory(
+                        Transaction(0,me.name,me.code, "The user with name ${user.name} and ID ${user.id} has been reactivated",
+                            formattedDate , 2)
+                    )
+                    if(addTransaccion.isSuccessful){
+                    }else{
+                        try {
+                            val errorBody = addTransaccion.errorBody()?.string()
+                            Log.d("Transaccion", errorBody ?: "Error body is null")
+                        } catch (e: Exception) {
+                            Log.e("Transaccion", "Error al obtener el cuerpo del error: $e")
+                        }
+                    }
+                }
                 if (updateUser.isSuccessful) {
                     loadEmployees()
                     disabled = false

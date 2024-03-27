@@ -10,10 +10,12 @@ import android.content.pm.PackageManager
 import android.icu.text.SimpleDateFormat
 import android.media.MediaRecorder
 import android.net.Uri
+import android.os.Build
 import android.os.Environment
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -120,6 +122,8 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.net.URL
+import java.net.URLDecoder
+import java.nio.charset.StandardCharsets
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -1010,7 +1014,9 @@ fun MessageItem(message: Message, selectedOption: OptionSize?) {
             ) {
                 Column(
                     modifier = Modifier
-                        .padding(8.dp)
+                        .padding(8.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+
                 ) {
                     Row {
                         Image(
@@ -1027,8 +1033,12 @@ fun MessageItem(message: Message, selectedOption: OptionSize?) {
                         if(horaYMinuto!=null) {
                             val (hora, minuto) = horaYMinuto
                             Text(text = "${hora}:${minuto}", color = Color.LightGray,style = MaterialTheme.typography.bodySmall)
+                            Text(text = "   ${getNamePDF(message.content)}", color = MaterialTheme.colorScheme.primary, style = MaterialTheme.typography.bodySmall)
+
                         }else{
                             Text(text = "00:00", color = Color.LightGray,style = MaterialTheme.typography.bodySmall)
+                            Text(text = "   ${getNamePDF(message.content)}", color = MaterialTheme.colorScheme.primary, style = MaterialTheme.typography.bodySmall)
+
                         }
                     }
                 }
@@ -1120,6 +1130,23 @@ fun MessageItem(message: Message, selectedOption: OptionSize?) {
         }
     }
 }
+
+fun getNamePDF(url: String): String {
+    // Crear un objeto Uri para facilitar el manejo de la URL
+    val uri = Uri.parse(url)
+
+    // Obtener el último segmento de la URL, que será el nombre del archivo
+    val decodedFilename = uri.lastPathSegment ?: ""
+
+    // Decodificar el nombre del archivo
+    val decodedName = Uri.decode(decodedFilename)
+
+    // Dividir el nombre del archivo usando el carácter '_' como separador y obtener el último elemento
+    val name = decodedName.split("_").lastOrNull() ?: ""
+
+    return name
+}
+
 
 
 // Function to download and open PDF

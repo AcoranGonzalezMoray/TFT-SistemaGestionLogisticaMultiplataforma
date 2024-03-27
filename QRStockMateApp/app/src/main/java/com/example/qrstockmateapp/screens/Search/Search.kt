@@ -95,8 +95,8 @@ fun SearchScreen(navController: NavController) {
 
     LaunchedEffect(Unit) {
         GlobalScope.launch(Dispatchers.IO) {
+            listaAlmacenes = DataRepository.getWarehouses();
             if (listaAlmacenes != null) {
-                listaAlmacenes = DataRepository.getWarehouses();
                 for(warehouse in listaAlmacenes!!) {
                     if (warehouse != null) {
                         try {
