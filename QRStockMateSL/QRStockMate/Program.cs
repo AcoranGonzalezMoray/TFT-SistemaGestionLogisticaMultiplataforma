@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using QRStockMate.AplicationCore.Interfaces.Repositories;
@@ -20,7 +19,6 @@ using QRStockMate.SwaggerConfig;
 using QRStockMate.Utility;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Text;
-using static System.Net.WebRequestMethods;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -125,7 +123,10 @@ builder.Services.AddHealthChecksUI(setupSettings: opt => {
 	opt.MaximumHistoryEntriesPerEndpoint(60);
 	opt.SetApiMaxActiveRequests(1);
 	opt.AddHealthCheckEndpoint("HealthCheck API", "/healthcheck");
-
+	opt.AddWebhookNotification("email",
+				uri: "https://localhost:7220/api/v1/notify/email",
+				payload: "{ \"message\": \"Webhook report for [[LIVENESS]]: [[FAILURE]] - Description: [[DESCRIPTIONS]]\"}",
+				restorePayload: "{ \"message\": \"[[LIVENESS]] is back to life\"}");
 }).AddInMemoryStorage();
 
 //Json Web Token (JWT)

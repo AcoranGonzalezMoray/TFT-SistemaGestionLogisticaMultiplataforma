@@ -26,7 +26,7 @@ namespace QRStockMate.HealthCheck {
 						unavailableEndpoints.Add($"{name}: {url} - Returned status code {response.StatusCode}");
 					}
 					else {
-						if(availableEndpoints.IsNullOrEmpty()) availableEndpoints.Add($"\n{url.Replace("https://localhost:7270/", "")} - Code:{response.StatusCode}\n");
+						if (availableEndpoints.IsNullOrEmpty()) availableEndpoints.Add($"\n{url.Replace("https://localhost:7270/", "")} - Code:{response.StatusCode}\n");
 						else availableEndpoints.Add($"{url.Replace("https://localhost:7270/", "")} - Code:{response.StatusCode}\n");
 					}
 				}
