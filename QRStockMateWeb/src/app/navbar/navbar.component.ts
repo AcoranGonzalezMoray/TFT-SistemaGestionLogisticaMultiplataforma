@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { me } from '../interfaces/transaction-history';
+import { User } from '../interfaces/user';
 
 @Component({
   selector: 'app-navbar',
@@ -6,5 +8,5 @@ import { Component } from '@angular/core';
   styleUrls: ['./navbar.component.css']
 })
 export class NavbarComponent {
-
+  user: User = me()!;
 }

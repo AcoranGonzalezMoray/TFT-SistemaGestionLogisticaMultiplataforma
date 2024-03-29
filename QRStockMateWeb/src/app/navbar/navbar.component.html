@@ -22,7 +22,7 @@
                 <a href="#" uk-icon="icon: bell"></a>
                 <div class="uk-width-auto">
                     <img class="uk-comment-avatar"
-                        src="https://i.pinimg.com/236x/a3/78/a1/a378a1db0cf65d7409e349742a5051ef.jpg" width="80"
+                        [src]="user.url ? user.url : '../../assets/images/user.png'" width="80"
                         height="80" alt="">
                 </div>
             </div>
