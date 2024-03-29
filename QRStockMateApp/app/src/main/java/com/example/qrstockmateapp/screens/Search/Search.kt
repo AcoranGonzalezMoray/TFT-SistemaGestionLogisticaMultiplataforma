@@ -80,6 +80,7 @@ fun SearchScreen(navController: NavController) {
     var listaAlmacenes = DataRepository.getWarehouses();
     var listaItems by remember { mutableStateOf( mutableListOf<Item>()) };
     var searchQuery by remember { mutableStateOf("") };
+    var isloading by remember { mutableStateOf(false) }
 
     var sortOrder by remember { mutableStateOf(SortOrder.ASCENDING) } // Puedes definir un enum SortOrder con ASCENDING y DESCENDING
 
@@ -95,24 +96,17 @@ fun SearchScreen(navController: NavController) {
 
     LaunchedEffect(Unit) {
         GlobalScope.launch(Dispatchers.IO) {
+            isloading = true
             listaAlmacenes = DataRepository.getWarehouses();
             if (listaAlmacenes != null) {
+                var tmp = mutableListOf<Item>() // Declara tmp como una lista mutable
                 for(warehouse in listaAlmacenes!!) {
                     if (warehouse != null) {
                         try {
                             val itemResponse = RetrofitInstance.api.getItems(warehouse.id);
                             if (itemResponse.isSuccessful) {
                                 val item = itemResponse.body()
-                                if (item != null) listaItems.addAll(item.toMutableList());
-                                filteredItems = if (searchQuery.isEmpty()) {
-                                    listaItems
-                                } else {
-                                    listaItems.filter { item->
-                                        item.name.contains(searchQuery, ignoreCase = true) ||
-                                                item.location.contains(searchQuery, ignoreCase = true) ||
-                                                item.stock.toString().contains(searchQuery, ignoreCase = true)
-                                    }
-                                }
+                                if (item != null) tmp.addAll(item.toMutableList());
                                 Log.d("ItemsNotSuccessful", item?.count().toString())
                             } else {
                                 Log.d("ItemsNotSuccessful", "NO")
@@ -123,6 +117,17 @@ fun SearchScreen(navController: NavController) {
                         }
                     }
                 }
+                listaItems.addAll(tmp)
+                filteredItems = if (searchQuery.isEmpty()) {
+                    listaItems
+                } else {
+                    listaItems.filter { item->
+                        item.name.contains(searchQuery, ignoreCase = true) ||
+                                item.location.contains(searchQuery, ignoreCase = true) ||
+                                item.stock.toString().contains(searchQuery, ignoreCase = true)
+                    }
+                }
+                isloading = false
             } else {
                 Log.d("La lista es NULL", "NULL")
             }
@@ -181,17 +186,33 @@ fun SearchScreen(navController: NavController) {
             )
             Icon(imageVector = Icons.Filled.SwapVert, contentDescription = "sort", tint=Color.White)
         }
-        if(filteredItems.isNotEmpty()){
-            ItemList(items = sortedItems, navController = navController)
+        if(!isloading){
+            if(filteredItems.isNotEmpty()){
+                ItemList(items = sortedItems, navController = navController)
 
-        }else{
+            }else{
+                Row(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment =  Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "There are no items available in this company \n or in the search made",
+                        color = MaterialTheme.colorScheme.outlineVariant,
+                        style = TextStyle(
+                            fontWeight = FontWeight.Bold
+                        )
+                    )
+                }
+            }
+        }else {
             Row(
                 modifier = Modifier.fillMaxSize(),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment =  Alignment.CenterVertically
             ) {
                 Text(
-                    text = "There are no items available in this company \n or in the search made",
+                    text = "Loding...",
                     color = MaterialTheme.colorScheme.outlineVariant,
                     style = TextStyle(
                         fontWeight = FontWeight.Bold
