@@ -657,7 +657,7 @@ fun ChatScreen(navController: NavController, sharedPreferences: SharedPreference
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
                             text = DataRepository.getUserPlus()!!.name, // Reemplazar con el nombre del usuario
-                            style = MaterialTheme.typography.headlineSmall,
+                            style = MaterialTheme.typography.titleSmall,
                             color = BlueSystem
                         )
                     }

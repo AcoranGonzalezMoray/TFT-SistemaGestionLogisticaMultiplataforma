@@ -12,27 +12,83 @@
               "name": "Widget: Task List",
               "objectT": [
                 {
-                  "name": "Tarea 1",
-                  "completed": "false"
-                },
-                {
-                  "name": "Tarea 2",
-                  "completed": "true"
-                },
-                {
-                  "name": "fghfgh",
-                  "completed": true
-                },
-                {
-                  "name": "thfgh",
+                  "name": "Completar informes semanales/mensuales",
                   "completed": false
                 },
                 {
-                  "name": "hfhdfh",
-                  "completed": true
+                  "name": "Preparar y enviar correos electrónicos importantes",
+                  "completed": false
                 },
                 {
-                  "name": "dfgh",
+                  "name": "Investigar nuevos proveedores o clientes potenciales",
+                  "completed": false
+                },
+                {
+                  "name": "Realizar seguimiento de pagos pendientes",
+                  "completed": false
+                },
+                {
+                  "name": "Organizar reuniones de equipo o clientes",
+                  "completed": false
+                },
+                {
+                  "name": "Actualizar la base de datos de clientes",
+                  "completed": false
+                },
+                {
+                  "name": "Planificar y coordinar eventos empresariales",
+                  "completed": false
+                },
+                {
+                  "name": "Investigar nuevas estrategias de marketing",
+                  "completed": false
+                },
+                {
+                  "name": "Realizar análisis de competencia",
+                  "completed": false
+                },
+                {
+                  "name": "Revisar y actualizar el contenido del sitio web",
+                  "completed": false
+                },
+                {
+                  "name": "Desarrollar contenido para redes sociales",
+                  "completed": false
+                },
+                {
+                  "name": "Realizar compras de suministros de oficina",
+                  "completed": false
+                },
+                {
+                  "name": "Coordinar envíos y recepciones de mercancías",
+                  "completed": false
+                },
+                {
+                  "name": "Organizar sesiones de capacitación para el personal",
+                  "completed": false
+                },
+                {
+                  "name": "Resolver problemas técnicos o informáticos",
+                  "completed": false
+                },
+                {
+                  "name": "Realizar seguimiento de proyectos en curso",
+                  "completed": false
+                },
+                {
+                  "name": "Participar en conferencias o ferias comerciales",
+                  "completed": false
+                },
+                {
+                  "name": "Colaborar en la elaboración de presupuestos",
+                  "completed": false
+                },
+                {
+                  "name": "Investigar oportunidades de expansión del negocio",
+                  "completed": false
+                },
+                {
+                  "name": "Realizar tareas de mantenimiento en la oficina o almacén",
                   "completed": false
                 }
               ],
