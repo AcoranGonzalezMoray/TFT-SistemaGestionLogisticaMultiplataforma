@@ -25,7 +25,7 @@
             align-items: center;
             justify-content: center;
           " (click)="newMessage(item)">
-                    <img class="uk-border-circle" width="40" height="40" [src]="item.url" alt="Avatar" />
+                    <img class="uk-border-circle" style="object-fit: cover;width: 50px;height: 50px;" width="50" height="50" [src]="item.url" alt="Avatar" />
                     <p style="margin-top: 4px">{{ item.name }}</p>
                 </div>
             </div>
@@ -37,7 +37,7 @@
                     class="uk-animation-slide-right">
                     <div class="uk-grid-small uk-card uk-flex-middle header" uk-grid>
                         <div class="uk-width-auto">
-                            <img class="uk-border-circle" width="40" height="40" src="{{ item?.url }}" alt="Avatar" />
+                            <img class="uk-border-circle" style="object-fit: cover;width: 50px;height: 50px;" width="40" height="40" src="{{ item?.url }}" alt="Avatar" />
                         </div>
                         <div class="uk-width-expand">
                             <h3 class="uk-card-title uk-margin-remove-bottom" style="color: white;">
@@ -60,9 +60,9 @@
             <div class="uk-card-header profile">
                 <div class="uk-grid-small uk-flex-middle " uk-grid>
                     <div class="uk-width-auto">
-                        <img *ngIf="users[0]!=undefined && !isCommunicationClicked" class="uk-border-circle  uk-animation-slide-right" width="40" height="40"
+                        <img *ngIf="users[0]!=undefined && !isCommunicationClicked" style="object-fit: cover;width: 50px;height: 50px;" class="uk-border-circle  uk-animation-slide-right" width="40" height="40"
                             src="{{ users[0].url }}" alt="Avatar" />
-                            <img *ngIf="users[0]!=undefined && isCommunicationClicked" class="uk-border-circle  uk-animation-slide-right" width="40" height="40"
+                            <img *ngIf="users[0]!=undefined && isCommunicationClicked" style="object-fit: cover;width: 50px;height: 50px;" class="uk-border-circle  uk-animation-slide-right" width="40" height="40"
                             src="../../assets/images/message_icon.png" alt="Avatar" />
                     </div>
                     <div class="uk-width-expand" *ngIf="this.userMessages.length!=0 || isCommunicationClicked">

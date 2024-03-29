@@ -186,7 +186,7 @@ export class CommunicationPanelComponent {
   }
   verificarYAgregarSufijo(cadena: string): string {
     // Expresión regular para verificar si la cadena es una URL
-    const regexURL = /^https?:\/\/(?:www\.)?[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(?:\/[^\s]*)?$/;
+    const regexURL = /^https?:/;
 
     if (regexURL.test(cadena)) {
       return cadena;

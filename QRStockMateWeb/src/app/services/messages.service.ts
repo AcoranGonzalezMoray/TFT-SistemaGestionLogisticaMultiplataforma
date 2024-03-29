@@ -11,6 +11,7 @@ import { environment } from 'src/environment/environment';
 export class MessageService {
 
   private apiUrl: string = environment.API + '/Message';
+  private apiUrl2: string = environment.APIv2 + '/Message';
 
   constructor(private http: HttpClient, private router: Router) { }
 
@@ -75,7 +76,7 @@ export class MessageService {
       'Authorization': `Bearer ${token}`
     });
 
-    return this.http.delete<void>(`${this.apiUrl}/DeleteConversationByAngular/${param1}/${param2}`, { headers: headers });
+    return this.http.delete<void>(`${this.apiUrl2}/DeleteConversation/${param1}/${param2}`, { headers: headers });
   }
 
   getNewMessage(format: string): Observable<Message[]> {
