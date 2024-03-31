@@ -99,6 +99,9 @@ Para ejecutar el proyecto, sigue los siguientes pasos:
 1. Primero accede a QRStockMateApp
 2. Luego procede con las siguientes acciones:
  ```
+ //Modifica el archivo com/example/qrstockmateapp/api/services/RetrofitInstance.kt
+ private const val BASE_URL = "https://TU_IP_AQUI:5221/api/v1/"
+
  //Crea un archivo en /QRStockMateApp/local.properties, con el siguiente contenido:
  MAPS_API_KEY="AQUI VA TU API PARA GOOGLE MAP DE GOOGLE CLOUD"
  ```
@@ -107,12 +110,25 @@ Para ejecutar el proyecto, sigue los siguientes pasos:
 1. Primero accede a QRStockMateSL
 2. Luego procede con las siguientes acciones:
  ```
+ //Modifica y pon tu ip en/QRStockMateSL/QRStockMate/Properties/launchSetting
+"https": {
+  "commandName": "Project",
+  "dotnetRunMessages": true,
+  "launchBrowser": true,
+  "launchUrl": "swagger",
+  "applicationUrl": "https://localhost:7220;https://TU_IP_AQUI:5221",
+  "environmentVariables": {
+    "ASPNETCORE_ENVIRONMENT": "Development"
+  }
+},
+
  //Crea un archivo en /QRStockMateSL/QRStockMate.AplicationCore/Entities/keySMPT.cs, con el siguiente contenido:
 public static class Key {
 		public static readonly string ApiKeyFirebase = "AQUI VA TU API DE FIREBASE";
 		public static readonly string ApiKey= "AQUI VA TU CONTRASEÑA DE APLICACION DE UNA CUENTA GOOGLE PARA LA NOTIFICACION POR CORREO";
 }
-// Con SQLServer SSMS Instalado ejecuta los siguientes comando en Visual Studio
+
+// Con SQLServer y  SSMS Instalado ejecuta los siguientes comando en Visual Studio
 
 	//Si existe la carpeta Migrations
 	Update-Database
