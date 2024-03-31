@@ -10,7 +10,7 @@
 <img src="https://img.shields.io/badge/Backend-Firebase|SqlServer|ASP.NET|Swagger|WebHook-orange"/>
 </p>
 
-<p>QRStockMate es un proyecto que.</p> 
+<p>QRStockMate es un Sistema de gestión logística multiplataforma, que permite a las empresas controlar de forma eficiente y precisa sus inventarios, almacenes, empleados asociados, vehículos, rutas logísticas, gestiones de capacidad máxima y chat para comunicaciones además de implementar funciones basados en roles</p> 
 
 Dashboard            |  Transportation Tracking
 :-------------------------:|:-------------------------:
@@ -34,20 +34,32 @@ Este Trabajo Fin de Grado propone el desarrollo de una aplicación logística av
 
 ## Funciones
 El sistema QRStockMate tiene las siguientes funcionalidades entre otras:
-##### Cliente Android / Web
-<li>Seguimiento de transportes.</li>
-<li>Funcionalidades basadas en roles.</li>
-<li>Chat completo con funcionalidad de audio llamadas y envío de archivos en vivo.</li>
-<li>Registro de almacenes, artículos, vehículos, etc.</li>
-<li>Gestión de empleados de la empresa de logística.</li>
-<li>Versión web para monitorizar todos esos componentes.</li>
-<li>Dashboard totalmente personalizable con gráficas en movimiento y widgets u otro tipo de componentes.</li>
+##### Cliente Android 
+<li>Registro de productos.</li>
+<li>CRUD de almacenes, usuarios, productos, palets, vehículos y rutas.</li>
+<li>Lectura de códigos QR, para registrar productos.</li>
+<li>Entrada y salida de productos, palets y vehículos.</li>
+<li>Historial de transacciones de toda actividad con exportación a medios externos como Excel.</li>
+<li>Búsqueda y filtros.</li>
+<li>Seguridad y Acceso Controlado, es decir uso de sistema de autenticación desarrollado en el backend, y acceso a funcionalidades según el rol.</li>
+<li>Gestión de Almacenes Centralizada.</li>
+<li>Gestión de vehículos en posesión por la empresa con lógica de carga máxima.</li>
+<li>Gestión de rutas logísticas para transportar mercancía entre los almacenes.</li>
+<li>Chat general para mandar comunicaciones.</li>
+<li>Panel para usuarios con rol ‘Carrier, para ver las mercancías que tienen pendientes a entregar ese día y capacidad para crear rutas logísticas para transportarlas.</li>
 <br>
 
 Android Screen (not all)          |
 :-------------------------:|
 ![](https://github.com/AcoranGonzalezMoray/TFT-SistemaGestionLogisticaMultiplataforma/blob/main/AssetsDoc/image%20(4).png)  |  
 
+##### Cliente Web 
+<li>Uso exclusivo para rol “Director” y “Administrador”.</li>
+<li>Implementación de funcionalidades RUD de la app, a excepción de 'Funcionalidad de creación de cuenta' 'Lector QR'</li>
+<li>Módulo para importar items desde un excel</li>
+<li>Exportación de datos a excel</li>
+<li>Dashboard donde el usuario puede gestionar vistas de estadísticas sobre la actividad en la empresa (transportes en periodos de tiempo, actividad empleados, rutas, etc)</li>
+<br>
 
  Web Tracking            |  App Tracking
 :-------------------------:|:-------------------------:
