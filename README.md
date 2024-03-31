@@ -124,6 +124,10 @@ Para ejecutar el proyecto, sigue los siguientes pasos:
  - .NET WebHooks: HealthCheck UI - WebHooks
  - DOC: Swagger
 
+Clean Arquitecture           |  App Arquitecture
+:-------------------------:|:-------------------------:
+![](https://github.com/AcoranGonzalezMoray/QRStockMate/blob/main/assets/back-arq.png)  |  ![](https://developer.android.com/static/topic/libraries/architecture/images/mad-arch-overview.png?hl=es-419)
+
 ### Frontend/Clientes
  - Aplicación Móvil: Android Studio (Kotlin, JetCompose, SDK), Google Map
  - Aplicación Web: Framework Angular (Typescript), Map Tilter, Gmail
