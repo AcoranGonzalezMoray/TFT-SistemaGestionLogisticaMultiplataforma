@@ -12,11 +12,11 @@
 
 <p>QRStockMate es un proyecto que.</p> 
 
+Dashboard            |  Transportation Tracking
+:-------------------------:|:-------------------------:
+![](https://github.com/AcoranGonzalezMoray/TFT-SistemaGestionLogisticaMultiplataforma/blob/main/AssetsDoc/Captura%20de%20pantalla%202024-03-29%20215723.png)  |  ![](./AssetsDoc/Screenshot_20240329_213652.png)
 
-<img src="./AssetsDoc/2024-03-29-21-59-39.gif"> <img src="./AssetsDoc/2024-03-29-21-35-37.gif>
-
-
-
+ 
 ## Contenido
 <div>
 
@@ -33,8 +33,8 @@ En el entorno digital actual, las aplicaciones logísticas desempeñan un papel 
 Este Trabajo Fin de Grado propone el desarrollo de una aplicación logística avanzada, diseñada tanto para web como para dispositivos móviles Android. El objetivo principal es crear un sistema de gestión integral que facilite las operaciones logísticas, mejorando la eficiencia, la precisión y la capacidad de respuesta de las empresas frente a las demandas del mercado.
 
 ## Funciones
-El sistema QRStockMate tiene las siguientes funcionalidades:
-
+El sistema QRStockMate tiene las siguientes funcionalidades entre otras:
+##### Cliente Android / Web
 <li>Seguimiento de transportes.</li>
 <li>Funcionalidades basadas en roles.</li>
 <li>Chat completo con funcionalidad de audio llamadas y envío de archivos en vivo.</li>
@@ -42,30 +42,80 @@ El sistema QRStockMate tiene las siguientes funcionalidades:
 <li>Gestión de empleados de la empresa de logística.</li>
 <li>Versión web para monitorizar todos esos componentes.</li>
 <li>Dashboard totalmente personalizable con gráficas en movimiento y widgets u otro tipo de componentes.</li>
+<br>
+
+Android Screen (not all)          |
+:-------------------------:|
+![](https://github.com/AcoranGonzalezMoray/TFT-SistemaGestionLogisticaMultiplataforma/blob/main/AssetsDoc/image%20(4).png)  |  
 
 
-<img src="./AssetsDoc/image (4).png">
+ Web Tracking            |  App Tracking
+:-------------------------:|:-------------------------:
+![](https://github.com/AcoranGonzalezMoray/TFT-SistemaGestionLogisticaMultiplataforma/blob/main/AssetsDoc/Captura%20de%20pantalla%202024-03-29%20214656.png)  |  ![](https://github.com/AcoranGonzalezMoray/TFT-SistemaGestionLogisticaMultiplataforma/blob/main/AssetsDoc/2024-03-29-21-35-37.gif)
+
+
+#### API
+<li>.NET Health check</li>
+<li>Swagger Doc</li>
+<li>.NET WebHooks</li>
+<br>
+
+Health check           |  WebHooks | Swagger
+:-------------------------:|:-------------------------:|:-------------------------:
+![]()  |  ![]() |  ![]()
+
 
 
 ## Ejecución
 Para ejecutar el proyecto, sigue los siguientes pasos:
+### Aplicación Web:
+1. Primero accede a QRStockMateWeb
+2. Luego procede con las siguientes acciones:
+ ```
+ // descarga las dependencias
+ npm i 
 
-Clona este repositorio.
-Instala las dependencias utilizando npm install.
-Inicia la aplicación usando ng serve.
-Abre tu navegador y accede a http://localhost:4200.
-Tecnologías
-Backend
-Arquitectura: Arquitectura Limpia
-API: ASP.NET y Visual Studio (C#)
-BD Relacional: SqlServer
-BD No Relacional: Firebase Storage
-Seguridad del Sistema: JsonWebToken
-Frontend
-Aplicación Móvil: Android Studio (Kotlin, JetCompose, SDK)
-Aplicación Web: Framework Angular (Typescript)
-Firmas
-Ver. 18 9/2023
+ //Crea un archivo en /QRStockMateWeb/src/environment/keys.ts, con el siguiente contenido:
+ export const key = {
+     MAP: "AQUI VA TU APIKEY PARA MAPTILTER"
+ }
+
+ // Ejecuta la aplicacion web
+ ng serve -o 
+ ```
+### Aplicación Android:
+1. Primero accede a QRStockMateApp
+2. Luego procede con las siguientes acciones:
+ ```
+ //Crea un archivo en /QRStockMateApp/local.properties, con el siguiente contenido:
+ MAPS_API_KEY="AQUI VA TU API PARA GOOGLE MAP DE GOOGLE CLOUD"
+ ```
+
+### Aplicación API:
+1. Primero accede a QRStockMateSL
+2. Luego procede con las siguientes acciones:
+ ```
+ //Crea un archivo en /QRStockMateSL/QRStockMate.AplicationCore/Entities/keySMPT.cs, con el siguiente contenido:
+	public static class Key {
+			public static readonly string ApiKeyFirebase = "AQUI VA TU API DE FIREBASE";
+			public static readonly string ApiKey= "AQUI VA TU CONTRASEÑA DE APLICACION DE UNA CUENTA GOOGLE PARA LA NOTIFICACION POR CORREO";
+	}
+ ```
+## Tecnologías Y Arquitecturas
+### Backend
+ - Arquitectura: Arquitectura Limpia
+ - API: ASP.NET y Visual Studio (C#)
+ - BD Relacional: SqlServer
+ - BD No Relacional: Firebase Storage
+ - Seguridad del Sistema: JsonWebToken
+ - .NET Health check: HealthCheck UI
+ - .NET WebHooks: HealthCheck UI - WebHooks
+ - DOC: Swagger
+
+### Frontend/Clientes
+ - Aplicación Móvil: Android Studio (Kotlin, JetCompose, SDK), Google Map
+ - Aplicación Web: Framework Angular (Typescript), Map Tilter, Gmail
+
 
 ## Objetivos Personales
 Adquisición de experiencia en el establecimiento de criterios para la toma de decisiones en el ciclo de desarrollo completo de una aplicación software.
