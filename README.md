@@ -108,10 +108,18 @@ Para ejecutar el proyecto, sigue los siguientes pasos:
 2. Luego procede con las siguientes acciones:
  ```
  //Crea un archivo en /QRStockMateSL/QRStockMate.AplicationCore/Entities/keySMPT.cs, con el siguiente contenido:
-	public static class Key {
-			public static readonly string ApiKeyFirebase = "AQUI VA TU API DE FIREBASE";
-			public static readonly string ApiKey= "AQUI VA TU CONTRASEÑA DE APLICACION DE UNA CUENTA GOOGLE PARA LA NOTIFICACION POR CORREO";
-	}
+public static class Key {
+		public static readonly string ApiKeyFirebase = "AQUI VA TU API DE FIREBASE";
+		public static readonly string ApiKey= "AQUI VA TU CONTRASEÑA DE APLICACION DE UNA CUENTA GOOGLE PARA LA NOTIFICACION POR CORREO";
+}
+// Con SQLServer SSMS Instalado ejecuta los siguientes comando en Visual Studio
+
+	//Si existe la carpeta Migrations
+	Update-Database
+
+	//Si no
+	Add-Migration InitialCreate
+	Update-Database
  ```
 ## Tecnologías Y Arquitecturas
 ### Backend
