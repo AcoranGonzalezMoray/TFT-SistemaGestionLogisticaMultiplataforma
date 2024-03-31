@@ -62,7 +62,7 @@ Android Screen (not all)          |
 
 Health check           |  WebHooks | Swagger
 :-------------------------:|:-------------------------:|:-------------------------:
-![]()  |  ![]() |  ![]()
+![](https://github.com/AcoranGonzalezMoray/TFT-SistemaGestionLogisticaMultiplataforma/blob/main/AssetsDoc/Captura%20de%20pantalla%202024-03-31%20173857.png)  |  ![](https://github.com/AcoranGonzalezMoray/TFT-SistemaGestionLogisticaMultiplataforma/blob/main/AssetsDoc/Captura%20de%20pantalla%202024-03-31%20173927.png) |  ![](https://github.com/AcoranGonzalezMoray/TFT-SistemaGestionLogisticaMultiplataforma/blob/main/AssetsDoc/Captura%20de%20pantalla%202024-03-31%20173844.png)
 
 
 
