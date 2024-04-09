@@ -140,6 +140,9 @@ fun VehicleManagementScreen(navController: NavController) {
                     // Agrega un espacio entre elementos si lo deseas
                     Spacer(modifier = Modifier.height(8.dp))
                 }
+                item {
+                    Spacer(modifier = Modifier.padding(bottom = 55.dp))
+                }
             }
         }else {
             Row(

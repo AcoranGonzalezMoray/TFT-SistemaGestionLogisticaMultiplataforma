@@ -1,0 +1,242 @@
+{
+  "FORD": {
+    "modelos": ["Fiesta", "Focus", "Mustang", "Ranger", "Explorer"],
+    "peso_maximo_soportado_kg": 2000
+  },
+  "RENAULT": {
+    "modelos": ["Clio", "Megane", "Captur", "Kadjar", "Talisman"],
+    "peso_maximo_soportado_kg": 1800
+  },
+  "FIAT": {
+    "modelos": ["500", "Panda", "Tipo", "Ducato", "Punto"],
+    "peso_maximo_soportado_kg": 1600
+  },
+  "PEUGEOT": {
+    "modelos": ["208", "308", "3008", "Partner", "Boxer"],
+    "peso_maximo_soportado_kg": 1900
+  },
+  "SEAT": {
+    "modelos": ["Ibiza", "Leon", "Ateca", "Tarraco"],
+    "peso_maximo_soportado_kg": 1800
+  },
+  "IVECO PEGASO": {
+    "modelos": ["Eurocargo", "Stralis", "Trakker"],
+    "peso_maximo_soportado_kg": 25000
+  },
+  "SANTANA": {
+    "modelos": ["PS-10"],
+    "peso_maximo_soportado_kg": 2500
+  },
+  "MERCEDES BENZ": {
+    "modelos": ["A-Class", "C-Class", "E-Class", "S-Class", "Sprinter"],
+    "peso_maximo_soportado_kg": 2200
+  },
+  "VOLKSWAGEN": {
+    "modelos": ["Golf", "Passat", "Tiguan", "Transporter"],
+    "peso_maximo_soportado_kg": 1900
+  },
+  "SUZUKI": {
+    "modelos": ["Swift", "Vitara", "Jimny"],
+    "peso_maximo_soportado_kg": 1700
+  },
+  "OPEL": {
+    "modelos": ["Corsa", "Astra", "Insignia", "Vivaro"],
+    "peso_maximo_soportado_kg": 1800
+  },
+  "CITROEN": {
+    "modelos": ["C3", "C4", "Berlingo", "Jumper"],
+    "peso_maximo_soportado_kg": 1850
+  },
+  "BMW": {
+    "modelos": ["3 Series", "5 Series", "X3", "X5"],
+    "peso_maximo_soportado_kg": 2100
+  },
+  "AUDI": {
+    "modelos": ["A3", "A4", "Q5", "Q7"],
+    "peso_maximo_soportado_kg": 2000
+  },
+  "ROVER": {
+    "modelos": ["Mini", "75"],
+    "peso_maximo_soportado_kg": 1750
+  },
+  "VOLVO": {
+    "modelos": ["XC40", "XC60", "XC90", "V90"],
+    "peso_maximo_soportado_kg": 1950
+  },
+  "TOYOTA": {
+    "modelos": ["Yaris", "Corolla", "RAV4", "Land Cruiser"],
+    "peso_maximo_soportado_kg": 1850
+  },
+  "ALFA ROMEO": {
+    "modelos": ["Giulietta", "Stelvio"],
+    "peso_maximo_soportado_kg": 1800
+  },
+  "SKODA": {
+    "modelos": ["Octavia", "Superb", "Kodiaq"],
+    "peso_maximo_soportado_kg": 1900
+  },
+  "LANCIA": {
+    "modelos": ["Ypsilon", "Thema"],
+    "peso_maximo_soportado_kg": 1700
+  },
+  "HYUNDAI": {
+    "modelos": ["i10", "i30", "Tucson", "Santa Fe"],
+    "peso_maximo_soportado_kg": 1800
+  },
+  "CHRISLER": {
+    "modelos": ["300"],
+    "peso_maximo_soportado_kg": 2000
+  },
+  "HONDA": {
+    "modelos": ["Civic", "Accord", "CR-V"],
+    "peso_maximo_soportado_kg": 1750
+  },
+  "SAAB": {
+    "modelos": ["9-3", "9-5"],
+    "peso_maximo_soportado_kg": 1850
+  },
+  "MITSUBISHI": {
+    "modelos": ["Lancer", "Outlander", "Pajero"],
+    "peso_maximo_soportado_kg": 1800
+  },
+  "SUBARU": {
+    "modelos": ["Impreza", "Forester", "Outback"],
+    "peso_maximo_soportado_kg": 1750
+  },
+  "JAGUAR": {
+    "modelos": ["XE", "XF", "F-Pace"],
+    "peso_maximo_soportado_kg": 1900
+  },
+  "MAZDA": {
+    "modelos": ["2", "3", "CX-5"],
+    "peso_maximo_soportado_kg": 1750
+  },
+  "LADA": {
+    "modelos": ["Granta", "Vesta", "4x4"],
+    "peso_maximo_soportado_kg": 1700
+  },
+  "INNOCENTI": {
+    "modelos": ["Mini", "Elba"],
+    "peso_maximo_soportado_kg": 1500
+  },
+  "PORSCHE": {
+    "modelos": ["911", "Cayenne", "Panamera"],
+    "peso_maximo_soportado_kg": 2000
+  },
+  "PONTIAC": {
+    "modelos": ["Firebird", "Trans Am"],
+    "peso_maximo_soportado_kg": 1800
+  },
+  "DAIHATSU": {
+    "modelos": ["Cuore", "Sirion", "Terios"],
+    "peso_maximo_soportado_kg": 1600
+  },
+  "DAEWOO": {
+    "modelos": ["Matiz", "Lanos", "Nexia"],
+    "peso_maximo_soportado_kg": 1650
+  },
+  "KIA": {
+    "modelos": ["Rio", "Sportage", "Sorento"],
+    "peso_maximo_soportado_kg": 1750
+  },
+  "SSANGYONG": {
+    "modelos": ["Tivoli", "Korando", "Rexton"],
+    "peso_maximo_soportado_kg": 1850
+  },
+  "JEEP": {
+    "modelos": ["Wrangler", "Cherokee", "Grand Cherokee"],
+    "peso_maximo_soportado_kg": 1900
+  },
+  "LAND ROVER": {
+    "modelos": ["Discovery", "Range Rover Evoque", "Defender"],
+    "peso_maximo_soportado_kg": 2100
+  },
+  "MAVERICK": {
+    "modelos": ["Pickup"],
+    "peso_maximo_soportado_kg": 2000
+  },
+  "TATA": {
+    "modelos": ["Nexon", "Harrier"],
+    "peso_maximo_soportado_kg": 1800
+  },
+  "NISSAN": {
+    "modelos": ["Micra", "Qashqai", "X-Trail", "Navara"],
+    "peso_maximo_soportado_kg": 1850
+  },
+  "CHEVROLET": {
+    "modelos": ["Spark", "Cruze", "Traverse"],
+    "peso_maximo_soportado_kg": 1700
+  },
+  "LEXUS": {
+    "modelos": ["IS", "RX", "NX"],
+    "peso_maximo_soportado_kg": 1900
+  },
+  "DACIA": {
+    "modelos": ["Sandero", "Duster", "Logan"],
+    "peso_maximo_soportado_kg": 1700
+  },
+  "DODGE": {
+    "modelos": ["Challenger", "Durango", "Journey"],
+    "peso_maximo_soportado_kg": 1950
+  },
+  "SCANIA": {
+    "modelos": ["R-Series", "S-Series", "P-Series"],
+    "peso_maximo_soportado_kg": 28000
+  },
+  "ISUZU": {
+    "modelos": ["D-Max"],
+    "peso_maximo_soportado_kg": 2000
+  },
+  "SAIC MOTOR": {
+    "modelos": ["MG ZS EV", "Roewe RX5"],
+    "peso_maximo_soportado_kg": 1800
+  },
+  "Tesla": {
+    "modelos": ["Model 3", "Model S", "Model X"],
+    "peso_maximo_soportado_kg": 2100
+  },
+  "AIWAYS": {
+    "modelos": ["U5"],
+    "peso_maximo_soportado_kg": 1800
+  },
+  "MG": {
+    "modelos": ["MG3", "MG5"],
+    "peso_maximo_soportado_kg": 1700
+  },
+  "MAXUS": {
+    "modelos": ["Deliver 9", "eDELIVER 3"],
+    "peso_maximo_soportado_kg": 2000
+  },
+  "CUPRA": {
+    "modelos": ["Formentor"],
+    "peso_maximo_soportado_kg": 1850
+  },
+  "INFINITI": {
+    "modelos": ["Q50", "QX50"],
+    "peso_maximo_soportado_kg": 1950
+  },
+  "MASERATI": {
+    "modelos": ["Ghibli", "Levante"],
+    "peso_maximo_soportado_kg": 2100
+  },
+  "LYNK & CO ": {
+    "modelos": ["01", "02"],
+    "peso_maximo_soportado_kg": 1800
+  },
+  "YOYO": {
+    "modelos": ["Urban EV"],
+    "peso_maximo_soportado_kg": 1600
+  },
+  "MICRO": {
+    "modelos": ["Microlino"],
+    "peso_maximo_soportado_kg": 700
+  },
+  "OMODA": {
+    "modelos": ["OM 01"],
+    "peso_maximo_soportado_kg": 1400
+  },
+  "JAECOO": {
+    "modelos": ["JA 01", "JA 02"],
+    "peso_maximo_soportado_kg": 1600
+  }
+}

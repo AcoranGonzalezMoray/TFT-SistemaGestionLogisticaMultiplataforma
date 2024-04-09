@@ -5,6 +5,8 @@ import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,6 +23,8 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.DropdownMenu
+import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
@@ -29,6 +33,7 @@ import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.MaterialTheme
@@ -58,8 +63,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.json.JSONObject
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+
 
 @OptIn(DelicateCoroutinesApi::class)
 @Composable
@@ -75,13 +82,25 @@ fun AddVehicleScreen(navController: NavController){
         maxLoad = 1500.0,
         location = ""
     )
+    val context = LocalContext.current
+    val jsonString = context.resources.openRawResource(R.raw.models).bufferedReader().use { it.readText() }
+    val jsonObject = remember { JSONObject(jsonString) }
+
+    val makes = jsonObject.keys().asSequence().toList()
+    var selectedMake by remember { mutableStateOf("Select an existing car make") }
+    var selectedMakeIndex by remember { mutableStateOf(0) }
+
+    var isMenuExpandedMake by remember { mutableStateOf(false) }
+
+    var selectedModel by remember { mutableStateOf("Select an existing model to associate with the car make") }
+    var isMenuExpandedModel by remember { mutableStateOf(false) }
 
     val focusManager = LocalFocusManager.current
 
 
     val isloading by remember { mutableStateOf(false) }
 
-    val context = LocalContext.current
+
 
     val addVehicle : () -> Unit = {
         if (vehicle.code.isNotBlank() &&
@@ -204,47 +223,125 @@ fun AddVehicleScreen(navController: NavController){
                         var licensePlate by remember { mutableStateOf(it.licensePlate) }
                         var maxLoad by remember { mutableStateOf(it.maxLoad.toString()) }
 
-                        TextField(
-                            value = make,
-                            label = { Text("Make", color = MaterialTheme.colorScheme.outlineVariant) },
-                            onValueChange = { make = it },
-                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-                            keyboardActions = KeyboardActions(
-                                onNext = {
-                                    focusManager.moveFocus(FocusDirection.Down)
-                                }
-                            ),
-                            colors = customTextFieldColors ,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(4.dp)
-                                .border(
-                                    width = 0.5.dp,
-                                    color = BlueSystem,
-                                    shape = RoundedCornerShape(8.dp)
-                                )
-                        )
+                        Box(modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(4.dp)
+                            .background(Color(0xfff5f6f7))
+                            .border(
+                                width = 0.5.dp,
+                                color = BlueSystem,
+                                shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
 
-                        TextField(
-                            value = model,
-                            label = { Text("Model", color = MaterialTheme.colorScheme.outlineVariant) },
-                            onValueChange = { model = it },
-                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-                            keyboardActions = KeyboardActions(
-                                onNext = {
-                                    focusManager.moveFocus(FocusDirection.Down)
-                                }
-                            ),
-                            colors = customTextFieldColors,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(4.dp)
-                                .border(
-                                    width = 0.5.dp,
-                                    color = BlueSystem,
-                                    shape = RoundedCornerShape(8.dp)
+                            )
+                        ) {
+                            Row(
+                                modifier = Modifier.background(color = MaterialTheme.colorScheme.outline),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                androidx.compose.material3.Text(
+                                    text = selectedMake,
+                                    modifier = Modifier
+                                        .weight(9f)
+                                        .background(color = MaterialTheme.colorScheme.outline)
+                                        .clickable(
+                                            interactionSource = remember { MutableInteractionSource() },
+                                            indication = null
+                                        ) {
+                                            isMenuExpandedMake = true
+                                        }
+                                        .padding(16.dp),
+                                    color = MaterialTheme.colorScheme.primary
                                 )
-                        )
+
+                                DropdownMenu(
+                                    expanded = isMenuExpandedMake,
+                                    onDismissRequest = { isMenuExpandedMake = false },
+                                    modifier = Modifier.fillMaxWidth().background(color = MaterialTheme.colorScheme.secondaryContainer)
+                                ) {
+                                    makes.forEachIndexed{index, mke ->
+                                        DropdownMenuItem(onClick = {
+                                            selectedMake= mke
+                                            selectedMakeIndex = index
+                                            isMenuExpandedMake = false
+                                            val makeObject = jsonObject.getJSONObject(selectedMake)
+                                            val maxLoadKg = makeObject.getInt("peso_maximo_soportado_kg")
+                                            maxLoad = maxLoadKg.toString()
+                                            make = selectedMake
+                                        }, modifier = Modifier
+                                            .padding(5.dp)
+                                            .border(
+                                                width = 0.5.dp,
+                                                color = BlueSystem,
+                                                shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
+
+                                            )) {
+                                            androidx.compose.material3.Text( mke, color = MaterialTheme.colorScheme.primary,)
+                                        }
+                                    }
+                                }
+                                Icon(modifier = Modifier.weight(1f), imageVector = Icons.Filled.ArrowDropDown, contentDescription = null, tint =BlueSystem)
+                            }
+                        }
+
+                        Box(modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(4.dp)
+                            .background(Color(0xfff5f6f7))
+                            .border(
+                                width = 0.5.dp,
+                                color = BlueSystem,
+                                shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
+
+                            )
+                        ) {
+                            Row(
+                                modifier = Modifier.background(color = MaterialTheme.colorScheme.outline),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                androidx.compose.material3.Text(
+                                    text = selectedModel,
+                                    modifier = Modifier
+                                        .weight(9f)
+                                        .background(color = MaterialTheme.colorScheme.outline)
+                                        .clickable(
+                                            interactionSource = remember { MutableInteractionSource() },
+                                            indication = null
+                                        ) {
+                                            isMenuExpandedModel = true
+                                        }
+                                        .padding(16.dp),
+                                    color = MaterialTheme.colorScheme.primary
+                                )
+
+                                DropdownMenu(
+                                    expanded = isMenuExpandedModel,
+                                    onDismissRequest = { isMenuExpandedModel = false },
+                                    modifier = Modifier.fillMaxWidth().background(color = MaterialTheme.colorScheme.secondaryContainer)
+                                ) {
+                                    val selectedMake = makes[selectedMakeIndex]
+                                    val makeObject = jsonObject.getJSONObject(selectedMake)
+                                    val models = makeObject.getJSONArray("modelos")
+                                    for (i in 0 until models.length()) {
+                                        val localModel = models.getString(i)
+                                        DropdownMenuItem(onClick = {
+                                            selectedModel= localModel
+                                            model = localModel
+                                            isMenuExpandedModel = false
+                                        }, modifier = Modifier
+                                            .padding(5.dp)
+                                            .border(
+                                                width = 0.5.dp,
+                                                color = BlueSystem,
+                                                shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
+
+                                            )) {
+                                            androidx.compose.material3.Text( localModel, color = MaterialTheme.colorScheme.primary)
+                                        }
+                                    }
+                                }
+                                Icon(modifier = Modifier.weight(1f), imageVector = Icons.Filled.ArrowDropDown, contentDescription = null, tint =BlueSystem)
+                            }
+                        }
 
                         TextField(
                             value = year,
