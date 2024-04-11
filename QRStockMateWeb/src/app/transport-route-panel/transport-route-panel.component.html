@@ -99,17 +99,17 @@
   <div class="map" #map></div>
   <div class="palet">
     <div style="display: flex;justify-content: center;align-items: center;margin-top: 10px;">
-      <h3>Total: {{totalWeight}} Kg</h3>
+      <h3  style="color:white;">Total: {{totalWeight.toFixed(2)}} Kg</h3>
     </div>
     <hr style="margin-inline: 10px !important;margin: unset;border-color: #1e87f0;">
-    <div *ngFor="let palet of palets; let i = index">
-      <div class="uk-card uk-card-default uk-card-body uk-width-1-2@m"
+    <div  class="palet-child"  *ngFor="let palet of palets; let i = index" >
+      <div class="uk-card uk-card-default uk-card-body uk-width-1-2@m palet-it"
         style="width: 90%;margin: 20px;border-radius: 25px;display: flex;justify-content: space-between;">
         <img src="../../assets/images/pallet.png" width="100px" alt="" style="border-radius: 20px;">
         <div>
           <div class="uk-card-badge uk-label">{{ palet.weight.toFixed(2) }} Kg</div>
           <h3 class="uk-card-title">Nº{{i}}</h3>
-          <p>{{ palet.description }}</p>
+          <a class="uk-button uk-button-default" href="#modal-center" uk-toggle (click)="seeItems(palet.description)">Open</a>
         </div>
       </div>
     </div>
@@ -197,8 +197,26 @@
   </div>
 </div>
 
+<div id="modal-center" class="uk-flex-top" uk-modal>
+    <div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
 
+        <button class="uk-modal-close-default" type="button" uk-close></button>
+        <div *ngFor="let item of itemFilter" style="background-color: #333;" class="uk-card uk-card-default uk-grid-collapse uk-child-width-1-2@s uk-margin" uk-grid>
+          <div class="uk-card-media-left uk-cover-container">
+            <img [src]="item.url !== '' ? item.url : '../../assets/images/item.png'" alt="" uk-cover>
+            <canvas width="600" height="400"></canvas>
+          </div>
+          <div>
+              <div class="uk-card-body">
+                  <h3 style="color: white;" class="uk-card-title">{{item.name}}</h3>
+                  <p>Weigth Per Unit: {{item.weightPerUnit}}</p>
+                  <p>x{{item.stock}}</p>
+              </div>
+          </div>
+      </div>
 
+    </div>
+</div>
 
 <div #notifEmptyT
   onclick="UIkit.notification({message: '<span uk-icon=\'icon: future\'></span> There Are No Transport Routes At This Time', status: 'primary'})">

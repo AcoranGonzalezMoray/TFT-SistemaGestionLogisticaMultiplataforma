@@ -12,6 +12,8 @@ import { rowsAnimation } from 'src/assets/animations';
 import { Warehouse } from '../interfaces/warehouse';
 import { VehicleService } from '../services/vehicle.service';
 import { key } from '../../environment/keys';
+import { Item } from '../interfaces/item';
+import { ItemService } from '../services/item.service';
 
 @Component({
   selector: 'app-transport-route-panel',
@@ -36,15 +38,54 @@ export class TransportRoutePanelComponent {
   warehouses: Warehouse[] | undefined;
   palets: Palet[] = [];
   totalWeight: number = 0;
+  items: Item[]= []
+  itemFilter: Item[]= []
 
-  constructor(private vehicleService: VehicleService, private companyService: CompanyService, private routeService: TransportRouteService, private userService: UserService) { }
+  constructor(private vehicleService: VehicleService, private companyService: CompanyService, private routeService: TransportRouteService, private userService: UserService,
+    private itemService: ItemService
+  ) { }
 
   ngOnInit(): void {
     this.isLoading = true
 
     this.getCompanyByUser()
+    this.loadItems()
   }
 
+  seeItems(des: any[]) {
+    const ids: number[][] = des.map(d => {
+        return [parseInt(d[0].replace(",", "").trim()), parseFloat(d[1].split(":")[1])];
+    }); 
+
+    this.itemFilter = this.items.filter(v => {
+        return ids.some(subArr => subArr[0] === v.id);
+    }); 
+
+   
+    this.itemFilter.forEach(item => {
+      const desIndex = ids.findIndex(subArr => subArr[0] === item.id);
+      if (desIndex !== -1) {
+          item.stock = ids[desIndex][1];
+      }
+  });
+  }
+
+
+
+  loadItems(): void {
+    var stringT = sessionStorage.getItem('token')
+    if (stringT) this.token = stringT
+
+    this.itemService.getAllItems(this.token)
+      .subscribe(items => {
+        this.items = items   
+      }, error => {
+        setTimeout(() => {
+          this.isLoading = false
+          this.notE.nativeElement.click()
+        }, 1000);
+      });
+  }
   parsePalets(paletsString: string): void {
     const [paletsArray, total] = this.parsePaletsString(paletsString);
     this.palets = paletsArray;
@@ -56,36 +97,39 @@ export class TransportRoutePanelComponent {
     let totalWeight = 0;
 
     const trimmedListString = paletsString.trim().slice(1, -1);
-    const trimmedStringComplete = trimmedListString.split("},");
+    const trimmedStringComplete = trimmedListString.split("}, "); //{82=82:2:11.4;, 83=83:2:12.6;|{82=82:1:5.7;}
 
-    for (const item of trimmedStringComplete) {
-      let trimmedString = item.replace("{", "").replace("}", "").trim(); // 46=46:2:201.3;49=49:1:1.0; | 46=46:2:201.3;
-      const mapStrings = trimmedString.split(";");
-
+    for (const item of trimmedStringComplete) {//palets
+      let trimmedString = item.replace("{", "").replace("}", "").trim(); // 82=82:2:11.4;, 83=83:2:12.6;|82=82:1:5.7;
+      const mapStrings = trimmedString.split(";"); // 82=82:2:11.4|, 83=83:2:12.6|
+      let key = ""
+      let value = ""
+      let items = []
+      let weigthLocal = 0.0
       for (const mapStr of mapStrings) {
-        const [key, value] = mapStr.split("=");
+        [key, value] = mapStr.split("=");
 
         if (key.trim() !== "" && value) {
           const weight = parseFloat(value.split(":")[2]);
           if (!isNaN(weight)) {
             totalWeight += weight;
+            weigthLocal += weight
+            items.push([key, value] )
           }
-
-          const palet: Palet = {
-            id: parseInt(key.trim()),
-            description: value.trim() + ";",
-            weight: weight
-          };
-
-          palets.push(palet);
         }
       }
+
+      const palet: Palet = {
+        id: parseInt(key.trim()),
+        description: items,
+        weight: weigthLocal
+      };
+
+      palets.push(palet);
     }
 
     return [palets, totalWeight];
   }
-
-
 
 
 
@@ -514,6 +558,6 @@ export class TransportRoutePanelComponent {
 
 interface Palet {
   id: number;
-  description: string;
+  description: any[];
   weight: number;
 }
