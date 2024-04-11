@@ -1,16 +1,11 @@
 package com.example.qrstockmateapp.screens.Carrier.Route.RouteMinus
 
 
-import android.Manifest
-import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.location.Address
 import android.location.Geocoder
-import android.location.Location
 import android.util.Log
 import android.widget.Toast
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -28,35 +23,26 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.AlertDialog
 import androidx.compose.material.BottomSheetScaffold
-import androidx.compose.material.BottomSheetScaffoldState
 import androidx.compose.material.BottomSheetState
 import androidx.compose.material.BottomSheetValue
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.rememberBottomSheetScaffoldState
 import androidx.compose.material.Button
-import androidx.compose.material.DropdownMenu
-import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.DeleteSweep
-import androidx.compose.material.icons.filled.DesignServices
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Directions
 import androidx.compose.material.icons.filled.DirectionsCar
-import androidx.compose.material.icons.filled.LayersClear
-import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material.icons.filled.Maximize
 import androidx.compose.material.icons.filled.MyLocation
 import androidx.compose.material.icons.filled.PersonPin
-import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.filled.Streetview
-import androidx.compose.material.icons.filled.Tune
-import androidx.compose.material.icons.filled.Undo
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
@@ -66,7 +52,7 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -76,12 +62,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -91,23 +77,22 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.example.qrstockmateapp.R
+import com.example.qrstockmateapp.api.models.Item
 import com.example.qrstockmateapp.api.models.TransportRoute
-import com.example.qrstockmateapp.api.models.Warehouse
 import com.example.qrstockmateapp.api.services.RetrofitInstance
 import com.example.qrstockmateapp.navigation.repository.DataRepository
-import com.example.qrstockmateapp.screens.Carrier.RouteManagement.AddRoute.PaletTemplate
+import com.example.qrstockmateapp.screens.Carrier.RouteManagement.AddRoute.itemTemplate
+import com.example.qrstockmateapp.screens.Carrier.RouteManagement.AddRoute.myMap
 import com.example.qrstockmateapp.screens.Carrier.RouteManagement.UpdateRoute.parsePalets
 import com.example.qrstockmateapp.ui.theme.BlueSystem
 import com.example.qrstockmateapp.ui.theme.isDarkMode
-import com.google.android.gms.location.LocationCallback
-import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationResult
-import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
@@ -120,20 +105,14 @@ import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.Polyline
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.google.maps.android.compose.rememberMarkerState
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.IOException
-import java.lang.Math.atan2
-import java.lang.Math.cos
-import java.lang.Math.sin
-import java.lang.Math.sqrt
 import java.util.Locale
 import kotlin.math.roundToLong
 
@@ -147,7 +126,7 @@ fun RouteMinusScreen(navController: NavController,) {
         )
     )
     val coroutineScope = rememberCoroutineScope()
-
+    var listaItems by remember { mutableStateOf( mutableListOf<Item>()) };
     val context = LocalContext.current
     var mapWeight by remember { mutableStateOf(135.dp) }
 
@@ -184,6 +163,35 @@ fun RouteMinusScreen(navController: NavController,) {
     val initLocation = DataRepository.getVehicles()!!.filter { vehicle -> vehicle.id == route!!.assignedVehicleId}[0]
     currentLocation = LatLng(initLocation.location.split(";")[0].toDouble(), initLocation.location.split(";")[1].toDouble())
 
+    val getItems:()->Unit={
+        GlobalScope.launch(Dispatchers.IO) {
+            var listaAlmacenes = DataRepository.getWarehouses();
+            if (listaAlmacenes != null) {
+                var tmp = mutableListOf<Item>() // Declara tmp como una lista mutable
+                for(warehouse in listaAlmacenes!!) {
+                    if (warehouse != null) {
+                        try {
+                            val itemResponse = RetrofitInstance.api.getItems(warehouse.id);
+                            if (itemResponse.isSuccessful) {
+                                val item = itemResponse.body()
+                                if (item != null) tmp.addAll(item.toMutableList());
+                                Log.d("ItemsNotSuccessful", item?.count().toString())
+                            } else {
+                                Log.d("ItemsNotSuccessful", "NO")
+                            }
+
+                        } catch (e: Exception) {
+                            Log.d("ExceptionItems", "${e.message}")
+                        }
+                    }
+                }
+                listaItems.addAll(tmp)
+            } else {
+                Log.d("La lista es NULL", "NULL")
+            }
+        }
+
+    }
 
     val updateLocation: (id: Int) -> Unit = { vehicleId ->
         coroutineScope.launch(Dispatchers.IO) {
@@ -240,6 +248,7 @@ fun RouteMinusScreen(navController: NavController,) {
 
     ///////////////////////////////////////////
     LaunchedEffect(context) {
+        getItems()
         getLocation()
         coroutineScope.launch {
             updateLocation(initLocation.id)
@@ -288,7 +297,7 @@ fun RouteMinusScreen(navController: NavController,) {
             BottomSheetContent("${geo?.thoroughfare}, ${geo?.subAdminArea}", onReload = { getLocation() },
                 com.example.qrstockmateapp.screens.Carrier.Route.haversine(
                     userRoutePoints
-                ), route)
+                ), route, listaItems)
         },
         sheetPeekHeight = 150.dp, // Establecer la altura mínima del BottomSheet
         sheetElevation = 5.dp,
@@ -445,7 +454,8 @@ fun BottomSheetContent(
     address: String = "",
     onReload: () -> Unit,
     distance: Double,
-    route: TransportRoute?
+    route: TransportRoute?,
+    listaItems: MutableList<Item>
 ) {
     val distanceRounded = (distance * 100.0).roundToLong() / 100.0
     val person = DataRepository.getEmployees()!!.filter{ employee -> employee.id == route!!.carrierId }.firstOrNull()
@@ -671,13 +681,19 @@ fun BottomSheetContent(
         totalWeight = total
 
         mapEuroPalet.forEachIndexed { index, map ->
-            LocalPaletTemplate(index,map = map, onDelete = { weight -> })
+            LocalPaletTemplate(index,map = map, onDelete = { weight -> }, listaItems)
         }
     }
 }
 @Composable
-fun LocalPaletTemplate(index: Int, map: Map<Int, String>, onDelete: (Double) -> Unit) {
+fun LocalPaletTemplate(
+    index: Int,
+    map: Map<Int, String>,
+    onDelete: (Double) -> Unit,
+    listaItems: MutableList<Item>
+) {
     var weight by remember(map) { mutableStateOf(0.0) }
+    val dialogShown = remember { mutableStateOf(false) }
 
     // Calcular el peso cada vez que cambia el mapa
     LaunchedEffect(map) {
@@ -691,7 +707,7 @@ fun LocalPaletTemplate(index: Int, map: Map<Int, String>, onDelete: (Double) -> 
         modifier = Modifier
             .fillMaxWidth()
             .padding(start = 25.dp, end = 25.dp),
-        onClick = { /* Acción al hacer clic en el botón */ },
+        onClick = { dialogShown.value = true },
         colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
             containerColor = MaterialTheme.colorScheme.secondaryContainer
         ),
@@ -726,6 +742,97 @@ fun LocalPaletTemplate(index: Int, map: Map<Int, String>, onDelete: (Double) -> 
                     color = BlueSystem,
                 )
             }
+        }
+        if (dialogShown.value) {
+            Dialog(
+                onDismissRequest = { dialogShown.value = false },
+                properties = DialogProperties(
+                    dismissOnClickOutside = true,
+                    dismissOnBackPress = true
+                ),
+                content = {
+                    Column(
+                        modifier = Modifier
+                            .background( MaterialTheme.colorScheme.background )
+                            .fillMaxWidth()
+                            .padding(6.dp)
+                    ){
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceAround
+                        ) {
+                            Text(text = "Content of palet", fontWeight = FontWeight.Bold,  color = MaterialTheme.colorScheme.primary )
+                            TextButton(
+                                onClick = {dialogShown.value = false},
+                                colors = ButtonDefaults.textButtonColors(contentColor = Color.Gray)
+                            ) {
+                                androidx.compose.material.Icon(imageVector = Icons.Filled.Clear, contentDescription = null, tint = Color.Gray)
+                                Text("Cancel", color = MaterialTheme.colorScheme.primary )
+                            }
+                        }
+                        map.forEach { (key, value) ->
+                            var (id, stock, weightperunit) = value.split(":")
+                            var items = listaItems.filter { x-> x.id == key}
+                            LazyColumn{
+                                items(items) { product ->
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(16.dp)
+                                            .background(color = MaterialTheme.colorScheme.background )
+                                    ) {
+                                        if (product.url.isNullOrBlank()) {
+                                            Image(
+                                                painter = painterResource(id = R.drawable.item), // Reemplaza con tu recurso de imagen
+                                                contentDescription = null,
+                                                modifier = Modifier
+                                                    .size(80.dp)
+                                                    .clip(CircleShape),
+                                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
+                                            )
+                                        } else {
+                                            // Si hay una URL válida, cargar la imagen usando Coil
+                                            val painter = rememberImagePainter(
+                                                data = product.url,
+                                                builder = {
+                                                    crossfade(true)
+                                                    placeholder(R.drawable.item)
+                                                }
+                                            )
+
+                                            Image(
+                                                painter = painter,
+                                                contentDescription = "User Image",
+                                                modifier = Modifier.size(80.dp)
+                                                    .clip(CircleShape),
+                                                contentScale = ContentScale.Crop
+
+                                            )
+                                        }
+
+                                        Spacer(modifier = Modifier.width(16.dp))
+
+                                        // Contenido a la derecha (nombre, peso por unidad y botones)
+                                        Column(
+                                            modifier = Modifier
+                                                .weight(1f)
+                                                .align(Alignment.CenterVertically)
+                                        ) {
+                                            Text(text = "Name: "+product.name, color = MaterialTheme.colorScheme.primary )
+                                            Text(text = "Weight Per Unit: ${product.weightPerUnit} Kg", color = MaterialTheme.colorScheme.primary )
+                                            Text(text = "Units: ${stock}", color = MaterialTheme.colorScheme.primary )
+                                        }
+                                        Spacer(modifier = Modifier.height(8.dp))
+
+
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            )
         }
     }
 }

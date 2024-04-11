@@ -59,6 +59,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -66,6 +67,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavController
+import coil.compose.rememberImagePainter
 import com.example.qrstockmateapp.R
 import com.example.qrstockmateapp.api.models.Item
 import com.example.qrstockmateapp.api.models.Transaction
@@ -88,48 +90,6 @@ import java.time.format.DateTimeFormatter
 
 
 val myMap = mutableMapOf<Int, String>()
-
-fun parsePalets(paletsString: String):  Pair<List<Map<Int, String>>, Double> {
-    val mapList = mutableListOf<Map<Int, String>>()
-    // [{46=46:2:201.3;, 49=49:1:1.0;}, {46=46:2:201.3;}] 1
-    // [{46=46:2:201.3;}, {49=49:1:1.0;}] 2
-
-
-    var trimmedListString= paletsString.trim('[', ']')
-    var trimmedStringComplete = trimmedListString.split("},") // [{46=46:2:201.3;, 49=49:1:1.0; , {46=46:2:201.3;}]
-
-    var total: Double = 0.0
-
-    for (i in trimmedStringComplete){
-        var trimmedString = i.toString()
-        trimmedString = trimmedString.replace("{", "").replace("}", "").replace(",", "").trim()// 46=46:2:201.3;49=49:1:1.0; | 46=46:2:201.3;
-
-        val mapStrings = trimmedString.split(";")
-
-        val map = mutableMapOf<Int, String>()
-        // Iterar sobre los mapas en la lista
-        for (mapStr in mapStrings) {
-
-            if(mapStr.split("=")[0].trim()!="" &&  mapStr.split("=")[1]!=""){
-                val key = mapStr.split("=")[0].trim().toInt()
-                var value = mapStr.split("=")[1].trim()
-
-                total+=value.split(":")[2].toDouble()
-
-                value +=";"
-
-                map[key] = value
-
-            }
-
-        }
-        mapList.add(map)
-    }
-
-
-    return Pair(mapList, total)
-}
-
 
 
 @OptIn(DelicateCoroutinesApi::class)
@@ -892,15 +852,34 @@ fun itemTemplate(item: Item, onCountStateChanged: (Double) -> Unit){
             .padding(16.dp)
             .background(color = MaterialTheme.colorScheme.background )
     ) {
-        // Imagen del producto a la izquierda (puedes personalizar esto según tus necesidades)
-        Image(
-            painter = painterResource(id = R.drawable.item), // Reemplaza con tu recurso de imagen
-            contentDescription = null,
-            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
-            modifier = Modifier
-                .size(80.dp)
-                .clip(CircleShape)
-        )
+        if (item.url.isNullOrBlank()) {
+            Image(
+                painter = painterResource(id = R.drawable.item), // Reemplaza con tu recurso de imagen
+                contentDescription = null,
+                modifier = Modifier
+                    .size(80.dp)
+                    .clip(CircleShape),
+                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
+            )
+        } else {
+            // Si hay una URL válida, cargar la imagen usando Coil
+            val painter = rememberImagePainter(
+                data = item.url,
+                builder = {
+                    crossfade(true)
+                    placeholder(R.drawable.item)
+                }
+            )
+
+            Image(
+                painter = painter,
+                contentDescription = "User Image",
+                modifier = Modifier.size(80.dp)
+                    .clip(CircleShape),
+                contentScale = ContentScale.Crop
+
+            )
+        }
 
         Spacer(modifier = Modifier.width(16.dp))
 
@@ -1059,5 +1038,46 @@ fun PaletTemplate(index:Int, map: Map<Int, String>, onDelete: (Double) -> Unit) 
             }
         }
     }
+}
+
+fun parsePalets(paletsString: String):  Pair<List<Map<Int, String>>, Double> {
+    val mapList = mutableListOf<Map<Int, String>>()
+    // [{46=46:2:201.3;, 49=49:1:1.0;}, {46=46:2:201.3;}] 1
+    // [{46=46:2:201.3;}, {49=49:1:1.0;}] 2
+
+
+    var trimmedListString= paletsString.trim('[', ']')
+    var trimmedStringComplete = trimmedListString.split("},") // [{46=46:2:201.3;, 49=49:1:1.0; , {46=46:2:201.3;}]
+
+    var total: Double = 0.0
+
+    for (i in trimmedStringComplete){
+        var trimmedString = i.toString()
+        trimmedString = trimmedString.replace("{", "").replace("}", "").replace(",", "").trim()// 46=46:2:201.3;49=49:1:1.0; | 46=46:2:201.3;
+
+        val mapStrings = trimmedString.split(";")
+
+        val map = mutableMapOf<Int, String>()
+        // Iterar sobre los mapas en la lista
+        for (mapStr in mapStrings) {
+
+            if(mapStr.split("=")[0].trim()!="" &&  mapStr.split("=")[1]!=""){
+                val key = mapStr.split("=")[0].trim().toInt()
+                var value = mapStr.split("=")[1].trim()
+
+                total+=value.split(":")[2].toDouble()
+
+                value +=";"
+
+                map[key] = value
+
+            }
+
+        }
+        mapList.add(map)
+    }
+
+
+    return Pair(mapList, total)
 }
 

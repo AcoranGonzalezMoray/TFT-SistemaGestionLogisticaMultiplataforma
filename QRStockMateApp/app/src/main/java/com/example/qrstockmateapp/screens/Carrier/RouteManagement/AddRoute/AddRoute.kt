@@ -60,6 +60,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -67,6 +68,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavController
+import coil.compose.rememberImagePainter
 import com.example.qrstockmateapp.R
 import com.example.qrstockmateapp.api.models.Item
 import com.example.qrstockmateapp.api.models.Transaction
@@ -882,7 +884,34 @@ fun itemTemplate(item: Item, onCountStateChanged: (Double) -> Unit){
                 .clip(CircleShape),
             colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
         )
+        if (item.url.isNullOrBlank()) {
+            Image(
+                painter = painterResource(id = R.drawable.item), // Reemplaza con tu recurso de imagen
+                contentDescription = null,
+                modifier = Modifier
+                    .size(80.dp)
+                    .clip(CircleShape),
+                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
+            )
+        } else {
+            // Si hay una URL válida, cargar la imagen usando Coil
+            val painter = rememberImagePainter(
+                data = item.url,
+                builder = {
+                    crossfade(true)
+                    placeholder(R.drawable.item)
+                }
+            )
 
+            Image(
+                painter = painter,
+                contentDescription = "User Image",
+                modifier = Modifier.size(80.dp)
+                    .clip(CircleShape),
+                contentScale = ContentScale.Crop
+
+            )
+        }
         Spacer(modifier = Modifier.width(16.dp))
 
         // Contenido a la derecha (nombre, peso por unidad y botones)
