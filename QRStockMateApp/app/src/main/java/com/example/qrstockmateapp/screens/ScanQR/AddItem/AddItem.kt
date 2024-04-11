@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
@@ -37,6 +38,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
@@ -50,10 +53,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.text.isDigitsOnly
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.example.qrstockmateapp.R
@@ -69,6 +75,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterialApi::class)
@@ -96,9 +103,24 @@ fun AddItemScreen(navController: NavController) {
 
     var warehouses by remember { mutableStateOf(emptyList<Warehouse>()) }
 
+    var warehouseLocal by remember { mutableStateOf<Warehouse?>(null) }
+
+
+
+    var numberofplants by remember { mutableStateOf(0) }
+    var hallwaysPerPlant = remember { mutableStateListOf<Int>() }
+    var racksPerHallway = remember { mutableStateMapOf<Int, MutableList<String>>() }
+
+
+    var plant by remember { mutableStateOf(0) }
+    var hallway by remember { mutableStateOf(0) }
+    var racks by remember { mutableStateOf("") }
+
     var location by remember { mutableStateOf(item?.location.toString()) }
     var name by remember { mutableStateOf(item?.name.toString()) }
     var weight by remember { mutableStateOf(item?.weightPerUnit.toString()) }
+
+
     LaunchedEffect(Unit) {
         val companyResponse = RetrofitInstance.api.getCompanyByUser(DataRepository.getUser()!!)
         if (companyResponse.isSuccessful) {
@@ -117,8 +139,45 @@ fun AddItemScreen(navController: NavController) {
             }
         }
     }
+    fun updateOrganizationData(organizationString: String) {
+        val lines = organizationString.lines() // Dividimos la cadena en líneas
+
+        // Extraemos el número de plantas de la primera línea
+        val numberOfPlants = lines.first().split(":").last().trim().toInt()
+        numberofplants = numberOfPlants
+
+        // Limpiamos las listas de pasillos y estanterías antes de actualizarlas
+        hallwaysPerPlant.clear()
+        racksPerHallway.clear()
+
+        // Iteramos sobre las líneas restantes para actualizar los pasillos y las estanterías
+        var currentPlantIndex = -1
+        var currentHallwayIndex = -1
+        lines.drop(2).forEach { line ->
+            when {
+                line.startsWith("Plant") -> {
+                    currentPlantIndex++
+                    hallwaysPerPlant.add(0)
+                    currentHallwayIndex = -1
+                }
+                line.startsWith("\tHallway") -> {
+                    currentHallwayIndex++
+                    hallwaysPerPlant[currentPlantIndex]++
+                }
+                line.startsWith("\t\tRacks Size") -> {
+                    val rackString = line.split(":").last().trim()
+                    val currentRacksList = racksPerHallway.getOrDefault(currentPlantIndex, mutableListOf()) // Obtener la lista de estantes actual o crear una nueva si no existe
+                    currentRacksList.add(rackString) // Agregar el rack obtenido de la línea actual
+                    racksPerHallway[currentPlantIndex] = currentRacksList // Asignar la lista de estantes al mapa
+                }
+
+            }
+        }
+    }
+
 
     val addItem : (item:Item) -> Unit = {
+        item?.location = "Plant: ${plant}, HallWay: ${hallway}, Rack: ${racks}"
         GlobalScope.launch(Dispatchers.IO) {
             try {
                 if (item != null) {
@@ -148,8 +207,10 @@ fun AddItemScreen(navController: NavController) {
                         }
                     }else{
                         try {
-                            val errorBody = itemResponse.errorBody()?.string()
-                            Log.d("ErrorBody", "$errorBody")
+                            withContext(Dispatchers.Main) {
+                                val errorBody = itemResponse.errorBody()?.string()
+                                Toast.makeText(context, errorBody, Toast.LENGTH_SHORT).show()
+                            }
                         } catch (e: Exception) {
                             Log.e("excepcionUserB", "Error al obtener el cuerpo del error: $e")
                         }
@@ -235,21 +296,69 @@ fun AddItemScreen(navController: NavController) {
                     )
             )
 
-            TextField(
-                value = location,
-                label = { Text("Location: ", color = MaterialTheme.colorScheme.outlineVariant) },
-                onValueChange = { location = it },
-                colors= customTextFieldColors,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(4.dp)
-                    .border(
-                        width = 0.5.dp,
-                        color = BlueSystem,
-                        shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
+            if(warehouseLocal != null){
+                TextField(
+                    value = plant.toString(),
+                    label = { Text("Plant: (0 - ${numberofplants-1})", color = MaterialTheme.colorScheme.outlineVariant) },
+                    onValueChange = {
+                        val newValue = it.toIntOrNull() ?: 0
+                        if (newValue in 0..numberofplants-1) { // Establecer el rango de 0 a 5
+                            plant = newValue
+                        }
+                    },
+                    colors= customTextFieldColors,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(4.dp)
+                        .border(
+                            width = 0.5.dp,
+                            color = BlueSystem,
+                            shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
 
-                    )
-            )
+                        )
+                )
+                TextField(
+                    value = hallway.toString(),
+                    label = { Text("Hallway: (0 - ${hallwaysPerPlant.get(plant)-1})", color = MaterialTheme.colorScheme.outlineVariant) },
+                    onValueChange = {
+                        val newValue = it.toIntOrNull()?:0
+                        if (newValue in 0..hallwaysPerPlant.get(plant)-1) { // Establecer el rango de 0 a 5
+                            hallway =newValue
+                        }
+                    },
+                    colors= customTextFieldColors,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(4.dp)
+                        .border(
+                            width = 0.5.dp,
+                            color = BlueSystem,
+                            shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
+
+                        )
+                )
+                TextField(
+                    value = racks,
+                    label = { Text("Rack: (${racksPerHallway[plant]?.get(hallway)})", color = MaterialTheme.colorScheme.outlineVariant) },
+                    onValueChange = {
+                        if (it.length <= 2) { // Verificar la longitud máxima
+                            racks = it.uppercase()
+                        }
+                    },
+                    colors= customTextFieldColors,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(4.dp)
+                        .border(
+                            width = 0.5.dp,
+                            color = BlueSystem,
+                            shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
+
+                        ) ,
+                )
+            }
 
             TextField(
                 value = weight,
@@ -304,6 +413,8 @@ fun AddItemScreen(navController: NavController) {
                         warehouses.forEach { warehouse ->
                             DropdownMenuItem(onClick = {
                                 selectedOption = "Name : ${warehouse.name} with Id :${warehouse.id}"
+                                warehouseLocal = warehouse
+                                updateOrganizationData(warehouse.organization)
                                 isMenuExpanded = false
                             }, modifier = Modifier
                                 .padding(5.dp)

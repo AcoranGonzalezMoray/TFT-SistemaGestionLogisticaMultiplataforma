@@ -173,8 +173,13 @@ namespace QRStockMate.Controller {
 		public async Task<IActionResult> AddItem(int Id, [FromBody] ItemModel itemModel) {
 			try {
 				var warehouse = await _warehouseService.GetById(Id);
-
 				if (warehouse == null) return NotFound();
+
+
+				var items  = await _warehouseService.GetItems(Id);
+				foreach (var local in items) {
+					if (local.Location == itemModel.Location) return BadRequest("A product already exists in that location.\r\n");
+				}
 
 				var item = _mapper.Map<ItemModel, Item>(itemModel);
 

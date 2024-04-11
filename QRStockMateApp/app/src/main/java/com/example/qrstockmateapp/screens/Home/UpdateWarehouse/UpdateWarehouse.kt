@@ -48,6 +48,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -59,6 +61,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
@@ -70,6 +73,8 @@ import com.example.qrstockmateapp.api.models.User
 import com.example.qrstockmateapp.api.services.RetrofitInstance
 import com.example.qrstockmateapp.navigation.repository.DataRepository
 import com.example.qrstockmateapp.screens.Carrier.Route.PointMarker
+import com.example.qrstockmateapp.screens.Home.AddWarehouse.generateOrganizationString
+import com.example.qrstockmateapp.screens.Home.AddWarehouse.modifyText
 import com.example.qrstockmateapp.ui.theme.BlueSystem
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
@@ -99,6 +104,13 @@ fun UpdateWarehouseScreen(navController: NavController) {
     val focusManager = LocalFocusManager.current
 
     val context = LocalContext.current
+
+    var otherInfo by remember { mutableStateOf("") }
+
+    var numberofplants by remember { mutableStateOf(0) }
+    var hallwaysPerPlant = remember { mutableStateListOf<Int>() }
+    var racksPerHallway = remember { mutableStateMapOf<Int, MutableList<String>>() }
+
 
     val geocoder = Geocoder(context, Locale.getDefault())
 
@@ -185,11 +197,7 @@ fun UpdateWarehouseScreen(navController: NavController) {
     var isMenuExpanded by remember { mutableStateOf(false) }
     val employees = remember { DataRepository.getEmployees()?.filter { it.role == 1 } ?: emptyList() }
 
-    LaunchedEffect(Unit){
-        pinLocation = LatLng(warehouse!!.latitude, warehouse.longitude)
 
-        if(employees!=null && warehouse!=null)selectedOption= "Name: ${employees.find { user: User ->  user.id == warehouse.idAdministrator}?.name}  Role: Administrator Code: ${employees.find { user: User ->  user.id == warehouse.idAdministrator}?.code};${employees.find { user: User ->  user.id == warehouse.idAdministrator}?.id}"
-    }
 
     val customTextFieldColors = TextFieldDefaults.outlinedTextFieldColors(
         textColor = MaterialTheme.colorScheme.primary,
@@ -202,6 +210,7 @@ fun UpdateWarehouseScreen(navController: NavController) {
 
 
     val updateWarehouse : () -> Unit = {
+        warehouse?.organization = generateOrganizationString(numberofplants, hallwaysPerPlant, racksPerHallway, otherInfo)
         GlobalScope.launch(Dispatchers.IO) {
             try {
                 if(warehouse!=null){
@@ -245,6 +254,56 @@ fun UpdateWarehouseScreen(navController: NavController) {
         }
 
     }
+
+
+    fun updateOrganizationData(organizationString: String) {
+        val lines = organizationString.lines() // Dividimos la cadena en líneas
+
+        // Extraemos el número de plantas de la primera línea
+        val numberOfPlants = lines.first().split(":").last().trim().toInt()
+        numberofplants = numberOfPlants
+
+        // Limpiamos las listas de pasillos y estanterías antes de actualizarlas
+        hallwaysPerPlant.clear()
+        racksPerHallway.clear()
+
+        // Iteramos sobre las líneas restantes para actualizar los pasillos y las estanterías
+        var currentPlantIndex = -1
+        var currentHallwayIndex = -1
+        lines.drop(2).forEach { line ->
+            when {
+                line.startsWith("Plant") -> {
+                    currentPlantIndex++
+                    hallwaysPerPlant.add(0)
+                    currentHallwayIndex = -1
+                }
+                line.startsWith("\tHallway") -> {
+                    currentHallwayIndex++
+                    hallwaysPerPlant[currentPlantIndex]++
+                }
+                line.startsWith("\t\tRacks Size") -> {
+                    val rackString = line.split(":").last().trim()
+                    val currentRacksList = racksPerHallway.getOrDefault(currentPlantIndex, mutableListOf()) // Obtener la lista de estantes actual o crear una nueva si no existe
+                    currentRacksList.add(rackString) // Agregar el rack obtenido de la línea actual
+                    racksPerHallway[currentPlantIndex] = currentRacksList // Asignar la lista de estantes al mapa
+                }
+                line.startsWith("Other") -> {
+                    otherInfo = line.split(":", limit = 2)[1].trim()
+                }
+
+            }
+        }
+    }
+
+
+    LaunchedEffect(Unit){
+        pinLocation = LatLng(warehouse!!.latitude, warehouse.longitude)
+        updateOrganizationData(warehouse.organization)
+        if(employees!=null && warehouse!=null)selectedOption= "Name: ${employees.find { user: User ->  user.id == warehouse.idAdministrator}?.name}  Role: Administrator Code: ${employees.find { user: User ->  user.id == warehouse.idAdministrator}?.code};${employees.find { user: User ->  user.id == warehouse.idAdministrator}?.id}"
+    }
+
+
+
     if (isloading){
         Box(
             modifier = Modifier
@@ -374,18 +433,24 @@ fun UpdateWarehouseScreen(navController: NavController) {
 
                                )
                        )
+                       Spacer(modifier = Modifier.height(10.dp))
+
                        TextField(
-                           value = organization,
-                           label = { Text("Organization", color = MaterialTheme.colorScheme.outlineVariant) },
+                           value = numberofplants.toString(),
+                           onValueChange = {
+                               if (it.isEmpty() || it.toIntOrNull() != null) {
+                                   numberofplants = it.toIntOrNull() ?: 0
+                               }
+                           },
                            shape = RoundedCornerShape(8.dp),
-                           onValueChange = { organization = it },
-                           keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                           label = { Text("Number of Plants", color = MaterialTheme.colorScheme.outlineVariant) },
+                           colors = customTextFieldColors,
+                           keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
                            keyboardActions = KeyboardActions(
                                onNext = {
                                    focusManager.moveFocus(FocusDirection.Down)
                                }
                            ),
-                           colors= customTextFieldColors,
                            modifier = Modifier
                                .fillMaxWidth()
                                .padding(4.dp)
@@ -393,9 +458,79 @@ fun UpdateWarehouseScreen(navController: NavController) {
                                    width = 0.5.dp,
                                    color = BlueSystem,
                                    shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
-
-                               )
+                               ),
                        )
+                       Spacer(modifier = Modifier.height(10.dp))
+
+                       if (numberofplants != 0) {
+                           for (i in 0 until numberofplants) {
+                               TextField(
+                                   value = hallwaysPerPlant.getOrNull(i)?.toString() ?: "",
+                                   onValueChange = { newValue ->
+                                       hallwaysPerPlant.getOrNull(i)?.let {
+                                           hallwaysPerPlant[i] = newValue.toIntOrNull() ?: 0
+                                       } ?: hallwaysPerPlant.add(newValue.toIntOrNull() ?: 0)
+                                   },
+                                   shape = RoundedCornerShape(8.dp),
+                                   label = { Text("Number of hallways on plant Nº${i}", color = MaterialTheme.colorScheme.outlineVariant) },
+                                   colors = customTextFieldColors,
+                                   keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                                   keyboardActions = KeyboardActions(
+                                       onNext = {
+                                           focusManager.moveFocus(FocusDirection.Down)
+                                       }
+                                   ),
+                                   modifier = Modifier
+                                       .fillMaxWidth()
+                                       .padding(4.dp)
+                                       .border(
+                                           width = 0.5.dp,
+                                           color = BlueSystem,
+                                           shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
+                                       ),
+                               )
+                               Spacer(modifier = Modifier.height(10.dp))
+                               if (hallwaysPerPlant.isNotEmpty() && hallwaysPerPlant.count() != 0) {
+                                   for (x in 0 until (hallwaysPerPlant.getOrNull(i) ?: 0)) {
+                                       TextField(
+                                           value = racksPerHallway[i]?.getOrNull(x).orEmpty(),
+                                           onValueChange = { newValue ->
+                                               // Modifica el texto para mantener el formato LETRA-LETRA-NUMERO y una longitud máxima de 5
+                                               val modifiedText = modifyText(newValue)
+
+                                               // Actualiza el valor en la lista de racksPerHallway
+                                               val currentRacksList = racksPerHallway[i]?.toMutableList() ?: mutableListOf()
+                                               if (currentRacksList.size <= x) {
+                                                   repeat(x - currentRacksList.size + 1) {
+                                                       currentRacksList.add("") // Añade elementos vacíos para mantener la longitud
+                                                   }
+                                               }
+                                               currentRacksList[x] = modifiedText // Actualiza el valor en la posición x
+                                               racksPerHallway[i] = currentRacksList // Actualiza la lista en el mapa
+                                           },
+                                           shape = RoundedCornerShape(8.dp),
+                                           label = { Text("Racks in hallway ${x + 1} of plant ${i}", color = MaterialTheme.colorScheme.outlineVariant) },
+                                           colors = customTextFieldColors,
+                                           keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                                           keyboardActions = KeyboardActions(
+                                               onNext = {
+                                                   focusManager.moveFocus(FocusDirection.Down)
+                                               }
+                                           ),
+                                           modifier = Modifier
+                                               .fillMaxWidth()
+                                               .padding(4.dp)
+                                               .border(
+                                                   width = 0.5.dp,
+                                                   color = BlueSystem,
+                                                   shape = RoundedCornerShape(8.dp)
+                                               ),
+                                       )
+                                       Spacer(modifier = Modifier.height(10.dp))
+                                   }
+                               }
+                           }
+                       }
                        Spacer(modifier = Modifier.height(10.dp))
                        ElevatedButton(
                            modifier = Modifier
@@ -435,6 +570,30 @@ fun UpdateWarehouseScreen(navController: NavController) {
                            }
                            Spacer(modifier = Modifier.height(10.dp))
                        }
+                       TextField(
+                           value = otherInfo,
+                           onValueChange = { otherInfo = it },
+                           label = { Text("Other information about the warehouse (optional)", color = MaterialTheme.colorScheme.outlineVariant) },
+                           shape = RoundedCornerShape(8.dp),
+                           colors = customTextFieldColors,
+                           keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                           keyboardActions = KeyboardActions(
+                               onNext = {
+                                   focusManager.moveFocus(FocusDirection.Down)
+                               }
+                           ),
+                           modifier = Modifier
+                               .fillMaxWidth()
+                               .padding(4.dp)
+                               .border(
+                                   width = 0.5.dp,
+                                   color = BlueSystem,
+                                   shape = RoundedCornerShape(8.dp) // Ajusta el radio según tus preferencias
+
+                               ),
+                       )
+                       Spacer(modifier = Modifier.height(10.dp))
+
                        TextField(
                            value = location,
                            label = { Text("Location", color = MaterialTheme.colorScheme.outlineVariant) },
