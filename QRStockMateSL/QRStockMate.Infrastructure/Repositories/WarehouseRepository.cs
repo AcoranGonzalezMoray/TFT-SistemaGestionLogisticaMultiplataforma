@@ -4,9 +4,11 @@ using QRStockMate.AplicationCore.Interfaces.Repositories;
 using QRStockMate.Infrastructure.Data;
 
 namespace QRStockMate.Infrastructure.Repositories {
+
 	public class WarehouseRepository : BaseRepository<Warehouse>, IWarehouseRepository {
 		private readonly ApplicationDbContext _context;
 		private readonly IItemRepository _itemRepository;
+
 		public WarehouseRepository(ApplicationDbContext context, IItemRepository itemRepository) : base(context) {
 			_context = context;
 			_itemRepository = itemRepository;
@@ -21,19 +23,20 @@ namespace QRStockMate.Infrastructure.Repositories {
 			warehouse.IdItems += $"{Item.Id};";
 
 			await this.Update(warehouse);
-
 		}
 
 		public async Task<User> GetAdministrator(int WarehouseId) {
 			var Warehouse = await _context.Warehouses.Where(w => w.Id == WarehouseId).FirstOrDefaultAsync();
 			return await _context.Users.Where(u => u.Id == Warehouse.IdAdministrator).FirstOrDefaultAsync();
-
 		}
 
 		public async Task<IEnumerable<Item>> GetItems(int Id) {
 			// 6;7;8;2;
 			var warehouse = await this.GetById(Id);
 			var idItems = warehouse.IdItems;
+
+			if (idItems == "") return [];
+
 			idItems = idItems.TrimEnd(';'); // Elimina el último punto y coma
 			List<int> idList = idItems.Split(';').Select(int.Parse).ToList();
 			var items = await _context.Items.Where(item => idList.Contains(item.Id)).ToListAsync();

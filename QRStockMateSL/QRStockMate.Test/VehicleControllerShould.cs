@@ -1,6 +1,5 @@
-
-
 using AutoMapper;
+using EasyNetQ;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -9,16 +8,19 @@ using QRStockMate.AplicationCore.Interfaces.Services;
 using QRStockMate.Controller;
 
 namespace QRStockMate.Test {
+
 	public class VehicleControllerShould {
 		private Mock<IVehicleService> _vehicleServiceMock;
 		private Mock<IMapper> _mapperMock;
 		private VehicleController _controller;
+
 		[SetUp]
 		public void SetUp() {
 			_vehicleServiceMock = new Mock<IVehicleService>();
 			_mapperMock = new Mock<IMapper>();
-			_controller = new VehicleController(_mapperMock.Object, _vehicleServiceMock.Object);
+			_controller = new VehicleController(_mapperMock.Object, _vehicleServiceMock.Object, RabbitHutch.CreateBus("host=localhost;username=guest;password=guest"));
 		}
+
 		[Test]
 		public async Task UpdateLocation_Returns_NoContent_If_Vehicle_Found() {
 			// Arrange

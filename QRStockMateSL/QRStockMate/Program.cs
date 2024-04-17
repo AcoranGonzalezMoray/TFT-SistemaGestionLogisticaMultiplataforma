@@ -1,5 +1,7 @@
 using Asp.Versioning.ApiExplorer;
 using CoffeeMachine.Api.HealthCheck;
+using EasyNetQ;
+using EasyNetQ.DI;
 using HealthChecks.ApplicationStatus.DependencyInjection;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -14,9 +16,11 @@ using QRStockMate.AplicationCore.Interfaces.Services;
 using QRStockMate.HealthCheck;
 using QRStockMate.Infrastructure.Data;
 using QRStockMate.Infrastructure.Repositories;
+using QRStockMate.QueueService;
 using QRStockMate.Services;
 using QRStockMate.SwaggerConfig;
 using QRStockMate.Utility;
+using RabbitMQ.Client;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Text;
 
@@ -25,7 +29,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers(opt => {
 	var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
 	opt.Filters.Add(new AuthorizeFilter(policy));
-
 });
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -84,6 +87,30 @@ builder.Services.AddScoped(typeof(IMessageRepository), typeof(MessageRepository)
 builder.Services.AddScoped(typeof(ICommunicationService), typeof(CommunicationService));
 builder.Services.AddScoped(typeof(ICommunicationRepository), typeof(CommunicationRepository));
 
+//Consumer
+var bus = RabbitHutch.CreateBus("host=localhost;username=guest;password=guest", serviceRegister => {
+	serviceRegister.Register<ConnectionFactory>(_ => {
+		var connectionFactory = new ConnectionFactory();
+		return connectionFactory;
+	});
+
+	// Configuración del límite máximo de conexiones
+	serviceRegister.Register<ConnectionFactory>(_ => {
+		var connectionFactory = new ConnectionFactory();
+		connectionFactory.HostName = "localhost";
+		connectionFactory.UserName = "guest";
+		connectionFactory.Password = "guest";
+		connectionFactory.DispatchConsumersAsync = true;
+		connectionFactory.RequestedConnectionTimeout = TimeSpan.FromSeconds(30);
+
+		// Limitar la cantidad de conexiones
+		connectionFactory.RequestedChannelMax = 5;
+		return connectionFactory;
+	});
+});
+
+builder.Services.AddSingleton(bus);
+
 //SwaggerOptions
 builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
 
@@ -117,7 +144,6 @@ builder.Services.AddHealthChecks()
 	.AddCheck<EndPointHealthCheck>("Endpoint versioning status", tags: new[] { "endpoint", "api" })
 	.AddCheck<UrlHealthCheck>("Endpoint code status", tags: new[] { "endpoint", "api" });
 
-
 builder.Services.AddHealthChecksUI(setupSettings: opt => {
 	opt.SetEvaluationTimeInSeconds(15);
 	opt.MaximumHistoryEntriesPerEndpoint(60);
@@ -142,7 +168,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 		};
 	});
 
-
 builder.Services.AddApiVersioning()
 	.AddMvc()
 	.AddApiExplorer(
@@ -154,8 +179,6 @@ builder.Services.AddApiVersioning()
 builder.Services.AddSwaggerGen(c => {
 	c.EnableAnnotations();
 });
-
-
 
 var app = builder.Build();
 

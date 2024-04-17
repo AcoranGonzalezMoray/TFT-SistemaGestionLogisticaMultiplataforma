@@ -1,12 +1,17 @@
 ﻿using Asp.Versioning;
 using AutoMapper;
+using EasyNetQ;
+using EasyNetQ.Consumer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using QRStockMate.AplicationCore.Entities;
 using QRStockMate.AplicationCore.Interfaces.Services;
 using QRStockMate.DTOs;
+using QRStockMate.QueueService;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace QRStockMate.Controller {
+
 	[ApiController]
 	[ApiVersion(1.0)]
 	[Route("api/v{version:apiVersion}/[controller]")]
@@ -14,10 +19,19 @@ namespace QRStockMate.Controller {
 	public class VehicleController : ControllerBase {
 		private readonly IMapper _mapper;
 		private readonly IVehicleService _vehicleService;
+		private VehicleLocationUpdatedConsumer _consumer;
+		private readonly IBus _bus;
 
-		public VehicleController(IMapper mapper, IVehicleService vehicleService) {
+		public VehicleController(IMapper mapper, IVehicleService vehicleService, SelfHostedBus bus) {
 			_mapper = mapper;
 			_vehicleService = vehicleService;
+			_bus = bus;
+			_consumer = new VehicleLocationUpdatedConsumer(_vehicleService);
+			InitBus().Wait();
+		}
+
+		private async Task InitBus() {
+			await _bus.PubSub.SubscribeAsync<Vehicle>("QR-Vehicle-Location", _consumer.Consume);
 		}
 
 		[SwaggerOperation(Summary = "Get all vehicles", Description = "Retrieves all vehicles.")]
@@ -32,9 +46,7 @@ namespace QRStockMate.Controller {
 				if (Vehicles is null) return NotFound();//404
 
 				return Ok(_mapper.Map<IEnumerable<Vehicle>, IEnumerable<VehicleModel>>(Vehicles)); //200
-			}
-			catch (Exception ex) {
-
+			} catch (Exception ex) {
 				return BadRequest(ex.Message);//400
 			}
 		}
@@ -50,9 +62,7 @@ namespace QRStockMate.Controller {
 				await _vehicleService.Create(Vehicle);
 
 				return CreatedAtAction("Get", new { id = Vehicle.Id }, Vehicle);
-			}
-			catch (Exception e) {
-
+			} catch (Exception e) {
 				return BadRequest(e.Message);//400
 			}
 		}
@@ -71,9 +81,7 @@ namespace QRStockMate.Controller {
 				await _vehicleService.Update(Vehicle);
 
 				return NoContent(); //202
-			}
-			catch (Exception ex) {
-
+			} catch (Exception ex) {
 				return BadRequest(ex.Message);//400
 			}
 		}
@@ -91,9 +99,7 @@ namespace QRStockMate.Controller {
 				await _vehicleService.Delete(Vehicle);
 
 				return NoContent(); //202
-			}
-			catch (Exception ex) {
-
+			} catch (Exception ex) {
 				return BadRequest(ex.Message);//400
 			}
 		}
@@ -110,12 +116,10 @@ namespace QRStockMate.Controller {
 
 				Vehicle.Location = location;
 
-				await _vehicleService.Update(Vehicle);
+				await _bus.PubSub.PublishAsync(Vehicle);
 
 				return NoContent(); //202
-			}
-			catch (Exception ex) {
-
+			} catch (Exception ex) {
 				return BadRequest(ex.Message);//400
 			}
 		}
@@ -130,9 +134,24 @@ namespace QRStockMate.Controller {
 				var Vehicle = await _vehicleService.GetById(Id);
 				if (Vehicle is null) return NotFound();//404
 				return Ok(Vehicle);
+			} catch (Exception ex) {
+				return BadRequest(ex.Message);//400
 			}
-			catch (Exception ex) {
+		}
 
+		[AllowAnonymous]
+		[HttpPut("UpdateLocationQueue/{Id}"), MapToApiVersion(1.0)]
+		public async Task<ActionResult> UpdateLocationQueue(int Id, [FromBody] string location) {
+			try {
+				var Vehicle = await _vehicleService.GetById(Id);
+				if (Vehicle is null) return NotFound();//404
+
+				Vehicle.Location = location;
+
+				await _vehicleService.Update(Vehicle);
+
+				return NoContent(); //202
+			} catch (Exception ex) {
 				return BadRequest(ex.Message);//400
 			}
 		}

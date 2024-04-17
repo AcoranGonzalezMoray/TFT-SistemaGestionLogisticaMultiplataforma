@@ -7,6 +7,7 @@ using QRStockMate.DTOs;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace QRStockMate.Controller {
+
 	[ApiController]
 	[ApiVersion(1.0)]
 	[Route("api/v{version:apiVersion}/[controller]")]
@@ -38,9 +39,7 @@ namespace QRStockMate.Controller {
 				if (warehouses is null) return NotFound();//404
 
 				return Ok(_mapper.Map<IEnumerable<Warehouse>, IEnumerable<WarehouseModel>>(warehouses)); //200
-			}
-			catch (Exception ex) {
-
+			} catch (Exception ex) {
 				return BadRequest(ex.Message);//400
 			}
 		}
@@ -50,11 +49,9 @@ namespace QRStockMate.Controller {
 		[SwaggerResponse(400, "Bad Request", typeof(void))]
 		[HttpPost("{Id}"), MapToApiVersion(1.0)]
 		public async Task<IActionResult> Post(int Id, [FromBody] WarehouseModel value) {
-
 			try {
 				var company = await _companyService.GetById(Id);
 				if (company is null) return NotFound();
-
 
 				var warehouse = _mapper.Map<WarehouseModel, Warehouse>(value);
 				await _warehouseService.Create(warehouse);
@@ -62,11 +59,8 @@ namespace QRStockMate.Controller {
 				company.WarehouseId += $"{warehouse.Id};";
 				await _companyService.Update(company);
 
-
 				return CreatedAtAction("Get", new { id = value.Id }, value);
-			}
-			catch (Exception e) {
-
+			} catch (Exception e) {
 				return BadRequest(e.Message);//400
 			}
 		}
@@ -85,9 +79,7 @@ namespace QRStockMate.Controller {
 				await _warehouseService.Update(warehouse);
 
 				return NoContent(); //204
-			}
-			catch (Exception ex) {
-
+			} catch (Exception ex) {
 				return BadRequest(ex.Message);//400
 			}
 		}
@@ -129,9 +121,7 @@ namespace QRStockMate.Controller {
 				await _companyService.Update(company);
 
 				return NoContent(); //204
-			}
-			catch (Exception ex) {
-
+			} catch (Exception ex) {
 				return BadRequest(ex.Message);//400
 			}
 		}
@@ -143,7 +133,6 @@ namespace QRStockMate.Controller {
 		[HttpPost("UpdateImage"), MapToApiVersion(1.0)]
 		public async Task<IActionResult> UpdateImage([FromForm] int warehouseId, [FromForm] IFormFile image) {
 			try {
-
 				var warehouse = await _warehouseService.GetById(warehouseId);
 				if (warehouse == null) return NotFound();
 
@@ -159,9 +148,7 @@ namespace QRStockMate.Controller {
 
 				await _warehouseService.Update(warehouse);
 				return Ok();
-			}
-			catch (Exception ex) {
-
+			} catch (Exception ex) {
 				return BadRequest(ex.Message);
 			}
 		}
@@ -173,21 +160,22 @@ namespace QRStockMate.Controller {
 		public async Task<IActionResult> AddItem(int Id, [FromBody] ItemModel itemModel) {
 			try {
 				var warehouse = await _warehouseService.GetById(Id);
+
 				if (warehouse == null) return NotFound();
 
+				var items = await _warehouseService.GetItems(Id);
 
-				var items  = await _warehouseService.GetItems(Id);
+				Console.WriteLine("LLEGA");
+
 				foreach (var local in items) {
 					if (local.Location == itemModel.Location) return BadRequest("A product already exists in that location.\r\n");
 				}
-
 				var item = _mapper.Map<ItemModel, Item>(itemModel);
 
 				await _warehouseService.AddItem(Id, item);
 
 				return CreatedAtAction("Get", new { id = item.Id }, item);
-			}
-			catch (Exception ex) {
+			} catch (Exception ex) {
 				return BadRequest(ex.Message);
 			}
 		}
@@ -207,12 +195,10 @@ namespace QRStockMate.Controller {
 
 						await _warehouseService.AddItem(_item.WarehouseId, item);
 					}
-
 				}
 
 				return Ok();
-			}
-			catch (Exception ex) {
+			} catch (Exception ex) {
 				return BadRequest(ex.Message);
 			}
 		}
@@ -224,7 +210,6 @@ namespace QRStockMate.Controller {
 		[HttpGet("GetItems/{Id}"), MapToApiVersion(1.0)]
 		public async Task<ActionResult<IEnumerable<ItemModel>>> GetItems(int Id) {
 			try {
-
 				var warehouse = await _warehouseService.GetById(Id);
 
 				if (warehouse == null) return NotFound();
@@ -234,11 +219,9 @@ namespace QRStockMate.Controller {
 				var Items = await _warehouseService.GetItems(warehouse.Id);
 
 				return Ok(_mapper.Map<IEnumerable<Item>, IEnumerable<ItemModel>>(Items));
-			}
-			catch (Exception ex) {
+			} catch (Exception ex) {
 				return BadRequest(ex.Message);
 			}
 		}
 	}
 }
-

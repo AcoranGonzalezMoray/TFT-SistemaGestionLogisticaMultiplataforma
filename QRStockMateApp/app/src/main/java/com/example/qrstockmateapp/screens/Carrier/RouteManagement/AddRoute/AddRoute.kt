@@ -875,15 +875,6 @@ fun itemTemplate(item: Item, onCountStateChanged: (Double) -> Unit){
             .padding(16.dp)
             .background(color = MaterialTheme.colorScheme.background )
     ) {
-        // Imagen del producto a la izquierda (puedes personalizar esto según tus necesidades)
-        Image(
-            painter = painterResource(id = R.drawable.item), // Reemplaza con tu recurso de imagen
-            contentDescription = null,
-            modifier = Modifier
-                .size(80.dp)
-                .clip(CircleShape),
-            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
-        )
         if (item.url.isNullOrBlank()) {
             Image(
                 painter = painterResource(id = R.drawable.item), // Reemplaza con tu recurso de imagen
