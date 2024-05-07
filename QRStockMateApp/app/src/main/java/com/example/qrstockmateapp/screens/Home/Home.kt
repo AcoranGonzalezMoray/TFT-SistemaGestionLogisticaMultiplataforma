@@ -841,36 +841,7 @@ fun WarehouseItem(warehouse: Warehouse, navController: NavController, loadWareho
                                 verticalAlignment = Alignment.CenterVertically,
 
                                 ) {
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .weight(1f), // Cada fila ocupará el 50% del ancho
-                                    horizontalArrangement = Arrangement.Start
-                                ) {
-                                    Text(
-                                        text = warehouse.name,
-                                        color = Color.White,
-                                        fontSize = 18.sp,
-                                        modifier = Modifier
-                                            .padding(16.dp)
-                                    )
-                                }
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .weight(1f), // Cada fila ocupará el 50% del ancho
-                                    horizontalArrangement = Arrangement.End
-                                ) {
-                                    FloatingActionButton(
-                                        onClick = { infoMode = true},
-                                        backgroundColor = BlueSystem, // Color naranja
-                                        modifier = Modifier
-                                            .padding(8.dp)
-                                            .size(40.dp)
-                                    ) {
-                                        Icon(Icons.Default.Info, contentDescription = "Add", tint = Color.White)
-                                    }
-                                }
+
                                 if(infoMode){
                                     Column(
                                         modifier = Modifier.padding(10.dp)
@@ -923,6 +894,46 @@ fun WarehouseItem(warehouse: Warehouse, navController: NavController, loadWareho
                                         )
 
 
+                                    }
+                                }else{
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .weight(0.4f), // Cada fila ocupará el 50% del ancho
+                                        horizontalArrangement = Arrangement.Start
+                                    ) {
+                                        ElevatedButton(
+                                            modifier = Modifier
+                                                .fillMaxWidth(),
+                                            onClick = {
+
+                                            },
+                                            colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                                                containerColor = BlueSystem
+                                            ),
+                                            elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                                                defaultElevation = 5.dp
+                                            )
+                                        )
+                                        {
+                                            Text(text = warehouse.name, color = Color.White)
+                                        }
+                                    }
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .weight(1f), // Cada fila ocupará el 50% del ancho
+                                        horizontalArrangement = Arrangement.End
+                                    ) {
+                                        FloatingActionButton(
+                                            onClick = { infoMode = true},
+                                            backgroundColor = BlueSystem, // Color naranja
+                                            modifier = Modifier
+                                                .padding(8.dp)
+                                                .size(40.dp)
+                                        ) {
+                                            Icon(Icons.Default.Info, contentDescription = "Add", tint = Color.White)
+                                        }
                                     }
                                 }
                             }

@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -35,6 +36,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -254,7 +256,6 @@ fun AddWarehouseScreen(navController: NavController) {
                     ),
             )
             Spacer(modifier = Modifier.height(10.dp))
-
             if (numberofplants != 0) {
                 for (i in 0 until numberofplants) {
                     TextField(
@@ -301,7 +302,7 @@ fun AddWarehouseScreen(navController: NavController) {
                                     racksPerHallway[i] = currentRacksList // Actualiza la lista en el mapa
                                 },
                                 shape = RoundedCornerShape(8.dp),
-                                label = { Text("Racks in hallway ${x + 1} of plant ${i}",color = MaterialTheme.colorScheme.outlineVariant) },
+                                label = { Text("Racks in hallway ${x + 1} of plant ${i} (Ex: A-Z-3)",color = MaterialTheme.colorScheme.outlineVariant) },
                                 colors = customTextFieldColors,
                                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                                 keyboardActions = KeyboardActions(
@@ -324,7 +325,14 @@ fun AddWarehouseScreen(navController: NavController) {
             }
 
             Spacer(modifier = Modifier.height(10.dp))
-
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start
+            ) {
+                Icon(imageVector = Icons.Filled.Info, contentDescription ="info about de hallway", tint = Color.LightGray )
+                Text(text = "When adding racks in hallway, you must specify a range, for example A-C-3 where A-C indicates the rack sections and the last number the height.",color = Color.LightGray)
+            }
+            Spacer(modifier = Modifier.height(10.dp))
             ElevatedButton(
                 modifier = Modifier
                     .fillMaxWidth(),

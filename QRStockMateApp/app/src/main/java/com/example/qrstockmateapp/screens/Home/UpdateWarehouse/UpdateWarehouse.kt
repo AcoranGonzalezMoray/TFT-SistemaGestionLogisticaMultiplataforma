@@ -40,6 +40,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.MaterialTheme
@@ -530,6 +531,14 @@ fun UpdateWarehouseScreen(navController: NavController) {
                                    }
                                }
                            }
+                       }
+                       Spacer(modifier = Modifier.height(10.dp))
+                       Row(
+                           verticalAlignment = Alignment.CenterVertically,
+                           horizontalArrangement = Arrangement.Start
+                       ) {
+                           Icon(imageVector = Icons.Filled.Info, contentDescription ="info about de hallway", tint = Color.LightGray )
+                           Text(text = "When adding racks in hallway, you must specify a range, for example A-C-3 where A-C indicates the rack sections and the last number the height.",color = Color.LightGray)
                        }
                        Spacer(modifier = Modifier.height(10.dp))
                        ElevatedButton(
