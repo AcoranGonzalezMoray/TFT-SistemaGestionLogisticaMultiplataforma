@@ -3,6 +3,7 @@ package com.example.qrstockmateapp.screens.Home
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,14 +18,21 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.AlertDialog
+import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DeleteSweep
 import androidx.compose.material.icons.filled.EditNote
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
@@ -40,6 +48,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -195,8 +204,8 @@ fun HomeScreen(navController: NavController) {
 fun WarehouseList(warehouses: List<Warehouse>,navController: NavController,loadWarehouse: ()->Unit) {
     LazyColumn {
         items(warehouses) { warehouse ->
-            WarehouseItem(warehouse,navController, loadWarehouse)
             Spacer(modifier = Modifier.height(8.dp)) // Agrega un espacio entre elementos de la lista
+            WarehouseItem(warehouse,navController, loadWarehouse)
         }
         item { 
             Spacer(modifier = Modifier.padding(bottom = 55.dp))
@@ -206,7 +215,7 @@ fun WarehouseList(warehouses: List<Warehouse>,navController: NavController,loadW
 
 @OptIn(DelicateCoroutinesApi::class)
 @Composable
-fun WarehouseItem(warehouse: Warehouse,navController: NavController, loadWarehouse:()->Unit) {
+fun WarehouseItemBase(warehouse: Warehouse,navController: NavController, loadWarehouse:()->Unit) {
     var showDialog by remember { mutableStateOf(false) }
 
     val deleteWarehouse: () -> Unit = {
@@ -521,6 +530,406 @@ fun WarehouseItem(warehouse: Warehouse,navController: NavController, loadWarehou
 
                 }
 
+            }
+        }
+    }
+}
+
+
+
+
+@Composable
+fun WarehouseItem(warehouse: Warehouse, navController: NavController, loadWarehouse:()->Unit) {
+    val admin = DataRepository.getEmployees()?.find { user -> user.id == warehouse.idAdministrator}
+    var showDialog by remember { mutableStateOf(false) }
+    var infoMode by remember { mutableStateOf(false) }
+
+    val deleteWarehouse: () -> Unit = {
+        GlobalScope.launch(Dispatchers.IO) {
+            val id = DataRepository.getCompany()?.id
+            if(id!=null){
+                val response = RetrofitInstance.api.deleteWarehouse(id,warehouse)
+                if(response.isSuccessful){
+                    val user = DataRepository.getUser()
+                    if(user!=null){
+                        val zonedDateTime = ZonedDateTime.now()
+                        val formattedDate = zonedDateTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+                        val addTransaccion = RetrofitInstance.api.addHistory(
+                            Transaction(0,user.name,user.code, "The ${warehouse.name} warehouse  has been deleted",
+                                formattedDate , 3)
+                        )
+                        if(addTransaccion.isSuccessful){
+                        }else{
+                            try {
+                                val errorBody = addTransaccion.errorBody()?.string()
+                                Log.d("Transaccion", errorBody ?: "Error body is null")
+                            } catch (e: Exception) {
+                                Log.e("Transaccion", "Error al obtener el cuerpo del error: $e")
+                            }
+                        }
+                    }
+                    loadWarehouse()
+                }else{
+                    try {
+                        val errorBody = response.errorBody()?.string()
+                        Log.d("excepcionWarehouse", errorBody ?: "Error body is null")
+                    } catch (e: Exception) {
+                        Log.e("excepcionUserB", "Error al obtener el cuerpo del error: $e")
+                    }
+                }
+            }
+        }
+    }
+
+    var isloading by remember { mutableStateOf(true) }
+    val modifierDire =
+        if (DataRepository.getUser()?.role==0 || DataRepository.getUser()?.role==1 ){
+            Modifier
+                .fillMaxSize()
+                .height(215.dp)
+                .background(Color.White.copy(alpha = 0.8f))
+        }else{
+            Modifier
+                .fillMaxSize()
+                .height(160.dp)
+                .background(Color.White.copy(alpha = 0.8f))
+        }
+
+
+    LaunchedEffect(Unit){
+        delay(1200)
+        isloading = false
+    }
+    // Muestra los detalles del almacén dentro de un Card
+   Row(
+       modifier = Modifier.fillMaxWidth().padding(16.dp).clip(RoundedCornerShape(16.dp))
+       ,
+   ) {
+        if (isloading) {
+            Box(
+                modifier = modifierDire
+            ) {
+                // Muestra el indicador de carga lineal con efecto de cristal
+                LinearProgressIndicator(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight()
+                        .align(Alignment.Center),
+                    color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.9f), // Ajusta el nivel de opacidad aquí
+                    trackColor = BlueSystem.copy(alpha = 0.1f), // Ajusta el nivel de opacidad aquí
+                )
+            }
+
+        } else {
+            if (showDialog) {
+                AlertDialog(
+                    backgroundColor = MaterialTheme.colorScheme.background,
+                    onDismissRequest = {
+                        // Handle dismissal if needed
+                        showDialog = false
+                    },
+                    title = {
+                        Text(text = "Alert", color = MaterialTheme.colorScheme.primary)
+                    },
+                    text = {
+                        Text(
+                            text = "Are you sure you want to delete?",
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    },
+                    confirmButton = {
+                        ElevatedButton(
+                            onClick = {
+                                deleteWarehouse()
+                                showDialog = false
+                            },
+                            colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                                containerColor = BlueSystem
+                            ),
+                            elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                                defaultElevation = 5.dp
+                            )
+                        ) {
+                            Text("Confirm", color = Color.White)
+                        }
+                    },
+                    dismissButton = {
+                        ElevatedButton(
+                            onClick = {
+                                showDialog = false
+                            },
+                            colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                                containerColor = MaterialTheme.colorScheme.secondaryContainer
+                            ),
+                            elevation = androidx.compose.material3.ButtonDefaults.elevatedButtonElevation(
+                                defaultElevation = 5.dp
+                            )
+                        ) {
+                            Text("Cancel", color = BlueSystem)
+                        }
+                    }
+                )
+            }
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(250.dp),
+                elevation = 4.dp
+            ) {
+                Box(
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    // Fondo de la imagen de usuario
+                    if(warehouse.url.isNotBlank()){
+                        val painter = rememberImagePainter(
+                            data = warehouse.url,
+                            builder = {
+                                crossfade(true)
+                                placeholder(R.drawable.loading)
+                            }
+                        )
+                        Image(
+                            painter = painter,
+                            contentDescription = "Service Image",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    }else{
+                        val placeholderImage = painterResource(id = R.drawable.warehouse)
+
+                        Image(
+                            painter = placeholderImage,
+                            contentDescription = "Service Image",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    }
+                    // Capa superior con los botones y el nombre del usuario
+                    Surface(
+                        color = if (!infoMode)Color(0x44000000)else Color(0x99000000), // Color con alfa reducido
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxSize(),
+                            verticalAlignment = Alignment.Top,
+                        ) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .weight(1f)
+                                        .padding(start = 10.dp)
+                                    , // Cada fila ocupará el 50% del ancho
+                                    horizontalArrangement = Arrangement.Start,
+                                    verticalAlignment = Alignment.CenterVertically,
+
+                                    ) {
+                                    if(!infoMode){
+                                        if(admin != null && admin.url.isNotBlank()){
+                                            Image(
+                                                painter = rememberImagePainter(admin.url),
+                                                contentDescription = "Profile Image",
+                                                contentScale = ContentScale.Crop,
+                                                modifier = Modifier
+                                                    .size(50.dp)
+                                                    .clip(CircleShape)
+                                                    .clickable {
+                                                        if (admin != null && DataRepository.getUser()?.role!! <= 1) {
+                                                            DataRepository.setUserPlus(admin)
+                                                            navController.navigate("updateUser")
+                                                        }
+                                                    }
+                                            )
+                                        }else {
+                                            val painter = rememberImagePainter(
+                                                data = R.drawable.user,
+                                                builder = {
+                                                    crossfade(true)
+                                                    placeholder(R.drawable.loading)
+                                                }
+                                            )
+                                            Image(
+                                                painter = painter,
+                                                contentDescription = "Profile Image",
+                                                contentScale = ContentScale.Crop,
+                                                modifier = Modifier
+                                                    .size(50.dp)
+                                                    .clip(CircleShape)
+                                                    .clickable {
+                                                        if (admin != null && DataRepository.getUser()?.role!! <= 1) {
+                                                            DataRepository.setUserPlus(admin)
+                                                            navController.navigate("updateUser")
+                                                        }
+                                                    }
+                                            )
+                                        }
+                                    }
+                                }
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .weight(1f), // Cada fila ocupará el 50% del ancho
+                                    horizontalArrangement = Arrangement.End
+                                ) {
+                                    if(infoMode){
+                                        FloatingActionButton(
+                                            onClick = {
+                                                infoMode = false
+                                            },
+                                            backgroundColor = Color.Red,
+                                            modifier = Modifier
+                                                .padding(8.dp)
+                                                .size(40.dp)
+                                        ) {
+                                            Icon(Icons.Default.Close, contentDescription = "Edit", tint = Color.White)
+                                        }
+                                    }else{
+                                        if(DataRepository.getUser()?.role==0 || DataRepository.getUser()?.role==1 ) {
+                                            FloatingActionButton(
+                                                onClick = {
+                                                    DataRepository.setWarehousePlus(warehouse)
+                                                    navController.navigate("updateWarehouse")
+                                                },
+                                                backgroundColor = BlueSystem, // Color naranja
+                                                modifier = Modifier
+                                                    .padding(8.dp)
+                                                    .size(40.dp)
+                                            ) {
+                                                Icon(Icons.Default.EditNote, contentDescription = "Add", tint = Color.White)
+                                            }
+
+                                        }
+                                        if(DataRepository.getUser()?.role==0) {
+                                            FloatingActionButton(
+                                                onClick = {
+                                                    showDialog = true
+                                                },
+                                                backgroundColor = BlueSystem,
+                                                modifier = Modifier
+                                                    .padding(8.dp)
+                                                    .size(40.dp)
+                                            ) {
+                                                Icon(Icons.Default.DeleteSweep, contentDescription = "Edit", tint = Color.White)
+                                            }
+                                        }
+                                        FloatingActionButton(
+                                            onClick = {
+                                                DataRepository.setWarehousePlus(warehouse)
+                                                navController.navigate("openWarehouse")
+                                            },
+                                            backgroundColor = BlueSystem,
+                                            modifier = Modifier
+                                                .padding(8.dp)
+                                                .size(40.dp)
+                                        ) {
+                                            Icon(Icons.Default.KeyboardArrowRight, contentDescription = "Edit", tint = Color.White)
+                                        }
+                                    }
+                                }
+                            }
+
+                        }
+                        Row(
+                            modifier = Modifier.fillMaxSize(),
+                            verticalAlignment = Alignment.Bottom,
+                        ) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+
+                                ) {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .weight(1f), // Cada fila ocupará el 50% del ancho
+                                    horizontalArrangement = Arrangement.Start
+                                ) {
+                                    Text(
+                                        text = warehouse.name,
+                                        color = Color.White,
+                                        fontSize = 18.sp,
+                                        modifier = Modifier
+                                            .padding(16.dp)
+                                    )
+                                }
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .weight(1f), // Cada fila ocupará el 50% del ancho
+                                    horizontalArrangement = Arrangement.End
+                                ) {
+                                    FloatingActionButton(
+                                        onClick = { infoMode = true},
+                                        backgroundColor = BlueSystem, // Color naranja
+                                        modifier = Modifier
+                                            .padding(8.dp)
+                                            .size(40.dp)
+                                    ) {
+                                        Icon(Icons.Default.Info, contentDescription = "Add", tint = Color.White)
+                                    }
+                                }
+                                if(infoMode){
+                                    Column(
+                                        modifier = Modifier.padding(10.dp)
+                                    ) {
+                                        // Nombre del almacén
+                                        Text(
+                                            text = warehouse.name,
+                                            color = MaterialTheme.colorScheme.primary,
+                                            fontWeight = FontWeight.Bold,
+                                            fontSize = 18.sp,
+                                            modifier = Modifier.padding(bottom = 4.dp),
+                                        )
+                                        // Administrador
+                                        Text(
+                                            buildAnnotatedString {
+                                                withStyle(style = SpanStyle(fontWeight = FontWeight.Bold,color = MaterialTheme.colorScheme.primary)) {
+                                                    append("Administrator:")
+                                                }
+                                                append(" ${DataRepository.getEmployees()?.find { user -> user.id == warehouse.idAdministrator}?.name}")
+                                            },
+                                            fontSize = 12.sp,
+                                            modifier = Modifier.padding(bottom = 4.dp),
+                                            color = MaterialTheme.colorScheme.primary
+                                        )
+                                        // Organización del almacén
+                                        Text(
+                                            buildAnnotatedString {
+                                                withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)) {
+                                                    append("Organization:")
+                                                }
+                                                append(" ${warehouse.organization}")
+                                            },
+                                            fontSize = 12.sp,
+                                            modifier = Modifier.padding(bottom = 4.dp),
+                                            color = MaterialTheme.colorScheme.primary
+                                        )
+
+
+                                        // Ubicación del almacén
+                                        Text(
+                                            buildAnnotatedString {
+                                                withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)) {
+                                                    append("Location:")
+                                                }
+                                                append(" ${warehouse.location}")
+                                            },
+                                            fontSize = 12.sp,
+                                            modifier = Modifier.padding(bottom = 4.dp),
+                                            color = MaterialTheme.colorScheme.primary
+                                        )
+
+
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+                }
             }
         }
     }
