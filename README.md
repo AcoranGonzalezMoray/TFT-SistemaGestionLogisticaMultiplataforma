@@ -12,11 +12,15 @@
 
 <p>QRStockMate es un Sistema de gestión logística multiplataforma, que permite a las empresas controlar de forma eficiente y precisa sus inventarios, almacenes, empleados asociados, vehículos, rutas logísticas, gestiones de capacidad máxima y chat para comunicaciones además de implementar funciones basados en roles</p> 
 
-Dashboard            |  Transportation Tracking
+Warehouse            |  Transportation Tracking
 :-------------------------:|:-------------------------:
-![](https://github.com/AcoranGonzalezMoray/TFT-SistemaGestionLogisticaMultiplataforma/blob/main/AssetsDoc/Captura%20de%20pantalla%202024-03-29%20215723.png)  |  ![](./AssetsDoc/Screenshot_20240329_213652.png)
+<img src="./AssetsDoc/image.png" alt="Warehouse" width="500"/>  |  <img src="./AssetsDoc/Screenshot_20240329_213652.png" alt="Warehouse" width="500"/>
 
- 
+| Dashboard |
+|:-:|
+| <img src="https://github.com/AcoranGonzalezMoray/TFT-SistemaGestionLogisticaMultiplataforma/blob/main/AssetsDoc/Captura%20de%20pantalla%202024-03-29%20215723.png" alt="Dashboard" width="1200"/> |
+
+
 ## Contenido
 <div>
 
