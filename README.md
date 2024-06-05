@@ -36,6 +36,16 @@ En el entorno digital actual, las aplicaciones logísticas desempeñan un papel 
 
 Este Trabajo Fin de Grado propone el desarrollo de una aplicación logística avanzada, diseñada tanto para web como para dispositivos móviles Android. El objetivo principal es crear un sistema de gestión integral que facilite las operaciones logísticas, mejorando la eficiencia, la precisión y la capacidad de respuesta de las empresas frente a las demandas del mercado.
 
+### Para más información consultar:
+<div>
+
+  <h4><a href="https://github.com/AcoranGonzalezMoray/TFT-SistemaGestionLogisticaMultiplataforma/tree/main/Documentation/Designs">Diseños del Sistema</a></h4>
+  <h4><a href="https://github.com/AcoranGonzalezMoray/TFT-SistemaGestionLogisticaMultiplataforma/tree/main/Documentation/User%20Interface">Interfaces de Usuario</a></h4>
+  <h4><a href="https://github.com/AcoranGonzalezMoray/TFT-SistemaGestionLogisticaMultiplataforma/tree/main/Documentation/User%20stories">Historia de Usuario</a></h4>
+  <h4><a href="https://github.com/AcoranGonzalezMoray/TFT-SistemaGestionLogisticaMultiplataforma/tree/main/Documentation/Previous%20study%20on%20the%20application%20of%20regulations%20and%20legislation">Estudio previo sobre la Aplicación de la Normativa y la Legislación</a></h4>
+ 
+</div>
+
 ## Funciones
 El sistema QRStockMate tiene las siguientes funcionalidades entre otras:
 ##### Cliente Android 
