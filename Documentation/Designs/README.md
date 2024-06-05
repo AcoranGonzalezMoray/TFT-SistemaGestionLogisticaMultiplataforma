@@ -22,8 +22,26 @@
 |:-:|
 | <img src="https://raw.githubusercontent.com/AcoranGonzalezMoray/TFT-SistemaGestionLogisticaMultiplataforma/main/Documentation/Designs/Diagrama%20Parte%203.png" alt="Dashboard" width="1200"/> |
 
+## Diagramas Casos de Uso
+
+| Diagrama Funcionalidades Comunes Android<a href="https://raw.githubusercontent.com/AcoranGonzalezMoray/TFT-SistemaGestionLogisticaMultiplataforma/main/Documentation/Designs/Architecture%20Diagram%20(Parte%202%20TFT)%20(5).png">click aquí para ver</a> |
+|:-:|
+| <img src="https://github.com/AcoranGonzalezMoray/TFT-SistemaGestionLogisticaMultiplataforma/blob/main/Documentation/Designs/Diagrama%20CU%20P1.png" alt="Dashboard" width="1200"/> |
+
+| Diagrama Funcionalidades Basadas en Rol Android<a href="https://raw.githubusercontent.com/AcoranGonzalezMoray/TFT-SistemaGestionLogisticaMultiplataforma/main/Documentation/Designs/Architecture%20Diagram%20(Parte%202%20TFT)%20(5).png">click aquí para ver</a> |
+|:-:|
+| <img src="https://github.com/AcoranGonzalezMoray/TFT-SistemaGestionLogisticaMultiplataforma/blob/main/Documentation/Designs/Diagrama%20CU%20P2.png" alt="Dashboard" width="1200"/> |
+
+|Diagrama Funcionalidades Web<a href="https://raw.githubusercontent.com/AcoranGonzalezMoray/TFT-SistemaGestionLogisticaMultiplataforma/main/Documentation/Designs/Architecture%20Diagram%20(Parte%202%20TFT)%20(5).png">click aquí para ver</a> |
+|:-:|
+| <img src="https://github.com/AcoranGonzalezMoray/TFT-SistemaGestionLogisticaMultiplataforma/blob/main/Documentation/Designs/Diagrama%20CU%20P3.png" alt="Dashboard" width="1200"/> |
+
 ##  Diseño Interfaz de Usuario, para ver el Figma pulse <a href="https://www.figma.com/board/2sPHGZZeKaLxBw3zJTCzSx/Interfaz-QRStockMate--para-Android-(Parte-1-TFT)?node-id=0-1&t=AQDqG37xtnoaPopM-1">aquí</a>
 
-| Diseño de Interfaces <a href="https://raw.githubusercontent.com/AcoranGonzalezMoray/TFT-SistemaGestionLogisticaMultiplataforma/main/Documentation/Designs/Architecture%20Diagram%20(Parte%202%20TFT)%20(5).png">click aquí para ver</a> |
+| Diseño de Interfaces Web<a href="https://raw.githubusercontent.com/AcoranGonzalezMoray/TFT-SistemaGestionLogisticaMultiplataforma/main/Documentation/Designs/Architecture%20Diagram%20(Parte%202%20TFT)%20(5).png">click aquí para ver</a> |
+|:-:|
+| <img src="https://github.com/AcoranGonzalezMoray/TFT-SistemaGestionLogisticaMultiplataforma/blob/main/Documentation/Designs/InterfazWeb.png" alt="Dashboard" width="1200"/> |
+
+| Diseño de Interfaces Android<a href="https://raw.githubusercontent.com/AcoranGonzalezMoray/TFT-SistemaGestionLogisticaMultiplataforma/main/Documentation/Designs/Architecture%20Diagram%20(Parte%202%20TFT)%20(5).png">click aquí para ver</a> |
 |:-:|
 | <img src="https://raw.githubusercontent.com/AcoranGonzalezMoray/TFT-SistemaGestionLogisticaMultiplataforma/main/Documentation/Designs/PreviewInterfaz.png" alt="Dashboard" width="1200"/> |
