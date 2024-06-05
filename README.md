@@ -42,7 +42,7 @@ Este Trabajo Fin de Grado propone el desarrollo de una aplicación logística av
   <h4><a href="https://github.com/AcoranGonzalezMoray/TFT-SistemaGestionLogisticaMultiplataforma/tree/main/Documentation/Designs">Diseños del Sistema</a></h4>
   <h4><a href="https://github.com/AcoranGonzalezMoray/TFT-SistemaGestionLogisticaMultiplataforma/tree/main/Documentation/User%20Interface">Interfaces de Usuario</a></h4>
   <h4><a href="https://github.com/AcoranGonzalezMoray/TFT-SistemaGestionLogisticaMultiplataforma/tree/main/Documentation/User%20stories">Historia de Usuario</a></h4>
-  <h4><a href="https://github.com/AcoranGonzalezMoray/TFT-SistemaGestionLogisticaMultiplataforma/tree/main/Documentation/Previous%20study%20on%20the%20application%20of%20regulations%20and%20legislation">Estudio previo sobre la Aplicación de la Normativa y la Legislación</a></h4>
+  <h4><a href="https://github.com/AcoranGonzalezMoray/TFT-SistemaGestionLogisticaMultiplataforma/tree/main/Documentation/Previous%20study%20on%20the%20application%20of%20regulations%20and%20legislation">Estudio previo sobre la Aplicación de la Normativa y Legislación</a></h4>
  
 </div>
 
